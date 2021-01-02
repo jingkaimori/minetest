@@ -234,7 +234,7 @@ bool MapDatabasePostgreSQL::saveBlock(const v3s16 &pos, const std::string &data)
 
 	verifyDatabase();
 
-	s32 x, y, z;
+	int32_t x, y, z;
 	x = htonl(pos.X);
 	y = htonl(pos.Y);
 	z = htonl(pos.Z);
@@ -258,7 +258,7 @@ void MapDatabasePostgreSQL::loadBlock(const v3s16 &pos, std::string *block)
 {
 	verifyDatabase();
 
-	s32 x, y, z;
+	int32_t x, y, z;
 	x = htonl(pos.X);
 	y = htonl(pos.Y);
 	z = htonl(pos.Z);
@@ -282,7 +282,7 @@ bool MapDatabasePostgreSQL::deleteBlock(const v3s16 &pos)
 {
 	verifyDatabase();
 
-	s32 x, y, z;
+	int32_t x, y, z;
 	x = htonl(pos.X);
 	y = htonl(pos.Y);
 	z = htonl(pos.Z);
@@ -492,7 +492,7 @@ void PlayerDatabasePostgreSQL::savePlayer(RemotePlayer *player)
 	execPrepared("remove_player_inventory_items", 1, rmvalues);
 
 	std::vector<const InventoryList*> inventory_lists = sao->getInventory()->getLists();
-	for (u16 i = 0; i < inventory_lists.size(); i++) {
+	for (uint16_t i = 0; i < inventory_lists.size(); i++) {
 		const InventoryList* list = inventory_lists[i];
 		const std::string &name = list->getName();
 		std::string width = itos(list->getWidth()),
@@ -507,7 +507,7 @@ void PlayerDatabasePostgreSQL::savePlayer(RemotePlayer *player)
 		};
 		execPrepared("add_player_inventory", 5, inv_values);
 
-		for (u32 j = 0; j < list->getSize(); j++) {
+		for (uint32_t j = 0; j < list->getSize(); j++) {
 			std::ostringstream os;
 			list->getItem(j).serialize(os);
 			std::string itemStr = os.str(), slotId = itos(j);
@@ -558,8 +558,8 @@ bool PlayerDatabasePostgreSQL::loadPlayer(RemotePlayer *player, PlayerSAO *sao)
 		pg_to_float(results, 0, 3),
 		pg_to_float(results, 0, 4))
 	);
-	sao->setHPRaw((u16) pg_to_int(results, 0, 5));
-	sao->setBreath((u16) pg_to_int(results, 0, 6), false);
+	sao->setHPRaw((uint16_t) pg_to_int(results, 0, 5));
+	sao->setBreath((uint16_t) pg_to_int(results, 0, 6), false);
 
 	PQclear(results);
 
@@ -573,7 +573,7 @@ bool PlayerDatabasePostgreSQL::loadPlayer(RemotePlayer *player, PlayerSAO *sao)
 			addList(PQgetvalue(results, row, 2), pg_to_uint(results, row, 3));
 		invList->setWidth(pg_to_uint(results, row, 1));
 
-		u32 invId = pg_to_uint(results, row, 0);
+		uint32_t invId = pg_to_uint(results, row, 0);
 		std::string invIdStr = itos(invId);
 
 		const char* values2[] = {

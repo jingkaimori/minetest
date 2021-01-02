@@ -25,7 +25,7 @@ class QuicktuneShortcutter
 {
 private:
 	std::vector<std::string> m_names;
-	u32 m_selected_i;
+	uint32_t m_selected_i;
 	std::string m_message;
 public:
 	bool hasMessage() const

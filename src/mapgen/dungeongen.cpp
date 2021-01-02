@@ -77,7 +77,7 @@ DungeonGen::DungeonGen(const NodeDefManager *ndef,
 }
 
 
-void DungeonGen::generate(MMVManip *vm, u32 bseed, v3s16 nmin, v3s16 nmax)
+void DungeonGen::generate(MMVManip *vm, uint32_t bseed, v3s16 nmin, v3s16 nmax)
 {
 	if (dp.num_dungeons == 0)
 		return;
@@ -101,10 +101,10 @@ void DungeonGen::generate(MMVManip *vm, u32 bseed, v3s16 nmin, v3s16 nmax)
 		// Like randomwalk caves, preserve nodes that have 'is_ground_content = false',
 		// to avoid dungeons that generate out beyond the edge of a mapchunk destroying
 		// nodes added by mods in 'register_on_generated()'.
-		for (s16 z = nmin.Z; z <= nmax.Z; z++) {
-			for (s16 y = nmin.Y; y <= nmax.Y; y++) {
-				u32 i = vm->m_area.index(nmin.X, y, z);
-				for (s16 x = nmin.X; x <= nmax.X; x++) {
+		for (int16_t z = nmin.Z; z <= nmax.Z; z++) {
+			for (int16_t y = nmin.Y; y <= nmax.Y; y++) {
+				uint32_t i = vm->m_area.index(nmin.X, y, z);
+				for (int16_t x = nmin.X; x <= nmax.X; x++) {
 					content_t c = vm->m_data[i].getContent();
 					NodeDrawType dtype = ndef->get(c).drawtype;
 					if (dtype == NDT_AIRLIKE || dtype == NDT_LIQUID ||
@@ -117,17 +117,17 @@ void DungeonGen::generate(MMVManip *vm, u32 bseed, v3s16 nmin, v3s16 nmax)
 	}
 
 	// Add them
-	for (u32 i = 0; i < dp.num_dungeons; i++)
+	for (uint32_t i = 0; i < dp.num_dungeons; i++)
 		makeDungeon(v3s16(1, 1, 1) * MAP_BLOCKSIZE);
 
 	// Optionally convert some structure to alternative structure
 	if (dp.c_alt_wall == CONTENT_IGNORE)
 		return;
 
-	for (s16 z = nmin.Z; z <= nmax.Z; z++)
-	for (s16 y = nmin.Y; y <= nmax.Y; y++) {
-		u32 i = vm->m_area.index(nmin.X, y, z);
-		for (s16 x = nmin.X; x <= nmax.X; x++) {
+	for (int16_t z = nmin.Z; z <= nmax.Z; z++)
+	for (int16_t y = nmin.Y; y <= nmax.Y; y++) {
+		uint32_t i = vm->m_area.index(nmin.X, y, z);
+		for (int16_t x = nmin.X; x <= nmax.X; x++) {
 			if (vm->m_data[i].getContent() == dp.c_wall) {
 				if (NoisePerlin3D(&dp.np_alt_wall, x, y, z, blockseed) > 0.0f)
 					vm->m_data[i].setContent(dp.c_alt_wall);
@@ -150,7 +150,7 @@ void DungeonGen::makeDungeon(v3s16 start_padding)
 		Find place for first room.
 	*/
 	bool fits = false;
-	for (u32 i = 0; i < 100 && !fits; i++) {
+	for (uint32_t i = 0; i < 100 && !fits; i++) {
 		if (dp.large_room_chance >= 1) {
 			roomsize.Z = random.range(dp.room_size_large_min.Z, dp.room_size_large_max.Z);
 			roomsize.Y = random.range(dp.room_size_large_min.Y, dp.room_size_large_max.Y);
@@ -173,11 +173,11 @@ void DungeonGen::makeDungeon(v3s16 start_padding)
 			otherwise it might end up floating in the air
 		*/
 		fits = true;
-		for (s16 z = 0; z < roomsize.Z; z++)
-		for (s16 y = 0; y < roomsize.Y; y++)
-		for (s16 x = 0; x < roomsize.X; x++) {
+		for (int16_t z = 0; z < roomsize.Z; z++)
+		for (int16_t y = 0; y < roomsize.Y; y++)
+		for (int16_t x = 0; x < roomsize.X; x++) {
 			v3s16 p = roomplace + v3s16(x, y, z);
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if ((vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE) ||
 					vm->m_data[vi].getContent() == CONTENT_IGNORE) {
 				fits = false;
@@ -196,7 +196,7 @@ void DungeonGen::makeDungeon(v3s16 start_padding)
 	*/
 	v3s16 last_room_center = roomplace + v3s16(roomsize.X / 2, 1, roomsize.Z / 2);
 
-	for (u32 i = 0; i < dp.num_rooms; i++) {
+	for (uint32_t i = 0; i < dp.num_rooms; i++) {
 		// Make a room to the determined place
 		makeRoom(roomsize, roomplace);
 
@@ -280,13 +280,13 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 	MapNode n_air(CONTENT_AIR);
 
 	// Make +-X walls
-	for (s16 z = 0; z < roomsize.Z; z++)
-	for (s16 y = 0; y < roomsize.Y; y++) {
+	for (int16_t z = 0; z < roomsize.Z; z++)
+	for (int16_t y = 0; y < roomsize.Y; y++) {
 		{
 			v3s16 p = roomplace + v3s16(0, y, z);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -295,7 +295,7 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 			v3s16 p = roomplace + v3s16(roomsize.X - 1, y, z);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -303,13 +303,13 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 	}
 
 	// Make +-Z walls
-	for (s16 x = 0; x < roomsize.X; x++)
-	for (s16 y = 0; y < roomsize.Y; y++) {
+	for (int16_t x = 0; x < roomsize.X; x++)
+	for (int16_t y = 0; y < roomsize.Y; y++) {
 		{
 			v3s16 p = roomplace + v3s16(x, y, 0);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -318,7 +318,7 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 			v3s16 p = roomplace + v3s16(x, y, roomsize.Z - 1);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -326,13 +326,13 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 	}
 
 	// Make +-Y walls (floor and ceiling)
-	for (s16 z = 0; z < roomsize.Z; z++)
-	for (s16 x = 0; x < roomsize.X; x++) {
+	for (int16_t z = 0; z < roomsize.Z; z++)
+	for (int16_t x = 0; x < roomsize.X; x++) {
 		{
 			v3s16 p = roomplace + v3s16(x, 0, z);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -341,7 +341,7 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 			v3s16 p = roomplace + v3s16(x,roomsize. Y - 1, z);
 			if (!vm->m_area.contains(p))
 				continue;
-			u32 vi = vm->m_area.index(p);
+			uint32_t vi = vm->m_area.index(p);
 			if (vm->m_flags[vi] & VMANIP_FLAG_DUNGEON_UNTOUCHABLE)
 				continue;
 			vm->m_data[vi] = n_wall;
@@ -349,13 +349,13 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 	}
 
 	// Fill with air
-	for (s16 z = 1; z < roomsize.Z - 1; z++)
-	for (s16 y = 1; y < roomsize.Y - 1; y++)
-	for (s16 x = 1; x < roomsize.X - 1; x++) {
+	for (int16_t z = 1; z < roomsize.Z - 1; z++)
+	for (int16_t y = 1; y < roomsize.Y - 1; y++)
+	for (int16_t x = 1; x < roomsize.X - 1; x++) {
 		v3s16 p = roomplace + v3s16(x, y, z);
 		if (!vm->m_area.contains(p))
 			continue;
-		u32 vi = vm->m_area.index(p);
+		uint32_t vi = vm->m_area.index(p);
 		vm->m_flags[vi] |= VMANIP_FLAG_DUNGEON_UNTOUCHABLE;
 		vm->m_data[vi] = n_air;
 	}
@@ -363,15 +363,15 @@ void DungeonGen::makeRoom(v3s16 roomsize, v3s16 roomplace)
 
 
 void DungeonGen::makeFill(v3s16 place, v3s16 size,
-	u8 avoid_flags, MapNode n, u8 or_flags)
+	uint8_t avoid_flags, MapNode n, uint8_t or_flags)
 {
-	for (s16 z = 0; z < size.Z; z++)
-	for (s16 y = 0; y < size.Y; y++)
-	for (s16 x = 0; x < size.X; x++) {
+	for (int16_t z = 0; z < size.Z; z++)
+	for (int16_t y = 0; y < size.Y; y++)
+	for (int16_t x = 0; x < size.X; x++) {
 		v3s16 p = place + v3s16(x, y, z);
 		if (!vm->m_area.contains(p))
 			continue;
-		u32 vi = vm->m_area.index(p);
+		uint32_t vi = vm->m_area.index(p);
 		if (vm->m_flags[vi] & avoid_flags)
 			continue;
 		vm->m_flags[vi] |= or_flags;
@@ -404,15 +404,15 @@ void DungeonGen::makeCorridor(v3s16 doorplace, v3s16 doordir,
 	makeHole(doorplace);
 	v3s16 p0 = doorplace;
 	v3s16 dir = doordir;
-	u32 length = random.range(dp.corridor_len_min, dp.corridor_len_max);
-	u32 partlength = random.range(dp.corridor_len_min, dp.corridor_len_max);
-	u32 partcount = 0;
-	s16 make_stairs = 0;
+	uint32_t length = random.range(dp.corridor_len_min, dp.corridor_len_max);
+	uint32_t partlength = random.range(dp.corridor_len_min, dp.corridor_len_max);
+	uint32_t partcount = 0;
+	int16_t make_stairs = 0;
 
 	if (random.next() % 2 == 0 && partlength >= 3)
 		make_stairs = random.next() % 2 ? 1 : -1;
 
-	for (u32 i = 0; i < length; i++) {
+	for (uint32_t i = 0; i < length; i++) {
 		v3s16 p = p0 + dir;
 		if (partcount != 0)
 			p.Y += make_stairs;
@@ -442,20 +442,20 @@ void DungeonGen::makeCorridor(v3s16 doorplace, v3s16 doordir,
 					// making stairs backwards
 					int facedir = dir_to_facedir(dir * make_stairs);
 					v3s16 ps = p;
-					u16 stair_width = (dir.Z != 0) ? dp.holesize.X : dp.holesize.Z;
+					uint16_t stair_width = (dir.Z != 0) ? dp.holesize.X : dp.holesize.Z;
 					// Stair width direction vector
 					v3s16 swv = (dir.Z != 0) ? v3s16(1, 0, 0) : v3s16(0, 0, 1);
 
-					for (u16 st = 0; st < stair_width; st++) {
+					for (uint16_t st = 0; st < stair_width; st++) {
 						if (make_stairs == -1) {
-							u32 vi = vm->m_area.index(ps.X - dir.X, ps.Y - 1, ps.Z - dir.Z);
+							uint32_t vi = vm->m_area.index(ps.X - dir.X, ps.Y - 1, ps.Z - dir.Z);
 							if (vm->m_area.contains(ps + v3s16(-dir.X, -1, -dir.Z)) &&
 									vm->m_data[vi].getContent() == dp.c_wall) {
 								vm->m_flags[vi] |= VMANIP_FLAG_DUNGEON_UNTOUCHABLE;
 								vm->m_data[vi] = MapNode(dp.c_stair, 0, facedir);
 							}
 						} else if (make_stairs == 1) {
-							u32 vi = vm->m_area.index(ps.X, ps.Y - 1, ps.Z);
+							uint32_t vi = vm->m_area.index(ps.X, ps.Y - 1, ps.Z);
 							if (vm->m_area.contains(ps + v3s16(0, -1, 0)) &&
 									vm->m_data[vi].getContent() == dp.c_wall) {
 								vm->m_flags[vi] |= VMANIP_FLAG_DUNGEON_UNTOUCHABLE;
@@ -504,7 +504,7 @@ void DungeonGen::makeCorridor(v3s16 doorplace, v3s16 doordir,
 
 bool DungeonGen::findPlaceForDoor(v3s16 &result_place, v3s16 &result_dir)
 {
-	for (u32 i = 0; i < 100; i++) {
+	for (uint32_t i = 0; i < 100; i++) {
 		v3s16 p = m_pos + m_dir;
 		v3s16 p1 = p + v3s16(0, 1, 0);
 		if (!vm->m_area.contains(p) || !vm->m_area.contains(p1) || i % 4 == 0) {
@@ -557,7 +557,7 @@ bool DungeonGen::findPlaceForDoor(v3s16 &result_place, v3s16 &result_dir)
 bool DungeonGen::findPlaceForRoomDoor(v3s16 roomsize, v3s16 &result_doorplace,
 	v3s16 &result_doordir, v3s16 &result_roomplace)
 {
-	for (s16 trycount = 0; trycount < 30; trycount++) {
+	for (int16_t trycount = 0; trycount < 30; trycount++) {
 		v3s16 doorplace;
 		v3s16 doordir;
 		bool r = findPlaceForDoor(doorplace, doordir);
@@ -580,9 +580,9 @@ bool DungeonGen::findPlaceForRoomDoor(v3s16 roomsize, v3s16 &result_doorplace,
 
 		// Check fit
 		bool fits = true;
-		for (s16 z = 1; z < roomsize.Z - 1; z++)
-		for (s16 y = 1; y < roomsize.Y - 1; y++)
-		for (s16 x = 1; x < roomsize.X - 1; x++) {
+		for (int16_t z = 1; z < roomsize.Z - 1; z++)
+		for (int16_t y = 1; y < roomsize.Y - 1; y++)
+		for (int16_t x = 1; x < roomsize.X - 1; x++) {
 			v3s16 p = roomplace + v3s16(x, y, z);
 			if (!vm->m_area.contains(p)) {
 				fits = false;

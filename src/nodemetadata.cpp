@@ -40,7 +40,7 @@ NodeMetadata::~NodeMetadata()
 	delete m_inventory;
 }
 
-void NodeMetadata::serialize(std::ostream &os, u8 version, bool disk) const
+void NodeMetadata::serialize(std::ostream &os, uint8_t version, bool disk) const
 {
 	int num_vars = disk ? m_stringvars.size() : countNonPrivate();
 	writeU32(os, num_vars);
@@ -58,7 +58,7 @@ void NodeMetadata::serialize(std::ostream &os, u8 version, bool disk) const
 	m_inventory->serialize(os);
 }
 
-void NodeMetadata::deSerialize(std::istream &is, u8 version)
+void NodeMetadata::deSerialize(std::istream &is, uint8_t version)
 {
 	clear();
 	int num_vars = readU32(is);
@@ -112,20 +112,20 @@ int NodeMetadata::countNonPrivate() const
 	NodeMetadataList
 */
 
-void NodeMetadataList::serialize(std::ostream &os, u8 blockver, bool disk,
+void NodeMetadataList::serialize(std::ostream &os, uint8_t blockver, bool disk,
 	bool absolute_pos) const
 {
 	/*
 		Version 0 is a placeholder for "nothing to see here; go away."
 	*/
 
-	u16 count = countNonEmpty();
+	uint16_t count = countNonEmpty();
 	if (count == 0) {
 		writeU8(os, 0); // version
 		return;
 	}
 
-	u8 version = (blockver > 27) ? 2 : 1;
+	uint8_t version = (blockver > 27) ? 2 : 1;
 	writeU8(os, version);
 	writeU16(os, count);
 
@@ -143,7 +143,7 @@ void NodeMetadataList::serialize(std::ostream &os, u8 blockver, bool disk,
 			writeS16(os, p.Z);
 		} else {
 			// Serialize positions within a mapblock
-			u16 p16 = (p.Z * MAP_BLOCKSIZE + p.Y) * MAP_BLOCKSIZE + p.X;
+			uint16_t p16 = (p.Z * MAP_BLOCKSIZE + p.Y) * MAP_BLOCKSIZE + p.X;
 			writeU16(os, p16);
 		}
 		data->serialize(os, version, disk);
@@ -155,7 +155,7 @@ void NodeMetadataList::deSerialize(std::istream &is,
 {
 	clear();
 
-	u8 version = readU8(is);
+	uint8_t version = readU8(is);
 
 	if (version == 0) {
 		// Nothing
@@ -169,16 +169,16 @@ void NodeMetadataList::deSerialize(std::istream &is,
 		throw SerializationError(err_str);
 	}
 
-	u16 count = readU16(is);
+	uint16_t count = readU16(is);
 
-	for (u16 i = 0; i < count; i++) {
+	for (uint16_t i = 0; i < count; i++) {
 		v3s16 p;
 		if (absolute_pos) {
 			p.X = readS16(is);
 			p.Y = readS16(is);
 			p.Z = readS16(is);
 		} else {
-			u16 p16 = readU16(is);
+			uint16_t p16 = readU16(is);
 			p.X = p16 & (MAP_BLOCKSIZE - 1);
 			p16 /= MAP_BLOCKSIZE;
 			p.Y = p16 & (MAP_BLOCKSIZE - 1);

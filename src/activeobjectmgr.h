@@ -33,9 +33,9 @@ template <typename T> class ActiveObjectMgr
 public:
 	virtual void step(float dtime, const std::function<void(T *)> &f) = 0;
 	virtual bool registerObject(T *obj) = 0;
-	virtual void removeObject(u16 id) = 0;
+	virtual void removeObject(uint16_t id) = 0;
 
-	T *getActiveObject(u16 id)
+	T *getActiveObject(uint16_t id)
 	{
 		typename std::unordered_map<u16, T *>::const_iterator n =
 				m_active_objects.find(id);
@@ -43,11 +43,11 @@ public:
 	}
 
 protected:
-	u16 getFreeId() const
+	uint16_t getFreeId() const
 	{
 		// try to reuse id's as late as possible
-		static thread_local u16 last_used_id = 0;
-		u16 startid = last_used_id;
+		static thread_local uint16_t last_used_id = 0;
+		uint16_t startid = last_used_id;
 		while (!isFreeId(++last_used_id)) {
 			if (last_used_id == startid)
 				return 0;
@@ -56,7 +56,7 @@ protected:
 		return last_used_id;
 	}
 
-	bool isFreeId(u16 id) const
+	bool isFreeId(uint16_t id) const
 	{
 		return id != 0 && m_active_objects.find(id) == m_active_objects.end();
 	}

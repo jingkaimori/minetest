@@ -335,7 +335,7 @@ int LuaLocalPlayer::l_hud_add(lua_State *L)
 	HudElement *elem = new HudElement;
 	read_hud_element(L, elem);
 
-	u32 id = player->addHud(elem);
+	uint32_t id = player->addHud(elem);
 	if (id == U32_MAX) {
 		delete elem;
 		return 0;
@@ -348,7 +348,7 @@ int LuaLocalPlayer::l_hud_add(lua_State *L)
 int LuaLocalPlayer::l_hud_remove(lua_State *L)
 {
 	LocalPlayer *player = getobject(L, 1);
-	u32 id = luaL_checkinteger(L, 2);
+	uint32_t id = luaL_checkinteger(L, 2);
 	HudElement *element = player->removeHud(id);
 	if (!element)
 		lua_pushboolean(L, false);
@@ -363,7 +363,7 @@ int LuaLocalPlayer::l_hud_change(lua_State *L)
 {
 	LocalPlayer *player = getobject(L, 1);
 
-	u32 id = luaL_checkinteger(L, 2);
+	uint32_t id = luaL_checkinteger(L, 2);
 
 	HudElement *element = player->getHud(id);
 	if (!element)
@@ -381,7 +381,7 @@ int LuaLocalPlayer::l_hud_get(lua_State *L)
 {
 	LocalPlayer *player = getobject(L, 1);
 
-	u32 id = luaL_checkinteger(L, -1);
+	uint32_t id = luaL_checkinteger(L, -1);
 
 	HudElement *e = player->getHud(id);
 	if (!e) {

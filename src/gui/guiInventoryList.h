@@ -34,7 +34,7 @@ public:
 
 		ItemSpec(const InventoryLocation &a_inventoryloc,
 				const std::string &a_listname,
-				s32 a_i) :
+				int32_t a_i) :
 			inventoryloc(a_inventoryloc),
 			listname(a_listname),
 			i(a_i)
@@ -45,7 +45,7 @@ public:
 
 		InventoryLocation inventoryloc;
 		std::string listname;
-		s32 i = -1;
+		int32_t i = -1;
 	};
 
 	// options for inventorylists that are setable with the lua api
@@ -60,13 +60,13 @@ public:
 
 	GUIInventoryList(gui::IGUIEnvironment *env,
 		gui::IGUIElement *parent,
-		s32 id,
+		int32_t id,
 		const core::rect<s32> &rectangle,
 		InventoryManager *invmgr,
 		const InventoryLocation &inventoryloc,
 		const std::string &listname,
 		const v2s32 &geom,
-		const s32 start_item_i,
+		const int32_t start_item_i,
 		const v2s32 &slot_size,
 		const v2f32 &slot_spacing,
 		GUIFormSpecMenu *fs_menu,
@@ -100,7 +100,7 @@ public:
 	}
 
 	// returns -1 if not item is at pos p
-	s32 getItemIndexAtPos(v2s32 p) const;
+	int32_t getItemIndexAtPos(v2s32 p) const;
 
 private:
 	InventoryManager *m_invmgr;
@@ -110,7 +110,7 @@ private:
 	// the specified width and height of the shown inventorylist in itemslots
 	const v2s32 m_geom;
 	// the first item's index in inventory
-	const s32 m_start_item_i;
+	const int32_t m_start_item_i;
 
 	// specifies how large the slot rects are
 	const v2s32 m_slot_size;
@@ -126,7 +126,7 @@ private:
 	gui::IGUIFont *m_font;
 
 	// the index of the hovered item; -1 if no item is hovered
-	s32 m_hovered_i;
+	int32_t m_hovered_i;
 
 	// we do not want to write a warning on every draw
 	bool m_already_warned;

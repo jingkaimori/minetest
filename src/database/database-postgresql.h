@@ -46,7 +46,7 @@ protected:
 		return atoi(PQgetvalue(res, row, col));
 	}
 
-	inline u32 pg_to_uint(PGresult *res, int row, int col)
+	inline uint32_t pg_to_uint(PGresult *res, int row, int col)
 	{
 		return (u32) atoi(PQgetvalue(res, row, col));
 	}

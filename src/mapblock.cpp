@@ -116,10 +116,10 @@ std::string MapBlock::getModifiedReasonString()
 {
 	std::string reason;
 
-	const u32 ubound = MYMIN(sizeof(m_modified_reason) * CHAR_BIT,
+	const uint32_t ubound = MYMIN(sizeof(m_modified_reason) * CHAR_BIT,
 		ARRLEN(modified_reason_strings));
 
-	for (u32 i = 0; i != ubound; i++) {
+	for (uint32_t i = 0; i != ubound; i++) {
 		if ((m_modified_reason & (1 << i)) == 0)
 			continue;
 
@@ -173,7 +173,7 @@ void MapBlock::actuallyUpdateDayNightDiff()
 	*/
 
 	MapNode previous_n(CONTENT_IGNORE);
-	for (u32 i = 0; i < nodecount; i++) {
+	for (uint32_t i = 0; i < nodecount; i++) {
 		MapNode n = data[i];
 
 		// If node is identical to previous node, don't verify if it differs
@@ -192,7 +192,7 @@ void MapBlock::actuallyUpdateDayNightDiff()
 	*/
 	if (differs) {
 		bool only_air = true;
-		for (u32 i = 0; i < nodecount; i++) {
+		for (uint32_t i = 0; i < nodecount; i++) {
 			MapNode &n = data[i];
 			if (n.getContent() != CONTENT_AIR) {
 				only_air = false;
@@ -224,7 +224,7 @@ s16 MapBlock::getGroundLevel(v2s16 p2d)
 		return -3;
 	try
 	{
-		s16 y = MAP_BLOCKSIZE-1;
+		int16_t y = MAP_BLOCKSIZE-1;
 		for(; y>=0; y--)
 		{
 			MapNode n = getNodeRef(p2d.X, y, p2d.Y);
@@ -260,7 +260,7 @@ static void getBlockNodeIdMapping(NameIdMapping *nimap, MapNode *nodes,
 
 	std::set<content_t> unknown_contents;
 	content_t id_counter = 0;
-	for (u32 i = 0; i < MapBlock::nodecount; i++) {
+	for (uint32_t i = 0; i < MapBlock::nodecount; i++) {
 		content_t global_id = nodes[i].getContent();
 		content_t id = CONTENT_IGNORE;
 
@@ -285,7 +285,7 @@ static void getBlockNodeIdMapping(NameIdMapping *nimap, MapNode *nodes,
 		// Update the MapNode
 		nodes[i].setContent(id);
 	}
-	for (u16 unknown_content : unknown_contents) {
+	for (uint16_t unknown_content : unknown_contents) {
 		errorstream << "getBlockNodeIdMapping(): IGNORING ERROR: "
 				<< "Name for node id " << unknown_content << " not known" << std::endl;
 	}
@@ -308,7 +308,7 @@ static void correctBlockNodeIds(const NameIdMapping *nimap, MapNode *nodes,
 	content_t previous_local_id = CONTENT_IGNORE;
 	content_t previous_global_id = CONTENT_IGNORE;
 
-	for (u32 i = 0; i < MapBlock::nodecount; i++) {
+	for (uint32_t i = 0; i < MapBlock::nodecount; i++) {
 		content_t local_id = nodes[i].getContent();
 		// If previous node local_id was found and same than before, don't lookup maps
 		// apply directly previous resolved id
@@ -355,7 +355,7 @@ static void correctBlockNodeIds(const NameIdMapping *nimap, MapNode *nodes,
 	}
 }
 
-void MapBlock::serialize(std::ostream &os, u8 version, bool disk, int compression_level)
+void MapBlock::serialize(std::ostream &os, uint8_t version, bool disk, int compression_level)
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapBlock format not supported");
@@ -366,7 +366,7 @@ void MapBlock::serialize(std::ostream &os, u8 version, bool disk, int compressio
 	FATAL_ERROR_IF(version < SER_FMT_VER_LOWEST_WRITE, "Serialisation version error");
 
 	// First byte
-	u8 flags = 0;
+	uint8_t flags = 0;
 	if(is_underground)
 		flags |= 0x01;
 	if(getDayNightDiff())
@@ -385,12 +385,12 @@ void MapBlock::serialize(std::ostream &os, u8 version, bool disk, int compressio
 	if(disk)
 	{
 		MapNode *tmp_nodes = new MapNode[nodecount];
-		for(u32 i=0; i<nodecount; i++)
+		for(uint32_t i=0; i<nodecount; i++)
 			tmp_nodes[i] = data[i];
 		getBlockNodeIdMapping(&nimap, tmp_nodes, m_gamedef->ndef());
 
-		u8 content_width = 2;
-		u8 params_width = 2;
+		uint8_t content_width = 2;
+		uint8_t params_width = 2;
 		writeU8(os, content_width);
 		writeU8(os, params_width);
 		MapNode::serializeBulk(os, version, tmp_nodes, nodecount,
@@ -399,8 +399,8 @@ void MapBlock::serialize(std::ostream &os, u8 version, bool disk, int compressio
 	}
 	else
 	{
-		u8 content_width = 2;
-		u8 params_width = 2;
+		uint8_t content_width = 2;
+		uint8_t params_width = 2;
 		writeU8(os, content_width);
 		writeU8(os, params_width);
 		MapNode::serializeBulk(os, version, data, nodecount,
@@ -449,7 +449,7 @@ void MapBlock::serializeNetworkSpecific(std::ostream &os)
 	writeU8(os, 2); // version
 }
 
-void MapBlock::deSerialize(std::istream &is, u8 version, bool disk)
+void MapBlock::deSerialize(std::istream &is, uint8_t version, bool disk)
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapBlock format not supported");
@@ -464,7 +464,7 @@ void MapBlock::deSerialize(std::istream &is, u8 version, bool disk)
 		return;
 	}
 
-	u8 flags = readU8(is);
+	uint8_t flags = readU8(is);
 	is_underground = (flags & 0x01) != 0;
 	m_day_night_differs = (flags & 0x02) != 0;
 	if (version < 27)
@@ -478,8 +478,8 @@ void MapBlock::deSerialize(std::istream &is, u8 version, bool disk)
 	*/
 	TRACESTREAM(<<"MapBlock::deSerialize "<<PP(getPos())
 			<<": Bulk node data"<<std::endl);
-	u8 content_width = readU8(is);
-	u8 params_width = readU8(is);
+	uint8_t content_width = readU8(is);
+	uint8_t params_width = readU8(is);
 	if(content_width != 1 && content_width != 2)
 		throw SerializationError("MapBlock::deSerialize(): invalid content_width");
 	if(params_width != 2)
@@ -558,7 +558,7 @@ void MapBlock::deSerializeNetworkSpecific(std::istream &is)
 {
 	try {
 		readU8(is);
-		//const u8 version = readU8(is);
+		//const uint8_t version = readU8(is);
 		//if (version != 1)
 			//throw SerializationError("unsupported MapBlock version");
 
@@ -572,7 +572,7 @@ void MapBlock::deSerializeNetworkSpecific(std::istream &is)
 	Legacy serialization
 */
 
-void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
+void MapBlock::deSerialize_pre22(std::istream &is, uint8_t version, bool disk)
 {
 	// Initialize default flags
 	is_underground = false;
@@ -581,8 +581,8 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 	m_generated = true;
 
 	// Make a temporary buffer
-	u32 ser_length = MapNode::serializedLength(version);
-	SharedBuffer<u8> databuf_nodelist(nodecount * ser_length);
+	uint32_t ser_length = MapNode::serializedLength(version);
+	SharedBuffer<uint8_t> databuf_nodelist(nodecount * ser_length);
 
 	// These have no compression
 	if (version <= 3 || version == 5 || version == 6) {
@@ -593,11 +593,11 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 				+ ": not enough input data");
 		is_underground = tmp;
 		is.read((char *)*databuf_nodelist, nodecount * ser_length);
-		if ((u32)is.gcount() != nodecount * ser_length)
+		if ((uint32_t)is.gcount() != nodecount * ser_length)
 			throw SerializationError(std::string(FUNCTION_NAME)
 				+ ": not enough input data");
 	} else if (version <= 10) {
-		u8 t8;
+		uint8_t t8;
 		is.read((char *)&t8, 1);
 		is_underground = t8;
 
@@ -609,7 +609,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 			if (s.size() != nodecount)
 				throw SerializationError(std::string(FUNCTION_NAME)
 					+ ": not enough input data");
-			for (u32 i = 0; i < s.size(); i++) {
+			for (uint32_t i = 0; i < s.size(); i++) {
 				databuf_nodelist[i*ser_length] = s[i];
 			}
 		}
@@ -621,7 +621,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 			if (s.size() != nodecount)
 				throw SerializationError(std::string(FUNCTION_NAME)
 					+ ": not enough input data");
-			for (u32 i = 0; i < s.size(); i++) {
+			for (uint32_t i = 0; i < s.size(); i++) {
 				databuf_nodelist[i*ser_length + 1] = s[i];
 			}
 		}
@@ -634,12 +634,12 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 			if (s.size() != nodecount)
 				throw SerializationError(std::string(FUNCTION_NAME)
 					+ ": not enough input data");
-			for (u32 i = 0; i < s.size(); i++) {
+			for (uint32_t i = 0; i < s.size(); i++) {
 				databuf_nodelist[i*ser_length + 2] = s[i];
 			}
 		}
 	} else { // All other versions (10 to 21)
-		u8 flags;
+		uint8_t flags;
 		is.read((char*)&flags, 1);
 		is_underground = (flags & 0x01) != 0;
 		m_day_night_differs = (flags & 0x02) != 0;
@@ -655,7 +655,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 				+ ": decompress resulted in size other than nodecount*3");
 
 		// deserialize nodes from buffer
-		for (u32 i = 0; i < nodecount; i++) {
+		for (uint32_t i = 0; i < nodecount; i++) {
 			databuf_nodelist[i*ser_length] = s[i];
 			databuf_nodelist[i*ser_length + 1] = s[i+nodecount];
 			databuf_nodelist[i*ser_length + 2] = s[i+nodecount*2];
@@ -690,7 +690,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 	}
 
 	// Deserialize node data
-	for (u32 i = 0; i < nodecount; i++) {
+	for (uint32_t i = 0; i < nodecount; i++) {
 		data[i].deSerialize(&databuf_nodelist[i * ser_length], version);
 	}
 
@@ -699,7 +699,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 			Versions up from 9 have block objects. (DEPRECATED)
 		*/
 		if (version >= 9) {
-			u16 count = readU16(is);
+			uint16_t count = readU16(is);
 			// Not supported and length not known if count is not 0
 			if(count != 0){
 				warningstream<<"MapBlock::deSerialize_pre22(): "
@@ -738,7 +738,7 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 	// Legacy data changes
 	// This code has to convert from pre-22 to post-22 format.
 	const NodeDefManager *nodedef = m_gamedef->ndef();
-	for(u32 i=0; i<nodecount; i++)
+	for(uint32_t i=0; i<nodecount; i++)
 	{
 		const ContentFeatures &f = nodedef->get(data[i].getContent());
 		// Mineral
@@ -763,10 +763,10 @@ void MapBlock::deSerialize_pre22(std::istream &is, u8 version, bool disk)
 		// wall_mounted
 		if(f.legacy_wallmounted)
 		{
-			u8 wallmounted_new_to_old[8] = {0x04, 0x08, 0x01, 0x02, 0x10, 0x20, 0, 0};
-			u8 dir_old_format = data[i].getParam2();
-			u8 dir_new_format = 0;
-			for(u8 j=0; j<8; j++)
+			uint8_t wallmounted_new_to_old[8] = {0x04, 0x08, 0x01, 0x02, 0x10, 0x20, 0, 0};
+			uint8_t dir_old_format = data[i].getParam2();
+			uint8_t dir_new_format = 0;
+			for(uint8_t j=0; j<8; j++)
 			{
 				if((dir_old_format & wallmounted_new_to_old[j]) != 0)
 				{
@@ -832,9 +832,9 @@ std::string analyze_block(MapBlock *block)
 		bool some_ignore = false;
 		bool full_air = true;
 		bool some_air = false;
-		for(s16 z0=0; z0<MAP_BLOCKSIZE; z0++)
-		for(s16 y0=0; y0<MAP_BLOCKSIZE; y0++)
-		for(s16 x0=0; x0<MAP_BLOCKSIZE; x0++)
+		for(int16_t z0=0; z0<MAP_BLOCKSIZE; z0++)
+		for(int16_t y0=0; y0<MAP_BLOCKSIZE; y0++)
+		for(int16_t x0=0; x0<MAP_BLOCKSIZE; x0++)
 		{
 			v3s16 p(x0,y0,z0);
 			MapNode n = block->getNodeNoEx(p);

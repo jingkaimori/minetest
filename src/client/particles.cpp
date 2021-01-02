@@ -37,7 +37,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	Utility
 */
 
-static f32 random_f32(f32 min, f32 max)
+static float random_f32(float min, float max)
 {
 	return rand() / (float)RAND_MAX * (max - min) + min;
 }
@@ -125,7 +125,7 @@ void Particle::render()
 	driver->setMaterial(m_material);
 	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-	u16 indices[] = {0,1,2, 2,3,0};
+	uint16_t indices[] = {0,1,2, 2,3,0};
 	driver->drawVertexPrimitiveList(m_vertices, 4,
 			indices, 2, video::EVT_STANDARD,
 			scene::EPT_TRIANGLES, video::EIT_16BIT);
@@ -174,7 +174,7 @@ void Particle::step(float dtime)
 
 void Particle::updateLight()
 {
-	u8 light = 0;
+	uint8_t light = 0;
 	bool pos_ok;
 
 	v3s16 p = v3s16(
@@ -188,7 +188,7 @@ void Particle::updateLight()
 	else
 		light = blend_light(m_env->getDayNightRatio(), LIGHT_SUN, 0);
 
-	u8 m_light = decode_light(light + m_glow);
+	uint8_t m_light = decode_light(light + m_glow);
 	m_color.set(255,
 		m_light * m_base_color.getRed() / 255,
 		m_light * m_base_color.getGreen() / 255,
@@ -197,7 +197,7 @@ void Particle::updateLight()
 
 void Particle::updateVertices()
 {
-	f32 tx0, tx1, ty0, ty1;
+	float tx0, tx1, ty0, ty1;
 
 	if (m_animation.type != TAT_NONE) {
 		const v2u32 texsize = m_material.getTexture(0)->getSize();
@@ -250,7 +250,7 @@ ParticleSpawner::ParticleSpawner(
 	IGameDef *gamedef,
 	LocalPlayer *player,
 	const ParticleSpawnerParameters &p,
-	u16 attached_id,
+	uint16_t attached_id,
 	video::ITexture *texture,
 	ParticleManager *p_manager
 ):
@@ -263,7 +263,7 @@ ParticleSpawner::ParticleSpawner(
 	m_time = 0;
 
 	m_spawntimes.reserve(p.amount + 1);
-	for (u16 i = 0; i <= p.amount; i++) {
+	for (uint16_t i = 0; i <= p.amount; i++) {
 		float spawntime = rand() / (float)RAND_MAX * p.time;
 		m_spawntimes.push_back(spawntime);
 	}
@@ -485,7 +485,7 @@ void ParticleManager::handleParticleEvent(ClientEvent *event, Client *client,
 			v2f texpos, texsize;
 			video::SColor color(0xFFFFFFFF);
 
-			f32 oldsize = p.size;
+			float oldsize = p.size;
 
 			if (p.node.getContent() != CONTENT_IGNORE) {
 				const ContentFeatures &f = m_env->getGameDef()->ndef()->get(p.node);
@@ -518,14 +518,14 @@ void ParticleManager::handleParticleEvent(ClientEvent *event, Client *client,
 
 bool ParticleManager::getNodeParticleParams(const MapNode &n,
 	const ContentFeatures &f, ParticleParameters &p, video::ITexture **texture,
-	v2f &texpos, v2f &texsize, video::SColor *color, u8 tilenum)
+	v2f &texpos, v2f &texsize, video::SColor *color, uint8_t tilenum)
 {
 	// No particles for "airlike" nodes
 	if (f.drawtype == NDT_AIRLIKE)
 		return false;
 
 	// Texture
-	u8 texid;
+	uint8_t texid;
 	if (tilenum > 0 && tilenum <= 6)
 		texid = tilenum - 1;
 	else
@@ -565,7 +565,7 @@ void ParticleManager::addDiggingParticles(IGameDef *gamedef,
 	if (f.drawtype == NDT_AIRLIKE)
 		return;
 
-	for (u16 j = 0; j < 16; j++) {
+	for (uint16_t j = 0; j < 16; j++) {
 		addNodeParticle(gamedef, player, pos, n, f);
 	}
 }
@@ -623,13 +623,13 @@ void ParticleManager::addParticle(Particle *toadd)
 }
 
 
-void ParticleManager::addParticleSpawner(u64 id, ParticleSpawner *toadd)
+void ParticleManager::addParticleSpawner(uint64_t id, ParticleSpawner *toadd)
 {
 	MutexAutoLock lock(m_spawner_list_lock);
 	m_particle_spawners[id] = toadd;
 }
 
-void ParticleManager::deleteParticleSpawner(u64 id)
+void ParticleManager::deleteParticleSpawner(uint64_t id)
 {
 	MutexAutoLock lock(m_spawner_list_lock);
 	auto it = m_particle_spawners.find(id);

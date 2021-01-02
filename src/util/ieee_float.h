@@ -28,7 +28,7 @@ enum FloatType
 	FLOATTYPE_SYSTEM
 };
 
-f32 u32Tof32Slow(u32 i);
-u32 f32Tou32Slow(f32 f);
+f32 u32Tof32Slow(uint32_t i);
+u32 f32Tou32Slow(float f);
 
 FloatType getFloatSerializationType();

@@ -180,7 +180,7 @@ ParsedText::~ParsedText()
 void ParsedText::parse(const wchar_t *text)
 {
 	wchar_t c;
-	u32 cursor = 0;
+	uint32_t cursor = 0;
 	bool escape = false;
 
 	while ((c = text[cursor]) != L'\0') {
@@ -221,7 +221,7 @@ void ParsedText::parse(const wchar_t *text)
 
 		// Tag check
 		if (c == L'<') {
-			u32 newcursor = parseTag(text, cursor);
+			uint32_t newcursor = parseTag(text, cursor);
 			if (newcursor > 0) {
 				cursor = newcursor;
 				continue;
@@ -393,7 +393,7 @@ void ParsedText::globalTag(const AttrsList &attrs)
 	}
 }
 
-u32 ParsedText::parseTag(const wchar_t *text, u32 cursor)
+uint32_t ParsedText::parseTag(const wchar_t *text, uint32_t cursor)
 {
 	// Tag name
 	bool end = false;
@@ -634,7 +634,7 @@ TextDrawer::TextDrawer(const wchar_t *text, Client *client,
 					break;
 
 				// Default image and item size
-				core::dimension2d<u32> dim(80, 80);
+				core::dimension2d<uint32_t> dim(80, 80);
 
 				if (e.type == ParsedText::ELEMENT_IMAGE) {
 					video::ITexture *texture =
@@ -685,8 +685,8 @@ ParsedText::Element *TextDrawer::getElementAt(core::position2d<s32> pos)
 void TextDrawer::place(const core::rect<s32> &dest_rect)
 {
 	m_floating.clear();
-	s32 y = 0;
-	s32 ymargin = m_text.margin;
+	int32_t y = 0;
+	int32_t ymargin = m_text.margin;
 
 	// Iterator used :
 	// p - Current paragraph, walked only once
@@ -726,8 +726,8 @@ void TextDrawer::place(const core::rect<s32> &dest_rect)
 
 		while (el != p.elements.end()) {
 			// Determine line width and y pos
-			s32 left, right;
-			s32 nexty = y;
+			int32_t left, right;
+			int32_t nexty = y;
 			do {
 				y = nexty;
 				nexty = 0;
@@ -776,12 +776,12 @@ void TextDrawer::place(const core::rect<s32> &dest_rect)
 				}
 			} while (nexty && right <= left);
 
-			u32 linewidth = right - left;
+			uint32_t linewidth = right - left;
 			float x = left;
 
-			u32 charsheight = 0;
-			u32 charswidth = 0;
-			u32 wordcount = 0;
+			uint32_t charsheight = 0;
+			uint32_t charswidth = 0;
+			uint32_t wordcount = 0;
 
 			// Skip begining of line separators but include them in height
 			// computation.
@@ -825,8 +825,8 @@ void TextDrawer::place(const core::rect<s32> &dest_rect)
 
 			// Second pass, compute printable line width and adjustments
 			charswidth = 0;
-			s32 top = 0;
-			s32 bottom = 0;
+			int32_t top = 0;
+			int32_t bottom = 0;
 			for (auto e = linestart; e != lineend; ++e) {
 				if (e->floating == ParsedText::FLOAT_NONE) {
 					charswidth += e->dim.Width;
@@ -950,7 +950,7 @@ void TextDrawer::draw(const core::rect<s32> &clip_rect,
 							&clip_rect);
 
 				if (el.underline &&  el.drawwidth) {
-					s32 linepos = el.pos.Y + offset.Y +
+					int32_t linepos = el.pos.Y + offset.Y +
 							el.dim.Height - (el.baseline >> 1);
 
 					core::rect<s32> linerect(el.pos.X + offset.X,
@@ -996,7 +996,7 @@ void TextDrawer::draw(const core::rect<s32> &clip_rect,
 
 //! constructor
 GUIHyperText::GUIHyperText(const wchar_t *text, IGUIEnvironment *environment,
-		IGUIElement *parent, s32 id, const core::rect<s32> &rectangle,
+		IGUIElement *parent, int32_t id, const core::rect<s32> &rectangle,
 		Client *client, ISimpleTextureSource *tsrc) :
 		IGUIElement(EGUIET_ELEMENT, environment, parent, id, rectangle),
 		m_client(client), m_vscrollbar(nullptr),
@@ -1028,7 +1028,7 @@ GUIHyperText::~GUIHyperText()
 	m_vscrollbar->drop();
 }
 
-ParsedText::Element *GUIHyperText::getElementAt(s32 X, s32 Y)
+ParsedText::Element *GUIHyperText::getElementAt(int32_t X, int32_t Y)
 {
 	core::position2d<s32> pos{X, Y};
 	pos -= m_display_text_rect.UpperLeftCorner;
@@ -1036,7 +1036,7 @@ ParsedText::Element *GUIHyperText::getElementAt(s32 X, s32 Y)
 	return m_drawer.getElementAt(pos);
 }
 
-void GUIHyperText::checkHover(s32 X, s32 Y)
+void GUIHyperText::checkHover(int32_t X, int32_t Y)
 {
 	m_drawer.m_hovertag = nullptr;
 

@@ -65,7 +65,7 @@ void GameUI::init()
 	m_guitext_chat = gui::StaticText::add(guienv, L"", core::rect<s32>(0, 0, 0, 0),
 		//false, false); // Disable word wrap as of now
 		false, true, guiroot);
-	u16 chat_font_size = g_settings->getU16("chat_font_size");
+	uint16_t chat_font_size = g_settings->getU16("chat_font_size");
 	if (chat_font_size != 0) {
 		m_guitext_chat->setOverrideFont(g_fontengine->getFont(
 			chat_font_size, FM_Unspecified));
@@ -73,7 +73,7 @@ void GameUI::init()
 
 	// At the middle of the screen
 	// Object infos are shown in this
-	u32 chat_font_height = m_guitext_chat->getActiveFont()->getDimension(L"Ay").Height;
+	uint32_t chat_font_height = m_guitext_chat->getActiveFont()->getDimension(L"Ay").Height;
 	m_guitext_info = gui::StaticText::add(guienv, L"",
 		core::rect<s32>(0, 0, 400, g_fontengine->getTextHeight() * 5 + 5) +
 			v2s32(100, chat_font_height *
@@ -102,7 +102,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 	if (m_flags.show_debug) {
 		static float drawtime_avg = 0;
 		drawtime_avg = drawtime_avg * 0.95 + stats.drawtime * 0.05;
-		u16 fps = 1.0 / stats.dtime_jitter.avg;
+		uint16_t fps = 1.0 / stats.dtime_jitter.avg;
 
 		std::ostringstream os(std::ios_base::binary);
 		os << std::fixed
@@ -139,7 +139,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 			<< ") | yaw: " << (wrapDegrees_0_360(cam.camera_yaw)) << "° "
 			<< yawToDirectionString(cam.camera_yaw)
 			<< " | pitch: " << (-wrapDegrees_180(cam.camera_pitch)) << "°"
-			<< " | seed: " << ((u64)client->getMapSeed());
+			<< " | seed: " << ((uint64_t)client->getMapSeed());
 
 		if (pointed_old.type == POINTEDTHING_NODE) {
 			ClientMap &map = client->getEnv().getClientMap();
@@ -148,7 +148,7 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 
 			if (n.getContent() != CONTENT_IGNORE && nodedef->get(n).name != "unknown") {
 				os << ", pointed: " << nodedef->get(n).name
-					<< ", param2: " << (u64) n.getParam2();
+					<< ", param2: " << (uint64_t) n.getParam2();
 			}
 		}
 
@@ -180,10 +180,10 @@ void GameUI::update(const RunStats &stats, Client *client, MapDrawControl *draw_
 	m_guitext_status->setVisible(!m_statustext.empty());
 
 	if (!m_statustext.empty()) {
-		s32 status_width  = m_guitext_status->getTextWidth();
-		s32 status_height = m_guitext_status->getTextHeight();
-		s32 status_y = screensize.Y - 150;
-		s32 status_x = (screensize.X - status_width) / 2;
+		int32_t status_width  = m_guitext_status->getTextWidth();
+		int32_t status_height = m_guitext_status->getTextHeight();
+		int32_t status_y = screensize.Y - 150;
+		int32_t status_x = (screensize.X - status_width) / 2;
 
 		m_guitext_status->setRelativePosition(core::rect<s32>(status_x ,
 			status_y - status_height, status_x + status_width, status_y));
@@ -219,11 +219,11 @@ void GameUI::showTranslatedStatusText(const char *str)
 	delete[] wmsg;
 }
 
-void GameUI::setChatText(const EnrichedString &chat_text, u32 recent_chat_count)
+void GameUI::setChatText(const EnrichedString &chat_text, uint32_t recent_chat_count)
 {
 
 	// Update gui element size and position
-	s32 chat_y = 5;
+	int32_t chat_y = 5;
 
 	if (m_flags.show_debug)
 		chat_y += 2 * g_fontengine->getLineHeight();
@@ -255,7 +255,7 @@ void GameUI::updateProfiler()
 		str.setBackground(video::SColor(120, 0, 0, 0));
 		setStaticText(m_guitext_profiler, str);
 
-		core::dimension2d<u32> size = m_guitext_profiler->getOverrideFont()->
+		core::dimension2d<uint32_t> size = m_guitext_profiler->getOverrideFont()->
 				getDimension(str.c_str());
 		core::position2di upper_left(6, 50);
 		core::position2di lower_right = upper_left;

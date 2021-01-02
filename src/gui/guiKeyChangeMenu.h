@@ -42,7 +42,7 @@ struct key_setting
 class GUIKeyChangeMenu : public GUIModalMenu
 {
 public:
-	GUIKeyChangeMenu(gui::IGUIEnvironment *env, gui::IGUIElement *parent, s32 id,
+	GUIKeyChangeMenu(gui::IGUIEnvironment *env, gui::IGUIElement *parent, int32_t id,
 			IMenuManager *menumgr, ISimpleTextureSource *tsrc);
 	~GUIKeyChangeMenu();
 
@@ -61,8 +61,8 @@ public:
 	bool pausesGame() { return true; }
 
 protected:
-	std::wstring getLabelByID(s32 id) { return L""; }
-	std::string getNameByID(s32 id) { return ""; }
+	std::wstring getLabelByID(int32_t id) { return L""; }
+	std::string getNameByID(int32_t id) { return ""; }
 
 private:
 	void init_keys();

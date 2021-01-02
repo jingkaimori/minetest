@@ -27,8 +27,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 struct ObjectProperties
 {
-	u16 hp_max = 1;
-	u16 breath_max = 0;
+	uint16_t hp_max = 1;
+	uint16_t breath_max = 0;
 	bool physical = false;
 	bool collideWithObjects = true;
 	// Values are BS=1
@@ -45,15 +45,15 @@ struct ObjectProperties
 	v2s16 initial_sprite_basepos;
 	bool is_visible = true;
 	bool makes_footstep_sound = false;
-	f32 stepheight = 0.0f;
+	float stepheight = 0.0f;
 	float automatic_rotate = 0.0f;
 	bool automatic_face_movement_dir = false;
-	f32 automatic_face_movement_dir_offset = 0.0f;
+	float automatic_face_movement_dir_offset = 0.0f;
 	bool backface_culling = true;
-	s8 glow = 0;
+	int8_t glow = 0;
 	std::string nametag = "";
 	video::SColor nametag_color = video::SColor(255, 255, 255, 255);
-	f32 automatic_face_movement_max_rotation_per_sec = -1.0f;
+	float automatic_face_movement_max_rotation_per_sec = -1.0f;
 	std::string infotext;
 	//! For dropped items, this contains item information.
 	std::string wield_item;

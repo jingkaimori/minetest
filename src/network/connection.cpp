@@ -62,10 +62,10 @@ namespace con
 
 #define PING_TIMEOUT 5.0
 
-BufferedPacket makePacket(Address &address, const SharedBuffer<u8> &data,
-		u32 protocol_id, session_t sender_peer_id, u8 channel)
+BufferedPacket makePacket(Address &address, const SharedBuffer<uint8_t> &data,
+		uint32_t protocol_id, session_t sender_peer_id, uint8_t channel)
 {
-	u32 packet_size = data.getSize() + BASE_HEADER_SIZE;
+	uint32_t packet_size = data.getSize() + BASE_HEADER_SIZE;
 	BufferedPacket p(packet_size);
 	p.address = address;
 
@@ -78,11 +78,11 @@ BufferedPacket makePacket(Address &address, const SharedBuffer<u8> &data,
 	return p;
 }
 
-SharedBuffer<u8> makeOriginalPacket(const SharedBuffer<u8> &data)
+SharedBuffer<uint8_t> makeOriginalPacket(const SharedBuffer<uint8_t> &data)
 {
-	u32 header_size = 1;
-	u32 packet_size = data.getSize() + header_size;
-	SharedBuffer<u8> b(packet_size);
+	uint32_t header_size = 1;
+	uint32_t packet_size = data.getSize() + header_size;
+	SharedBuffer<uint8_t> b(packet_size);
 
 	writeU8(&(b[0]), PACKET_TYPE_ORIGINAL);
 	if (data.getSize() > 0) {
@@ -92,29 +92,29 @@ SharedBuffer<u8> makeOriginalPacket(const SharedBuffer<u8> &data)
 }
 
 // Split data in chunks and add TYPE_SPLIT headers to them
-void makeSplitPacket(const SharedBuffer<u8> &data, u32 chunksize_max, u16 seqnum,
-		std::list<SharedBuffer<u8>> *chunks)
+void makeSplitPacket(const SharedBuffer<uint8_t> &data, uint32_t chunksize_max, uint16_t seqnum,
+		std::list<SharedBuffer<uint8_t>> *chunks)
 {
 	// Chunk packets, containing the TYPE_SPLIT header
-	u32 chunk_header_size = 7;
-	u32 maximum_data_size = chunksize_max - chunk_header_size;
-	u32 start = 0;
-	u32 end = 0;
-	u32 chunk_num = 0;
-	u16 chunk_count = 0;
+	uint32_t chunk_header_size = 7;
+	uint32_t maximum_data_size = chunksize_max - chunk_header_size;
+	uint32_t start = 0;
+	uint32_t end = 0;
+	uint32_t chunk_num = 0;
+	uint16_t chunk_count = 0;
 	do {
 		end = start + maximum_data_size - 1;
 		if (end > data.getSize() - 1)
 			end = data.getSize() - 1;
 
-		u32 payload_size = end - start + 1;
-		u32 packet_size = chunk_header_size + payload_size;
+		uint32_t payload_size = end - start + 1;
+		uint32_t packet_size = chunk_header_size + payload_size;
 
-		SharedBuffer<u8> chunk(packet_size);
+		SharedBuffer<uint8_t> chunk(packet_size);
 
 		writeU8(&chunk[0], PACKET_TYPE_SPLIT);
 		writeU16(&chunk[1], seqnum);
-		// [3] u16 chunk_count is written at next stage
+		// [3] uint16_t chunk_count is written at next stage
 		writeU16(&chunk[5], chunk_num);
 		memcpy(&chunk[chunk_header_size], &data[start], payload_size);
 
@@ -126,16 +126,16 @@ void makeSplitPacket(const SharedBuffer<u8> &data, u32 chunksize_max, u16 seqnum
 	}
 	while (end != data.getSize() - 1);
 
-	for (SharedBuffer<u8> &chunk : *chunks) {
+	for (SharedBuffer<uint8_t> &chunk : *chunks) {
 		// Write chunk_count
 		writeU16(&(chunk[3]), chunk_count);
 	}
 }
 
-void makeAutoSplitPacket(const SharedBuffer<u8> &data, u32 chunksize_max,
-		u16 &split_seqnum, std::list<SharedBuffer<u8>> *list)
+void makeAutoSplitPacket(const SharedBuffer<uint8_t> &data, uint32_t chunksize_max,
+		uint16_t &split_seqnum, std::list<SharedBuffer<uint8_t>> *list)
 {
-	u32 original_header_size = 1;
+	uint32_t original_header_size = 1;
 
 	if (data.getSize() + original_header_size > chunksize_max) {
 		makeSplitPacket(data, chunksize_max, split_seqnum, list);
@@ -146,11 +146,11 @@ void makeAutoSplitPacket(const SharedBuffer<u8> &data, u32 chunksize_max,
 	list->push_back(makeOriginalPacket(data));
 }
 
-SharedBuffer<u8> makeReliablePacket(const SharedBuffer<u8> &data, u16 seqnum)
+SharedBuffer<uint8_t> makeReliablePacket(const SharedBuffer<uint8_t> &data, uint16_t seqnum)
 {
-	u32 header_size = 3;
-	u32 packet_size = data.getSize() + header_size;
-	SharedBuffer<u8> b(packet_size);
+	uint32_t header_size = 3;
+	uint32_t packet_size = data.getSize() + header_size;
+	SharedBuffer<uint8_t> b(packet_size);
 
 	writeU8(&b[0], PACKET_TYPE_RELIABLE);
 	writeU16(&b[1], seqnum);
@@ -170,7 +170,7 @@ void ReliablePacketBuffer::print()
 	LOG(dout_con<<"Dump of ReliablePacketBuffer:" << std::endl);
 	unsigned int index = 0;
 	for (BufferedPacket &bufferedPacket : m_list) {
-		u16 s = readU16(&(bufferedPacket.data[BASE_HEADER_SIZE+1]));
+		uint16_t s = readU16(&(bufferedPacket.data[BASE_HEADER_SIZE+1]));
 		LOG(dout_con<<index<< ":" << s << std::endl);
 		index++;
 	}
@@ -182,18 +182,18 @@ bool ReliablePacketBuffer::empty()
 	return m_list.empty();
 }
 
-u32 ReliablePacketBuffer::size()
+uint32_t ReliablePacketBuffer::size()
 {
 	MutexAutoLock listlock(m_list_mutex);
 	return m_list.size();
 }
 
-RPBSearchResult ReliablePacketBuffer::findPacket(u16 seqnum)
+RPBSearchResult ReliablePacketBuffer::findPacket(uint16_t seqnum)
 {
 	std::list<BufferedPacket>::iterator i = m_list.begin();
 	for(; i != m_list.end(); ++i)
 	{
-		u16 s = readU16(&(i->data[BASE_HEADER_SIZE+1]));
+		uint16_t s = readU16(&(i->data[BASE_HEADER_SIZE+1]));
 		if (s == seqnum)
 			break;
 	}
@@ -205,7 +205,7 @@ RPBSearchResult ReliablePacketBuffer::notFound()
 	return m_list.end();
 }
 
-bool ReliablePacketBuffer::getFirstSeqnum(u16& result)
+bool ReliablePacketBuffer::getFirstSeqnum(uint16_t& result)
 {
 	MutexAutoLock listlock(m_list_mutex);
 	if (m_list.empty())
@@ -232,7 +232,7 @@ BufferedPacket ReliablePacketBuffer::popFirst()
 	return p;
 }
 
-BufferedPacket ReliablePacketBuffer::popSeqnum(u16 seqnum)
+BufferedPacket ReliablePacketBuffer::popSeqnum(uint16_t seqnum)
 {
 	MutexAutoLock listlock(m_list_mutex);
 	RPBSearchResult r = findPacket(seqnum);
@@ -247,7 +247,7 @@ BufferedPacket ReliablePacketBuffer::popSeqnum(u16 seqnum)
 	RPBSearchResult next = r;
 	++next;
 	if (next != notFound()) {
-		u16 s = readU16(&(next->data[BASE_HEADER_SIZE+1]));
+		uint16_t s = readU16(&(next->data[BASE_HEADER_SIZE+1]));
 		m_oldest_non_answered_ack = s;
 	}
 
@@ -262,7 +262,7 @@ BufferedPacket ReliablePacketBuffer::popSeqnum(u16 seqnum)
 	return p;
 }
 
-void ReliablePacketBuffer::insert(BufferedPacket &p, u16 next_expected)
+void ReliablePacketBuffer::insert(BufferedPacket &p, uint16_t next_expected)
 {
 	MutexAutoLock listlock(m_list_mutex);
 	if (p.data.getSize() < BASE_HEADER_SIZE + 3) {
@@ -270,13 +270,13 @@ void ReliablePacketBuffer::insert(BufferedPacket &p, u16 next_expected)
 			"reliable packet" << std::endl;
 		return;
 	}
-	u8 type = readU8(&p.data[BASE_HEADER_SIZE + 0]);
+	uint8_t type = readU8(&p.data[BASE_HEADER_SIZE + 0]);
 	if (type != PACKET_TYPE_RELIABLE) {
 		errorstream << "ReliablePacketBuffer::insert(): type is not reliable"
 			<< std::endl;
 		return;
 	}
-	u16 seqnum = readU16(&p.data[BASE_HEADER_SIZE + 1]);
+	uint16_t seqnum = readU16(&p.data[BASE_HEADER_SIZE + 1]);
 
 	if (!seqnum_in_window(seqnum, next_expected, MAX_RELIABLE_WINDOW_SIZE)) {
 		errorstream << "ReliablePacketBuffer::insert(): seqnum is outside of "
@@ -304,7 +304,7 @@ void ReliablePacketBuffer::insert(BufferedPacket &p, u16 next_expected)
 	// Otherwise find the right place
 	std::list<BufferedPacket>::iterator i = m_list.begin();
 	// Find the first packet in the list which has a higher seqnum
-	u16 s = readU16(&(i->data[BASE_HEADER_SIZE+1]));
+	uint16_t s = readU16(&(i->data[BASE_HEADER_SIZE+1]));
 
 	/* case seqnum is smaller then next_expected seqnum */
 	/* this is true e.g. on wrap around */
@@ -389,7 +389,7 @@ std::list<BufferedPacket> ReliablePacketBuffer::getTimedOuts(float timeout,
 	IncomingSplitPacket
 */
 
-bool IncomingSplitPacket::insert(u32 chunk_num, SharedBuffer<u8> &chunkdata)
+bool IncomingSplitPacket::insert(uint32_t chunk_num, SharedBuffer<uint8_t> &chunkdata)
 {
 	sanity_check(chunk_num < chunk_count);
 
@@ -405,21 +405,21 @@ bool IncomingSplitPacket::insert(u32 chunk_num, SharedBuffer<u8> &chunkdata)
 	return true;
 }
 
-SharedBuffer<u8> IncomingSplitPacket::reassemble()
+SharedBuffer<uint8_t> IncomingSplitPacket::reassemble()
 {
 	sanity_check(allReceived());
 
 	// Calculate total size
-	u32 totalsize = 0;
+	uint32_t totalsize = 0;
 	for (const auto &chunk : chunks)
 		totalsize += chunk.second.getSize();
 
-	SharedBuffer<u8> fulldata(totalsize);
+	SharedBuffer<uint8_t> fulldata(totalsize);
 
 	// Copy chunks to data buffer
-	u32 start = 0;
-	for (u32 chunk_i = 0; chunk_i < chunk_count; chunk_i++) {
-		const SharedBuffer<u8> &buf = chunks[chunk_i];
+	uint32_t start = 0;
+	for (uint32_t chunk_i = 0; chunk_i < chunk_count; chunk_i++) {
+		const SharedBuffer<uint8_t> &buf = chunks[chunk_i];
 		memcpy(&fulldata[start], *buf, buf.getSize());
 		start += buf.getSize();
 	}
@@ -439,28 +439,28 @@ IncomingSplitBuffer::~IncomingSplitBuffer()
 	}
 }
 
-SharedBuffer<u8> IncomingSplitBuffer::insert(const BufferedPacket &p, bool reliable)
+SharedBuffer<uint8_t> IncomingSplitBuffer::insert(const BufferedPacket &p, bool reliable)
 {
 	MutexAutoLock listlock(m_map_mutex);
-	u32 headersize = BASE_HEADER_SIZE + 7;
+	uint32_t headersize = BASE_HEADER_SIZE + 7;
 	if (p.data.getSize() < headersize) {
 		errorstream << "Invalid data size for split packet" << std::endl;
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 	}
-	u8 type = readU8(&p.data[BASE_HEADER_SIZE+0]);
-	u16 seqnum = readU16(&p.data[BASE_HEADER_SIZE+1]);
-	u16 chunk_count = readU16(&p.data[BASE_HEADER_SIZE+3]);
-	u16 chunk_num = readU16(&p.data[BASE_HEADER_SIZE+5]);
+	uint8_t type = readU8(&p.data[BASE_HEADER_SIZE+0]);
+	uint16_t seqnum = readU16(&p.data[BASE_HEADER_SIZE+1]);
+	uint16_t chunk_count = readU16(&p.data[BASE_HEADER_SIZE+3]);
+	uint16_t chunk_num = readU16(&p.data[BASE_HEADER_SIZE+5]);
 
 	if (type != PACKET_TYPE_SPLIT) {
 		errorstream << "IncomingSplitBuffer::insert(): type is not split"
 			<< std::endl;
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 	}
 	if (chunk_num >= chunk_count) {
 		errorstream << "IncomingSplitBuffer::insert(): chunk_num=" << chunk_num
 				<< " >= chunk_count=" << chunk_count << std::endl;
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 	}
 
 	// Add if doesn't exist
@@ -476,7 +476,7 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(const BufferedPacket &p, bool relia
 		errorstream << "IncomingSplitBuffer::insert(): chunk_count="
 				<< chunk_count << " != sp->chunk_count=" << sp->chunk_count
 				<< std::endl;
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 	}
 	if (reliable != sp->reliable)
 		LOG(derr_con<<"Connection: WARNING: reliable="<<reliable
@@ -484,18 +484,18 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(const BufferedPacket &p, bool relia
 				<<std::endl);
 
 	// Cut chunk data out of packet
-	u32 chunkdatasize = p.data.getSize() - headersize;
-	SharedBuffer<u8> chunkdata(chunkdatasize);
+	uint32_t chunkdatasize = p.data.getSize() - headersize;
+	SharedBuffer<uint8_t> chunkdata(chunkdatasize);
 	memcpy(*chunkdata, &(p.data[headersize]), chunkdatasize);
 
 	if (!sp->insert(chunk_num, chunkdata))
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 
 	// If not all chunks are received, return empty buffer
 	if (!sp->allReceived())
-		return SharedBuffer<u8>();
+		return SharedBuffer<uint8_t>();
 
-	SharedBuffer<u8> fulldata = sp->reassemble();
+	SharedBuffer<uint8_t> fulldata = sp->reassemble();
 
 	// Remove sp from buffer
 	m_buf.erase(seqnum);
@@ -506,7 +506,7 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(const BufferedPacket &p, bool relia
 
 void IncomingSplitBuffer::removeUnreliableTimedOuts(float dtime, float timeout)
 {
-	std::deque<u16> remove_queue;
+	std::deque<uint16_t> remove_queue;
 	{
 		MutexAutoLock listlock(m_map_mutex);
 		for (auto &i : m_buf) {
@@ -519,7 +519,7 @@ void IncomingSplitBuffer::removeUnreliableTimedOuts(float dtime, float timeout)
 				remove_queue.push_back(i.first);
 		}
 	}
-	for (u16 j : remove_queue) {
+	for (uint16_t j : remove_queue) {
 		MutexAutoLock listlock(m_map_mutex);
 		LOG(dout_con<<"NOTE: Removing timed out unreliable split packet"<<std::endl);
 		delete m_buf[j];
@@ -531,7 +531,7 @@ void IncomingSplitBuffer::removeUnreliableTimedOuts(float dtime, float timeout)
 	ConnectionCommand
  */
 
-void ConnectionCommand::send(session_t peer_id_, u8 channelnum_, NetworkPacket *pkt,
+void ConnectionCommand::send(session_t peer_id_, uint8_t channelnum_, NetworkPacket *pkt,
 	bool reliable_)
 {
 	type = CONNCMD_SEND;
@@ -554,7 +554,7 @@ u16 Channel::readNextIncomingSeqNum()
 u16 Channel::incNextIncomingSeqNum()
 {
 	MutexAutoLock internal(m_internal_mutex);
-	u16 retval = next_incoming_seqnum;
+	uint16_t retval = next_incoming_seqnum;
 	next_incoming_seqnum++;
 	return retval;
 }
@@ -564,7 +564,7 @@ u16 Channel::readNextSplitSeqNum()
 	MutexAutoLock internal(m_internal_mutex);
 	return next_outgoing_split_seqnum;
 }
-void Channel::setNextSplitSeqNum(u16 seqnum)
+void Channel::setNextSplitSeqNum(uint16_t seqnum)
 {
 	MutexAutoLock internal(m_internal_mutex);
 	next_outgoing_split_seqnum = seqnum;
@@ -573,8 +573,8 @@ void Channel::setNextSplitSeqNum(u16 seqnum)
 u16 Channel::getOutgoingSequenceNumber(bool& successful)
 {
 	MutexAutoLock internal(m_internal_mutex);
-	u16 retval = next_outgoing_seqnum;
-	u16 lowest_unacked_seqnumber;
+	uint16_t retval = next_outgoing_seqnum;
+	uint16_t lowest_unacked_seqnumber;
 
 	/* shortcut if there ain't any packet in outgoing list */
 	if (outgoing_reliables_sent.empty())
@@ -589,7 +589,7 @@ u16 Channel::getOutgoingSequenceNumber(bool& successful)
 			// ugly cast but this one is required in order to tell compiler we
 			// know about difference of two unsigned may be negative in general
 			// but we already made sure it won't happen in this case
-			if (((u16)(next_outgoing_seqnum - lowest_unacked_seqnumber)) > window_size) {
+			if (((uint16_t)(next_outgoing_seqnum - lowest_unacked_seqnumber)) > window_size) {
 				successful = false;
 				return 0;
 			}
@@ -598,7 +598,7 @@ u16 Channel::getOutgoingSequenceNumber(bool& successful)
 			// ugly cast but this one is required in order to tell compiler we
 			// know about difference of two unsigned may be negative in general
 			// but we already made sure it won't happen in this case
-			if ((next_outgoing_seqnum + (u16)(SEQNUM_MAX - lowest_unacked_seqnumber)) >
+			if ((next_outgoing_seqnum + (uint16_t)(SEQNUM_MAX - lowest_unacked_seqnumber)) >
 				window_size) {
 				successful = false;
 				return 0;
@@ -616,7 +616,7 @@ u16 Channel::readOutgoingSequenceNumber()
 	return next_outgoing_seqnum;
 }
 
-bool Channel::putBackSequenceNumber(u16 seqnum)
+bool Channel::putBackSequenceNumber(uint16_t seqnum)
 {
 	if (((seqnum + 1) % (SEQNUM_MAX+1)) == next_outgoing_seqnum) {
 
@@ -889,7 +889,7 @@ void Peer::RTTStatistics(float rtt, const std::string &profiler_id,
 bool Peer::isTimedOut(float timeout)
 {
 	MutexAutoLock lock(m_exclusive_access_mutex);
-	u64 current_time = porting::getTimeMs();
+	uint64_t current_time = porting::getTimeMs();
 
 	float dtime = CALC_DTIME(m_last_timeout_check,current_time);
 	m_last_timeout_check = current_time;
@@ -920,7 +920,7 @@ void Peer::Drop()
 	delete this;
 }
 
-UDPPeer::UDPPeer(u16 a_id, Address a_address, Connection* connection) :
+UDPPeer::UDPPeer(uint16_t a_id, Address a_address, Connection* connection) :
 	Peer(a_address,a_id,connection)
 {
 	for (Channel &channel : channels)
@@ -955,7 +955,7 @@ void UDPPeer::reportRTT(float rtt)
 	resend_timeout = timeout;
 }
 
-bool UDPPeer::Ping(float dtime,SharedBuffer<u8>& data)
+bool UDPPeer::Ping(float dtime,SharedBuffer<uint8_t>& data)
 {
 	m_ping_timer += dtime;
 	if (m_ping_timer >= PING_TIMEOUT)
@@ -1010,14 +1010,14 @@ bool UDPPeer::processReliableSendCommand(
 
 	Channel &chan = channels[c.channelnum];
 
-	u32 chunksize_max = max_packet_size
+	uint32_t chunksize_max = max_packet_size
 							- BASE_HEADER_SIZE
 							- RELIABLE_HEADER_SIZE;
 
 	sanity_check(c.data.getSize() < MAX_RELIABLE_WINDOW_SIZE*512);
 
-	std::list<SharedBuffer<u8>> originals;
-	u16 split_sequence_number = chan.readNextSplitSeqNum();
+	std::list<SharedBuffer<uint8_t>> originals;
+	uint16_t split_sequence_number = chan.readNextSplitSeqNum();
 
 	if (c.raw) {
 		originals.emplace_back(c.data);
@@ -1029,10 +1029,10 @@ bool UDPPeer::processReliableSendCommand(
 	bool have_sequence_number = true;
 	bool have_initial_sequence_number = false;
 	std::queue<BufferedPacket> toadd;
-	volatile u16 initial_sequence_number = 0;
+	volatile uint16_t initial_sequence_number = 0;
 
-	for (SharedBuffer<u8> &original : originals) {
-		u16 seqnum = chan.getOutgoingSequenceNumber(have_sequence_number);
+	for (SharedBuffer<uint8_t> &original : originals) {
+		uint16_t seqnum = chan.getOutgoingSequenceNumber(have_sequence_number);
 
 		/* oops, we don't have enough sequence numbers to send this packet */
 		if (!have_sequence_number)
@@ -1044,7 +1044,7 @@ bool UDPPeer::processReliableSendCommand(
 			have_initial_sequence_number = true;
 		}
 
-		SharedBuffer<u8> reliable = makeReliablePacket(original, seqnum);
+		SharedBuffer<uint8_t> reliable = makeReliablePacket(original, seqnum);
 
 		// Add base headers and make a packet
 		BufferedPacket p = con::makePacket(address, reliable,
@@ -1055,7 +1055,7 @@ bool UDPPeer::processReliableSendCommand(
 	}
 
 	if (have_sequence_number) {
-		volatile u16 pcount = 0;
+		volatile uint16_t pcount = 0;
 		while (!toadd.empty()) {
 			BufferedPacket p = toadd.front();
 			toadd.pop();
@@ -1071,7 +1071,7 @@ bool UDPPeer::processReliableSendCommand(
 		return true;
 	}
 
-	volatile u16 packets_available = toadd.size();
+	volatile uint16_t packets_available = toadd.size();
 	/* we didn't get a single sequence number no need to fill queue */
 	if (!have_initial_sequence_number) {
 		return false;
@@ -1090,7 +1090,7 @@ bool UDPPeer::processReliableSendCommand(
 
 	// DO NOT REMOVE n_queued! It avoids a deadlock of async locked
 	// 'log_message_mutex' and 'm_list_mutex'.
-	u32 n_queued = chan.outgoing_reliables_sent.size();
+	uint32_t n_queued = chan.outgoing_reliables_sent.size();
 
 	LOG(dout_con<<m_connection->getDesc()
 			<< " Windowsize exceeded on reliable sending "
@@ -1141,19 +1141,19 @@ void UDPPeer::RunCommandQueues(
 	}
 }
 
-u16 UDPPeer::getNextSplitSequenceNumber(u8 channel)
+u16 UDPPeer::getNextSplitSequenceNumber(uint8_t channel)
 {
 	assert(channel < CHANNEL_COUNT); // Pre-condition
 	return channels[channel].readNextSplitSeqNum();
 }
 
-void UDPPeer::setNextSplitSequenceNumber(u8 channel, u16 seqnum)
+void UDPPeer::setNextSplitSequenceNumber(uint8_t channel, uint16_t seqnum)
 {
 	assert(channel < CHANNEL_COUNT); // Pre-condition
 	channels[channel].setNextSplitSeqNum(seqnum);
 }
 
-SharedBuffer<u8> UDPPeer::addSplitPacket(u8 channel, const BufferedPacket &toadd,
+SharedBuffer<uint8_t> UDPPeer::addSplitPacket(uint8_t channel, const BufferedPacket &toadd,
 	bool reliable)
 {
 	assert(channel < CHANNEL_COUNT); // Pre-condition
@@ -1164,7 +1164,7 @@ SharedBuffer<u8> UDPPeer::addSplitPacket(u8 channel, const BufferedPacket &toadd
 	Connection
 */
 
-Connection::Connection(u32 protocol_id, u32 max_packet_size, float timeout,
+Connection::Connection(uint32_t protocol_id, uint32_t max_packet_size, float timeout,
 		bool ipv6, PeerHandler *peerhandler) :
 	m_udpSocket(ipv6),
 	m_protocol_id(protocol_id),
@@ -1238,7 +1238,7 @@ PeerHelper Connection::getPeerNoEx(session_t peer_id)
 u16 Connection::lookupPeer(Address& sender)
 {
 	MutexAutoLock peerlock(m_peers_mutex);
-	std::map<u16, Peer*>::iterator j;
+	std::map<uint16_t, Peer*>::iterator j;
 	j = m_peers.begin();
 	for(; j != m_peers.end(); ++j)
 	{
@@ -1288,7 +1288,7 @@ bool Connection::deletePeer(session_t peer_id, bool timeout)
 
 /* Interface */
 
-ConnectionEvent Connection::waitEvent(u32 timeout_ms)
+ConnectionEvent Connection::waitEvent(uint32_t timeout_ms)
 {
 	try {
 		return m_event_queue.pop_front(timeout_ms);
@@ -1345,7 +1345,7 @@ void Connection::Disconnect()
 	putCommand(c);
 }
 
-bool Connection::Receive(NetworkPacket *pkt, u32 timeout)
+bool Connection::Receive(NetworkPacket *pkt, uint32_t timeout)
 {
 	/*
 		Note that this function can potentially wait infinitely if non-data
@@ -1400,7 +1400,7 @@ bool Connection::TryReceive(NetworkPacket *pkt)
 	return Receive(pkt, 0);
 }
 
-void Connection::Send(session_t peer_id, u8 channelnum,
+void Connection::Send(session_t peer_id, uint8_t channelnum,
 		NetworkPacket *pkt, bool reliable)
 {
 	assert(channelnum < CHANNEL_COUNT); // Pre-condition
@@ -1470,7 +1470,7 @@ u16 Connection::createPeer(Address& sender, MTProtocols protocol, int fd)
 
 	// Get a unique peer id (2 or higher)
 	session_t peer_id_new = m_next_remote_peer_id;
-	u16 overflow =  MAX_UDP_PEERS;
+	uint16_t overflow =  MAX_UDP_PEERS;
 
 	/*
 		Find an unused peer id
@@ -1508,7 +1508,7 @@ u16 Connection::createPeer(Address& sender, MTProtocols protocol, int fd)
 			<< "createPeer(): giving peer_id=" << peer_id_new << std::endl);
 
 	ConnectionCommand cmd;
-	SharedBuffer<u8> reply(4);
+	SharedBuffer<uint8_t> reply(4);
 	writeU8(&reply[0], PACKET_TYPE_CONTROL);
 	writeU8(&reply[1], CONTROLTYPE_SET_PEER_ID);
 	writeU16(&reply[2], peer_id_new);
@@ -1544,7 +1544,7 @@ void Connection::DisconnectPeer(session_t peer_id)
 	putCommand(discon);
 }
 
-void Connection::sendAck(session_t peer_id, u8 channelnum, u16 seqnum)
+void Connection::sendAck(session_t peer_id, uint8_t channelnum, uint16_t seqnum)
 {
 	assert(channelnum < CHANNEL_COUNT); // Pre-condition
 
@@ -1554,7 +1554,7 @@ void Connection::sendAck(session_t peer_id, u8 channelnum, u16 seqnum)
 			" seqnum: " << seqnum << std::endl);
 
 	ConnectionCommand c;
-	SharedBuffer<u8> ack(4);
+	SharedBuffer<uint8_t> ack(4);
 	writeU8(&ack[0], PACKET_TYPE_CONTROL);
 	writeU8(&ack[1], CONTROLTYPE_ACK);
 	writeU16(&ack[2], seqnum);

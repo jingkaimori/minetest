@@ -1,5 +1,5 @@
 /*
- * Conversion of f32 to IEEE-754 and vice versa.
+ * Conversion of float to IEEE-754 and vice versa.
  *
  * © Copyright 2018 Pedro Gimeno Fortea.
  *
@@ -30,12 +30,12 @@
 
 // Given an unsigned 32-bit integer representing an IEEE-754 single-precision
 // float, return the float.
-f32 u32Tof32Slow(u32 i)
+f32 u32Tof32Slow(uint32_t i)
 {
 	// clang-format off
 	int exp = (i >> 23) & 0xFF;
-	u32 sign = i & 0x80000000UL;
-	u32 imant = i & 0x7FFFFFUL;
+	uint32_t sign = i & 0x80000000UL;
+	uint32_t imant = i & 0x7FFFFFUL;
 	if (exp == 0xFF) {
 		// Inf/NaN
 		if (imant == 0) {
@@ -61,9 +61,9 @@ f32 u32Tof32Slow(u32 i)
 
 // Given a float, return an unsigned 32-bit integer representing the f32
 // in IEEE-754 single-precision format.
-u32 f32Tou32Slow(f32 f)
+uint32_t f32Tou32Slow(float f)
 {
-	u32 signbit = std::copysign(1.0f, f) == 1.0f ? 0 : 0x80000000UL;
+	uint32_t signbit = std::copysign(1.0f, f) == 1.0f ? 0 : 0x80000000UL;
 	if (f == 0.f)
 		return signbit;
 	if (std::isnan(f))
@@ -71,8 +71,8 @@ u32 f32Tou32Slow(f32 f)
 	if (std::isinf(f))
 		return signbit | 0x7F800000UL;
 	int exp = 0; // silence warning
-	f32 mant = frexpf(f, &exp);
-	u32 imant = (u32)std::floor((signbit ? -16777216.f : 16777216.f) * mant);
+	float mant = frexpf(f, &exp);
+	uint32_t imant = (uint32_t)std::floor((signbit ? -16777216.f : 16777216.f) * mant);
 	exp += 126;
 	if (exp <= 0) {
 		// Denormal
@@ -95,8 +95,8 @@ u32 f32Tou32Slow(f32 f)
 FloatType getFloatSerializationType()
 {
 	// clang-format off
-	const f32 cf = -22220490.f;
-	const u32 cu = 0xCBA98765UL;
+	const float cf = -22220490.f;
+	const uint32_t cu = 0xCBA98765UL;
 	if (std::numeric_limits<f32>::is_iec559 && sizeof(cf) == 4 &&
 			sizeof(cu) == 4 && !memcmp(&cf, &cu, 4)) {
 		// u32Tof32Slow and f32Tou32Slow are not needed, use memcpy
@@ -104,9 +104,9 @@ FloatType getFloatSerializationType()
 	}
 
 	// Run quick tests to ensure the custom functions provide acceptable results
-	warningstream << "floatSerialization: f32 and u32 endianness are "
+	warningstream << "floatSerialization: float and uint32_t endianness are "
 		"not equal or machine is not IEEE-754 compliant" << std::endl;
-	u32 i;
+	uint32_t i;
 	char buf[128];
 
 	// NaN checks aren't included in the main loop

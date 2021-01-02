@@ -39,7 +39,7 @@ static NoiseParams nparams_caveliquids(0, 1, v3f(150.0, 150.0, 150.0), 776, 3, 0
 
 CavesNoiseIntersection::CavesNoiseIntersection(
 	const NodeDefManager *nodedef, BiomeManager *biomemgr, v3s16 chunksize,
-	NoiseParams *np_cave1, NoiseParams *np_cave2, s32 seed, float cave_width)
+	NoiseParams *np_cave1, NoiseParams *np_cave2, int32_t seed, float cave_width)
 {
 	assert(nodedef);
 	assert(biomemgr);
@@ -78,29 +78,29 @@ void CavesNoiseIntersection::generateCaves(MMVManip *vm,
 	noise_cave2->perlinMap3D(nmin.X, nmin.Y - 1, nmin.Z);
 
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 index2d = 0;  // Biomemap index
+	uint32_t index2d = 0;  // Biomemap index
 
-	for (s16 z = nmin.Z; z <= nmax.Z; z++)
-	for (s16 x = nmin.X; x <= nmax.X; x++, index2d++) {
+	for (int16_t z = nmin.Z; z <= nmax.Z; z++)
+	for (int16_t x = nmin.X; x <= nmax.X; x++, index2d++) {
 		bool column_is_open = false;  // Is column open to overground
 		bool is_under_river = false;  // Is column under river water
 		bool is_under_tunnel = false;  // Is tunnel or is under tunnel
 		bool is_top_filler_above = false;  // Is top or filler above node
 		// Indexes at column top
-		u32 vi = vm->m_area.index(x, nmax.Y, z);
-		u32 index3d = (z - nmin.Z) * m_zstride_1d + m_csize.Y * m_ystride +
+		uint32_t vi = vm->m_area.index(x, nmax.Y, z);
+		uint32_t index3d = (z - nmin.Z) * m_zstride_1d + m_csize.Y * m_ystride +
 			(x - nmin.X);  // 3D noise index
 		// Biome of column
 		Biome *biome = (Biome *)m_bmgr->getRaw(biomemap[index2d]);
-		u16 depth_top = biome->depth_top;
-		u16 base_filler = depth_top + biome->depth_filler;
-		u16 depth_riverbed = biome->depth_riverbed;
-		u16 nplaced = 0;
+		uint16_t depth_top = biome->depth_top;
+		uint16_t base_filler = depth_top + biome->depth_filler;
+		uint16_t depth_riverbed = biome->depth_riverbed;
+		uint16_t nplaced = 0;
 		// Don't excavate the overgenerated stone at nmax.Y + 1,
 		// this creates a 'roof' over the tunnel, preventing light in
 		// tunnels at mapchunk borders when generating mapchunks upwards.
 		// This 'roof' is removed when the mapchunk above is generated.
-		for (s16 y = nmax.Y; y >= nmin.Y - 1; y--,
+		for (int16_t y = nmax.Y; y >= nmin.Y - 1; y--,
 				index3d -= m_ystride,
 				VoxelArea::add_y(em, vi, -1)) {
 			content_t c = vm->m_data[vi].getContent();
@@ -177,7 +177,7 @@ void CavesNoiseIntersection::generateCaves(MMVManip *vm,
 
 CavernsNoise::CavernsNoise(
 	const NodeDefManager *nodedef, v3s16 chunksize, NoiseParams *np_cavern,
-	s32 seed, float cavern_limit, float cavern_taper, float cavern_threshold)
+	int32_t seed, float cavern_limit, float cavern_taper, float cavern_threshold)
 {
 	assert(nodedef);
 
@@ -221,8 +221,8 @@ bool CavernsNoise::generateCaverns(MMVManip *vm, v3s16 nmin, v3s16 nmax)
 
 	// Cache cavern_amp values
 	float *cavern_amp = new float[m_csize.Y + 1];
-	u8 cavern_amp_index = 0;  // Index zero at column top
-	for (s16 y = nmax.Y; y >= nmin.Y - 1; y--, cavern_amp_index++) {
+	uint8_t cavern_amp_index = 0;  // Index zero at column top
+	for (int16_t y = nmax.Y; y >= nmin.Y - 1; y--, cavern_amp_index++) {
 		cavern_amp[cavern_amp_index] =
 			MYMIN((m_cavern_limit - y) / (float)m_cavern_taper, 1.0f);
 	}
@@ -230,22 +230,22 @@ bool CavernsNoise::generateCaverns(MMVManip *vm, v3s16 nmin, v3s16 nmax)
 	//// Place nodes
 	bool near_cavern = false;
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 index2d = 0;
+	uint32_t index2d = 0;
 
-	for (s16 z = nmin.Z; z <= nmax.Z; z++)
-	for (s16 x = nmin.X; x <= nmax.X; x++, index2d++) {
+	for (int16_t z = nmin.Z; z <= nmax.Z; z++)
+	for (int16_t x = nmin.X; x <= nmax.X; x++, index2d++) {
 		// Reset cave_amp index to column top
 		cavern_amp_index = 0;
 		// Initial voxelmanip index at column top
-		u32 vi = vm->m_area.index(x, nmax.Y, z);
+		uint32_t vi = vm->m_area.index(x, nmax.Y, z);
 		// Initial 3D noise index at column top
-		u32 index3d = (z - nmin.Z) * m_zstride_1d + m_csize.Y * m_ystride +
+		uint32_t index3d = (z - nmin.Z) * m_zstride_1d + m_csize.Y * m_ystride +
 			(x - nmin.X);
 		// Don't excavate the overgenerated stone at node_max.Y + 1,
 		// this creates a 'roof' over the cavern, preventing light in
 		// caverns at mapchunk borders when generating mapchunks upwards.
 		// This 'roof' is excavated when the mapchunk above is generated.
-		for (s16 y = nmax.Y; y >= nmin.Y - 1; y--,
+		for (int16_t y = nmax.Y; y >= nmin.Y - 1; y--,
 				index3d -= m_ystride,
 				VoxelArea::add_y(em, vi, -1),
 				cavern_amp_index++) {
@@ -276,7 +276,7 @@ bool CavernsNoise::generateCaverns(MMVManip *vm, v3s16 nmin, v3s16 nmax)
 CavesRandomWalk::CavesRandomWalk(
 	const NodeDefManager *ndef,
 	GenerateNotifier *gennotify,
-	s32 seed,
+	int32_t seed,
 	int water_level,
 	content_t water_source,
 	content_t lava_source,
@@ -308,7 +308,7 @@ CavesRandomWalk::CavesRandomWalk(
 
 
 void CavesRandomWalk::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
-	PseudoRandom *ps, bool is_large_cave, int max_stone_height, s16 *heightmap)
+	PseudoRandom *ps, bool is_large_cave, int max_stone_height, int16_t *heightmap)
 {
 	assert(vm);
 	assert(ps);
@@ -367,8 +367,8 @@ void CavesRandomWalk::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	// Allow caves to extend up to 16 nodes beyond the mapchunk edge, to allow
 	// connecting with caves of neighbor mapchunks.
 	// 'insure' is needed to avoid many 'out of voxelmanip' cave nodes.
-	const s16 insure = 2;
-	s16 more = MYMAX(MAP_BLOCKSIZE - max_tunnel_diameter / 2 - insure, 1);
+	const int16_t insure = 2;
+	int16_t more = MYMAX(MAP_BLOCKSIZE - max_tunnel_diameter / 2 - insure, 1);
 	ar += v3s16(1, 1, 1) * more * 2;
 	of -= v3s16(1, 1, 1) * more;
 
@@ -380,7 +380,7 @@ void CavesRandomWalk::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	route_y_max = rangelim(route_y_max, 0, ar.Y - 1);
 
 	if (large_cave) {
-		s16 minpos = 0;
+		int16_t minpos = 0;
 		if (node_min.Y < water_level && node_max.Y > water_level) {
 			minpos = water_level - max_tunnel_diameter / 3 - of.Y;
 			route_y_max = water_level + max_tunnel_diameter / 3 - of.Y;
@@ -389,8 +389,8 @@ void CavesRandomWalk::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 		route_y_min = rangelim(route_y_min, 0, route_y_max);
 	}
 
-	s16 route_start_y_min = route_y_min;
-	s16 route_start_y_max = route_y_max;
+	int16_t route_start_y_min = route_y_min;
+	int16_t route_start_y_max = route_y_max;
 
 	route_start_y_min = rangelim(route_start_y_min, 0, ar.Y - 1);
 	route_start_y_max = rangelim(route_start_y_max, route_start_y_min, ar.Y - 1);
@@ -409,7 +409,7 @@ void CavesRandomWalk::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	}
 
 	// Generate some tunnel starting from orp
-	for (u16 j = 0; j < tunnel_routepoints; j++)
+	for (uint16_t j = 0; j < tunnel_routepoints; j++)
 		makeTunnel(j % dswitchint == 0);
 
 	// Add generation notify end event
@@ -433,10 +433,10 @@ void CavesRandomWalk::makeTunnel(bool dirswitch)
 	}
 
 	// Randomize size
-	s16 min_d = min_tunnel_diameter;
-	s16 max_d = max_tunnel_diameter;
+	int16_t min_d = min_tunnel_diameter;
+	int16_t max_d = max_tunnel_diameter;
 	rs = ps->range(min_d, max_d);
-	s16 rs_part_max_length_rs = rs * part_max_length_rs;
+	int16_t rs_part_max_length_rs = rs * part_max_length_rs;
 
 	v3s16 maxlen;
 	if (large_cave) {
@@ -538,8 +538,8 @@ void CavesRandomWalk::carveRoute(v3f vec, float f, bool randomize_xz)
 		}
 	}
 
-	s16 d0 = -rs / 2;
-	s16 d1 = d0 + rs;
+	int16_t d0 = -rs / 2;
+	int16_t d1 = d0 + rs;
 	if (randomize_xz) {
 		d0 += ps->range(-1, 1);
 		d1 += ps->range(-1, 1);
@@ -547,14 +547,14 @@ void CavesRandomWalk::carveRoute(v3f vec, float f, bool randomize_xz)
 
 	bool flat_cave_floor = !large_cave && ps->range(0, 2) == 2;
 
-	for (s16 z0 = d0; z0 <= d1; z0++) {
-		s16 si = rs / 2 - MYMAX(0, abs(z0) - rs / 7 - 1);
-		for (s16 x0 = -si - ps->range(0,1); x0 <= si - 1 + ps->range(0,1); x0++) {
-			s16 maxabsxz = MYMAX(abs(x0), abs(z0));
+	for (int16_t z0 = d0; z0 <= d1; z0++) {
+		int16_t si = rs / 2 - MYMAX(0, abs(z0) - rs / 7 - 1);
+		for (int16_t x0 = -si - ps->range(0,1); x0 <= si - 1 + ps->range(0,1); x0++) {
+			int16_t maxabsxz = MYMAX(abs(x0), abs(z0));
 
-			s16 si2 = rs / 2 - MYMAX(0, maxabsxz - rs / 7 - 1);
+			int16_t si2 = rs / 2 - MYMAX(0, maxabsxz - rs / 7 - 1);
 
-			for (s16 y0 = -si2; y0 <= si2; y0++) {
+			for (int16_t y0 = -si2; y0 <= si2; y0++) {
 				// Make better floors in small caves
 				if (flat_cave_floor && y0 <= -rs / 2 && rs <= 7)
 					continue;
@@ -571,7 +571,7 @@ void CavesRandomWalk::carveRoute(v3f vec, float f, bool randomize_xz)
 				if (!vm->m_area.contains(p))
 					continue;
 
-				u32 i = vm->m_area.index(p);
+				uint32_t i = vm->m_area.index(p);
 				content_t c = vm->m_data[i].getContent();
 				if (!ndef->get(c).is_ground_content)
 					continue;
@@ -601,7 +601,7 @@ inline bool CavesRandomWalk::isPosAboveSurface(v3s16 p)
 	if (heightmap != NULL &&
 			p.Z >= node_min.Z && p.Z <= node_max.Z &&
 			p.X >= node_min.X && p.X <= node_max.X) {
-		u32 index = (p.Z - node_min.Z) * ystride + (p.X - node_min.X);
+		uint32_t index = (p.Z - node_min.Z) * ystride + (p.X - node_min.X);
 		if (heightmap[index] < p.Y)
 			return true;
 	} else if (p.Y > water_level) {
@@ -641,7 +641,7 @@ CavesV6::CavesV6(const NodeDefManager *ndef, GenerateNotifier *gennotify,
 
 void CavesV6::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	PseudoRandom *ps, PseudoRandom *ps2,
-	bool is_large_cave, int max_stone_height, s16 *heightmap)
+	bool is_large_cave, int max_stone_height, int16_t *heightmap)
 {
 	assert(vm);
 	assert(ps);
@@ -681,9 +681,9 @@ void CavesV6::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 
 	// Allow a bit more
 	//(this should be more than the maximum radius of the tunnel)
-	const s16 max_spread_amount = MAP_BLOCKSIZE;
-	const s16 insure = 10;
-	s16 more = MYMAX(max_spread_amount - max_tunnel_diameter / 2 - insure, 1);
+	const int16_t max_spread_amount = MAP_BLOCKSIZE;
+	const int16_t insure = 10;
+	int16_t more = MYMAX(max_spread_amount - max_tunnel_diameter / 2 - insure, 1);
 	ar += v3s16(1, 0, 1) * more * 2;
 	of -= v3s16(1, 0, 1) * more;
 
@@ -695,7 +695,7 @@ void CavesV6::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	route_y_max = rangelim(route_y_max, 0, ar.Y - 1);
 
 	if (large_cave) {
-		s16 minpos = 0;
+		int16_t minpos = 0;
 		if (node_min.Y < water_level && node_max.Y > water_level) {
 			minpos = water_level - max_tunnel_diameter / 3 - of.Y;
 			route_y_max = water_level + max_tunnel_diameter / 3 - of.Y;
@@ -704,8 +704,8 @@ void CavesV6::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 		route_y_min = rangelim(route_y_min, 0, route_y_max);
 	}
 
-	s16 route_start_y_min = route_y_min;
-	s16 route_start_y_max = route_y_max;
+	int16_t route_start_y_min = route_y_min;
+	int16_t route_start_y_max = route_y_max;
 
 	route_start_y_min = rangelim(route_start_y_min, 0, ar.Y - 1);
 	route_start_y_max = rangelim(route_start_y_max, route_start_y_min, ar.Y - 1);
@@ -724,7 +724,7 @@ void CavesV6::makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax,
 	}
 
 	// Generate some tunnel starting from orp
-	for (u16 j = 0; j < tunnel_routepoints; j++)
+	for (uint16_t j = 0; j < tunnel_routepoints; j++)
 		makeTunnel(j % dswitchint == 0);
 
 	// Add generation notify end event
@@ -748,10 +748,10 @@ void CavesV6::makeTunnel(bool dirswitch)
 	}
 
 	// Randomize size
-	s16 min_d = min_tunnel_diameter;
-	s16 max_d = max_tunnel_diameter;
+	int16_t min_d = min_tunnel_diameter;
+	int16_t max_d = max_tunnel_diameter;
 	rs = ps->range(min_d, max_d);
-	s16 rs_part_max_length_rs = rs * part_max_length_rs;
+	int16_t rs_part_max_length_rs = rs * part_max_length_rs;
 
 	v3s16 maxlen;
 	if (large_cave) {
@@ -844,22 +844,22 @@ void CavesV6::carveRoute(v3f vec, float f, bool randomize_xz,
 	fp.Z += 0.1f * ps->range(-10, 10);
 	v3s16 cp(fp.X, fp.Y, fp.Z);
 
-	s16 d0 = -rs / 2;
-	s16 d1 = d0 + rs;
+	int16_t d0 = -rs / 2;
+	int16_t d1 = d0 + rs;
 	if (randomize_xz) {
 		d0 += ps->range(-1, 1);
 		d1 += ps->range(-1, 1);
 	}
 
-	for (s16 z0 = d0; z0 <= d1; z0++) {
-		s16 si = rs / 2 - MYMAX(0, abs(z0) - rs / 7 - 1);
-		for (s16 x0 = -si - ps->range(0,1); x0 <= si - 1 + ps->range(0,1); x0++) {
+	for (int16_t z0 = d0; z0 <= d1; z0++) {
+		int16_t si = rs / 2 - MYMAX(0, abs(z0) - rs / 7 - 1);
+		for (int16_t x0 = -si - ps->range(0,1); x0 <= si - 1 + ps->range(0,1); x0++) {
 			if (tunnel_above_ground)
 				continue;
 
-			s16 maxabsxz = MYMAX(abs(x0), abs(z0));
-			s16 si2 = rs / 2 - MYMAX(0, maxabsxz - rs / 7 - 1);
-			for (s16 y0 = -si2; y0 <= si2; y0++) {
+			int16_t maxabsxz = MYMAX(abs(x0), abs(z0));
+			int16_t si2 = rs / 2 - MYMAX(0, maxabsxz - rs / 7 - 1);
+			for (int16_t y0 = -si2; y0 <= si2; y0++) {
 				if (large_cave_is_flat) {
 					// Make large caves not so tall
 					if (rs > 7 && abs(y0) >= rs / 3)
@@ -872,7 +872,7 @@ void CavesV6::carveRoute(v3f vec, float f, bool randomize_xz,
 				if (!vm->m_area.contains(p))
 					continue;
 
-				u32 i = vm->m_area.index(p);
+				uint32_t i = vm->m_area.index(p);
 				content_t c = vm->m_data[i].getContent();
 				if (!ndef->get(c).is_ground_content)
 					continue;
@@ -901,12 +901,12 @@ void CavesV6::carveRoute(v3f vec, float f, bool randomize_xz,
 }
 
 
-inline s16 CavesV6::getSurfaceFromHeightmap(v3s16 p)
+inline int16_t CavesV6::getSurfaceFromHeightmap(v3s16 p)
 {
 	if (heightmap != NULL &&
 			p.Z >= node_min.Z && p.Z <= node_max.Z &&
 			p.X >= node_min.X && p.X <= node_max.X) {
-		u32 index = (p.Z - node_min.Z) * ystride + (p.X - node_min.X);
+		uint32_t index = (p.Z - node_min.Z) * ystride + (p.X - node_min.X);
 		return heightmap[index];
 	}
 

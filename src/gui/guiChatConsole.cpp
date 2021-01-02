@@ -35,16 +35,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	#include "irrlicht_changes/CGUITTFont.h"
 #endif
 
-inline u32 clamp_u8(s32 value)
+inline uint32_t clamp_u8(int32_t value)
 {
-	return (u32) MYMIN(MYMAX(value, 0), 255);
+	return (uint32_t) MYMIN(MYMAX(value, 0), 255);
 }
 
 
 GUIChatConsole::GUIChatConsole(
 		gui::IGUIEnvironment* env,
 		gui::IGUIElement* parent,
-		s32 id,
+		int32_t id,
 		ChatBackend* backend,
 		Client* client,
 		IMenuManager* menumgr
@@ -57,7 +57,7 @@ GUIChatConsole::GUIChatConsole(
 	m_animate_time_old(porting::getTimeMs())
 {
 	// load background settings
-	s32 console_alpha = g_settings->getS32("console_alpha");
+	int32_t console_alpha = g_settings->getS32("console_alpha");
 	m_background_color.setAlpha(clamp_u8(console_alpha));
 
 	// load the background texture depending on settings
@@ -74,14 +74,14 @@ GUIChatConsole::GUIChatConsole(
 		m_background_color.setBlue(clamp_u8(myround(console_color.Z)));
 	}
 
-	u16 chat_font_size = g_settings->getU16("chat_font_size");
+	uint16_t chat_font_size = g_settings->getU16("chat_font_size");
 	m_font = g_fontengine->getFont(chat_font_size != 0 ?
 		chat_font_size : FONT_SIZE_UNSPECIFIED, FM_Mono);
 
 	if (!m_font) {
 		errorstream << "GUIChatConsole: Unable to load mono font" << std::endl;
 	} else {
-		core::dimension2d<u32> dim = m_font->getDimension(L"M");
+		core::dimension2d<uint32_t> dim = m_font->getDimension(L"M");
 		m_fontsize = v2u32(dim.Width, dim.Height);
 		m_font->grab();
 	}
@@ -98,7 +98,7 @@ GUIChatConsole::~GUIChatConsole()
 		m_font->drop();
 }
 
-void GUIChatConsole::openConsole(f32 scale)
+void GUIChatConsole::openConsole(float scale)
 {
 	assert(scale > 0.0f && scale <= 1.0f);
 
@@ -145,7 +145,7 @@ void GUIChatConsole::replaceAndAddToHistory(const std::wstring &line)
 
 
 void GUIChatConsole::setCursor(
-	bool visible, bool blinking, f32 blink_speed, f32 relative_height)
+	bool visible, bool blinking, float blink_speed, float relative_height)
 {
 	if (visible)
 	{
@@ -189,7 +189,7 @@ void GUIChatConsole::draw()
 	}
 
 	// Animation
-	u64 now = porting::getTimeMs();
+	uint64_t now = porting::getTimeMs();
 	animate(now - m_animate_time_old);
 	m_animate_time_old = now;
 
@@ -206,8 +206,8 @@ void GUIChatConsole::draw()
 
 void GUIChatConsole::reformatConsole()
 {
-	s32 cols = m_screensize.X / m_fontsize.X - 2; // make room for a margin (looks better)
-	s32 rows = m_desired_height / m_fontsize.Y - 1; // make room for the input prompt
+	int32_t cols = m_screensize.X / m_fontsize.X - 2; // make room for a margin (looks better)
+	int32_t rows = m_desired_height / m_fontsize.Y - 1; // make room for the input prompt
 	if (cols <= 0 || rows <= 0)
 		cols = rows = 0;
 	recalculateConsolePosition();
@@ -221,10 +221,10 @@ void GUIChatConsole::recalculateConsolePosition()
 	recalculateAbsolutePosition(false);
 }
 
-void GUIChatConsole::animate(u32 msec)
+void GUIChatConsole::animate(uint32_t msec)
 {
 	// animate the console height
-	s32 goal = m_open ? m_desired_height : 0;
+	int32_t goal = m_open ? m_desired_height : 0;
 
 	// Set invisible if close animation finished (reset by openConsole)
 	// This function (animate()) is never called once its visibility becomes false so do not
@@ -234,7 +234,7 @@ void GUIChatConsole::animate(u32 msec)
 
 	if (m_height != goal)
 	{
-		s32 max_change = msec * m_screensize.Y * (m_height_speed / 1000.0);
+		int32_t max_change = msec * m_screensize.Y * (m_height_speed / 1000.0);
 		if (max_change == 0)
 			max_change = 1;
 
@@ -261,7 +261,7 @@ void GUIChatConsole::animate(u32 msec)
 	// blink the cursor
 	if (m_cursor_blink_speed != 0.0)
 	{
-		u32 blink_increase = 0x10000 * msec * (m_cursor_blink_speed / 1000.0);
+		uint32_t blink_increase = 0x10000 * msec * (m_cursor_blink_speed / 1000.0);
 		if (blink_increase == 0)
 			blink_increase = 1;
 		m_cursor_blink = ((m_cursor_blink + blink_increase) & 0xffff);
@@ -303,19 +303,19 @@ void GUIChatConsole::drawText()
 		return;
 
 	ChatBuffer& buf = m_chat_backend->getConsoleBuffer();
-	for (u32 row = 0; row < buf.getRows(); ++row)
+	for (uint32_t row = 0; row < buf.getRows(); ++row)
 	{
 		const ChatFormattedLine& line = buf.getFormattedLine(row);
 		if (line.fragments.empty())
 			continue;
 
-		s32 line_height = m_fontsize.Y;
-		s32 y = row * line_height + m_height - m_desired_height;
+		int32_t line_height = m_fontsize.Y;
+		int32_t y = row * line_height + m_height - m_desired_height;
 		if (y + line_height < 0)
 			continue;
 
 		for (const ChatFormattedFragment &fragment : line.fragments) {
-			s32 x = (fragment.column + 1) * m_fontsize.X;
+			int32_t x = (fragment.column + 1) * m_fontsize.X;
 			core::rect<s32> destrect(
 				x, y, x + m_fontsize.X * fragment.text.size(), y + m_fontsize.Y);
 
@@ -351,19 +351,19 @@ void GUIChatConsole::drawPrompt()
 	if (!m_font)
 		return;
 
-	u32 row = m_chat_backend->getConsoleBuffer().getRows();
-	s32 line_height = m_fontsize.Y;
-	s32 y = row * line_height + m_height - m_desired_height;
+	uint32_t row = m_chat_backend->getConsoleBuffer().getRows();
+	int32_t line_height = m_fontsize.Y;
+	int32_t y = row * line_height + m_height - m_desired_height;
 
 	ChatPrompt& prompt = m_chat_backend->getPrompt();
 	std::wstring prompt_text = prompt.getVisiblePortion();
 
 	// FIXME Draw string at once, not character by character
 	// That will only work with the cursor once we have a monospace font
-	for (u32 i = 0; i < prompt_text.size(); ++i)
+	for (uint32_t i = 0; i < prompt_text.size(); ++i)
 	{
 		wchar_t ws[2] = {prompt_text[i], 0};
-		s32 x = (1 + i) * m_fontsize.X;
+		int32_t x = (1 + i) * m_fontsize.X;
 		core::rect<s32> destrect(
 			x, y, x + m_fontsize.X, y + m_fontsize.Y);
 		m_font->draw(
@@ -378,12 +378,12 @@ void GUIChatConsole::drawPrompt()
 	// Draw the cursor during on periods
 	if ((m_cursor_blink & 0x8000) != 0)
 	{
-		s32 cursor_pos = prompt.getVisibleCursorPosition();
+		int32_t cursor_pos = prompt.getVisibleCursorPosition();
 		if (cursor_pos >= 0)
 		{
-			s32 cursor_len = prompt.getCursorLength();
+			int32_t cursor_len = prompt.getCursorLength();
 			video::IVideoDriver* driver = Environment->getVideoDriver();
-			s32 x = (1 + cursor_pos) * m_fontsize.X;
+			int32_t x = (1 + cursor_pos) * m_fontsize.X;
 			core::rect<s32> destrect(
 				x,
 				y + m_fontsize.Y * (1.0 - m_cursor_height),
@@ -621,7 +621,7 @@ bool GUIChatConsole::OnEvent(const SEvent& event)
 	{
 		if(event.MouseInput.Event == EMIE_MOUSE_WHEEL)
 		{
-			s32 rows = myround(-3.0 * event.MouseInput.Wheel);
+			int32_t rows = myround(-3.0 * event.MouseInput.Wheel);
 			m_chat_backend->scroll(rows);
 		}
 	}

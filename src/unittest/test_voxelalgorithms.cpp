@@ -50,9 +50,9 @@ void TestVoxelAlgorithms::testVoxelLineIterator(const NodeDefManager *ndef)
 	// Do not test lines that start or end on the border of
 	// two voxels as rounding errors can make the test fail!
 	std::vector<core::line3d<f32> > lines;
-	for (f32 x = -9.1; x < 9; x += 3.124) {
-	for (f32 y = -9.2; y < 9; y += 3.123) {
-	for (f32 z = -9.3; z < 9; z += 3.122) {
+	for (float x = -9.1; x < 9; x += 3.124) {
+	for (float y = -9.2; y < 9; y += 3.123) {
+	for (float z = -9.3; z < 9; z += 3.122) {
 		lines.emplace_back(-x, -y, -z, x, y, z);
 	}
 	}

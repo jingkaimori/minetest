@@ -66,21 +66,21 @@ Address::Address()
 	memset(&m_address, 0, sizeof(m_address));
 }
 
-Address::Address(u32 address, u16 port)
+Address::Address(uint32_t address, uint16_t port)
 {
 	memset(&m_address, 0, sizeof(m_address));
 	setAddress(address);
 	setPort(port);
 }
 
-Address::Address(u8 a, u8 b, u8 c, u8 d, u16 port)
+Address::Address(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint16_t port)
 {
 	memset(&m_address, 0, sizeof(m_address));
 	setAddress(a, b, c, d);
 	setPort(port);
 }
 
-Address::Address(const IPv6AddressBytes *ipv6_bytes, u16 port)
+Address::Address(const IPv6AddressBytes *ipv6_bytes, uint16_t port)
 {
 	memset(&m_address, 0, sizeof(m_address));
 	setAddress(ipv6_bytes);
@@ -115,7 +115,7 @@ void Address::Resolve(const char *name)
 {
 	if (!name || name[0] == 0) {
 		if (m_addr_family == AF_INET) {
-			setAddress((u32)0);
+			setAddress((uint32_t)0);
 		} else if (m_addr_family == AF_INET6) {
 			setAddress((IPv6AddressBytes *)0);
 		}
@@ -163,8 +163,8 @@ std::string Address::serializeString() const
 // windows XP doesnt have inet_ntop, maybe use better func
 #ifdef _WIN32
 	if (m_addr_family == AF_INET) {
-		u8 a, b, c, d;
-		u32 addr;
+		uint8_t a, b, c, d;
+		uint32_t addr;
 		addr = ntohl(m_address.ipv4.sin_addr.s_addr);
 		a = (addr & 0xFF000000) >> 24;
 		b = (addr & 0x00FF0000) >> 16;
@@ -174,7 +174,7 @@ std::string Address::serializeString() const
 	} else if (m_addr_family == AF_INET6) {
 		std::ostringstream os;
 		for (int i = 0; i < 16; i += 2) {
-			u16 section = (m_address.ipv6.sin6_addr.s6_addr[i] << 8) |
+			uint16_t section = (m_address.ipv6.sin6_addr.s6_addr[i] << 8) |
 				      (m_address.ipv6.sin6_addr.s6_addr[i + 1]);
 			os << std::hex << section;
 			if (i < 14)
@@ -234,18 +234,18 @@ bool Address::isZero() const
 	return false;
 }
 
-void Address::setAddress(u32 address)
+void Address::setAddress(uint32_t address)
 {
 	m_addr_family = AF_INET;
 	m_address.ipv4.sin_family = AF_INET;
 	m_address.ipv4.sin_addr.s_addr = htonl(address);
 }
 
-void Address::setAddress(u8 a, u8 b, u8 c, u8 d)
+void Address::setAddress(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
 {
 	m_addr_family = AF_INET;
 	m_address.ipv4.sin_family = AF_INET;
-	u32 addr = htonl((a << 24) | (b << 16) | (c << 8) | d);
+	uint32_t addr = htonl((a << 24) | (b << 16) | (c << 8) | d);
 	m_address.ipv4.sin_addr.s_addr = addr;
 }
 
@@ -259,7 +259,7 @@ void Address::setAddress(const IPv6AddressBytes *ipv6_bytes)
 		memset(m_address.ipv6.sin6_addr.s6_addr, 0, 16);
 }
 
-void Address::setPort(u16 port)
+void Address::setPort(uint16_t port)
 {
 	m_port = port;
 }

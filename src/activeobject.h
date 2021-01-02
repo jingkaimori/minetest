@@ -44,13 +44,13 @@ enum ActiveObjectType {
 
 struct ActiveObjectMessage
 {
-	ActiveObjectMessage(u16 id_, bool reliable_=true, const std::string &data_ = "") :
+	ActiveObjectMessage(uint16_t id_, bool reliable_=true, const std::string &data_ = "") :
 		id(id_),
 		reliable(reliable_),
 		datastring(data_)
 	{}
 
-	u16 id;
+	uint16_t id;
 	bool reliable;
 	std::string datastring;
 };
@@ -78,17 +78,17 @@ enum ActiveObjectCommand {
 class ActiveObject
 {
 public:
-	ActiveObject(u16 id):
+	ActiveObject(uint16_t id):
 		m_id(id)
 	{
 	}
 
-	u16 getId() const
+	uint16_t getId() const
 	{
 		return m_id;
 	}
 
-	void setId(u16 id)
+	void setId(uint16_t id)
 	{
 		m_id = id;
 	}
@@ -128,5 +128,5 @@ public:
 	virtual void addAttachmentChild(int child_id) {}
 	virtual void removeAttachmentChild(int child_id) {}
 protected:
-	u16 m_id; // 0 is invalid, "no id"
+	uint16_t m_id; // 0 is invalid, "no id"
 };

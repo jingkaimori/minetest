@@ -75,12 +75,12 @@ protected:
 		return std::string(text ? text : "");
 	}
 
-	inline s32 sqlite_to_int(sqlite3_stmt *s, int iCol)
+	inline int32_t sqlite_to_int(sqlite3_stmt *s, int iCol)
 	{
 		return sqlite3_column_int(s, iCol);
 	}
 
-	inline u32 sqlite_to_uint(sqlite3_stmt *s, int iCol)
+	inline uint32_t sqlite_to_uint(sqlite3_stmt *s, int iCol)
 	{
 		return (u32) sqlite3_column_int(s, iCol);
 	}
@@ -90,7 +90,7 @@ protected:
 		return (s64) sqlite3_column_int64(s, iCol);
 	}
 
-	inline u64 sqlite_to_uint64(sqlite3_stmt *s, int iCol)
+	inline uint64_t sqlite_to_uint64(sqlite3_stmt *s, int iCol)
 	{
 		return (u64) sqlite3_column_int64(s, iCol);
 	}

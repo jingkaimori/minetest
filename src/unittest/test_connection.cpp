@@ -73,47 +73,47 @@ struct Handler : public con::PeerHandler
 		count--;
 	}
 
-	s32 count = 0;
-	u16 last_id = 0;
+	int32_t count = 0;
+	uint16_t last_id = 0;
 	const char *name;
 };
 
 void TestConnection::testHelpers()
 {
 	// Some constants for testing
-	u32 proto_id = 0x12345678;
+	uint32_t proto_id = 0x12345678;
 	session_t peer_id = 123;
-	u8 channel = 2;
-	SharedBuffer<u8> data1(1);
+	uint8_t channel = 2;
+	SharedBuffer<uint8_t> data1(1);
 	data1[0] = 100;
 	Address a(127,0,0,1, 10);
-	const u16 seqnum = 34352;
+	const uint16_t seqnum = 34352;
 
 	con::BufferedPacket p1 = con::makePacket(a, data1,
 			proto_id, peer_id, channel);
 	/*
 		We should now have a packet with this data:
 		Header:
-			[0] u32 protocol_id
+			[0] uint32_t protocol_id
 			[4] session_t sender_peer_id
-			[6] u8 channel
+			[6] uint8_t channel
 		Data:
-			[7] u8 data1[0]
+			[7] uint8_t data1[0]
 	*/
 	UASSERT(readU32(&p1.data[0]) == proto_id);
 	UASSERT(readU16(&p1.data[4]) == peer_id);
 	UASSERT(readU8(&p1.data[6]) == channel);
 	UASSERT(readU8(&p1.data[7]) == data1[0]);
 
-	//infostream<<"initial data1[0]="<<((u32)data1[0]&0xff)<<std::endl;
+	//infostream<<"initial data1[0]="<<((uint32_t)data1[0]&0xff)<<std::endl;
 
-	SharedBuffer<u8> p2 = con::makeReliablePacket(data1, seqnum);
+	SharedBuffer<uint8_t> p2 = con::makeReliablePacket(data1, seqnum);
 
 	/*infostream<<"p2.getSize()="<<p2.getSize()<<", data1.getSize()="
 			<<data1.getSize()<<std::endl;
 	infostream<<"readU8(&p2[3])="<<readU8(&p2[3])
-			<<" p2[3]="<<((u32)p2[3]&0xff)<<std::endl;
-	infostream<<"data1[0]="<<((u32)data1[0]&0xff)<<std::endl;*/
+			<<" p2[3]="<<((uint32_t)p2[3]&0xff)<<std::endl;
+	infostream<<"data1[0]="<<((uint32_t)data1[0]&0xff)<<std::endl;*/
 
 	UASSERT(p2.getSize() == 3 + data1.getSize());
 	UASSERT(readU8(&p2[0]) == con::PACKET_TYPE_RELIABLE);
@@ -130,7 +130,7 @@ void TestConnection::testConnectSendReceive()
 		NOTE: This mostly tests the legacy interface.
 	*/
 
-	u32 proto_id = 0xad26846a;
+	uint32_t proto_id = 0xad26846a;
 
 	Handler hand_server("server");
 	Handler hand_client("client");
@@ -243,9 +243,9 @@ void TestConnection::testConnectSendReceive()
 	*/
 	{
 		NetworkPacket pkt;
-		pkt.putRawPacket((u8*) "Hello World !", 14, 0);
+		pkt.putRawPacket((uint8_t*) "Hello World !", 14, 0);
 
-		SharedBuffer<u8> sentdata = pkt.oldForgePacket();
+		SharedBuffer<uint8_t> sentdata = pkt.oldForgePacket();
 
 		infostream<<"** running client.Send()"<<std::endl;
 		client.Send(PEER_ID_SERVER, 0, &pkt, true);
@@ -260,7 +260,7 @@ void TestConnection::testConnectSendReceive()
 				<< ", data=" << (const char*)pkt.getU8Ptr(0)
 				<< std::endl;
 
-		SharedBuffer<u8> recvdata = pkt.oldForgePacket();
+		SharedBuffer<uint8_t> recvdata = pkt.oldForgePacket();
 
 		UASSERT(memcmp(*sentdata, *recvdata, recvdata.getSize()) == 0);
 	}
@@ -272,8 +272,8 @@ void TestConnection::testConnectSendReceive()
 	{
 		const int datasize = 30000;
 		NetworkPacket pkt(0, datasize);
-		for (u16 i=0; i<datasize; i++) {
-			pkt << (u8) i/4;
+		for (uint16_t i=0; i<datasize; i++) {
+			pkt << (uint8_t) i/4;
 		}
 
 		infostream << "Sending data (size=" << datasize << "):";
@@ -289,18 +289,18 @@ void TestConnection::testConnectSendReceive()
 			infostream << "...";
 		infostream << std::endl;
 
-		SharedBuffer<u8> sentdata = pkt.oldForgePacket();
+		SharedBuffer<uint8_t> sentdata = pkt.oldForgePacket();
 
 		server.Send(peer_id_client, 0, &pkt, true);
 
 		//sleep_ms(3000);
 
-		SharedBuffer<u8> recvdata;
+		SharedBuffer<uint8_t> recvdata;
 		infostream << "** running client.Receive()" << std::endl;
 		session_t peer_id = 132;
-		u16 size = 0;
+		uint16_t size = 0;
 		bool received = false;
-		u64 timems0 = porting::getTimeMs();
+		uint64_t timems0 = porting::getTimeMs();
 		for (;;) {
 			if (porting::getTimeMs() - timems0 > 5000 || received)
 				break;

@@ -59,7 +59,7 @@ void TestInventory::testSerializeDeserialize(IItemDefManager *idef)
 	inv.getList("0")->setName("main");
 	UASSERT(!inv.getList("0"));
 	UASSERT(inv.getList("main"));
-	UASSERTEQ(u32, inv.getList("main")->getWidth(), 3);
+	UASSERTEQ(uint32_t, inv.getList("main")->getWidth(), 3);
 
 	inv.getList("main")->setWidth(5);
 	std::ostringstream inv_os(std::ios::binary);

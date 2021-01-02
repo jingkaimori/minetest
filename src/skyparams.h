@@ -49,7 +49,7 @@ struct SunParams
 	std::string tonemap;
 	std::string sunrise;
 	bool sunrise_visible;
-	f32 scale;
+	float scale;
 };
 
 struct MoonParams
@@ -57,15 +57,15 @@ struct MoonParams
 	bool visible;
 	std::string texture;
 	std::string tonemap;
-	f32 scale;
+	float scale;
 };
 
 struct StarParams
 {
 	bool visible;
-	u32 count;
+	uint32_t count;
 	video::SColor starcolor;
-	f32 scale;
+	float scale;
 };
 
 // Utility class for setting default sky, sun, moon, stars values:

@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "client/mesh.h"
 
 void MeshCollector::append(const TileSpec &tile, const video::S3DVertex *vertices,
-		u32 numVertices, const u16 *indices, u32 numIndices)
+		uint32_t numVertices, const uint16_t *indices, uint32_t numIndices)
 {
 	for (int layernum = 0; layernum < MAX_TILE_LAYERS; layernum++) {
 		const TileLayer *layer = &tile.layers[layernum];
@@ -35,27 +35,27 @@ void MeshCollector::append(const TileSpec &tile, const video::S3DVertex *vertice
 }
 
 void MeshCollector::append(const TileLayer &layer, const video::S3DVertex *vertices,
-		u32 numVertices, const u16 *indices, u32 numIndices, u8 layernum,
+		uint32_t numVertices, const uint16_t *indices, uint32_t numIndices, uint8_t layernum,
 		bool use_scale)
 {
 	PreMeshBuffer &p = findBuffer(layer, layernum, numVertices);
 
-	f32 scale = 1.0f;
+	float scale = 1.0f;
 	if (use_scale)
 		scale = 1.0f / layer.scale;
 
-	u32 vertex_count = p.vertices.size();
-	for (u32 i = 0; i < numVertices; i++)
+	uint32_t vertex_count = p.vertices.size();
+	for (uint32_t i = 0; i < numVertices; i++)
 		p.vertices.emplace_back(vertices[i].Pos, vertices[i].Normal,
 				vertices[i].Color, scale * vertices[i].TCoords);
 
-	for (u32 i = 0; i < numIndices; i++)
+	for (uint32_t i = 0; i < numIndices; i++)
 		p.indices.push_back(indices[i] + vertex_count);
 }
 
 void MeshCollector::append(const TileSpec &tile, const video::S3DVertex *vertices,
-		u32 numVertices, const u16 *indices, u32 numIndices, v3f pos,
-		video::SColor c, u8 light_source)
+		uint32_t numVertices, const uint16_t *indices, uint32_t numIndices, v3f pos,
+		video::SColor c, uint8_t light_source)
 {
 	for (int layernum = 0; layernum < MAX_TILE_LAYERS; layernum++) {
 		const TileLayer *layer = &tile.layers[layernum];
@@ -67,17 +67,17 @@ void MeshCollector::append(const TileSpec &tile, const video::S3DVertex *vertice
 }
 
 void MeshCollector::append(const TileLayer &layer, const video::S3DVertex *vertices,
-		u32 numVertices, const u16 *indices, u32 numIndices, v3f pos,
-		video::SColor c, u8 light_source, u8 layernum, bool use_scale)
+		uint32_t numVertices, const uint16_t *indices, uint32_t numIndices, v3f pos,
+		video::SColor c, uint8_t light_source, uint8_t layernum, bool use_scale)
 {
 	PreMeshBuffer &p = findBuffer(layer, layernum, numVertices);
 
-	f32 scale = 1.0f;
+	float scale = 1.0f;
 	if (use_scale)
 		scale = 1.0f / layer.scale;
 
-	u32 vertex_count = p.vertices.size();
-	for (u32 i = 0; i < numVertices; i++) {
+	uint32_t vertex_count = p.vertices.size();
+	for (uint32_t i = 0; i < numVertices; i++) {
 		video::SColor color = c;
 		if (!light_source)
 			applyFacesShading(color, vertices[i].Normal);
@@ -85,12 +85,12 @@ void MeshCollector::append(const TileLayer &layer, const video::S3DVertex *verti
 				scale * vertices[i].TCoords);
 	}
 
-	for (u32 i = 0; i < numIndices; i++)
+	for (uint32_t i = 0; i < numIndices; i++)
 		p.indices.push_back(indices[i] + vertex_count);
 }
 
 PreMeshBuffer &MeshCollector::findBuffer(
-		const TileLayer &layer, u8 layernum, u32 numVertices)
+		const TileLayer &layer, uint8_t layernum, uint32_t numVertices)
 {
 	if (numVertices > U16_MAX)
 		throw std::invalid_argument(

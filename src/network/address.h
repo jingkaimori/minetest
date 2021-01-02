@@ -39,7 +39,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class IPv6AddressBytes
 {
 public:
-	u8 bytes[16];
+	uint8_t bytes[16];
 	IPv6AddressBytes() { memset(bytes, 0, 16); }
 };
 
@@ -47,17 +47,17 @@ class Address
 {
 public:
 	Address();
-	Address(u32 address, u16 port);
-	Address(u8 a, u8 b, u8 c, u8 d, u16 port);
-	Address(const IPv6AddressBytes *ipv6_bytes, u16 port);
+	Address(uint32_t address, uint16_t port);
+	Address(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint16_t port);
+	Address(const IPv6AddressBytes *ipv6_bytes, uint16_t port);
 	bool operator==(const Address &address);
 	bool operator!=(const Address &address);
 	// Resolve() may throw ResolveError (address is unchanged in this case)
 	void Resolve(const char *name);
 	struct sockaddr_in getAddress() const;
 	unsigned short getPort() const;
-	void setAddress(u32 address);
-	void setAddress(u8 a, u8 b, u8 c, u8 d);
+	void setAddress(uint32_t address);
+	void setAddress(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
 	void setAddress(const IPv6AddressBytes *ipv6_bytes);
 	struct sockaddr_in6 getAddress6() const;
 	int getFamily() const;
@@ -75,5 +75,5 @@ private:
 		struct sockaddr_in ipv4;
 		struct sockaddr_in6 ipv6;
 	} m_address;
-	u16 m_port = 0; // Port is separate from sockaddr structures
+	uint16_t m_port = 0; // Port is separate from sockaddr structures
 };

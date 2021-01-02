@@ -112,7 +112,7 @@ void TestThreading::testStartStopWait()
 
 class AtomicTestThread : public Thread {
 public:
-	AtomicTestThread(std::atomic<u32> &v, Semaphore &trigger) :
+	AtomicTestThread(std::atomic<uint32_t> &v, Semaphore &trigger) :
 		Thread("AtomicTest"),
 		val(v),
 		trigger(trigger)
@@ -123,22 +123,22 @@ private:
 	void *run()
 	{
 		trigger.wait();
-		for (u32 i = 0; i < 0x10000; ++i)
+		for (uint32_t i = 0; i < 0x10000; ++i)
 			++val;
 		return NULL;
 	}
 
-	std::atomic<u32> &val;
+	std::atomic<uint32_t> &val;
 	Semaphore &trigger;
 };
 
 
 void TestThreading::testAtomicSemaphoreThread()
 {
-	std::atomic<u32> val;
+	std::atomic<uint32_t> val;
 	val = 0;
 	Semaphore trigger;
-	static const u8 num_threads = 4;
+	static const uint8_t num_threads = 4;
 
 	AtomicTestThread *threads[num_threads];
 	for (auto &thread : threads) {

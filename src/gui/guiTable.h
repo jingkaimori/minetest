@@ -51,9 +51,9 @@ public:
 	*/
 	struct DynamicData
 	{
-		s32 selected = 0;
-		s32 scrollpos = 0;
-		s32 keynav_time = 0;
+		int32_t selected = 0;
+		int32_t scrollpos = 0;
+		int32_t keynav_time = 0;
 		core::stringw keynav_buffer;
 		std::set<s32> opened_trees;
 	};
@@ -89,7 +89,7 @@ public:
 
 
 	GUITable(gui::IGUIEnvironment *env,
-			gui::IGUIElement *parent, s32 id,
+			gui::IGUIElement *parent, int32_t id,
 			core::rect<s32> rectangle,
 			ISimpleTextureSource *tsrc);
 
@@ -116,12 +116,12 @@ public:
 	std::string checkEvent();
 
 	/* Get index of currently selected row (first=1; 0 if none selected) */
-	s32 getSelected() const;
+	int32_t getSelected() const;
 
 	/* Set currently selected row (first=1; 0 if none selected) */
 	// If given index is not visible at the moment, select its parent
 	// Autoscroll to make the selected row fully visible
-	void setSelected(s32 index);
+	void setSelected(int32_t index);
 
 	//! Sets another skin independent font. If this is set to zero, the button uses the font of the skin.
 	virtual void setOverrideFont(gui::IGUIFont *font = nullptr);
@@ -157,25 +157,25 @@ protected:
 	};
 
 	struct Cell {
-		s32 xmin;
-		s32 xmax;
-		s32 xpos;
+		int32_t xmin;
+		int32_t xmax;
+		int32_t xpos;
 		ColumnType content_type;
-		s32 content_index;
-		s32 tooltip_index;
+		int32_t content_index;
+		int32_t tooltip_index;
 		video::SColor color;
 		bool color_defined;
-		s32 reported_column;
+		int32_t reported_column;
 	};
 
 	struct Row {
 		Cell *cells;
-		s32 cellcount;
-		s32 indent;
+		int32_t cellcount;
+		int32_t indent;
 		// visible_index >= 0: is index of row in m_visible_rows
 		// visible_index == -1: parent open but other ancestor closed
 		// visible_index == -2: parent closed
-		s32 visible_index;
+		int32_t visible_index;
 	};
 
 	// Texture source
@@ -189,12 +189,12 @@ protected:
 	bool m_has_tree_column = false;
 
 	// Selection status
-	s32 m_selected = -1; // index of row (1...n), or 0 if none selected
-	s32 m_sel_column = 0;
+	int32_t m_selected = -1; // index of row (1...n), or 0 if none selected
+	int32_t m_sel_column = 0;
 	bool m_sel_doubleclick = false;
 
 	// Keyboard navigation stuff
-	u64 m_keynav_time = 0;
+	uint64_t m_keynav_time = 0;
 	core::stringw m_keynav_buffer = L"";
 
 	// Drawing and geometry information
@@ -203,7 +203,7 @@ protected:
 	video::SColor m_background = video::SColor(255, 0, 0, 0);
 	video::SColor m_highlight = video::SColor(255, 70, 100, 50);
 	video::SColor m_highlight_text = video::SColor(255, 255, 255, 255);
-	s32 m_rowheight = 1;
+	int32_t m_rowheight = 1;
 	gui::IGUIFont *m_font = nullptr;
 	GUIScrollBar *m_scrollbar = nullptr;
 
@@ -213,8 +213,8 @@ protected:
 	std::map<std::string, s32> m_alloc_strings;
 	std::map<std::string, s32> m_alloc_images;
 
-	s32 allocString(const std::string &text);
-	s32 allocImage(const std::string &imagename);
+	int32_t allocString(const std::string &text);
+	int32_t allocImage(const std::string &imagename);
 	void allocationComplete();
 
 	// Helper for draw() that draws a single cell
@@ -223,19 +223,19 @@ protected:
 			const core::rect<s32> &client_clip);
 
 	// Returns the i-th visible row (NULL if i is invalid)
-	const Row *getRow(s32 i) const;
+	const Row *getRow(int32_t i) const;
 
 	// Key navigation helper
 	bool doesRowStartWith(const Row *row, const core::stringw &str) const;
 
 	// Returns the row at a given screen Y coordinate
 	// Returns index i such that m_rows[i] is valid (or -1 on error)
-	s32 getRowAt(s32 y, bool &really_hovering) const;
+	int32_t getRowAt(int32_t y, bool &really_hovering) const;
 
 	// Returns the cell at a given screen X coordinate within m_rows[row_i]
 	// Returns index j such that m_rows[row_i].cells[j] is valid
 	// (or -1 on error)
-	s32 getCellAt(s32 x, s32 row_i) const;
+	int32_t getCellAt(int32_t x, int32_t row_i) const;
 
 	// Make the selected row fully visible
 	void autoScroll();
@@ -244,20 +244,20 @@ protected:
 	void updateScrollBar();
 
 	// Sends EET_GUI_EVENT / EGET_TABLE_CHANGED to parent
-	void sendTableEvent(s32 column, bool doubleclick);
+	void sendTableEvent(int32_t column, bool doubleclick);
 
 	// Functions that help deal with hidden rows
 	// The following functions take raw row indices (hidden rows not skipped)
 	void getOpenedTrees(std::set<s32> &opened_trees) const;
 	void setOpenedTrees(const std::set<s32> &opened_trees);
-	void openTree(s32 to_open);
-	void closeTree(s32 to_close);
+	void openTree(int32_t to_open);
+	void closeTree(int32_t to_close);
 	// The following function takes a visible row index (hidden rows skipped)
 	// dir: -1 = left (close), 0 = auto (toggle), 1 = right (open)
-	void toggleVisibleTree(s32 row_i, int dir, bool move_selection);
+	void toggleVisibleTree(int32_t row_i, int dir, bool move_selection);
 
 	// Aligns cell content in column according to alignment specification
 	// align = 0: left aligned, 1: centered, 2: right aligned, 3: inline
-	static void alignContent(Cell *cell, s32 xmax, s32 content_width,
-			s32 align);
+	static void alignContent(Cell *cell, int32_t xmax, int32_t content_width,
+			int32_t align);
 };

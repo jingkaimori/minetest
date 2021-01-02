@@ -54,7 +54,7 @@ AreaStore *AreaStore::getOptimalImplementation()
 #endif
 }
 
-const Area *AreaStore::getArea(u32 id) const
+const Area *AreaStore::getArea(uint32_t id) const
 {
 	AreaMap::const_iterator it = areas_map.find(id);
 	if (it == areas_map.end())
@@ -88,19 +88,19 @@ void AreaStore::serialize(std::ostream &os) const
 
 void AreaStore::deserialize(std::istream &is)
 {
-	u8 ver = readU8(is);
+	uint8_t ver = readU8(is);
 	// Assume forwards-compatibility before version 5
 	if (ver >= 5)
 		throw SerializationError("Unknown AreaStore "
 				"serialization version!");
 
-	u16 num_areas = readU16(is);
+	uint16_t num_areas = readU16(is);
 	std::vector<Area> areas;
-	for (u32 i = 0; i < num_areas; ++i) {
+	for (uint32_t i = 0; i < num_areas; ++i) {
 		Area a(U32_MAX);
 		a.minedge = readV3S16(is);
 		a.maxedge = readV3S16(is);
-		u16 data_len = readU16(is);
+		uint16_t data_len = readU16(is);
 		char *data = new char[data_len];
 		is.read(data, data_len);
 		a.data = std::string(data, data_len);
@@ -124,9 +124,9 @@ void AreaStore::invalidateCache()
 	}
 }
 
-u32 AreaStore::getNextId() const
+uint32_t AreaStore::getNextId() const
 {
-	u32 free_id = 0;
+	uint32_t free_id = 0;
 	for (const auto &area : areas_map) {
 		if (area.first > free_id)
 			return free_id; // Found gap
@@ -137,7 +137,7 @@ u32 AreaStore::getNextId() const
 	return free_id;
 }
 
-void AreaStore::setCacheParams(bool enabled, u8 block_radius, size_t limit)
+void AreaStore::setCacheParams(bool enabled, uint8_t block_radius, size_t limit)
 {
 	m_cache_enabled = enabled;
 	m_cacheblock_radius = MYMAX(block_radius, 16);
@@ -148,7 +148,7 @@ void AreaStore::setCacheParams(bool enabled, u8 block_radius, size_t limit)
 void AreaStore::cacheMiss(void *data, const v3s16 &mpos, std::vector<Area *> *dest)
 {
 	AreaStore *as = (AreaStore *)data;
-	u8 r = as->m_cacheblock_radius;
+	uint8_t r = as->m_cacheblock_radius;
 
 	// get the points at the edges of the mapblock
 	v3s16 minedge(mpos.X * r, mpos.Y * r, mpos.Z * r);
@@ -204,7 +204,7 @@ bool VectorAreaStore::insertArea(Area *a)
 	return true;
 }
 
-bool VectorAreaStore::removeArea(u32 id)
+bool VectorAreaStore::removeArea(uint32_t id)
 {
 	AreaMap::iterator it = areas_map.find(id);
 	if (it == areas_map.end())
@@ -273,9 +273,9 @@ bool SpatialAreaStore::insertArea(Area *a)
 	return true;
 }
 
-bool SpatialAreaStore::removeArea(u32 id)
+bool SpatialAreaStore::removeArea(uint32_t id)
 {
-	std::map<u32, Area>::iterator itr = areas_map.find(id);
+	std::map<uint32_t, Area>::iterator itr = areas_map.find(id);
 	if (itr != areas_map.end()) {
 		Area *a = &itr->second;
 		bool result = m_tree->deleteData(get_spatial_region(a->minedge,

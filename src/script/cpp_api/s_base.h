@@ -58,7 +58,7 @@ extern "C" {
 #define setOriginFromTable(index) \
 	setOriginFromTableRaw(index, __FUNCTION__)
 
-enum class ScriptingType: u8 {
+enum class ScriptingType: uint8_t {
 	Async,
 	Client,
 	MainMenu,

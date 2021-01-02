@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "noise.h"
 #include "nodedef.h"
 
-typedef u16 biome_t;  // copy from mg_biome.h to avoid an unnecessary include
+typedef uint16_t biome_t;  // copy from mg_biome.h to avoid an unnecessary include
 
 class Noise;
 class Mapgen;
@@ -56,13 +56,13 @@ public:
 
 	content_t c_ore;                  // the node to place
 	std::vector<content_t> c_wherein; // the nodes to be placed in
-	u32 clust_scarcity; // ore cluster has a 1-in-clust_scarcity chance of appearing at a node
-	s16 clust_num_ores; // how many ore nodes are in a chunk
-	s16 clust_size;     // how large (in nodes) a chunk of ore is
-	s16 y_min;
-	s16 y_max;
-	u8 ore_param2;		// to set node-specific attributes
-	u32 flags = 0;          // attributes for this ore
+	uint32_t clust_scarcity; // ore cluster has a 1-in-clust_scarcity chance of appearing at a node
+	int16_t clust_num_ores; // how many ore nodes are in a chunk
+	int16_t clust_size;     // how large (in nodes) a chunk of ore is
+	int16_t y_min;
+	int16_t y_max;
+	uint8_t ore_param2;		// to set node-specific attributes
+	uint32_t flags = 0;          // attributes for this ore
 	float nthresh;      // threshold for noise at which an ore is placed
 	NoiseParams np;     // noise for distribution of clusters (NULL for uniform scattering)
 	Noise *noise = nullptr;
@@ -73,8 +73,8 @@ public:
 
 	virtual void resolveNodeNames();
 
-	size_t placeOre(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax);
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	size_t placeOre(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax);
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap) = 0;
 
 protected:
@@ -87,7 +87,7 @@ public:
 
 	ObjDef *clone() const;
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -97,11 +97,11 @@ public:
 
 	ObjDef *clone() const;
 
-	u16 column_height_min;
-	u16 column_height_max;
+	uint16_t column_height_min;
+	uint16_t column_height_max;
 	float column_midpoint_factor;
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -119,7 +119,7 @@ public:
 	OrePuff() = default;
 	virtual ~OrePuff();
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -129,7 +129,7 @@ public:
 
 	ObjDef *clone() const;
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -146,7 +146,7 @@ public:
 	OreVein() = default;
 	virtual ~OreVein();
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -158,12 +158,12 @@ public:
 
 	NoiseParams np_stratum_thickness;
 	Noise *noise_stratum_thickness = nullptr;
-	u16 stratum_thickness;
+	uint16_t stratum_thickness;
 
 	OreStratum() = default;
 	virtual ~OreStratum();
 
-	virtual void generate(MMVManip *vm, int mapseed, u32 blockseed,
+	virtual void generate(MMVManip *vm, int mapseed, uint32_t blockseed,
 		v3s16 nmin, v3s16 nmax, biome_t *biomemap);
 };
 
@@ -201,7 +201,7 @@ public:
 
 	void clear();
 
-	size_t placeAllOres(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax);
+	size_t placeAllOres(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax);
 
 private:
 	OreManager() {};

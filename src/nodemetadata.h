@@ -40,8 +40,8 @@ public:
 	NodeMetadata(IItemDefManager *item_def_mgr);
 	~NodeMetadata();
 
-	void serialize(std::ostream &os, u8 version, bool disk=true) const;
-	void deSerialize(std::istream &is, u8 version);
+	void serialize(std::ostream &os, uint8_t version, bool disk=true) const;
+	void deSerialize(std::istream &is, uint8_t version);
 
 	void clear();
 	bool empty() const;
@@ -81,7 +81,7 @@ public:
 
 	~NodeMetadataList();
 
-	void serialize(std::ostream &os, u8 blockver, bool disk = true,
+	void serialize(std::ostream &os, uint8_t blockver, bool disk = true,
 		bool absolute_pos = false) const;
 	void deSerialize(std::istream &is, IItemDefManager *item_def_mgr,
 		bool absolute_pos = false);

@@ -66,8 +66,8 @@ struct collisionMoveResult
 
 // Moves using a single iteration; speed should not exceed pos_max_d/dtime
 collisionMoveResult collisionMoveSimple(Environment *env,IGameDef *gamedef,
-		f32 pos_max_d, const aabb3f &box_0,
-		f32 stepheight, f32 dtime,
+		float pos_max_d, const aabb3f &box_0,
+		float stepheight, float dtime,
 		v3f *pos_f, v3f *speed_f,
 		v3f accel_f, ActiveObject *self=NULL,
 		bool collideWithObjects=true);
@@ -78,11 +78,11 @@ collisionMoveResult collisionMoveSimple(Environment *env,IGameDef *gamedef,
 // dtime receives time until first collision, invalid if -1 is returned
 CollisionAxis axisAlignedCollision(
 		const aabb3f &staticbox, const aabb3f &movingbox,
-		const v3f &speed, f32 *dtime);
+		const v3f &speed, float *dtime);
 
 // Helper function:
 // Checks if moving the movingbox up by the given distance would hit a ceiling.
 bool wouldCollideWithCeiling(
 		const std::vector<aabb3f> &staticboxes,
 		const aabb3f &movingbox,
-		f32 y_increase, f32 d);
+		float y_increase, float d);

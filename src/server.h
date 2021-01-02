@@ -104,7 +104,7 @@ struct ServerSoundParams
 	bool loop = false;
 	float max_hear_distance = 32 * BS;
 	v3f pos;
-	u16 object = 0;
+	uint16_t object = 0;
 	std::string to_player = "";
 	std::string exclude_player = "";
 
@@ -121,9 +121,9 @@ struct ServerPlayingSound
 struct MinimapMode {
 	MinimapType type = MINIMAP_TYPE_OFF;
 	std::string label;
-	u16 size = 0;
+	uint16_t size = 0;
 	std::string texture;
-	u16 scale = 1;
+	uint16_t scale = 1;
 };
 
 class Server : public con::PeerHandler, public MapEventReceiver,
@@ -198,7 +198,7 @@ public:
 
 	// Both setter and getter need no envlock,
 	// can be called freely from threads
-	void setTimeOfDay(u32 time);
+	void setTimeOfDay(uint32_t time);
 
 	/*
 		Shall be called with the environment locked.
@@ -219,10 +219,10 @@ public:
 
 	// Returns -1 if failed, sound handle on success
 	// Envlock
-	s32 playSound(const SimpleSoundSpec &spec, const ServerSoundParams &params,
+	int32_t playSound(const SimpleSoundSpec &spec, const ServerSoundParams &params,
 			bool ephemeral=false);
-	void stopSound(s32 handle);
-	void fadeSound(s32 handle, float step, float gain);
+	void stopSound(int32_t handle);
+	void fadeSound(int32_t handle, float step, float gain);
 
 	// Envlock
 	std::set<std::string> getPlayerEffectivePrivs(const std::string &name);
@@ -241,10 +241,10 @@ public:
 	void spawnParticle(const std::string &playername,
 		const ParticleParameters &p);
 
-	u32 addParticleSpawner(const ParticleSpawnerParameters &p,
+	uint32_t addParticleSpawner(const ParticleSpawnerParameters &p,
 		ServerActiveObject *attached, const std::string &playername);
 
-	void deleteParticleSpawner(const std::string &playername, u32 id);
+	void deleteParticleSpawner(const std::string &playername, uint32_t id);
 
 	bool dynamicAddMedia(const std::string &filepath);
 
@@ -264,7 +264,7 @@ public:
 	virtual IItemDefManager* getItemDefManager();
 	virtual const NodeDefManager* getNodeDefManager();
 	virtual ICraftDefManager* getCraftDefManager();
-	virtual u16 allocateUnknownNodeId(const std::string &name);
+	virtual uint16_t allocateUnknownNodeId(const std::string &name);
 	IRollbackManager *getRollbackManager() { return m_rollback; }
 	virtual EmergeManager *getEmergeManager() { return m_emerge; }
 
@@ -290,18 +290,18 @@ public:
 	ServerEnvironment & getEnv() { return *m_env; }
 	v3f findSpawnPos();
 
-	u32 hudAdd(RemotePlayer *player, HudElement *element);
-	bool hudRemove(RemotePlayer *player, u32 id);
-	bool hudChange(RemotePlayer *player, u32 id, HudElementStat stat, void *value);
-	bool hudSetFlags(RemotePlayer *player, u32 flags, u32 mask);
-	bool hudSetHotbarItemcount(RemotePlayer *player, s32 hotbar_itemcount);
+	uint32_t hudAdd(RemotePlayer *player, HudElement *element);
+	bool hudRemove(RemotePlayer *player, uint32_t id);
+	bool hudChange(RemotePlayer *player, uint32_t id, HudElementStat stat, void *value);
+	bool hudSetFlags(RemotePlayer *player, uint32_t flags, uint32_t mask);
+	bool hudSetHotbarItemcount(RemotePlayer *player, int32_t hotbar_itemcount);
 	void hudSetHotbarImage(RemotePlayer *player, const std::string &name);
 	void hudSetHotbarSelectedImage(RemotePlayer *player, const std::string &name);
 
 	Address getPeerAddress(session_t peer_id);
 
 	void setLocalPlayerAnimations(RemotePlayer *player, v2s32 animation_frames[4],
-			f32 frame_speed);
+			float frame_speed);
 	void setPlayerEyeOffset(RemotePlayer *player, const v3f &first, const v3f &third);
 
 	void setSky(RemotePlayer *player, const SkyboxParams &params);
@@ -318,7 +318,7 @@ public:
 	void deletingPeer(con::Peer *peer, bool timeout);
 
 	void DenySudoAccess(session_t peer_id);
-	void DenyAccessVerCompliant(session_t peer_id, u16 proto_ver, AccessDeniedCode reason,
+	void DenyAccessVerCompliant(session_t peer_id, uint16_t proto_ver, AccessDeniedCode reason,
 		const std::string &str_reason = "", bool reconnect = false);
 	void DenyAccess(session_t peer_id, AccessDeniedCode reason,
 		const std::string &custom_reason = "");
@@ -326,7 +326,7 @@ public:
 	void DenyAccess_Legacy(session_t peer_id, const std::wstring &reason);
 	void DisconnectPeer(session_t peer_id);
 	bool getClientConInfo(session_t peer_id, con::rtt_stat_type type, float *retval);
-	bool getClientInfo(session_t peer_id, ClientState *state, u32 *uptime,
+	bool getClientInfo(session_t peer_id, ClientState *state, uint32_t *uptime,
 			u8* ser_vers, u16* prot_vers, u8* major, u8* minor, u8* patch,
 			std::string* vers_string, std::string* lang_code);
 
@@ -389,38 +389,38 @@ private:
 	void init();
 
 	void SendMovement(session_t peer_id);
-	void SendHP(session_t peer_id, u16 hp);
-	void SendBreath(session_t peer_id, u16 breath);
+	void SendHP(session_t peer_id, uint16_t hp);
+	void SendBreath(session_t peer_id, uint16_t breath);
 	void SendAccessDenied(session_t peer_id, AccessDeniedCode reason,
 		const std::string &custom_reason, bool reconnect = false);
 	void SendAccessDenied_Legacy(session_t peer_id, const std::wstring &reason);
 	void SendDeathscreen(session_t peer_id, bool set_camera_point_target,
 		v3f camera_point_target);
-	void SendItemDef(session_t peer_id, IItemDefManager *itemdef, u16 protocol_version);
+	void SendItemDef(session_t peer_id, IItemDefManager *itemdef, uint16_t protocol_version);
 	void SendNodeDef(session_t peer_id, const NodeDefManager *nodedef,
-		u16 protocol_version);
+		uint16_t protocol_version);
 
 	/* mark blocks not sent for all clients */
 	void SetBlocksNotSent(std::map<v3s16, MapBlock *>& block);
 
 
 	virtual void SendChatMessage(session_t peer_id, const ChatMessage &message);
-	void SendTimeOfDay(session_t peer_id, u16 time, f32 time_speed);
+	void SendTimeOfDay(session_t peer_id, uint16_t time, float time_speed);
 	void SendPlayerHP(session_t peer_id);
 
 	void SendLocalPlayerAnimations(session_t peer_id, v2s32 animation_frames[4],
-		f32 animation_speed);
+		float animation_speed);
 	void SendEyeOffset(session_t peer_id, v3f first, v3f third);
 	void SendPlayerPrivileges(session_t peer_id);
 	void SendPlayerInventoryFormspec(session_t peer_id);
 	void SendPlayerFormspecPrepend(session_t peer_id);
 	void SendShowFormspecMessage(session_t peer_id, const std::string &formspec,
 		const std::string &formname);
-	void SendHUDAdd(session_t peer_id, u32 id, HudElement *form);
-	void SendHUDRemove(session_t peer_id, u32 id);
-	void SendHUDChange(session_t peer_id, u32 id, HudElementStat stat, void *value);
-	void SendHUDSetFlags(session_t peer_id, u32 flags, u32 mask);
-	void SendHUDSetParam(session_t peer_id, u16 param, const std::string &value);
+	void SendHUDAdd(session_t peer_id, uint32_t id, HudElement *form);
+	void SendHUDRemove(session_t peer_id, uint32_t id);
+	void SendHUDChange(session_t peer_id, uint32_t id, HudElementStat stat, void *value);
+	void SendHUDSetFlags(session_t peer_id, uint32_t flags, uint32_t mask);
+	void SendHUDSetParam(session_t peer_id, uint16_t param, const std::string &value);
 	void SendSetSky(session_t peer_id, const SkyboxParams &params);
 	void SendSetSun(session_t peer_id, const SunParams &params);
 	void SendSetMoon(session_t peer_id, const MoonParams &params);
@@ -446,7 +446,7 @@ private:
 			float far_d_nodes = 100);
 
 	// Environment and Connection must be locked when called
-	void SendBlockNoLock(session_t peer_id, MapBlock *block, u8 ver, u16 net_proto_version);
+	void SendBlockNoLock(session_t peer_id, MapBlock *block, uint8_t ver, uint16_t net_proto_version);
 
 	// Sends blocks to clients (locks env and con on its own)
 	void SendBlocks(float dtime);
@@ -459,13 +459,13 @@ private:
 			const std::vector<std::string> &tosend);
 
 	// Adds a ParticleSpawner on peer with peer_id (PEER_ID_INEXISTENT == all)
-	void SendAddParticleSpawner(session_t peer_id, u16 protocol_version,
-		const ParticleSpawnerParameters &p, u16 attached_id, u32 id);
+	void SendAddParticleSpawner(session_t peer_id, uint16_t protocol_version,
+		const ParticleSpawnerParameters &p, uint16_t attached_id, uint32_t id);
 
-	void SendDeleteParticleSpawner(session_t peer_id, u32 id);
+	void SendDeleteParticleSpawner(session_t peer_id, uint32_t id);
 
 	// Spawns particle on peer with peer_id (PEER_ID_INEXISTENT == all)
-	void SendSpawnParticle(session_t peer_id, u16 protocol_version,
+	void SendSpawnParticle(session_t peer_id, uint16_t protocol_version,
 		const ParticleParameters &p);
 
 	void SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersao);
@@ -481,7 +481,7 @@ private:
 	void RespawnPlayer(session_t peer_id);
 	void DeleteClient(session_t peer_id, ClientDeletionReason reason);
 	void UpdateCrafting(RemotePlayer *player);
-	bool checkInteractDistance(RemotePlayer *player, const f32 d, const std::string &what);
+	bool checkInteractDistance(RemotePlayer *player, const float d, const std::string &what);
 
 	void handleChatInterfaceEvent(ChatEvent *evt);
 
@@ -507,7 +507,7 @@ private:
 
 		Call with env and con locked.
 	*/
-	PlayerSAO *emergePlayer(const char *name, session_t peer_id, u16 proto_version);
+	PlayerSAO *emergePlayer(const char *name, session_t peer_id, uint16_t proto_version);
 
 	void handlePeerChanges();
 
@@ -521,7 +521,7 @@ private:
 	// If true, do not allow multiple players and hide some multiplayer
 	// functionality
 	bool m_simple_singleplayer_mode;
-	u16 m_max_chatmessage_length;
+	uint16_t m_max_chatmessage_length;
 	// For "dedicated" server list flag
 	bool m_dedicated;
 
@@ -645,15 +645,15 @@ private:
 		Sounds
 	*/
 	std::unordered_map<s32, ServerPlayingSound> m_playing_sounds;
-	s32 m_next_sound_id = 0; // positive values only
-	s32 nextSoundId();
+	int32_t m_next_sound_id = 0; // positive values only
+	int32_t nextSoundId();
 
 	std::unordered_map<std::string, ModMetadata *> m_mod_storages;
 	float m_mod_storage_save_timer = 10.0f;
 
 	// CSM restrictions byteflag
-	u64 m_csm_restriction_flags = CSMRestrictionFlags::CSM_RF_NONE;
-	u32 m_csm_restriction_noderange = 8;
+	uint64_t m_csm_restriction_flags = CSMRestrictionFlags::CSM_RF_NONE;
+	uint32_t m_csm_restriction_noderange = 8;
 
 	// ModChannel manager
 	std::unique_ptr<ModChannelMgr> m_modchannel_mgr;

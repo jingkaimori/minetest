@@ -58,10 +58,10 @@ void check_noise_params(const NoiseParams *np1, const NoiseParams *np2)
 	UASSERTEQ(float, np1->scale, np2->scale);
 	UASSERT(np1->spread == np2->spread);
 	UASSERTEQ(s32, np1->seed, np2->seed);
-	UASSERTEQ(u16, np1->octaves, np2->octaves);
+	UASSERTEQ(uint16_t, np1->octaves, np2->octaves);
 	UASSERTEQ(float, np1->persist, np2->persist);
 	UASSERTEQ(float, np1->lacunarity, np2->lacunarity);
-	UASSERTEQ(u32, np1->flags, np2->flags);
+	UASSERTEQ(uint32_t, np1->flags, np2->flags);
 }
 
 
@@ -209,9 +209,9 @@ void TestMapSettingsManager::testMapMetaSaveLoad()
 	UASSERT(params2);
 
 	// Check that both results are correct
-	UASSERTEQ(u64, params1->seed, 12345);
+	UASSERTEQ(uint64_t, params1->seed, 12345);
 	UASSERTEQ(s16, params1->water_level, 5);
-	UASSERTEQ(u64, params2->seed, 12345);
+	UASSERTEQ(uint64_t, params2->seed, 12345);
 	UASSERTEQ(s16, params2->water_level, 5);
 }
 

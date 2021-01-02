@@ -109,21 +109,21 @@ public:
 	bool serializeToMts(std::ostream *os,
 		const std::vector<std::string> &names) const;
 	bool serializeToLua(std::ostream *os, const std::vector<std::string> &names,
-		bool use_comments, u32 indent_spaces) const;
+		bool use_comments, uint32_t indent_spaces) const;
 
 	void blitToVManip(MMVManip *vm, v3s16 p, Rotation rot, bool force_place);
-	bool placeOnVManip(MMVManip *vm, v3s16 p, u32 flags, Rotation rot, bool force_place);
-	void placeOnMap(ServerMap *map, v3s16 p, u32 flags, Rotation rot, bool force_place);
+	bool placeOnVManip(MMVManip *vm, v3s16 p, uint32_t flags, Rotation rot, bool force_place);
+	void placeOnMap(ServerMap *map, v3s16 p, uint32_t flags, Rotation rot, bool force_place);
 
 	void applyProbabilities(v3s16 p0,
 		std::vector<std::pair<v3s16, u8> > *plist,
 		std::vector<std::pair<s16, u8> > *splist);
 
 	std::vector<content_t> c_nodes;
-	u32 flags = 0;
+	uint32_t flags = 0;
 	v3s16 size;
 	MapNode *schemdata = nullptr;
-	u8 *slice_probs = nullptr;
+	uint8_t *slice_probs = nullptr;
 };
 
 class SchematicManager : public ObjDefManager {

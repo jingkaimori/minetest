@@ -111,7 +111,7 @@ public:
 	bool parseCommandLine(int argc, char *argv[],
 			std::map<std::string, ValueSpec> &allowed_options);
 	bool parseConfigLines(std::istream &is, const std::string &end = "");
-	void writeLines(std::ostream &os, u32 tab_depth=0) const;
+	void writeLines(std::ostream &os, uint32_t tab_depth=0) const;
 
 	/***********
 	 * Getters *
@@ -121,16 +121,16 @@ public:
 	const std::string &get(const std::string &name) const;
 	const std::string &getDefault(const std::string &name) const;
 	bool getBool(const std::string &name) const;
-	u16 getU16(const std::string &name) const;
-	s16 getS16(const std::string &name) const;
-	u32 getU32(const std::string &name) const;
-	s32 getS32(const std::string &name) const;
-	u64 getU64(const std::string &name) const;
+	uint16_t getU16(const std::string &name) const;
+	int16_t getS16(const std::string &name) const;
+	uint32_t getU32(const std::string &name) const;
+	int32_t getS32(const std::string &name) const;
+	uint64_t getU64(const std::string &name) const;
 	float getFloat(const std::string &name) const;
 	v2f getV2F(const std::string &name) const;
 	v3f getV3F(const std::string &name) const;
-	u32 getFlagStr(const std::string &name, const FlagDesc *flagdesc,
-			u32 *flagmask) const;
+	uint32_t getFlagStr(const std::string &name, const FlagDesc *flagdesc,
+			uint32_t *flagmask) const;
 	bool getNoiseParams(const std::string &name, NoiseParams &np) const;
 	bool getNoiseParamsFromValue(const std::string &name, NoiseParams &np) const;
 	bool getNoiseParamsFromGroup(const std::string &name, NoiseParams &np) const;
@@ -148,10 +148,10 @@ public:
 	bool getNoEx(const std::string &name, std::string &val) const;
 	bool getDefaultNoEx(const std::string &name, std::string &val) const;
 	bool getFlag(const std::string &name) const;
-	bool getU16NoEx(const std::string &name, u16 &val) const;
-	bool getS16NoEx(const std::string &name, s16 &val) const;
-	bool getS32NoEx(const std::string &name, s32 &val) const;
-	bool getU64NoEx(const std::string &name, u64 &val) const;
+	bool getU16NoEx(const std::string &name, uint16_t &val) const;
+	bool getS16NoEx(const std::string &name, int16_t &val) const;
+	bool getS32NoEx(const std::string &name, int32_t &val) const;
+	bool getU64NoEx(const std::string &name, uint64_t &val) const;
 	bool getFloatNoEx(const std::string &name, float &val) const;
 	bool getV2FNoEx(const std::string &name, v2f &val) const;
 	bool getV3FNoEx(const std::string &name, v3f &val) const;
@@ -159,7 +159,7 @@ public:
 	// Like other getters, but handling each flag individualy:
 	// 1) Read default flags (or 0)
 	// 2) Override using user-defined flags
-	bool getFlagStrNoEx(const std::string &name, u32 &val,
+	bool getFlagStrNoEx(const std::string &name, uint32_t &val,
 		const FlagDesc *flagdesc) const;
 
 
@@ -176,15 +176,15 @@ public:
 	bool setGroup(const std::string &name, const Settings &group);
 	bool setGroupDefault(const std::string &name, const Settings &group);
 	bool setBool(const std::string &name, bool value);
-	bool setS16(const std::string &name, s16 value);
-	bool setU16(const std::string &name, u16 value);
-	bool setS32(const std::string &name, s32 value);
-	bool setU64(const std::string &name, u64 value);
+	bool setS16(const std::string &name, int16_t value);
+	bool setU16(const std::string &name, uint16_t value);
+	bool setS32(const std::string &name, int32_t value);
+	bool setU64(const std::string &name, uint64_t value);
 	bool setFloat(const std::string &name, float value);
 	bool setV2F(const std::string &name, v2f value);
 	bool setV3F(const std::string &name, v3f value);
-	bool setFlagStr(const std::string &name, u32 flags,
-		const FlagDesc *flagdesc = nullptr, u32 flagmask = U32_MAX);
+	bool setFlagStr(const std::string &name, uint32_t flags,
+		const FlagDesc *flagdesc = nullptr, uint32_t flagmask = U32_MAX);
 	bool setNoiseParams(const std::string &name, const NoiseParams &np,
 		bool set_default=false);
 
@@ -197,7 +197,7 @@ public:
 	 * Miscellany *
 	 **************/
 
-	void setDefault(const std::string &name, const FlagDesc *flagdesc, u32 flags);
+	void setDefault(const std::string &name, const FlagDesc *flagdesc, uint32_t flags);
 	// Takes the provided setting values and uses them as new defaults
 	void overrideDefaults(Settings *other);
 	const FlagDesc *getFlagDescFallback(const std::string &name) const;
@@ -217,13 +217,13 @@ private:
 	SettingsParseEvent parseConfigObject(const std::string &line,
 		const std::string &end, std::string &name, std::string &value);
 	bool updateConfigObject(std::istream &is, std::ostream &os,
-		const std::string &end, u32 tab_depth=0);
+		const std::string &end, uint32_t tab_depth=0);
 
 	static bool checkNameValid(const std::string &name);
 	static bool checkValueValid(const std::string &value);
 	static std::string getMultiline(std::istream &is, size_t *num_lines=NULL);
 	static void printEntry(std::ostream &os, const std::string &name,
-		const SettingsEntry &entry, u32 tab_depth=0);
+		const SettingsEntry &entry, uint32_t tab_depth=0);
 
 	/***********
 	 * Getters *

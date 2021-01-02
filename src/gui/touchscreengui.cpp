@@ -566,7 +566,7 @@ void TouchScreenGUI::init(ISimpleTextureSource *tsrc)
 	m_rarecontrolsbar.addButton(drop_id,      L"drop", "drop_btn.png");
 }
 
-touch_gui_button_id TouchScreenGUI::getButtonID(s32 x, s32 y)
+touch_gui_button_id TouchScreenGUI::getButtonID(int32_t x, int32_t y)
 {
 	IGUIElement *rootguielement = m_guienv->getRootGUIElement();
 
@@ -769,8 +769,8 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 			m_settingsbar.deactivate();
 			m_rarecontrolsbar.deactivate();
 
-			s32 dxj = event.TouchInput.X - button_size * 5.0f / 2.0f;
-			s32 dyj = event.TouchInput.Y - m_screensize.Y + button_size * 5.0f / 2.0f;
+			int32_t dxj = event.TouchInput.X - button_size * 5.0f / 2.0f;
+			int32_t dyj = event.TouchInput.Y - m_screensize.Y + button_size * 5.0f / 2.0f;
 
 			/* Select joystick when left 1/3 of screen dragged or
 			 * when joystick tapped (fixed joystick position)
@@ -834,12 +834,12 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 				if ((distance > m_touchscreen_threshold) ||
 						(m_move_has_really_moved)) {
 					m_move_has_really_moved = true;
-					s32 X = event.TouchInput.X;
-					s32 Y = event.TouchInput.Y;
+					int32_t X = event.TouchInput.X;
+					int32_t Y = event.TouchInput.Y;
 
 					// update camera_yaw and camera_pitch
-					s32 dx = X - m_pointerpos[event.TouchInput.ID].X;
-					s32 dy = Y - m_pointerpos[event.TouchInput.ID].Y;
+					int32_t dx = X - m_pointerpos[event.TouchInput.ID].X;
+					int32_t dy = Y - m_pointerpos[event.TouchInput.ID].Y;
 
 					// adapt to similar behaviour as pc screen
 					double d = g_settings->getFloat("mouse_sensitivity") * 3.0f;
@@ -865,11 +865,11 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 		}
 
 		if (m_joystick_id != -1 && event.TouchInput.ID == m_joystick_id) {
-			s32 X = event.TouchInput.X;
-			s32 Y = event.TouchInput.Y;
+			int32_t X = event.TouchInput.X;
+			int32_t Y = event.TouchInput.Y;
 
-			s32 dx = X - m_pointerpos[event.TouchInput.ID].X;
-			s32 dy = Y - m_pointerpos[event.TouchInput.ID].Y;
+			int32_t dx = X - m_pointerpos[event.TouchInput.ID].X;
+			int32_t dy = Y - m_pointerpos[event.TouchInput.ID].Y;
 			if (m_fixed_joystick) {
 				dx = X - button_size * 5 / 2;
 				dy = Y - m_screensize.Y + button_size * 5 / 2;
@@ -877,8 +877,8 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 
 			double distance_sq = dx * dx + dy * dy;
 
-			s32 dxj = event.TouchInput.X - button_size * 5.0f / 2.0f;
-			s32 dyj = event.TouchInput.Y - m_screensize.Y + button_size * 5.0f / 2.0f;
+			int32_t dxj = event.TouchInput.X - button_size * 5.0f / 2.0f;
+			int32_t dyj = event.TouchInput.Y - m_screensize.Y + button_size * 5.0f / 2.0f;
 			bool inside_joystick = (dxj * dxj + dyj * dyj <= button_size * button_size * 1.5 * 1.5);
 
 			if (m_joystick_has_really_moved || inside_joystick ||
@@ -925,8 +925,8 @@ void TouchScreenGUI::translateEvent(const SEvent &event)
 				if (distance > button_size) {
 					m_joystick_status[j_special1] = true;
 					// move joystick "button"
-					s32 ndx = button_size * dx / distance - button_size / 2.0f;
-					s32 ndy = button_size * dy / distance - button_size / 2.0f;
+					int32_t ndx = button_size * dx / distance - button_size / 2.0f;
+					int32_t ndy = button_size * dy / distance - button_size / 2.0f;
 					if (m_fixed_joystick) {
 						m_joystick_btn_center->guibutton->setRelativePosition(v2s32(
 							button_size * 5 / 2 + ndx,
@@ -996,7 +996,7 @@ bool TouchScreenGUI::doubleTapDetection()
 	m_key_events[1].x         = m_move_downlocation.X;
 	m_key_events[1].y         = m_move_downlocation.Y;
 
-	u64 delta = porting::getDeltaMs(m_key_events[0].down_time, porting::getTimeMs());
+	uint64_t delta = porting::getDeltaMs(m_key_events[0].down_time, porting::getTimeMs());
 	if (delta > 400)
 		return false;
 
@@ -1120,7 +1120,7 @@ void TouchScreenGUI::step(float dtime)
 			(!m_move_has_really_moved) &&
 			(!m_move_sent_as_mouse_event)) {
 
-		u64 delta = porting::getDeltaMs(m_move_downtime, porting::getTimeMs());
+		uint64_t delta = porting::getDeltaMs(m_move_downtime, porting::getTimeMs());
 
 		if (delta > MIN_DIG_TIME_MS) {
 			m_shootline = m_device

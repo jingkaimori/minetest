@@ -28,18 +28,18 @@ struct SubgameSpec;
 struct GameStartData;
 
 struct Jitter {
-	f32 max, min, avg, counter, max_sample, min_sample, max_fraction;
+	float max, min, avg, counter, max_sample, min_sample, max_fraction;
 };
 
 struct RunStats {
-	u32 drawtime;
+	uint32_t drawtime;
 
 	Jitter dtime_jitter, busy_time_jitter;
 };
 
 struct CameraOrientation {
-	f32 camera_yaw;    // "right/left"
-	f32 camera_pitch;  // "up/down"
+	float camera_yaw;    // "right/left"
+	float camera_pitch;  // "up/down"
 };
 
 

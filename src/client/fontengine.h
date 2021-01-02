@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define FONT_SIZE_UNSPECIFIED 0xFFFFFFFF
 
-enum FontMode : u8 {
+enum FontMode : uint8_t {
 	FM_Standard = 0,
 	FM_Mono,
 	FM_Fallback,
@@ -46,7 +46,7 @@ struct FontSpec {
 		bold(bold),
 		italic(italic) {}
 
-	u16 getHash()
+	uint16_t getHash()
 	{
 		return (mode << 2) | (static_cast<u8>(bold) << 1) | static_cast<u8>(italic);
 	}

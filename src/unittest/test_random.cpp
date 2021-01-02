@@ -39,9 +39,9 @@ public:
 	void testPcgRandomNormalDist();
 
 	static const int expected_pseudorandom_results[256];
-	static const u32 expected_pcgrandom_results[256];
-	static const u8 expected_pcgrandom_bytes_result[24];
-	static const u8 expected_pcgrandom_bytes_result2[24];
+	static const uint32_t expected_pcgrandom_results[256];
+	static const uint8_t expected_pcgrandom_bytes_result[24];
+	static const uint8_t expected_pcgrandom_bytes_result2[24];
 };
 
 static TestRandom g_test_instance;
@@ -62,7 +62,7 @@ void TestRandom::testPseudoRandom()
 {
 	PseudoRandom pr(814538);
 
-	for (u32 i = 0; i != 256; i++)
+	for (uint32_t i = 0; i != 256; i++)
 		UASSERTEQ(int, pr.next(), expected_pseudorandom_results[i]);
 }
 
@@ -74,7 +74,7 @@ void TestRandom::testPseudoRandomRange()
 	EXCEPTION_CHECK(PrngException, pr.range(2000, 6000));
 	EXCEPTION_CHECK(PrngException, pr.range(5, 1));
 
-	for (u32 i = 0; i != 32768; i++) {
+	for (uint32_t i = 0; i != 32768; i++) {
 		int min = (pr.next() % 3000) - 500;
 		int max = (pr.next() % 3000) - 500;
 		if (min > max)
@@ -91,8 +91,8 @@ void TestRandom::testPcgRandom()
 {
 	PcgRandom pr(814538, 998877);
 
-	for (u32 i = 0; i != 256; i++)
-		UASSERTEQ(u32, pr.next(), expected_pcgrandom_results[i]);
+	for (uint32_t i = 0; i != 256; i++)
+		UASSERTEQ(uint32_t, pr.next(), expected_pcgrandom_results[i]);
 }
 
 
@@ -105,7 +105,7 @@ void TestRandom::testPcgRandomRange()
 	// Regression test for bug 3027
 	pr.range(pr.RANDOM_MIN, pr.RANDOM_MAX);
 
-	for (u32 i = 0; i != 32768; i++) {
+	for (uint32_t i = 0; i != 32768; i++) {
 		int min = (pr.next() % 3000) - 500;
 		int max = (pr.next() % 3000) - 500;
 		if (min > max)
@@ -140,14 +140,14 @@ void TestRandom::testPcgRandomNormalDist()
 	static const int max = 120;
 	static const int min = -120;
 	static const int num_trials = 20;
-	static const u32 num_samples = 61000;
-	s32 bins[max - min + 1];
+	static const uint32_t num_samples = 61000;
+	int32_t bins[max - min + 1];
 	memset(bins, 0, sizeof(bins));
 
 	PcgRandom r(486179 + (int)time(NULL));
 
-	for (u32 i = 0; i != num_samples; i++) {
-		s32 randval = r.randNormalDist(min, max, num_trials);
+	for (uint32_t i = 0; i != num_samples; i++) {
+		int32_t randval = r.randNormalDist(min, max, num_trials);
 		UASSERT(randval <= max);
 		UASSERT(randval >= min);
 		bins[randval - min]++;
@@ -169,7 +169,7 @@ void TestRandom::testPcgRandomNormalDist()
 	};
 
 	//// Simple normality test using the 68-95-99.7% rule
-	for (u32 i = 0; i != ARRLEN(prediction_intervals); i++) {
+	for (uint32_t i = 0; i != ARRLEN(prediction_intervals); i++) {
 		float deviations = i / 2.f + 1.f;
 		int lbound = myround(mean - deviations * stddev);
 		int ubound = myround(mean + deviations * stddev);
@@ -218,7 +218,7 @@ const int TestRandom::expected_pseudorandom_results[256] = {
 	0x63b9, 0x1555, 0x1f41, 0x2d9f,
 };
 
-const u32 TestRandom::expected_pcgrandom_results[256] = {
+const uint32_t TestRandom::expected_pcgrandom_results[256] = {
 	0x48c593f8, 0x054f59f5, 0x0d062dc1, 0x23852a23, 0x7fbbc97b, 0x1f9f141e,
 	0x364e6ed8, 0x995bba58, 0xc9307dc0, 0x73fb34c4, 0xcd8de88d, 0x52e8ce08,
 	0x1c4a78e4, 0x25c0882e, 0x8a82e2e0, 0xe3bc3311, 0xb8068d42, 0x73186110,
@@ -264,12 +264,12 @@ const u32 TestRandom::expected_pcgrandom_results[256] = {
 	0x59f169e5, 0xe32acb78, 0x5dfaa9c4, 0x51bb956a,
 };
 
-const u8 TestRandom::expected_pcgrandom_bytes_result[24] = {
+const uint8_t TestRandom::expected_pcgrandom_bytes_result[24] = {
 	0xf3, 0x79, 0x8f, 0x31, 0xac, 0xd9, 0x34, 0xf8, 0x3c, 0x6e, 0x82, 0x37,
 	0x6b, 0x4b, 0x77, 0xe3, 0xbd, 0x0a, 0xee, 0x22, 0x79, 0x6e, 0x40, 0x00,
 };
 
-const u8 TestRandom::expected_pcgrandom_bytes_result2[24] = {
+const uint8_t TestRandom::expected_pcgrandom_bytes_result2[24] = {
 	0x47, 0x9e, 0x08, 0x3e, 0xd4, 0x21, 0x2d, 0xf6, 0xb4, 0xb1, 0x9d, 0x7a,
 	0x60, 0x02, 0x5a, 0xb2, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };

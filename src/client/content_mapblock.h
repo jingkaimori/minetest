@@ -26,12 +26,12 @@ struct MeshMakeData;
 struct MeshCollector;
 
 struct LightPair {
-	u8 lightDay;
-	u8 lightNight;
+	uint8_t lightDay;
+	uint8_t lightNight;
 
 	LightPair() = default;
-	explicit LightPair(u16 value) : lightDay(value & 0xff), lightNight(value >> 8) {}
-	LightPair(u8 valueA, u8 valueB) : lightDay(valueA), lightNight(valueB) {}
+	explicit LightPair(uint16_t value) : lightDay(value & 0xff), lightNight(value >> 8) {}
+	LightPair(uint8_t valueA, uint8_t valueB) : lightDay(valueA), lightNight(valueB) {}
 	LightPair(float valueA, float valueB) :
 		lightDay(core::clamp(core::round32(valueA), 0, 255)),
 		lightNight(core::clamp(core::round32(valueB), 0, 255)) {}
@@ -53,8 +53,8 @@ struct LightInfo {
 };
 
 struct LightFrame {
-	f32 lightsDay[8];
-	f32 lightsNight[8];
+	float lightsDay[8];
+	float lightsNight[8];
 	bool sunlight[8];
 };
 
@@ -88,8 +88,8 @@ public:
 	video::SColor blendLightColor(const v3f &vertex_pos);
 	video::SColor blendLightColor(const v3f &vertex_pos, const v3f &vertex_normal);
 
-	void useTile(int index = 0, u8 set_flags = MATERIAL_FLAG_CRACK_OVERLAY,
-		u8 reset_flags = 0, bool special = false);
+	void useTile(int index = 0, uint8_t set_flags = MATERIAL_FLAG_CRACK_OVERLAY,
+		uint8_t reset_flags = 0, bool special = false);
 	void getTile(int index, TileSpec *tile);
 	void getTile(v3s16 direction, TileSpec *tile);
 	void getSpecialTile(int index, TileSpec *tile, bool apply_crack = false);
@@ -100,9 +100,9 @@ public:
 
 // cuboid drawing!
 	void drawCuboid(const aabb3f &box, TileSpec *tiles, int tilecount,
-		const LightInfo *lights , const f32 *txc);
-	void generateCuboidTextureCoords(aabb3f const &box, f32 *coords);
-	void drawAutoLightedCuboid(aabb3f box, const f32 *txc = NULL,
+		const LightInfo *lights , const float *txc);
+	void generateCuboidTextureCoords(aabb3f const &box, float *coords);
+	void drawAutoLightedCuboid(aabb3f box, const float *txc = NULL,
 		TileSpec *tiles = NULL, int tile_count = 0);
 
 // liquid-specific
@@ -114,18 +114,18 @@ public:
 	content_t c_source;
 	video::SColor color_liquid_top;
 	struct NeighborData {
-		f32 level;
+		float level;
 		content_t content;
 		bool is_same_liquid;
 		bool top_is_same_liquid;
 	};
 	NeighborData liquid_neighbors[3][3];
-	f32 corner_levels[2][2];
+	float corner_levels[2][2];
 
 	void prepareLiquidNodeDrawing();
 	void getLiquidNeighborhood();
 	void calculateCornerLevels();
-	f32 getCornerLevel(int i, int k);
+	float getCornerLevel(int i, int k);
 	void drawLiquidSides();
 	void drawLiquidTop();
 	void drawLiquidBottom();
@@ -174,5 +174,5 @@ public:
 public:
 	MapblockMeshGenerator(MeshMakeData *input, MeshCollector *output);
 	void generate();
-	void renderSingle(content_t node, u8 param2 = 0x00);
+	void renderSingle(content_t node, uint8_t param2 = 0x00);
 };

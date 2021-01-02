@@ -67,62 +67,62 @@ extern FloatType g_serialize_f32_type;
 // use machine native byte swapping routines
 // Note: memcpy below is optimized out by modern compilers
 
-inline u16 readU16(const u8 *data)
+inline uint16_t readU16(const uint8_t *data)
 {
-	u16 val;
+	uint16_t val;
 	memcpy(&val, data, 2);
 	return be16toh(val);
 }
 
-inline u32 readU32(const u8 *data)
+inline uint32_t readU32(const uint8_t *data)
 {
-	u32 val;
+	uint32_t val;
 	memcpy(&val, data, 4);
 	return be32toh(val);
 }
 
-inline u64 readU64(const u8 *data)
+inline uint64_t readU64(const uint8_t *data)
 {
-	u64 val;
+	uint64_t val;
 	memcpy(&val, data, 8);
 	return be64toh(val);
 }
 
-inline void writeU16(u8 *data, u16 i)
+inline void writeU16(uint8_t *data, uint16_t i)
 {
-	u16 val = htobe16(i);
+	uint16_t val = htobe16(i);
 	memcpy(data, &val, 2);
 }
 
-inline void writeU32(u8 *data, u32 i)
+inline void writeU32(uint8_t *data, uint32_t i)
 {
-	u32 val = htobe32(i);
+	uint32_t val = htobe32(i);
 	memcpy(data, &val, 4);
 }
 
-inline void writeU64(u8 *data, u64 i)
+inline void writeU64(uint8_t *data, uint64_t i)
 {
-	u64 val = htobe64(i);
+	uint64_t val = htobe64(i);
 	memcpy(data, &val, 8);
 }
 
 #else
 // generic byte-swapping implementation
 
-inline u16 readU16(const u8 *data)
+inline uint16_t readU16(const uint8_t *data)
 {
 	return
 		((u16)data[0] << 8) | ((u16)data[1] << 0);
 }
 
-inline u32 readU32(const u8 *data)
+inline uint32_t readU32(const uint8_t *data)
 {
 	return
 		((u32)data[0] << 24) | ((u32)data[1] << 16) |
 		((u32)data[2] <<  8) | ((u32)data[3] <<  0);
 }
 
-inline u64 readU64(const u8 *data)
+inline uint64_t readU64(const uint8_t *data)
 {
 	return
 		((u64)data[0] << 56) | ((u64)data[1] << 48) |
@@ -131,13 +131,13 @@ inline u64 readU64(const u8 *data)
 		((u64)data[6] <<  8) | ((u64)data[7] << 0);
 }
 
-inline void writeU16(u8 *data, u16 i)
+inline void writeU16(uint8_t *data, uint16_t i)
 {
 	data[0] = (i >> 8) & 0xFF;
 	data[1] = (i >> 0) & 0xFF;
 }
 
-inline void writeU32(u8 *data, u32 i)
+inline void writeU32(uint8_t *data, uint32_t i)
 {
 	data[0] = (i >> 24) & 0xFF;
 	data[1] = (i >> 16) & 0xFF;
@@ -145,7 +145,7 @@ inline void writeU32(u8 *data, u32 i)
 	data[3] = (i >>  0) & 0xFF;
 }
 
-inline void writeU64(u8 *data, u64 i)
+inline void writeU64(uint8_t *data, uint64_t i)
 {
 	data[0] = (i >> 56) & 0xFF;
 	data[1] = (i >> 48) & 0xFF;
@@ -161,43 +161,43 @@ inline void writeU64(u8 *data, u64 i)
 
 //////////////// read routines ////////////////
 
-inline u8 readU8(const u8 *data)
+inline uint8_t readU8(const uint8_t *data)
 {
 	return ((u8)data[0] << 0);
 }
 
-inline s8 readS8(const u8 *data)
+inline int8_t readS8(const uint8_t *data)
 {
 	return (s8)readU8(data);
 }
 
-inline s16 readS16(const u8 *data)
+inline int16_t readS16(const uint8_t *data)
 {
 	return (s16)readU16(data);
 }
 
-inline s32 readS32(const u8 *data)
+inline int32_t readS32(const uint8_t *data)
 {
 	return (s32)readU32(data);
 }
 
-inline s64 readS64(const u8 *data)
+inline s64 readS64(const uint8_t *data)
 {
 	return (s64)readU64(data);
 }
 
-inline f32 readF1000(const u8 *data)
+inline float readF1000(const uint8_t *data)
 {
 	return (f32)readS32(data) / FIXEDPOINT_FACTOR;
 }
 
-inline f32 readF32(const u8 *data)
+inline float readF32(const uint8_t *data)
 {
-	u32 u = readU32(data);
+	uint32_t u = readU32(data);
 
 	switch (g_serialize_f32_type) {
 	case FLOATTYPE_SYSTEM: {
-			f32 f;
+			float f;
 			memcpy(&f, &u, 4);
 			return f;
 		}
@@ -210,13 +210,13 @@ inline f32 readF32(const u8 *data)
 	throw SerializationError("readF32: Unreachable code");
 }
 
-inline video::SColor readARGB8(const u8 *data)
+inline video::SColor readARGB8(const uint8_t *data)
 {
 	video::SColor p(readU32(data));
 	return p;
 }
 
-inline v2s16 readV2S16(const u8 *data)
+inline v2s16 readV2S16(const uint8_t *data)
 {
 	v2s16 p;
 	p.X = readS16(&data[0]);
@@ -224,7 +224,7 @@ inline v2s16 readV2S16(const u8 *data)
 	return p;
 }
 
-inline v3s16 readV3S16(const u8 *data)
+inline v3s16 readV3S16(const uint8_t *data)
 {
 	v3s16 p;
 	p.X = readS16(&data[0]);
@@ -233,7 +233,7 @@ inline v3s16 readV3S16(const u8 *data)
 	return p;
 }
 
-inline v2s32 readV2S32(const u8 *data)
+inline v2s32 readV2S32(const uint8_t *data)
 {
 	v2s32 p;
 	p.X = readS32(&data[0]);
@@ -241,7 +241,7 @@ inline v2s32 readV2S32(const u8 *data)
 	return p;
 }
 
-inline v3s32 readV3S32(const u8 *data)
+inline v3s32 readV3S32(const uint8_t *data)
 {
 	v3s32 p;
 	p.X = readS32(&data[0]);
@@ -250,7 +250,7 @@ inline v3s32 readV3S32(const u8 *data)
 	return p;
 }
 
-inline v3f readV3F1000(const u8 *data)
+inline v3f readV3F1000(const uint8_t *data)
 {
 	v3f p;
 	p.X = readF1000(&data[0]);
@@ -259,7 +259,7 @@ inline v3f readV3F1000(const u8 *data)
 	return p;
 }
 
-inline v2f readV2F32(const u8 *data)
+inline v2f readV2F32(const uint8_t *data)
 {
 	v2f p;
 	p.X = readF32(&data[0]);
@@ -267,7 +267,7 @@ inline v2f readV2F32(const u8 *data)
 	return p;
 }
 
-inline v3f readV3F32(const u8 *data)
+inline v3f readV3F32(const uint8_t *data)
 {
 	v3f p;
 	p.X = readF32(&data[0]);
@@ -278,42 +278,42 @@ inline v3f readV3F32(const u8 *data)
 
 /////////////// write routines ////////////////
 
-inline void writeU8(u8 *data, u8 i)
+inline void writeU8(uint8_t *data, uint8_t i)
 {
 	data[0] = (i >> 0) & 0xFF;
 }
 
-inline void writeS8(u8 *data, s8 i)
+inline void writeS8(uint8_t *data, int8_t i)
 {
 	writeU8(data, (u8)i);
 }
 
-inline void writeS16(u8 *data, s16 i)
+inline void writeS16(uint8_t *data, int16_t i)
 {
 	writeU16(data, (u16)i); 
 }
 
-inline void writeS32(u8 *data, s32 i)
+inline void writeS32(uint8_t *data, int32_t i)
 {
 	writeU32(data, (u32)i);
 }
 
-inline void writeS64(u8 *data, s64 i)
+inline void writeS64(uint8_t *data, s64 i)
 {
 	writeU64(data, (u64)i);
 }
 
-inline void writeF1000(u8 *data, f32 i)
+inline void writeF1000(uint8_t *data, float i)
 {
 	assert(i >= F1000_MIN && i <= F1000_MAX);
 	writeS32(data, i * FIXEDPOINT_FACTOR);
 }
 
-inline void writeF32(u8 *data, f32 i)
+inline void writeF32(uint8_t *data, float i)
 {
 	switch (g_serialize_f32_type) {
 	case FLOATTYPE_SYSTEM: {
-			u32 u;
+			uint32_t u;
 			memcpy(&u, &i, 4);
 			return writeU32(data, u);
 		}
@@ -326,51 +326,51 @@ inline void writeF32(u8 *data, f32 i)
 	throw SerializationError("writeF32: Unreachable code");
 }
 
-inline void writeARGB8(u8 *data, video::SColor p)
+inline void writeARGB8(uint8_t *data, video::SColor p)
 {
 	writeU32(data, p.color);
 }
 
-inline void writeV2S16(u8 *data, v2s16 p)
+inline void writeV2S16(uint8_t *data, v2s16 p)
 {
 	writeS16(&data[0], p.X);
 	writeS16(&data[2], p.Y);
 }
 
-inline void writeV3S16(u8 *data, v3s16 p)
+inline void writeV3S16(uint8_t *data, v3s16 p)
 {
 	writeS16(&data[0], p.X);
 	writeS16(&data[2], p.Y);
 	writeS16(&data[4], p.Z);
 }
 
-inline void writeV2S32(u8 *data, v2s32 p)
+inline void writeV2S32(uint8_t *data, v2s32 p)
 {
 	writeS32(&data[0], p.X);
 	writeS32(&data[4], p.Y);
 }
 
-inline void writeV3S32(u8 *data, v3s32 p)
+inline void writeV3S32(uint8_t *data, v3s32 p)
 {
 	writeS32(&data[0], p.X);
 	writeS32(&data[4], p.Y);
 	writeS32(&data[8], p.Z);
 }
 
-inline void writeV3F1000(u8 *data, v3f p)
+inline void writeV3F1000(uint8_t *data, v3f p)
 {
 	writeF1000(&data[0], p.X);
 	writeF1000(&data[4], p.Y);
 	writeF1000(&data[8], p.Z);
 }
 
-inline void writeV2F32(u8 *data, v2f p)
+inline void writeV2F32(uint8_t *data, v2f p)
 {
 	writeF32(&data[0], p.X);
 	writeF32(&data[4], p.Y);
 }
 
-inline void writeV3F32(u8 *data, v3f p)
+inline void writeV3F32(uint8_t *data, v3f p)
 {
 	writeF32(&data[0], p.X);
 	writeF32(&data[4], p.Y);
@@ -386,14 +386,14 @@ inline void writeV3F32(u8 *data, v3f p)
 	{                                    \
 		char buf[S] = {0};               \
 		is.read(buf, sizeof(buf));       \
-		return read ## N((u8 *)buf);     \
+		return read ## N((uint8_t *)buf);     \
 	}
 
 #define MAKE_STREAM_WRITE_FXN(T, N, S)              \
 	inline void write ## N(std::ostream &os, T val) \
 	{                                               \
 		char buf[S];                                \
-		write ## N((u8 *)buf, val);                 \
+		write ## N((uint8_t *)buf, val);                 \
 		os.write(buf, sizeof(buf));                 \
 	}
 

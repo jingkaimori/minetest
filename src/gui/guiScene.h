@@ -29,14 +29,14 @@ class GUIScene : public gui::IGUIElement
 {
 public:
 	GUIScene(gui::IGUIEnvironment *env, scene::ISceneManager *smgr,
-		 gui::IGUIElement *parent, core::recti rect, s32 id = -1);
+		 gui::IGUIElement *parent, core::recti rect, int32_t id = -1);
 
 	~GUIScene();
 
 	scene::IAnimatedMeshSceneNode *setMesh(scene::IAnimatedMesh *mesh = nullptr);
-	void setTexture(u32 idx, video::ITexture *texture);
+	void setTexture(uint32_t idx, video::ITexture *texture);
 	void setBackgroundColor(const video::SColor &color) noexcept { m_bgcolor = color; };
-	void setFrameLoop(s32 begin, s32 end);
+	void setFrameLoop(int32_t begin, int32_t end);
 	void enableMouseControl(bool enable) noexcept { m_mouse_ctrl = enable; };
 	void setRotation(v2f rot) noexcept { m_custom_rot = rot; };
 	void enableContinuousRotation(bool enable) noexcept { m_inf_rot = enable; };
@@ -64,9 +64,9 @@ private:
 	scene::ISceneNode *m_target = nullptr;
 	scene::IAnimatedMeshSceneNode *m_mesh = nullptr;
 
-	f32 m_cam_distance = 50.f;
+	float m_cam_distance = 50.f;
 
-	u64 m_last_time = 0;
+	uint64_t m_last_time = 0;
 
 	v3f m_cam_pos;
 	v3f m_target_pos;

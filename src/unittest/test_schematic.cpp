@@ -36,7 +36,7 @@ public:
 
 	static const content_t test_schem1_data[7 * 6 * 4];
 	static const content_t test_schem2_data[3 * 3 * 3];
-	static const u8 test_schem2_prob[3 * 3 * 3];
+	static const uint8_t test_schem2_prob[3 * 3 * 3];
 	static const char *expected_lua_output;
 };
 
@@ -61,7 +61,7 @@ void TestSchematic::runTests(IGameDef *gamedef)
 void TestSchematic::testMtsSerializeDeserialize(const NodeDefManager *ndef)
 {
 	static const v3s16 size(7, 6, 4);
-	static const u32 volume = size.X * size.Y * size.Z;
+	static const uint32_t volume = size.X * size.Y * size.Z;
 
 	std::stringstream ss(std::ios_base::binary |
 		std::ios_base::in | std::ios_base::out);
@@ -77,10 +77,10 @@ void TestSchematic::testMtsSerializeDeserialize(const NodeDefManager *ndef)
 	schem.flags       = 0;
 	schem.size        = size;
 	schem.schemdata   = new MapNode[volume];
-	schem.slice_probs = new u8[size.Y];
+	schem.slice_probs = new uint8_t[size.Y];
 	for (size_t i = 0; i != volume; i++)
 		schem.schemdata[i] = MapNode(test_schem1_data[i], MTSCHEM_PROB_ALWAYS, 0);
-	for (s16 y = 0; y != size.Y; y++)
+	for (int16_t y = 0; y != size.Y; y++)
 		schem.slice_probs[y] = MTSCHEM_PROB_ALWAYS;
 
 	UASSERT(schem.serializeToMts(&ss, names));
@@ -99,25 +99,25 @@ void TestSchematic::testMtsSerializeDeserialize(const NodeDefManager *ndef)
 	UASSERT(schem2.size == size);
 	for (size_t i = 0; i != volume; i++)
 		UASSERT(schem2.schemdata[i] == schem.schemdata[i]);
-	for (s16 y = 0; y != size.Y; y++)
-		UASSERTEQ(u8, schem2.slice_probs[y], schem.slice_probs[y]);
+	for (int16_t y = 0; y != size.Y; y++)
+		UASSERTEQ(uint8_t, schem2.slice_probs[y], schem.slice_probs[y]);
 }
 
 
 void TestSchematic::testLuaTableSerialize(const NodeDefManager *ndef)
 {
 	static const v3s16 size(3, 3, 3);
-	static const u32 volume = size.X * size.Y * size.Z;
+	static const uint32_t volume = size.X * size.Y * size.Z;
 
 	Schematic schem;
 
 	schem.flags       = 0;
 	schem.size        = size;
 	schem.schemdata   = new MapNode[volume];
-	schem.slice_probs = new u8[size.Y];
+	schem.slice_probs = new uint8_t[size.Y];
 	for (size_t i = 0; i != volume; i++)
 		schem.schemdata[i] = MapNode(test_schem2_data[i], test_schem2_prob[i], 0);
-	for (s16 y = 0; y != size.Y; y++)
+	for (int16_t y = 0; y != size.Y; y++)
 		schem.slice_probs[y] = MTSCHEM_PROB_ALWAYS;
 
 	std::vector<std::string> names;
@@ -135,7 +135,7 @@ void TestSchematic::testLuaTableSerialize(const NodeDefManager *ndef)
 void TestSchematic::testFileSerializeDeserialize(const NodeDefManager *ndef)
 {
 	static const v3s16 size(3, 3, 3);
-	static const u32 volume = size.X * size.Y * size.Z;
+	static const uint32_t volume = size.X * size.Y * size.Z;
 	static const content_t content_map[] = {
 		CONTENT_AIR,
 		t_CONTENT_STONE,
@@ -155,7 +155,7 @@ void TestSchematic::testFileSerializeDeserialize(const NodeDefManager *ndef)
 	schem1.flags          = 0;
 	schem1.size           = size;
 	schem1.schemdata      = new MapNode[volume];
-	schem1.slice_probs    = new u8[size.Y];
+	schem1.slice_probs    = new uint8_t[size.Y];
 	schem1.slice_probs[0] = 80;
 	schem1.slice_probs[1] = 160;
 	schem1.slice_probs[2] = 240;
@@ -226,7 +226,7 @@ const content_t TestSchematic::test_schem2_data[3 * 3 * 3] = {
 	0, 0, 0,
 };
 
-const u8 TestSchematic::test_schem2_prob[3 * 3 * 3] = {
+const uint8_t TestSchematic::test_schem2_prob[3 * 3 * 3] = {
 	0x00, 0x00, 0x00,
 	0x00, 0xFF, 0x00,
 	0x00, 0x00, 0x00,

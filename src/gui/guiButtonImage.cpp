@@ -30,7 +30,7 @@ using namespace irr;
 using namespace gui;
 
 GUIButtonImage::GUIButtonImage(gui::IGUIEnvironment *environment,
-		gui::IGUIElement *parent, s32 id, core::rect<s32> rectangle,
+		gui::IGUIElement *parent, int32_t id, core::rect<s32> rectangle,
 		ISimpleTextureSource *tsrc, bool noclip)
 	: GUIButton (environment, parent, id, rectangle, tsrc, noclip)
 {
@@ -82,7 +82,7 @@ void GUIButtonImage::setScaleImage(bool scaleImage)
 
 GUIButtonImage *GUIButtonImage::addButton(IGUIEnvironment *environment,
 		const core::rect<s32> &rectangle, ISimpleTextureSource *tsrc,
-		IGUIElement *parent, s32 id, const wchar_t *text,
+		IGUIElement *parent, int32_t id, const wchar_t *text,
 		const wchar_t *tooltiptext)
 {
 	GUIButtonImage *button = new GUIButtonImage(environment,

@@ -19,7 +19,7 @@ public:
 
 	//! constructor
 	GUIEditBoxWithScrollBar(const wchar_t* text, bool border, IGUIEnvironment* environment,
-		IGUIElement* parent, s32 id, const core::rect<s32>& rectangle,
+		IGUIElement* parent, int32_t id, const core::rect<s32>& rectangle,
 		bool writable = true, bool has_vscrollbar = true);
 
 	//! destructor
@@ -100,10 +100,10 @@ public:
 	//! Sets the maximum amount of characters which may be entered in the box.
 	//! \param max: Maximum amount of characters. If 0, the character amount is
 	//! infinity.
-	virtual void setMax(u32 max);
+	virtual void setMax(uint32_t max);
 
 	//! Returns maximum amount of characters, previously set by setMax();
-	virtual u32 getMax() const;
+	virtual uint32_t getMax() const;
 
 	//! Sets whether the edit box is a password box. Setting this to true will
 	/** disable MultiLine, WordWrap and the ability to copy with ctrl+c or ctrl+x
@@ -132,16 +132,16 @@ public:
 	virtual bool isDrawBorderEnabled() const;
 	virtual void setCursorChar(const wchar_t cursorChar);
 	virtual wchar_t getCursorChar() const;
-	virtual void setCursorBlinkTime(irr::u32 timeMs);
-	virtual irr::u32 getCursorBlinkTime() const;
+	virtual void setCursorBlinkTime(irr::uint32_t timeMs);
+	virtual irr::uint32_t getCursorBlinkTime() const;
 
 protected:
 	//! Breaks the single text line.
 	void breakText();
 	//! sets the area of the given line
-	void setTextRect(s32 line);
+	void setTextRect(int32_t line);
 	//! returns the line number that the cursor is on
-	s32 getLineFromPos(s32 pos);
+	int32_t getLineFromPos(int32_t pos);
 	//! adds a letter to the edit box
 	void inputChar(wchar_t c);
 	//! calculates the current scroll position
@@ -151,7 +151,7 @@ protected:
 	//! send some gui event to parent
 	void sendGuiEvent(EGUI_EVENT_TYPE type);
 	//! set text markers
-	void setTextMarkers(s32 begin, s32 end);
+	void setTextMarkers(int32_t begin, int32_t end);
 	//! create a Vertical ScrollBar
 	void createVScrollBar();
 	//! update the vertical scrollBar (visibilty & position)
@@ -159,23 +159,23 @@ protected:
 
 	bool processKey(const SEvent& event);
 	bool processMouse(const SEvent& event);
-	s32 getCursorPos(s32 x, s32 y);
+	int32_t getCursorPos(int32_t x, int32_t y);
 
 	bool m_mouse_marking;
 	bool m_border;
 	bool m_background;
 	bool m_override_color_enabled;
-	s32 m_mark_begin;
-	s32 m_mark_end;
+	int32_t m_mark_begin;
+	int32_t m_mark_end;
 
 	video::SColor m_override_color;
 	gui::IGUIFont *m_override_font, *m_last_break_font;
 	IOSOperator* m_operator;
 
-	u32 m_blink_start_time;
-	s32 m_cursor_pos;
-	s32 m_hscroll_pos, m_vscroll_pos; // scroll position in characters
-	u32 m_max;
+	uint32_t m_blink_start_time;
+	int32_t m_cursor_pos;
+	int32_t m_hscroll_pos, m_vscroll_pos; // scroll position in characters
+	uint32_t m_max;
 
 	bool m_word_wrap, m_multiline, m_autoscroll, m_passwordbox;
 	wchar_t m_passwordchar;
@@ -186,7 +186,7 @@ protected:
 
 	core::rect<s32> m_current_text_rect, m_frame_rect; // temporary values
 
-	u32 m_scrollbar_width;
+	uint32_t m_scrollbar_width;
 	GUIScrollBar *m_vscrollbar;
 	bool m_writable;
 

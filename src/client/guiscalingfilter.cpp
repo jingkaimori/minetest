@@ -110,8 +110,8 @@ video::ITexture *guiScalingResizeCached(video::IVideoDriver *driver,
 	// Create a new destination image and scale the source into it.
 	imageCleanTransparent(srcimg, 0);
 	video::IImage *destimg = driver->createImage(src->getColorFormat(),
-			core::dimension2d<u32>((u32)destrect.getWidth(),
-			(u32)destrect.getHeight()));
+			core::dimension2d<uint32_t>((uint32_t)destrect.getWidth(),
+			(uint32_t)destrect.getHeight()));
 	imageScaleNNAA(srcimg, srcrect, destimg);
 
 #if ENABLE_GLES
@@ -119,8 +119,8 @@ video::ITexture *guiScalingResizeCached(video::IVideoDriver *driver,
 	// the image dimensions to the next power of 2, if necessary.
 	if (!hasNPotSupport()) {
 		video::IImage *po2img = driver->createImage(src->getColorFormat(),
-				core::dimension2d<u32>(npot2((u32)destrect.getWidth()),
-				npot2((u32)destrect.getHeight())));
+				core::dimension2d<uint32_t>(npot2((uint32_t)destrect.getWidth()),
+				npot2((uint32_t)destrect.getHeight())));
 		po2img->fill(video::SColor(0, 0, 0, 0));
 		destimg->copyTo(po2img);
 		destimg->drop();
@@ -140,7 +140,7 @@ video::ITexture *guiScalingResizeCached(video::IVideoDriver *driver,
  * are available at GUI imagebutton creation time.
  */
 video::ITexture *guiScalingImageButton(video::IVideoDriver *driver,
-		video::ITexture *src, s32 width, s32 height)
+		video::ITexture *src, int32_t width, int32_t height)
 {
 	if (src == NULL)
 		return src;

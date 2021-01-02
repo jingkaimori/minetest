@@ -93,14 +93,14 @@ struct HudElement {
 	std::string name;
 	v2f scale;
 	std::string text;
-	u32 number;
-	u32 item;
-	u32 dir;
+	uint32_t number;
+	uint32_t item;
+	uint32_t dir;
 	v2f align;
 	v2f offset;
 	v3f world_pos;
 	v2s32 size;
-	s16 z_index = 0;
+	int16_t z_index = 0;
 	std::string text2;
 };
 

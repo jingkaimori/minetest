@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "porting.h"
 
 GUIScene::GUIScene(gui::IGUIEnvironment *env, scene::ISceneManager *smgr,
-		   gui::IGUIElement *parent, core::recti rect, s32 id)
+		   gui::IGUIElement *parent, core::recti rect, int32_t id)
 	: IGUIElement(gui::EGUIET_ELEMENT, env, parent, id, rect)
 {
 	m_driver = env->getVideoDriver();
@@ -63,7 +63,7 @@ scene::IAnimatedMeshSceneNode *GUIScene::setMesh(scene::IAnimatedMesh *mesh)
 	return m_mesh;
 }
 
-void GUIScene::setTexture(u32 idx, video::ITexture *texture)
+void GUIScene::setTexture(uint32_t idx, video::ITexture *texture)
 {
 	video::SMaterial &material = m_mesh->getMaterial(idx);
 	material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
@@ -78,8 +78,8 @@ void GUIScene::setTexture(u32 idx, video::ITexture *texture)
 void GUIScene::draw()
 {
 	// Control rotation speed based on time
-	u64 new_time = porting::getTimeMs();
-	u64 dtime_ms = 0;
+	uint64_t new_time = porting::getTimeMs();
+	uint64_t dtime_ms = 0;
 	if (m_last_time != 0)
 		dtime_ms = porting::getDeltaMs(m_last_time, new_time);
 	m_last_time = new_time;
@@ -155,7 +155,7 @@ void GUIScene::setStyles(const std::array<StyleSpec, StyleSpec::NUM_STATES> &sty
 /**
  * Sets the frame loop range for the mesh
  */
-void GUIScene::setFrameLoop(s32 begin, s32 end)
+void GUIScene::setFrameLoop(int32_t begin, int32_t end)
 {
 	if (m_mesh->getStartFrame() != begin || m_mesh->getEndFrame() != end)
 		m_mesh->setFrameLoop(begin, end);
@@ -166,20 +166,20 @@ void GUIScene::setFrameLoop(s32 begin, s32 end)
 inline void GUIScene::calcOptimalDistance()
 {
 	core::aabbox3df box = m_mesh->getBoundingBox();
-	f32 width  = box.MaxEdge.X - box.MinEdge.X;
-	f32 height = box.MaxEdge.Y - box.MinEdge.Y;
-	f32 depth  = box.MaxEdge.Z - box.MinEdge.Z;
-	f32 max_width = width > depth ? width : depth;
+	float width  = box.MaxEdge.X - box.MinEdge.X;
+	float height = box.MaxEdge.Y - box.MinEdge.Y;
+	float depth  = box.MaxEdge.Z - box.MinEdge.Z;
+	float max_width = width > depth ? width : depth;
 
 	const scene::SViewFrustum *f = m_cam->getViewFrustum();
-	f32 cam_far = m_cam->getFarValue();
-	f32 far_width = core::line3df(f->getFarLeftUp(), f->getFarRightUp()).getLength();
-	f32 far_height = core::line3df(f->getFarLeftUp(), f->getFarLeftDown()).getLength();
+	float cam_far = m_cam->getFarValue();
+	float far_width = core::line3df(f->getFarLeftUp(), f->getFarRightUp()).getLength();
+	float far_height = core::line3df(f->getFarLeftUp(), f->getFarLeftDown()).getLength();
 
 	core::recti rect = getAbsolutePosition();
-	f32 zoomX = rect.getWidth() / max_width;
-	f32 zoomY = rect.getHeight() / height;
-	f32 dist;
+	float zoomX = rect.getWidth() / max_width;
+	float zoomY = rect.getHeight() / height;
+	float dist;
 
 	if (zoomX < zoomY)
 		dist = (max_width / (far_width / cam_far)) + (0.5f * max_width);

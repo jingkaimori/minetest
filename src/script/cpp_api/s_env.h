@@ -32,7 +32,7 @@ public:
 	void environment_Step(float dtime);
 
 	// Called after generating a piece of map
-	void environment_OnGenerated(v3s16 minp, v3s16 maxp, u32 blockseed);
+	void environment_OnGenerated(v3s16 minp, v3s16 maxp, uint32_t blockseed);
 
 	// Called on player event
 	void player_event(ServerActiveObject *player, const std::string &type);

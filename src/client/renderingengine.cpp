@@ -87,13 +87,13 @@ RenderingEngine::RenderingEngine(IEventReceiver *receiver)
 
 	// Resolution selection
 	bool fullscreen = g_settings->getBool("fullscreen");
-	u16 screen_w = g_settings->getU16("screen_w");
-	u16 screen_h = g_settings->getU16("screen_h");
+	uint16_t screen_w = g_settings->getU16("screen_w");
+	uint16_t screen_h = g_settings->getU16("screen_h");
 
 	// bpp, fsaa, vsync
 	bool vsync = g_settings->getBool("vsync");
-	u16 bits = g_settings->getU16("fullscreen_bpp");
-	u16 fsaa = g_settings->getU16("fsaa");
+	uint16_t bits = g_settings->getU16("fullscreen_bpp");
+	uint16_t fsaa = g_settings->getU16("fsaa");
 
 	// stereo buffer required for pageflip stereo
 	bool stereo_buffer = g_settings->get("3d_mode") == "pageflip";
@@ -103,7 +103,7 @@ RenderingEngine::RenderingEngine(IEventReceiver *receiver)
 	const std::string &driverstring = g_settings->get("video_driver");
 	std::vector<video::E_DRIVER_TYPE> drivers =
 			RenderingEngine::getSupportedVideoDrivers();
-	u32 i;
+	uint32_t i;
 	for (i = 0; i != drivers.size(); i++) {
 		if (!strcasecmp(driverstring.c_str(),
 				RenderingEngine::getVideoDriverName(drivers[i]))) {
@@ -119,7 +119,7 @@ RenderingEngine::RenderingEngine(IEventReceiver *receiver)
 
 	SIrrlichtCreationParameters params = SIrrlichtCreationParameters();
 	params.DriverType = driverType;
-	params.WindowSize = core::dimension2d<u32>(screen_w, screen_h);
+	params.WindowSize = core::dimension2d<uint32_t>(screen_w, screen_h);
 	params.Bits = bits;
 	params.AntiAlias = fsaa;
 	params.Fullscreen = fullscreen;
@@ -174,12 +174,12 @@ bool RenderingEngine::print_video_modes()
 	IrrlichtDevice *nulldevice;
 
 	bool vsync = g_settings->getBool("vsync");
-	u16 fsaa = g_settings->getU16("fsaa");
+	uint16_t fsaa = g_settings->getU16("fsaa");
 	MyEventReceiver *receiver = new MyEventReceiver();
 
 	SIrrlichtCreationParameters params = SIrrlichtCreationParameters();
 	params.DriverType = video::EDT_NULL;
-	params.WindowSize = core::dimension2d<u32>(640, 480);
+	params.WindowSize = core::dimension2d<uint32_t>(640, 480);
 	params.Bits = 24;
 	params.AntiAlias = fsaa;
 	params.Fullscreen = false;
@@ -200,10 +200,10 @@ bool RenderingEngine::print_video_modes()
 	video::IVideoModeList *videomode_list = nulldevice->getVideoModeList();
 
 	if (videomode_list != NULL) {
-		s32 videomode_count = videomode_list->getVideoModeCount();
-		core::dimension2d<u32> videomode_res;
-		s32 videomode_depth;
-		for (s32 i = 0; i < videomode_count; ++i) {
+		int32_t videomode_count = videomode_list->getVideoModeCount();
+		core::dimension2d<uint32_t> videomode_res;
+		int32_t videomode_depth;
+		for (int32_t i = 0; i < videomode_count; ++i) {
 			videomode_res = videomode_list->getVideoModeResolution(i);
 			videomode_depth = videomode_list->getVideoModeDepth(i);
 			std::cout << videomode_res.Width << "x" << videomode_res.Height
@@ -385,8 +385,8 @@ bool RenderingEngine::setXorgWindowIconFromPath(const std::string &icon_file)
 #ifdef XORG_USED
 
 	video::IImageLoader *image_loader = NULL;
-	u32 cnt = driver->getImageLoaderCount();
-	for (u32 i = 0; i < cnt; i++) {
+	uint32_t cnt = driver->getImageLoaderCount();
+	for (uint32_t i = 0; i < cnt; i++) {
 		if (driver->getImageLoader(i)->isALoadableFileExtension(
 				    icon_file.c_str())) {
 			image_loader = driver->getImageLoader(i);
@@ -418,8 +418,8 @@ bool RenderingEngine::setXorgWindowIconFromPath(const std::string &icon_file)
 		return false;
 	}
 
-	u32 height = img->getDimension().Height;
-	u32 width = img->getDimension().Width;
+	uint32_t height = img->getDimension().Height;
+	uint32_t width = img->getDimension().Width;
 
 	size_t icon_buffer_len = 2 + height * width;
 	long *icon_buffer = new long[icon_buffer_len];
@@ -427,14 +427,14 @@ bool RenderingEngine::setXorgWindowIconFromPath(const std::string &icon_file)
 	icon_buffer[0] = width;
 	icon_buffer[1] = height;
 
-	for (u32 x = 0; x < width; x++) {
-		for (u32 y = 0; y < height; y++) {
+	for (uint32_t x = 0; x < width; x++) {
+		for (uint32_t y = 0; y < height; y++) {
 			video::SColor col = img->getPixel(x, y);
 			long pixel_val = 0;
-			pixel_val |= (u8)col.getAlpha() << 24;
-			pixel_val |= (u8)col.getRed() << 16;
-			pixel_val |= (u8)col.getGreen() << 8;
-			pixel_val |= (u8)col.getBlue();
+			pixel_val |= (uint8_t)col.getAlpha() << 24;
+			pixel_val |= (uint8_t)col.getRed() << 16;
+			pixel_val |= (uint8_t)col.getGreen() << 8;
+			pixel_val |= (uint8_t)col.getBlue();
 			icon_buffer[2 + x + y * width] = pixel_val;
 		}
 	}
@@ -503,15 +503,15 @@ void RenderingEngine::_draw_load_screen(const std::wstring &text,
 
 		if (progress_img && progress_img_bg) {
 #ifndef __ANDROID__
-			const core::dimension2d<u32> &img_size =
+			const core::dimension2d<uint32_t> &img_size =
 					progress_img_bg->getSize();
-			u32 imgW = rangelim(img_size.Width, 200, 600);
-			u32 imgH = rangelim(img_size.Height, 24, 72);
+			uint32_t imgW = rangelim(img_size.Width, 200, 600);
+			uint32_t imgH = rangelim(img_size.Height, 24, 72);
 #else
-			const core::dimension2d<u32> img_size(256, 48);
+			const core::dimension2d<uint32_t> img_size(256, 48);
 			float imgRatio = (float)img_size.Height / img_size.Width;
-			u32 imgW = screensize.X / 2.2f;
-			u32 imgH = floor(imgW * imgRatio);
+			uint32_t imgW = screensize.X / 2.2f;
+			uint32_t imgH = floor(imgW * imgRatio);
 #endif
 			v2s32 img_pos((screensize.X - imgW) / 2,
 					(screensize.Y - imgH) / 2);
@@ -560,18 +560,18 @@ void RenderingEngine::_draw_menu_scene(gui::IGUIEnvironment *guienv,
 	get_video_driver()->endScene();
 }
 
-std::vector<core::vector3d<u32>> RenderingEngine::getSupportedVideoModes()
+std::vector<core::vector3d<uint32_t>> RenderingEngine::getSupportedVideoModes()
 {
 	IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
 	sanity_check(nulldevice);
 
-	std::vector<core::vector3d<u32>> mlist;
+	std::vector<core::vector3d<uint32_t>> mlist;
 	video::IVideoModeList *modelist = nulldevice->getVideoModeList();
 
-	s32 num_modes = modelist->getVideoModeCount();
-	for (s32 i = 0; i != num_modes; i++) {
-		core::dimension2d<u32> mode_res = modelist->getVideoModeResolution(i);
-		u32 mode_depth = (u32)modelist->getVideoModeDepth(i);
+	int32_t num_modes = modelist->getVideoModeCount();
+	for (int32_t i = 0; i != num_modes; i++) {
+		core::dimension2d<uint32_t> mode_res = modelist->getVideoModeResolution(i);
+		uint32_t mode_depth = (uint32_t)modelist->getVideoModeDepth(i);
 		mlist.emplace_back(mode_res.Width, mode_res.Height, mode_depth);
 	}
 
@@ -718,7 +718,7 @@ v2u32 RenderingEngine::getDisplaySize()
 {
 	IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
 
-	core::dimension2d<u32> deskres =
+	core::dimension2d<uint32_t> deskres =
 			nulldevice->getVideoModeList()->getDesktopResolution();
 	nulldevice->drop();
 

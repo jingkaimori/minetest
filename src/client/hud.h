@@ -59,7 +59,7 @@ public:
 			Inventory *inventory);
 	~Hud();
 
-	void drawHotbar(u16 playeritem);
+	void drawHotbar(uint16_t playeritem);
 	void resizeHotbar();
 	void drawCrosshair();
 	void drawSelectionMesh();
@@ -87,13 +87,13 @@ public:
 
 private:
 	bool calculateScreenPos(const v3s16 &camera_offset, HudElement *e, v2s32 *pos);
-	void drawStatbar(v2s32 pos, u16 corner, u16 drawdir,
+	void drawStatbar(v2s32 pos, uint16_t corner, uint16_t drawdir,
 			const std::string &texture, const std::string& bgtexture,
-			s32 count, s32 maxcount, v2s32 offset, v2s32 size = v2s32());
+			int32_t count, int32_t maxcount, v2s32 offset, v2s32 size = v2s32());
 
-	void drawItems(v2s32 upperleftpos, v2s32 screen_offset, s32 itemcount,
-			s32 inv_offset, InventoryList *mainlist, u16 selectitem,
-			u16 direction);
+	void drawItems(v2s32 upperleftpos, v2s32 screen_offset, int32_t itemcount,
+			int32_t inv_offset, InventoryList *mainlist, uint16_t selectitem,
+			uint16_t direction);
 
 	void drawItem(const ItemStack &item, const core::rect<s32> &rect, bool selected);
 
@@ -108,8 +108,8 @@ private:
 	v3s16 m_camera_offset;
 	v2u32 m_screensize;
 	v2s32 m_displaycenter;
-	s32 m_hotbar_imagesize; // Takes hud_scaling into account, updated by resizeHotbar()
-	s32 m_padding; // Takes hud_scaling into account, updated by resizeHotbar()
+	int32_t m_hotbar_imagesize; // Takes hud_scaling into account, updated by resizeHotbar()
+	int32_t m_padding; // Takes hud_scaling into account, updated by resizeHotbar()
 	video::SColor hbar_colors[4];
 
 	std::vector<aabb3f> m_selection_boxes;

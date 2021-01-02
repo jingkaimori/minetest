@@ -217,13 +217,13 @@ private:
 	std::vector<std::string> m_trigger_contents;
 	std::vector<std::string> m_required_neighbors;
 	float m_trigger_interval;
-	u32 m_trigger_chance;
+	uint32_t m_trigger_chance;
 	bool m_simple_catch_up;
 public:
 	LuaABM(lua_State *L, int id,
 			const std::vector<std::string> &trigger_contents,
 			const std::vector<std::string> &required_neighbors,
-			float trigger_interval, u32 trigger_chance, bool simple_catch_up):
+			float trigger_interval, uint32_t trigger_chance, bool simple_catch_up):
 		m_id(id),
 		m_trigger_contents(trigger_contents),
 		m_required_neighbors(required_neighbors),
@@ -244,7 +244,7 @@ public:
 	{
 		return m_trigger_interval;
 	}
-	virtual u32 getTriggerChance()
+	virtual uint32_t getTriggerChance()
 	{
 		return m_trigger_chance;
 	}
@@ -253,7 +253,7 @@ public:
 		return m_simple_catch_up;
 	}
 	virtual void trigger(ServerEnvironment *env, v3s16 p, MapNode n,
-			u32 active_object_count, u32 active_object_count_wider);
+			uint32_t active_object_count, uint32_t active_object_count_wider);
 };
 
 class LuaLBM : public LoadingBlockModifierDef

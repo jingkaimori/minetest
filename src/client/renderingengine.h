@@ -89,7 +89,7 @@ public:
 		return s_singleton->m_device;
 	}
 
-	static u32 get_timer_time()
+	static uint32_t get_timer_time()
 	{
 		sanity_check(s_singleton && s_singleton->m_device &&
 				s_singleton->m_device->getTimer());

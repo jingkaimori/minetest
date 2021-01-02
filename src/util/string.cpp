@@ -263,7 +263,7 @@ std::string urldecode(const std::string &str)
 {
 	// Inverse of urlencode
 	std::ostringstream oss(std::ios::binary);
-	for (u32 i = 0; i < str.size(); i++) {
+	for (uint32_t i = 0; i < str.size(); i++) {
 		unsigned char highvalue, lowvalue;
 		if (str[i] == '%' &&
 				hex_digit_decode(str[i+1], highvalue) &&
@@ -277,10 +277,10 @@ std::string urldecode(const std::string &str)
 	return oss.str();
 }
 
-u32 readFlagString(std::string str, const FlagDesc *flagdesc, u32 *flagmask)
+uint32_t readFlagString(std::string str, const FlagDesc *flagdesc, uint32_t *flagmask)
 {
-	u32 result = 0;
-	u32 mask = 0;
+	uint32_t result = 0;
+	uint32_t mask = 0;
 	char *s = &str[0];
 	char *flagstr;
 	char *strpos = nullptr;
@@ -313,7 +313,7 @@ u32 readFlagString(std::string str, const FlagDesc *flagdesc, u32 *flagmask)
 	return result;
 }
 
-std::string writeFlagString(u32 flags, const FlagDesc *flagdesc, u32 flagmask)
+std::string writeFlagString(uint32_t flags, const FlagDesc *flagdesc, uint32_t flagmask)
 {
 	std::string result;
 
@@ -373,10 +373,10 @@ char *mystrtok_r(char *s, const char *sep, char **lasts)
 	return s;
 }
 
-u64 read_seed(const char *str)
+uint64_t read_seed(const char *str)
 {
 	char *endptr;
-	u64 num;
+	uint64_t num;
 
 	if (str[0] == '0' && str[1] == 'x')
 		num = strtoull(str, &endptr, 16);
@@ -458,7 +458,7 @@ static bool parseHexColorString(const std::string &value, video::SColor &color,
 
 struct ColorContainer {
 	ColorContainer();
-	std::map<const std::string, u32> colors;
+	std::map<const std::string, uint32_t> colors;
 };
 
 ColorContainer::ColorContainer()
@@ -640,7 +640,7 @@ static bool parseNamedColorString(const std::string &value, video::SColor &color
 	if (it == named_colors.colors.end())
 		return false;
 
-	u32 color_temp = it->second;
+	uint32_t color_temp = it->second;
 
 	/* An empty string for alpha is ok (none of the color table entries
 	 * have an alpha value either). Color strings without an alpha specified

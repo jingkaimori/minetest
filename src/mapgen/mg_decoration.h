@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "noise.h"
 #include "nodedef.h"
 
-typedef u16 biome_t;  // copy from mg_biome.h to avoid an unnecessary include
+typedef uint16_t biome_t;  // copy from mg_biome.h to avoid an unnecessary include
 
 class Mapgen;
 class MMVManip;
@@ -58,21 +58,21 @@ public:
 	virtual void resolveNodeNames();
 
 	bool canPlaceDecoration(MMVManip *vm, v3s16 p);
-	size_t placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax);
+	size_t placeDeco(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax);
 
 	virtual size_t generate(MMVManip *vm, PcgRandom *pr, v3s16 p, bool ceiling) = 0;
 
-	u32 flags = 0;
+	uint32_t flags = 0;
 	int mapseed = 0;
 	std::vector<content_t> c_place_on;
-	s16 sidelen = 1;
-	s16 y_min;
-	s16 y_max;
+	int16_t sidelen = 1;
+	int16_t y_min;
+	int16_t y_max;
 	float fill_ratio = 0.0f;
 	NoiseParams np;
 	std::vector<content_t> c_spawnby;
-	s16 nspawnby;
-	s16 place_offset_y = 0;
+	int16_t nspawnby;
+	int16_t place_offset_y = 0;
 
 	std::unordered_set<biome_t> biomes;
 
@@ -89,10 +89,10 @@ public:
 	virtual size_t generate(MMVManip *vm, PcgRandom *pr, v3s16 p, bool ceiling);
 
 	std::vector<content_t> c_decos;
-	s16 deco_height;
-	s16 deco_height_max;
-	u8 deco_param2;
-	u8 deco_param2_max;
+	int16_t deco_height;
+	int16_t deco_height_max;
+	uint8_t deco_param2;
+	uint8_t deco_param2_max;
 };
 
 
@@ -114,7 +114,7 @@ public:
 /*
 class DecoLSystem : public Decoration {
 public:
-	virtual void generate(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax);
+	virtual void generate(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax);
 };
 */
 
@@ -145,7 +145,7 @@ public:
 		}
 	}
 
-	size_t placeAllDecos(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax);
+	size_t placeAllDecos(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax);
 
 private:
 	DecorationManager() {};

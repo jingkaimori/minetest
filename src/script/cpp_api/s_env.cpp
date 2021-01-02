@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "server.h"
 
 void ScriptApiEnv::environment_OnGenerated(v3s16 minp, v3s16 maxp,
-	u32 blockseed)
+	uint32_t blockseed)
 {
 	SCRIPTAPI_PRECHECKHEADER
 

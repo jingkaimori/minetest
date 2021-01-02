@@ -36,7 +36,7 @@ const int ID_message = 260;
 const int ID_cancel = 261;
 
 GUIPasswordChange::GUIPasswordChange(gui::IGUIEnvironment* env,
-		gui::IGUIElement* parent, s32 id,
+		gui::IGUIElement* parent, int32_t id,
 		IMenuManager *menumgr,
 		Client* client,
 		ISimpleTextureSource *tsrc
@@ -100,7 +100,7 @@ void GUIPasswordChange::regenerateGui(v2u32 screensize)
 	/*
 		Add stuff
 	*/
-	s32 ypos = 50 * s;
+	int32_t ypos = 50 * s;
 	{
 		core::rect<s32> rect(0, 0, 150 * s, 20 * s);
 		rect += topleft_client + v2s32(25 * s, ypos + 6 * s);
@@ -274,7 +274,7 @@ bool GUIPasswordChange::OnEvent(const SEvent &event)
 	return Parent ? Parent->OnEvent(event) : false;
 }
 
-std::string GUIPasswordChange::getNameByID(s32 id)
+std::string GUIPasswordChange::getNameByID(int32_t id)
 {
 	switch (id) {
 	case ID_oldPassword:

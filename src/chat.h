@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 struct ChatLine
 {
 	// age in seconds
-	f32 age = 0.0f;
+	float age = 0.0f;
 	// name of sending player, or empty if sent by server
 	EnrichedString name;
 	// message text
@@ -56,9 +56,9 @@ struct ChatFormattedFragment
 	// text string
 	EnrichedString text;
 	// starting column
-	u32 column;
+	uint32_t column;
 	// formatting
-	//u8 bold:1;
+	//uint8_t bold:1;
 };
 
 struct ChatFormattedLine
@@ -72,7 +72,7 @@ struct ChatFormattedLine
 class ChatBuffer
 {
 public:
-	ChatBuffer(u32 scrollback);
+	ChatBuffer(uint32_t scrollback);
 	~ChatBuffer() = default;
 
 	// Append chat line
@@ -83,29 +83,29 @@ public:
 	void clear();
 
 	// Get number of lines currently in buffer.
-	u32 getLineCount() const;
+	uint32_t getLineCount() const;
 	// Get reference to i-th chat line.
-	const ChatLine& getLine(u32 index) const;
+	const ChatLine& getLine(uint32_t index) const;
 
 	// Increase each chat line's age by dtime.
-	void step(f32 dtime);
+	void step(float dtime);
 	// Delete oldest N chat lines.
-	void deleteOldest(u32 count);
+	void deleteOldest(uint32_t count);
 	// Delete lines older than maxAge.
-	void deleteByAge(f32 maxAge);
+	void deleteByAge(float maxAge);
 
 	// Get number of rows, 0 if reformat has not been called yet.
-	u32 getRows() const;
+	uint32_t getRows() const;
 	// Update console size and reformat all formatted lines.
-	void reformat(u32 cols, u32 rows);
+	void reformat(uint32_t cols, uint32_t rows);
 	// Get formatted line for a given row (0 is top of screen).
 	// Only valid after reformat has been called at least once
-	const ChatFormattedLine& getFormattedLine(u32 row) const;
+	const ChatFormattedLine& getFormattedLine(uint32_t row) const;
 	// Scrolling in formatted buffer (relative)
 	// positive rows == scroll up, negative rows == scroll down
-	void scroll(s32 rows);
+	void scroll(int32_t rows);
 	// Scrolling in formatted buffer (absolute)
-	void scrollAbsolute(s32 scroll);
+	void scrollAbsolute(int32_t scroll);
 	// Scroll to bottom of buffer (newest)
 	void scrollBottom();
 	// Scroll to top of buffer (oldest)
@@ -114,26 +114,26 @@ public:
 	// Format a chat line for the given number of columns.
 	// Appends the formatted lines to the destination array and
 	// returns the number of formatted lines.
-	u32 formatChatLine(const ChatLine& line, u32 cols,
+	uint32_t formatChatLine(const ChatLine& line, uint32_t cols,
 			std::vector<ChatFormattedLine>& destination) const;
 
-	void resize(u32 scrollback);
+	void resize(uint32_t scrollback);
 protected:
-	s32 getTopScrollPos() const;
-	s32 getBottomScrollPos() const;
+	int32_t getTopScrollPos() const;
+	int32_t getBottomScrollPos() const;
 
 private:
 	// Scrollback size
-	u32 m_scrollback;
+	uint32_t m_scrollback;
 	// Array of unformatted chat lines
 	std::vector<ChatLine> m_unformatted;
 
 	// Number of character columns in console
-	u32 m_cols = 0;
+	uint32_t m_cols = 0;
 	// Number of character rows in console
-	u32 m_rows = 0;
+	uint32_t m_rows = 0;
 	// Scroll position (console's top line index into m_formatted)
-	s32 m_scroll = 0;
+	int32_t m_scroll = 0;
 	// Array of formatted lines
 	std::vector<ChatFormattedLine> m_formatted;
 	// Empty formatted line, for error returns
@@ -143,7 +143,7 @@ private:
 class ChatPrompt
 {
 public:
-	ChatPrompt(const std::wstring &prompt, u32 history_limit);
+	ChatPrompt(const std::wstring &prompt, uint32_t history_limit);
 	~ChatPrompt() = default;
 
 	// Input character or string
@@ -174,13 +174,13 @@ public:
 	void nickCompletion(const std::list<std::string>& names, bool backwards);
 
 	// Update console size and reformat the visible portion of the prompt
-	void reformat(u32 cols);
+	void reformat(uint32_t cols);
 	// Get visible portion of the prompt.
 	std::wstring getVisiblePortion() const;
 	// Get cursor position (relative to visible portion). -1 if invalid
-	s32 getVisibleCursorPosition() const;
+	int32_t getVisibleCursorPosition() const;
 	// Get length of cursor selection
-	s32 getCursorLength() const { return m_cursor_len; }
+	int32_t getCursorLength() const { return m_cursor_len; }
 
 	// Cursor operations
 	enum CursorOp {
@@ -228,23 +228,23 @@ private:
 	// History buffer
 	std::vector<std::wstring> m_history;
 	// History index (0 <= m_history_index <= m_history.size())
-	u32 m_history_index = 0;
+	uint32_t m_history_index = 0;
 	// Maximum number of history entries
-	u32 m_history_limit;
+	uint32_t m_history_limit;
 
 	// Number of columns excluding columns reserved for the prompt
-	s32 m_cols = 0;
+	int32_t m_cols = 0;
 	// Start of visible portion (index into m_line)
-	s32 m_view = 0;
+	int32_t m_view = 0;
 	// Cursor (index into m_line)
-	s32 m_cursor = 0;
+	int32_t m_cursor = 0;
 	// Cursor length (length of selected portion of line)
-	s32 m_cursor_len = 0;
+	int32_t m_cursor_len = 0;
 
 	// Last nick completion start (index into m_line)
-	s32 m_nick_completion_start = 0;
+	int32_t m_nick_completion_start = 0;
 	// Last nick completion start (index into m_line)
-	s32 m_nick_completion_end = 0;
+	int32_t m_nick_completion_end = 0;
 };
 
 class ChatBackend
@@ -268,7 +268,7 @@ public:
 	ChatPrompt& getPrompt();
 
 	// Reformat all buffers
-	void reformat(u32 cols, u32 rows);
+	void reformat(uint32_t cols, uint32_t rows);
 
 	// Clear all recent messages
 	void clearRecentChat();
@@ -277,7 +277,7 @@ public:
 	void step(float dtime);
 
 	// Scrolling
-	void scroll(s32 rows);
+	void scroll(int32_t rows);
 	void scrollPageDown();
 	void scrollPageUp();
 

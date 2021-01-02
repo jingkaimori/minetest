@@ -102,13 +102,13 @@ bool ModApiBase::registerFunction(lua_State *L, const char *name,
 
 int ModApiBase::l_deprecated_function(lua_State *L, const char *good, const char *bad, lua_CFunction func)
 {
-	thread_local std::vector<u64> deprecated_logged;
+	thread_local std::vector<uint64_t> deprecated_logged;
 
 	DeprecatedHandlingMode dep_mode = get_deprecated_handling_mode();
 	if (dep_mode == DeprecatedHandlingMode::Ignore)
 		return func(L);
 
-	u64 start_time = porting::getTimeUs();
+	uint64_t start_time = porting::getTimeUs();
 	lua_Debug ar;
 
 	// Get caller name with line and script backtrace
@@ -118,7 +118,7 @@ int ModApiBase::l_deprecated_function(lua_State *L, const char *good, const char
 	// Get backtrace and hash it to reduce the warning flood
 	std::string backtrace = ar.short_src;
 	backtrace.append(":").append(std::to_string(ar.currentline));
-	u64 hash = murmur_hash_64_ua(backtrace.data(), backtrace.length(), 0xBADBABE);
+	uint64_t hash = murmur_hash_64_ua(backtrace.data(), backtrace.length(), 0xBADBABE);
 
 	if (std::find(deprecated_logged.begin(), deprecated_logged.end(), hash)
 			== deprecated_logged.end()) {
@@ -131,7 +131,7 @@ int ModApiBase::l_deprecated_function(lua_State *L, const char *good, const char
 			script_error(L, LUA_ERRRUN, NULL, NULL);
 	}
 
-	u64 end_time = porting::getTimeUs();
+	uint64_t end_time = porting::getTimeUs();
 	g_profiler->avg("l_deprecated_function", end_time - start_time);
 
 	return func(L);

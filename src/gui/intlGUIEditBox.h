@@ -22,7 +22,7 @@ namespace gui
 
 		//! constructor
 		intlGUIEditBox(const wchar_t* text, bool border, IGUIEnvironment* environment,
-			IGUIElement* parent, s32 id, const core::rect<s32>& rectangle,
+			IGUIElement* parent, int32_t id, const core::rect<s32>& rectangle,
 			bool writable = true, bool has_vscrollbar = false);
 
 		//! destructor
@@ -107,10 +107,10 @@ namespace gui
 		//! Sets the maximum amount of characters which may be entered in the box.
 		//! \param max: Maximum amount of characters. If 0, the character amount is
 		//! infinity.
-		virtual void setMax(u32 max);
+		virtual void setMax(uint32_t max);
 
 		//! Returns maximum amount of characters, previously set by setMax();
-		virtual u32 getMax() const;
+		virtual uint32_t getMax() const;
 
 		//! Sets whether the edit box is a password box. Setting this to true will
 		/** disable MultiLine, WordWrap and the ability to copy with ctrl+c or ctrl+x
@@ -137,17 +137,17 @@ namespace gui
 
 		virtual wchar_t getCursorChar() const { return L'|'; }
 
-		virtual void setCursorBlinkTime(u32 timeMs) {}
+		virtual void setCursorBlinkTime(uint32_t timeMs) {}
 
-		virtual u32 getCursorBlinkTime() const { return 500; }
+		virtual uint32_t getCursorBlinkTime() const { return 500; }
 
 	protected:
 		//! Breaks the single text line.
 		void breakText();
 		//! sets the area of the given line
-		void setTextRect(s32 line);
+		void setTextRect(int32_t line);
 		//! returns the line number that the cursor is on
-		s32 getLineFromPos(s32 pos);
+		int32_t getLineFromPos(int32_t pos);
 		//! adds a letter to the edit box
 		void inputChar(wchar_t c);
 		//! calculates the current scroll position
@@ -155,11 +155,11 @@ namespace gui
 		//! send some gui event to parent
 		void sendGuiEvent(EGUI_EVENT_TYPE type);
 		//! set text markers
-		void setTextMarkers(s32 begin, s32 end);
+		void setTextMarkers(int32_t begin, int32_t end);
 
 		bool processKey(const SEvent& event);
 		bool processMouse(const SEvent& event);
-		s32 getCursorPos(s32 x, s32 y);
+		int32_t getCursorPos(int32_t x, int32_t y);
 
 		//! Create a vertical scrollbar
 		void createVScrollBar();
@@ -170,19 +170,19 @@ namespace gui
 		bool MouseMarking = false;
 		bool Border;
 		bool OverrideColorEnabled = false;
-		s32 MarkBegin = 0;
-		s32 MarkEnd = 0;
+		int32_t MarkBegin = 0;
+		int32_t MarkEnd = 0;
 
 		video::SColor OverrideColor = video::SColor(101,255,255,255);
 		gui::IGUIFont *OverrideFont = nullptr;
 		gui::IGUIFont *LastBreakFont = nullptr;
 		IOSOperator *Operator = nullptr;
 
-		u64 BlinkStartTime = 0;
-		s32 CursorPos = 0;
-		s32 HScrollPos = 0;
-		s32 VScrollPos = 0; // scroll position in characters
-		u32 Max = 0;
+		uint64_t BlinkStartTime = 0;
+		int32_t CursorPos = 0;
+		int32_t HScrollPos = 0;
+		int32_t VScrollPos = 0; // scroll position in characters
+		uint32_t Max = 0;
 
 		bool WordWrap = false;
 		bool MultiLine = false;
@@ -197,7 +197,7 @@ namespace gui
 
 		core::rect<s32> CurrentTextRect = core::rect<s32>(0,0,1,1);
 		core::rect<s32> FrameRect; // temporary values
-		u32 m_scrollbar_width;
+		uint32_t m_scrollbar_width;
 		GUIScrollBar *m_vscrollbar;
 		bool m_writable;
 

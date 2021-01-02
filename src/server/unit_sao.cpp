@@ -302,7 +302,7 @@ std::string UnitSAO::generateUpdateArmorGroupsCommand() const
 
 std::string UnitSAO::generateUpdatePositionCommand(const v3f &position,
 		const v3f &velocity, const v3f &acceleration, const v3f &rotation,
-		bool do_interpolate, bool is_movement_end, f32 update_interval)
+		bool do_interpolate, bool is_movement_end, float update_interval)
 {
 	std::ostringstream os(std::ios::binary);
 	// command
@@ -332,7 +332,7 @@ std::string UnitSAO::generateSetPropertiesCommand(const ObjectProperties &prop) 
 	return os.str();
 }
 
-std::string UnitSAO::generatePunchCommand(u16 result_hp) const
+std::string UnitSAO::generatePunchCommand(uint16_t result_hp) const
 {
 	std::ostringstream os(std::ios::binary);
 	// command

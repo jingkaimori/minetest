@@ -34,14 +34,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 struct PlayerFovSpec
 {
-	f32 fov;
+	float fov;
 
 	// Whether to multiply the client's FOV or to override it
 	bool is_multiplier;
 
 	// The time to be take to trasition to the new FOV value.
 	// Transition is instantaneous if omitted. Omitted by default.
-	f32 transition_time;
+	float transition_time;
 };
 
 struct PlayerControl
@@ -128,9 +128,9 @@ public:
 
 	DISABLE_CLASS_COPY(Player);
 
-	virtual void move(f32 dtime, Environment *env, f32 pos_max_d)
+	virtual void move(float dtime, Environment *env, float pos_max_d)
 	{}
-	virtual void move(f32 dtime, Environment *env, f32 pos_max_d,
+	virtual void move(float dtime, Environment *env, float pos_max_d,
 			std::vector<CollisionInfo> *collision_info)
 	{}
 
@@ -146,7 +146,7 @@ public:
 
 	const char *getName() const { return m_name; }
 
-	u32 getFreeHudID()
+	uint32_t getFreeHudID()
 	{
 		size_t size = hud.size();
 		for (size_t i = 0; i != size; i++) {
@@ -161,18 +161,18 @@ public:
 
 	Inventory inventory;
 
-	f32 movement_acceleration_default;
-	f32 movement_acceleration_air;
-	f32 movement_acceleration_fast;
-	f32 movement_speed_walk;
-	f32 movement_speed_crouch;
-	f32 movement_speed_fast;
-	f32 movement_speed_climb;
-	f32 movement_speed_jump;
-	f32 movement_liquid_fluidity;
-	f32 movement_liquid_fluidity_smooth;
-	f32 movement_liquid_sink;
-	f32 movement_gravity;
+	float movement_acceleration_default;
+	float movement_acceleration_air;
+	float movement_acceleration_fast;
+	float movement_speed_walk;
+	float movement_speed_crouch;
+	float movement_speed_fast;
+	float movement_speed_climb;
+	float movement_speed_jump;
+	float movement_liquid_fluidity;
+	float movement_liquid_fluidity_smooth;
+	float movement_liquid_sink;
+	float movement_gravity;
 
 	v2s32 local_animations[4];
 	float local_animation_speed;
@@ -187,8 +187,8 @@ public:
 
 	// Returns non-empty `selected` ItemStack. `hand` is a fallback, if specified
 	ItemStack &getWieldedItem(ItemStack *selected, ItemStack *hand) const;
-	void setWieldIndex(u16 index);
-	u16 getWieldIndex() const { return m_wield_index; }
+	void setWieldIndex(uint16_t index);
+	uint16_t getWieldIndex() const { return m_wield_index; }
 
 	void setFov(const PlayerFovSpec &spec)
 	{
@@ -200,20 +200,20 @@ public:
 		return m_fov_override_spec;
 	}
 
-	u32 keyPressed = 0;
+	uint32_t keyPressed = 0;
 
-	HudElement* getHud(u32 id);
-	u32         addHud(HudElement* hud);
-	HudElement* removeHud(u32 id);
+	HudElement* getHud(uint32_t id);
+	uint32_t         addHud(HudElement* hud);
+	HudElement* removeHud(uint32_t id);
 	void        clearHud();
 
-	u32 hud_flags;
-	s32 hud_hotbar_itemcount;
+	uint32_t hud_flags;
+	int32_t hud_hotbar_itemcount;
 
 protected:
 	char m_name[PLAYERNAME_SIZE];
 	v3f m_speed;
-	u16 m_wield_index = 0;
+	uint16_t m_wield_index = 0;
 	PlayerFovSpec m_fov_override_spec = { 0.0f, false, 0.0f };
 
 	std::vector<HudElement *> hud;

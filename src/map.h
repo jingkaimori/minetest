@@ -127,7 +127,7 @@ public:
 	virtual ~Map();
 	DISABLE_CLASS_COPY(Map);
 
-	virtual s32 mapType() const
+	virtual int32_t mapType() const
 	{
 		return MAPTYPE_BASE;
 	}
@@ -212,7 +212,7 @@ public:
 		Updates usage timers and unloads unused blocks and sectors.
 		Saves modified blocks before unloading on MAPTYPE_SERVER.
 	*/
-	void timerUpdate(float dtime, float unload_timeout, u32 max_loaded_blocks,
+	void timerUpdate(float dtime, float unload_timeout, uint32_t max_loaded_blocks,
 			std::vector<v3s16> *unloaded_blocks=NULL);
 
 	/*
@@ -296,12 +296,12 @@ protected:
 		const core::aabbox3d<s16> &block_bounds, v3s16 &check);
 	bool isOccluded(const v3s16 &pos_camera, const v3s16 &pos_target,
 		float step, float stepfac, float start_offset, float end_offset,
-		u32 needed_count);
+		uint32_t needed_count);
 
 private:
-	f32 m_transforming_liquid_loop_count_multiplier = 1.0f;
-	u32 m_unprocessed_count = 0;
-	u64 m_inc_trending_up_start_time = 0; // milliseconds
+	float m_transforming_liquid_loop_count_multiplier = 1.0f;
+	uint32_t m_unprocessed_count = 0;
+	uint64_t m_inc_trending_up_start_time = 0; // milliseconds
 	bool m_queue_size_timer_started = false;
 };
 
@@ -320,7 +320,7 @@ public:
 	ServerMap(const std::string &savedir, IGameDef *gamedef, EmergeManager *emerge, MetricsBackend *mb);
 	~ServerMap();
 
-	s32 mapType() const
+	int32_t mapType() const
 	{
 		return MAPTYPE_SERVER;
 	}
@@ -395,7 +395,7 @@ public:
 
 	bool isSavingEnabled(){ return m_map_saving_enabled; }
 
-	u64 getSeed();
+	uint64_t getSeed();
 
 	/*!
 	 * Fixes lighting in one map block.
@@ -420,7 +420,7 @@ private:
 #if 0
 	// Chunk size in MapSectors
 	// If 0, chunks are disabled.
-	s16 m_chunksize;
+	int16_t m_chunksize;
 	// Chunks
 	core::map<v2s16, MapChunk*> m_chunks;
 #endif

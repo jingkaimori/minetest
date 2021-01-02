@@ -80,11 +80,11 @@ public:
 		Active object <-> environment interface
 	*/
 
-	void addedToEnvironment(u32 dtime_s);
+	void addedToEnvironment(uint32_t dtime_s);
 	void removingFromEnvironment();
 	bool isStaticAllowed() const { return false; }
 	bool shouldUnload() const { return false; }
-	std::string getClientInitializationData(u16 protocol_version);
+	std::string getClientInitializationData(uint16_t protocol_version);
 	void getStaticData(std::string *result) const;
 	void step(float dtime, bool send_recommended);
 	void setBasePosition(const v3f &position);
@@ -96,27 +96,27 @@ public:
 	void setLookPitch(const float pitch);
 	// Data should not be sent at player initialization
 	void setLookPitchAndSend(const float pitch);
-	f32 getLookPitch() const { return m_pitch; }
-	f32 getRadLookPitch() const { return m_pitch * core::DEGTORAD; }
+	float getLookPitch() const { return m_pitch; }
+	float getRadLookPitch() const { return m_pitch * core::DEGTORAD; }
 	// Deprecated
-	f32 getRadLookPitchDep() const { return -1.0 * m_pitch * core::DEGTORAD; }
+	float getRadLookPitchDep() const { return -1.0 * m_pitch * core::DEGTORAD; }
 	void setFov(const float pitch);
-	f32 getFov() const { return m_fov; }
-	void setWantedRange(const s16 range);
-	s16 getWantedRange() const { return m_wanted_range; }
+	float getFov() const { return m_fov; }
+	void setWantedRange(const int16_t range);
+	int16_t getWantedRange() const { return m_wanted_range; }
 
 	/*
 		Interaction interface
 	*/
 
-	u16 punch(v3f dir, const ToolCapabilities *toolcap, ServerActiveObject *puncher,
+	uint16_t punch(v3f dir, const ToolCapabilities *toolcap, ServerActiveObject *puncher,
 			float time_from_last_punch);
 	void rightClick(ServerActiveObject *clicker) {}
-	void setHP(s32 hp, const PlayerHPChangeReason &reason);
-	void setHPRaw(u16 hp) { m_hp = hp; }
-	s16 readDamage();
-	u16 getBreath() const { return m_breath; }
-	void setBreath(const u16 breath, bool send = true);
+	void setHP(int32_t hp, const PlayerHPChangeReason &reason);
+	void setHPRaw(uint16_t hp) { m_hp = hp; }
+	int16_t readDamage();
+	uint16_t getBreath() const { return m_breath; }
+	void setBreath(const uint16_t breath, bool send = true);
 
 	/*
 		Inventory interface
@@ -125,7 +125,7 @@ public:
 	InventoryLocation getInventoryLocation() const;
 	void setInventoryModified() {}
 	std::string getWieldList() const { return "main"; }
-	u16 getWieldIndex() const;
+	uint16_t getWieldIndex() const;
 	ItemStack getWieldedItem(ItemStack *selected, ItemStack *hand = nullptr) const;
 	bool setWieldedItem(const ItemStack &item);
 
@@ -210,10 +210,10 @@ private:
 	std::set<std::string> m_privs;
 	bool m_is_singleplayer;
 
-	u16 m_breath = PLAYER_MAX_BREATH_DEFAULT;
-	f32 m_pitch = 0.0f;
-	f32 m_fov = 0.0f;
-	s16 m_wanted_range = 0.0f;
+	uint16_t m_breath = PLAYER_MAX_BREATH_DEFAULT;
+	float m_pitch = 0.0f;
+	float m_fov = 0.0f;
+	int16_t m_wanted_range = 0.0f;
 
 	Metadata m_meta;
 

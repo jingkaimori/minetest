@@ -21,21 +21,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "threading/mutex_auto_lock.h"
 
 
-std::unordered_map<u16, std::vector<v3s16>> FacePositionCache::cache;
+std::unordered_map<uint16_t, std::vector<v3s16>> FacePositionCache::cache;
 std::mutex FacePositionCache::cache_mutex;
 
 // Calculate the borders of a "d-radius" cube
-const std::vector<v3s16> &FacePositionCache::getFacePositions(u16 d)
+const std::vector<v3s16> &FacePositionCache::getFacePositions(uint16_t d)
 {
 	MutexAutoLock lock(cache_mutex);
-	std::unordered_map<u16, std::vector<v3s16>>::const_iterator it = cache.find(d);
+	std::unordered_map<uint16_t, std::vector<v3s16>>::const_iterator it = cache.find(d);
 	if (it != cache.end())
 		return it->second;
 
 	return generateFacePosition(d);
 }
 
-const std::vector<v3s16> &FacePositionCache::generateFacePosition(u16 d)
+const std::vector<v3s16> &FacePositionCache::generateFacePosition(uint16_t d)
 {
 	cache[d] = std::vector<v3s16>();
 	std::vector<v3s16> &c = cache[d];
@@ -78,9 +78,9 @@ const std::vector<v3s16> &FacePositionCache::generateFacePosition(u16 d)
 	}
 
 	// Take blocks in all sides, starting from y=0 and going +-y
-	for (s16 y = 0; y <= d - 1; y++) {
+	for (int16_t y = 0; y <= d - 1; y++) {
 		// Left and right side, including borders
-		for (s16 z =- d; z <= d; z++) {
+		for (int16_t z =- d; z <= d; z++) {
 			c.emplace_back(d, y, z);
 			c.emplace_back(-d, y, z);
 			if (y != 0) {
@@ -89,7 +89,7 @@ const std::vector<v3s16> &FacePositionCache::generateFacePosition(u16 d)
 			}
 		}
 		// Back and front side, excluding borders
-		for (s16 x = -d + 1; x <= d - 1; x++) {
+		for (int16_t x = -d + 1; x <= d - 1; x++) {
 			c.emplace_back(x, y, d);
 			c.emplace_back(x, y, -d);
 			if (y != 0) {
@@ -101,8 +101,8 @@ const std::vector<v3s16> &FacePositionCache::generateFacePosition(u16 d)
 
 	// Take the bottom and top face with borders
 	// -d < x < d, y = +-d, -d < z < d
-	for (s16 x = -d; x <= d; x++)
-	for (s16 z = -d; z <= d; z++) {
+	for (int16_t x = -d; x <= d; x++)
+	for (int16_t z = -d; z <= d; z++) {
 		c.emplace_back(x, -d, z);
 		c.emplace_back(x, d, z);
 	}

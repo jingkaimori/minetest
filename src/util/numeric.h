@@ -37,12 +37,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 } while (0)
 
 
-inline s16 getContainerPos(s16 p, s16 d)
+inline int16_t getContainerPos(int16_t p, int16_t d)
 {
 	return (p >= 0 ? p : p - d + 1) / d;
 }
 
-inline v2s16 getContainerPos(v2s16 p, s16 d)
+inline v2s16 getContainerPos(v2s16 p, int16_t d)
 {
 	return v2s16(
 		getContainerPos(p.X, d),
@@ -50,7 +50,7 @@ inline v2s16 getContainerPos(v2s16 p, s16 d)
 	);
 }
 
-inline v3s16 getContainerPos(v3s16 p, s16 d)
+inline v3s16 getContainerPos(v3s16 p, int16_t d)
 {
 	return v3s16(
 		getContainerPos(p.X, d),
@@ -76,19 +76,19 @@ inline v3s16 getContainerPos(v3s16 p, v3s16 d)
 	);
 }
 
-inline void getContainerPosWithOffset(s16 p, s16 d, s16 &container, s16 &offset)
+inline void getContainerPosWithOffset(int16_t p, int16_t d, int16_t &container, int16_t &offset)
 {
 	container = (p >= 0 ? p : p - d + 1) / d;
 	offset = p & (d - 1);
 }
 
-inline void getContainerPosWithOffset(const v2s16 &p, s16 d, v2s16 &container, v2s16 &offset)
+inline void getContainerPosWithOffset(const v2s16 &p, int16_t d, v2s16 &container, v2s16 &offset)
 {
 	getContainerPosWithOffset(p.X, d, container.X, offset.X);
 	getContainerPosWithOffset(p.Y, d, container.Y, offset.Y);
 }
 
-inline void getContainerPosWithOffset(const v3s16 &p, s16 d, v3s16 &container, v3s16 &offset)
+inline void getContainerPosWithOffset(const v3s16 &p, int16_t d, v3s16 &container, v3s16 &offset)
 {
 	getContainerPosWithOffset(p.X, d, container.X, offset.X);
 	getContainerPosWithOffset(p.Y, d, container.Y, offset.Y);
@@ -96,7 +96,7 @@ inline void getContainerPosWithOffset(const v3s16 &p, s16 d, v3s16 &container, v
 }
 
 
-inline bool isInArea(v3s16 p, s16 d)
+inline bool isInArea(v3s16 p, int16_t d)
 {
 	return (
 		p.X >= 0 && p.X < d &&
@@ -105,7 +105,7 @@ inline bool isInArea(v3s16 p, s16 d)
 	);
 }
 
-inline bool isInArea(v2s16 p, s16 d)
+inline bool isInArea(v2s16 p, int16_t d)
 {
 	return (
 		p.X >= 0 && p.X < d &&
@@ -224,20 +224,20 @@ int myrand_range(int min, int max);
 	Miscellaneous functions
 */
 
-inline u32 get_bits(u32 x, u32 pos, u32 len)
+inline uint32_t get_bits(uint32_t x, uint32_t pos, uint32_t len)
 {
-	u32 mask = (1 << len) - 1;
+	uint32_t mask = (1 << len) - 1;
 	return (x >> pos) & mask;
 }
 
-inline void set_bits(u32 *x, u32 pos, u32 len, u32 val)
+inline void set_bits(uint32_t *x, uint32_t pos, uint32_t len, uint32_t val)
 {
-	u32 mask = (1 << len) - 1;
+	uint32_t mask = (1 << len) - 1;
 	*x &= ~(mask << pos);
 	*x |= (val & mask) << pos;
 }
 
-inline u32 calc_parity(u32 v)
+inline uint32_t calc_parity(uint32_t v)
 {
 	v ^= v >> 16;
 	v ^= v >> 8;
@@ -249,20 +249,20 @@ inline u32 calc_parity(u32 v)
 u64 murmur_hash_64_ua(const void *key, int len, unsigned int seed);
 
 bool isBlockInSight(v3s16 blockpos_b, v3f camera_pos, v3f camera_dir,
-		f32 camera_fov, f32 range, f32 *distance_ptr=NULL);
+		float camera_fov, float range, float *distance_ptr=NULL);
 
-s16 adjustDist(s16 dist, float zoom_fov);
+s16 adjustDist(int16_t dist, float zoom_fov);
 
 /*
 	Returns nearest 32-bit integer for given floating point number.
 	<cmath> and <math.h> in VC++ don't provide round().
 */
-inline s32 myround(f32 f)
+inline int32_t myround(float f)
 {
 	return (s32)(f < 0.f ? (f - 0.5f) : (f + 0.5f));
 }
 
-inline constexpr f32 sqr(f32 f)
+inline constexpr float sqr(float f)
 {
 	return f * f;
 }
@@ -270,7 +270,7 @@ inline constexpr f32 sqr(f32 f)
 /*
 	Returns integer position of node in given floating point position
 */
-inline v3s16 floatToInt(v3f p, f32 d)
+inline v3s16 floatToInt(v3f p, float d)
 {
 	return v3s16(
 		(p.X + (p.X > 0 ? d / 2 : -d / 2)) / d,
@@ -292,7 +292,7 @@ inline v3s16 doubleToInt(v3d p, double d)
 /*
 	Returns floating point position of node in given integer position
 */
-inline v3f intToFloat(v3s16 p, f32 d)
+inline v3f intToFloat(v3s16 p, float d)
 {
 	return v3f(
 		(f32)p.X * d,
@@ -354,7 +354,7 @@ private:
 
 	Ensures 0 <= minindex <= maxindex <= length.
 */
-inline void paging(u32 length, u32 page, u32 pagecount, u32 &minindex, u32 &maxindex)
+inline void paging(uint32_t length, uint32_t page, uint32_t pagecount, uint32_t &minindex, uint32_t &maxindex)
 {
 	if (length < 1 || pagecount < 1 || page < 1 || page > pagecount) {
 		// Special cases or invalid parameters
@@ -384,14 +384,14 @@ inline float cycle_shift(float value, float by = 0, float max = 1)
     return value + by;
 }
 
-inline bool is_power_of_two(u32 n)
+inline bool is_power_of_two(uint32_t n)
 {
 	return n != 0 && (n & (n - 1)) == 0;
 }
 
 // Compute next-higher power of 2 efficiently, e.g. for power-of-2 texture sizes.
 // Public Domain: https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-inline u32 npot2(u32 orig) {
+inline uint32_t npot2(uint32_t orig) {
 	orig--;
 	orig |= orig >> 1;
 	orig |= orig >> 2;

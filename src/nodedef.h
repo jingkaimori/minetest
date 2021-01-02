@@ -37,7 +37,7 @@ class Client;
 #include "tileanimation.h"
 
 // PROTOCOL_VERSION >= 37
-static const u8 CONTENTFEATURES_VERSION = 13;
+static const uint8_t CONTENTFEATURES_VERSION = 13;
 
 class IItemDefManager;
 class ITextureSource;
@@ -124,7 +124,7 @@ struct NodeBox
 	{ reset(); }
 
 	void reset();
-	void serialize(std::ostream &os, u16 protocol_version) const;
+	void serialize(std::ostream &os, uint16_t protocol_version) const;
 	void deSerialize(std::istream &is);
 };
 
@@ -137,13 +137,13 @@ enum LeavesStyle {
 	LEAVES_OPAQUE,
 };
 
-enum AutoScale : u8 {
+enum AutoScale : uint8_t {
 	AUTOSCALE_DISABLE,
 	AUTOSCALE_ENABLE,
 	AUTOSCALE_FORCE,
 };
 
-enum WorldAlignMode : u8 {
+enum WorldAlignMode : uint8_t {
 	WORLDALIGN_DISABLE,
 	WORLDALIGN_ENABLE,
 	WORLDALIGN_FORCE,
@@ -213,10 +213,10 @@ enum NodeDrawType
 };
 
 // Mesh options for NDT_PLANTLIKE with CPT2_MESHOPTIONS
-static const u8 MO_MASK_STYLE          = 0x07;
-static const u8 MO_BIT_RANDOM_OFFSET   = 0x08;
-static const u8 MO_BIT_SCALE_SQRT2     = 0x10;
-static const u8 MO_BIT_RANDOM_OFFSET_Y = 0x20;
+static const uint8_t MO_MASK_STYLE          = 0x07;
+static const uint8_t MO_BIT_RANDOM_OFFSET   = 0x08;
+static const uint8_t MO_BIT_SCALE_SQRT2     = 0x10;
+static const uint8_t MO_BIT_RANDOM_OFFSET_Y = 0x20;
 enum PlantlikeStyle {
 	PLANT_STYLE_CROSS,
 	PLANT_STYLE_CROSS2,
@@ -225,7 +225,7 @@ enum PlantlikeStyle {
 	PLANT_STYLE_HASH2,
 };
 
-enum AlignStyle : u8 {
+enum AlignStyle : uint8_t {
 	ALIGN_STYLE_NODE,
 	ALIGN_STYLE_WORLD,
 	ALIGN_STYLE_USER_DEFINED,
@@ -246,7 +246,7 @@ struct TileDef
 	//! The color of the tile.
 	video::SColor color = video::SColor(0xFFFFFFFF);
 	AlignStyle align_style = ALIGN_STYLE_NODE;
-	u8 scale = 0;
+	uint8_t scale = 0;
 
 	struct TileAnimationParams animation;
 
@@ -255,8 +255,8 @@ struct TileDef
 		animation.type = TAT_NONE;
 	}
 
-	void serialize(std::ostream &os, u16 protocol_version) const;
-	void deSerialize(std::istream &is, u8 contentfeatures_version,
+	void serialize(std::ostream &os, uint16_t protocol_version) const;
+	void deSerialize(std::istream &is, uint8_t contentfeatures_version,
 		NodeDrawType drawtype);
 };
 
@@ -279,8 +279,8 @@ struct ContentFeatures
 	// Special tiles
 	// - Currently used for flowing liquids
 	TileSpec special_tiles[CF_SPECIAL_COUNT];
-	u8 solidness; // Used when choosing which face is drawn
-	u8 visual_solidness; // When solidness=0, this tells how it looks like
+	uint8_t solidness; // Used when choosing which face is drawn
+	uint8_t visual_solidness; // When solidness=0, this tells how it looks like
 	bool backface_culling;
 #endif
 
@@ -317,30 +317,30 @@ struct ContentFeatures
 	TileDef tiledef_special[CF_SPECIAL_COUNT]; // eg. flowing liquid
 	// If 255, the node is opaque.
 	// Otherwise it uses texture alpha.
-	u8 alpha;
+	uint8_t alpha;
 	// The color of the node.
 	video::SColor color;
 	std::string palette_name;
 	std::vector<video::SColor> *palette;
 	// Used for waving leaves/plants
-	u8 waving;
+	uint8_t waving;
 	// for NDT_CONNECTED pairing
-	u8 connect_sides;
+	uint8_t connect_sides;
 	std::vector<std::string> connects_to;
 	std::vector<content_t> connects_to_ids;
 	// Post effect color, drawn when the camera is inside the node.
 	video::SColor post_effect_color;
 	// Flowing liquid or leveled nodebox, value = default level
-	u8 leveled;
+	uint8_t leveled;
 	// Maximum value for leveled nodes
-	u8 leveled_max;
+	uint8_t leveled_max;
 
 	// --- LIGHTING-RELATED ---
 
 	bool light_propagates;
 	bool sunlight_propagates;
 	// Amount of light the node emits
-	u8 light_source;
+	uint8_t light_source;
 
 	// --- MAP GENERATION ---
 
@@ -362,7 +362,7 @@ struct ContentFeatures
 	bool buildable_to;
 	// Player cannot build to these (placement prediction disabled)
 	bool rightclickable;
-	u32 damage_per_second;
+	uint32_t damage_per_second;
 	// client dig prediction
 	std::string node_dig_prediction;
 
@@ -379,12 +379,12 @@ struct ContentFeatures
 	// Viscosity for fluid flow, ranging from 1 to 7, with
 	// 1 giving almost instantaneous propagation and 7 being
 	// the slowest possible
-	u8 liquid_viscosity;
+	uint8_t liquid_viscosity;
 	// Is liquid renewable (new liquid source will be created between 2 existing)
 	bool liquid_renewable;
 	// Number of flowing liquids surrounding source
-	u8 liquid_range;
-	u8 drowning;
+	uint8_t liquid_range;
+	uint8_t drowning;
 	// Liquids flow into and replace node
 	bool floodable;
 
@@ -415,7 +415,7 @@ struct ContentFeatures
 	ContentFeatures();
 	~ContentFeatures();
 	void reset();
-	void serialize(std::ostream &os, u16 protocol_version) const;
+	void serialize(std::ostream &os, uint16_t protocol_version) const;
 	void deSerialize(std::istream &is);
 
 	/*!
@@ -572,7 +572,7 @@ public:
 	 * @return true if the node connects, false otherwise
 	 */
 	bool nodeboxConnects(MapNode from, MapNode to,
-			u8 connect_face) const;
+			uint8_t connect_face) const;
 
 	/*!
 	 * Registers a NodeResolver to wait for the registration of
@@ -637,14 +637,14 @@ public:
 	 * @param progress_cbk_args passed to the callback function
 	 */
 	void updateTextures(IGameDef *gamedef,
-		void (*progress_cbk)(void *progress_args, u32 progress, u32 max_progress),
+		void (*progress_cbk)(void *progress_args, uint32_t progress, uint32_t max_progress),
 		void *progress_cbk_args);
 
 	/*!
 	 * Writes the content of this manager to the given output stream.
 	 * @param protocol_version serialization version of ContentFeatures
 	 */
-	void serialize(std::ostream &os, u16 protocol_version) const;
+	void serialize(std::ostream &os, uint16_t protocol_version) const;
 
 	/*!
 	 * Restores the manager from a serialized stream.
@@ -787,8 +787,8 @@ public:
 
 	void nodeResolveInternal();
 
-	u32 m_nodenames_idx = 0;
-	u32 m_nnlistsizes_idx = 0;
+	uint32_t m_nodenames_idx = 0;
+	uint32_t m_nnlistsizes_idx = 0;
 	std::vector<std::string> m_nodenames;
 	std::vector<size_t> m_nnlistsizes;
 	const NodeDefManager *m_ndef = nullptr;

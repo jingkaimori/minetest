@@ -89,11 +89,11 @@ unsigned long httpfetch_caller_alloc_secure()
 	// Generate random caller IDs and make sure they're not
 	// already used or equal to HTTPFETCH_DISCARD
 	// Give up after 100 tries to prevent infinite loop
-	u8 tries = 100;
+	uint8_t tries = 100;
 	unsigned long caller;
 
 	do {
-		caller = (((u64) g_callerid_randomness.next()) << 32) |
+		caller = (((uint64_t) g_callerid_randomness.next()) << 32) |
 				g_callerid_randomness.next();
 
 		if (--tries < 1) {
@@ -753,8 +753,8 @@ void httpfetch_init(int parallel_limit)
 	g_httpfetch_thread = new CurlFetchThread(parallel_limit);
 
 	// Initialize g_callerid_randomness for httpfetch_caller_alloc_secure
-	u64 randbuf[2];
-	porting::secure_rand_fill_buf(randbuf, sizeof(u64) * 2);
+	uint64_t randbuf[2];
+	porting::secure_rand_fill_buf(randbuf, sizeof(uint64_t) * 2);
 	g_callerid_randomness = PcgRandom(randbuf[0], randbuf[1]);
 }
 

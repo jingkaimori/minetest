@@ -407,12 +407,12 @@ private:
 		std::vector<std::string> v_rect = split(value, ',');
 
 		if (v_rect.size() == 1) {
-			s32 x = stoi(v_rect[0]);
+			int32_t x = stoi(v_rect[0]);
 			rect.UpperLeftCorner = irr::core::vector2di(x, x);
 			rect.LowerRightCorner = irr::core::vector2di(-x, -x);
 		} else if (v_rect.size() == 2) {
-			s32 x = stoi(v_rect[0]);
-			s32 y =	stoi(v_rect[1]);
+			int32_t x = stoi(v_rect[0]);
+			int32_t y =	stoi(v_rect[1]);
 			rect.UpperLeftCorner = irr::core::vector2di(x, y);
 			rect.LowerRightCorner = irr::core::vector2di(-x, -y);
 			// `-x` is interpreted as `w - x`
@@ -438,12 +438,12 @@ private:
 		std::vector<std::string> v_vector = split(value, ',');
 
 		if (v_vector.size() == 1) {
-			s32 x = stoi(v_vector[0]);
+			int32_t x = stoi(v_vector[0]);
 			vec.X = x;
 			vec.Y = x;
 		} else if (v_vector.size() == 2) {
-			s32 x = stoi(v_vector[0]);
-			s32 y =	stoi(v_vector[1]);
+			int32_t x = stoi(v_vector[0]);
+			int32_t y =	stoi(v_vector[1]);
 			vec.X = x;
 			vec.Y = y;
 		} else {

@@ -66,10 +66,10 @@ void MapgenSinglenode::makeChunk(BlockMakeData *data)
 
 	MapNode n_node(c_node);
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++)
-	for (s16 y = node_min.Y; y <= node_max.Y; y++) {
-		u32 i = vm->m_area.index(node_min.X, y, z);
-		for (s16 x = node_min.X; x <= node_max.X; x++) {
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++)
+	for (int16_t y = node_min.Y; y <= node_max.Y; y++) {
+		uint32_t i = vm->m_area.index(node_min.X, y, z);
+		for (int16_t x = node_min.X; x <= node_max.X; x++) {
 			if (vm->m_data[i].getContent() == CONTENT_IGNORE)
 				vm->m_data[i] = n_node;
 			i++;

@@ -40,13 +40,13 @@ public:
 		m_name_to_id.clear();
 	}
 
-	void set(u16 id, const std::string &name)
+	void set(uint16_t id, const std::string &name)
 	{
 		m_id_to_name[id] = name;
 		m_name_to_id[name] = id;
 	}
 
-	void removeId(u16 id)
+	void removeId(uint16_t id)
 	{
 		std::string name;
 		bool found = getName(id, name);
@@ -58,14 +58,14 @@ public:
 
 	void eraseName(const std::string &name)
 	{
-		u16 id;
+		uint16_t id;
 		bool found = getId(name, id);
 		if (!found)
 			return;
 		m_id_to_name.erase(id);
 		m_name_to_id.erase(name);
 	}
-	bool getName(u16 id, std::string &result) const
+	bool getName(uint16_t id, std::string &result) const
 	{
 		IdToNameMap::const_iterator i;
 		i = m_id_to_name.find(id);
@@ -74,7 +74,7 @@ public:
 		result = i->second;
 		return true;
 	}
-	bool getId(const std::string &name, u16 &result) const
+	bool getId(const std::string &name, uint16_t &result) const
 	{
 		NameToIdMap::const_iterator i;
 		i = m_name_to_id.find(name);
@@ -83,7 +83,7 @@ public:
 		result = i->second;
 		return true;
 	}
-	u16 size() const { return m_id_to_name.size(); }
+	uint16_t size() const { return m_id_to_name.size(); }
 
 private:
 	IdToNameMap m_id_to_name;

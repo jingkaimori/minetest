@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #pragma once
 
-inline u32 time_to_daynight_ratio(float time_of_day, bool smooth)
+inline uint32_t time_to_daynight_ratio(float time_of_day, bool smooth)
 {
 	float t = time_of_day;
 	if (t < 0.0f)
@@ -43,7 +43,7 @@ inline u32 time_to_daynight_ratio(float time_of_day, bool smooth)
 
 	if (!smooth) {
 		float lastt = values[0][0];
-		for (u32 i = 1; i < 9; i++) {
+		for (uint32_t i = 1; i < 9; i++) {
 			float t0 = values[i][0];
 			float switch_t = (t0 + lastt) / 2.0f;
 			lastt = t0;
@@ -60,7 +60,7 @@ inline u32 time_to_daynight_ratio(float time_of_day, bool smooth)
 	else if (t >= 6125.0f) // 6000 + 125
 		return 1000;
 
-	for (u32 i = 0; i < 9; i++) {
+	for (uint32_t i = 0; i < 9; i++) {
 		if (values[i][0] <= t)
 			continue;
 

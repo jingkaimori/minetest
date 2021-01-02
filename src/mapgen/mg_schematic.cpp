@@ -96,11 +96,11 @@ ObjDef *Schematic::clone() const
 	def->flags = flags;
 	def->size = size;
 	FATAL_ERROR_IF(!schemdata, "Schematic can only be cloned after loading");
-	u32 nodecount = size.X * size.Y * size.Z;
+	uint32_t nodecount = size.X * size.Y * size.Z;
 	def->schemdata = new MapNode[nodecount];
 	memcpy(def->schemdata, schemdata, sizeof(MapNode) * nodecount);
-	def->slice_probs = new u8[size.Y];
-	memcpy(def->slice_probs, slice_probs, sizeof(u8) * size.Y);
+	def->slice_probs = new uint8_t[size.Y];
+	memcpy(def->slice_probs, slice_probs, sizeof(uint8_t) * size.Y);
 
 	return def;
 }
@@ -128,9 +128,9 @@ void Schematic::blitToVManip(MMVManip *vm, v3s16 p, Rotation rot, bool force_pla
 	int ystride = size.X;
 	int zstride = size.X * size.Y;
 
-	s16 sx = size.X;
-	s16 sy = size.Y;
-	s16 sz = size.Z;
+	int16_t sx = size.X;
+	int16_t sy = size.Y;
+	int16_t sz = size.Z;
 
 	int i_start, i_step_x, i_step_z;
 	switch (rot) {
@@ -157,15 +157,15 @@ void Schematic::blitToVManip(MMVManip *vm, v3s16 p, Rotation rot, bool force_pla
 			i_step_z = zstride;
 	}
 
-	s16 y_map = p.Y;
-	for (s16 y = 0; y != sy; y++) {
+	int16_t y_map = p.Y;
+	for (int16_t y = 0; y != sy; y++) {
 		if ((slice_probs[y] != MTSCHEM_PROB_ALWAYS) &&
 			(slice_probs[y] <= myrand_range(1, MTSCHEM_PROB_ALWAYS)))
 			continue;
 
-		for (s16 z = 0; z != sz; z++) {
-			u32 i = z * i_step_z + y * ystride + i_start;
-			for (s16 x = 0; x != sx; x++, i += i_step_x) {
+		for (int16_t z = 0; z != sz; z++) {
+			uint32_t i = z * i_step_z + y * ystride + i_start;
+			for (int16_t x = 0; x != sx; x++, i += i_step_x) {
 				v3s16 pos(p.X + x, y_map, p.Z + z);
 				if (!vm->m_area.contains(pos))
 					continue;
@@ -173,13 +173,13 @@ void Schematic::blitToVManip(MMVManip *vm, v3s16 p, Rotation rot, bool force_pla
 				if (schemdata[i].getContent() == CONTENT_IGNORE)
 					continue;
 
-				u8 placement_prob     = schemdata[i].param1 & MTSCHEM_PROB_MASK;
+				uint8_t placement_prob     = schemdata[i].param1 & MTSCHEM_PROB_MASK;
 				bool force_place_node = schemdata[i].param1 & MTSCHEM_FORCE_PLACE;
 
 				if (placement_prob == MTSCHEM_PROB_NEVER)
 					continue;
 
-				u32 vi = vm->m_area.index(pos);
+				uint32_t vi = vm->m_area.index(pos);
 				if (!force_place && !force_place_node) {
 					content_t c = vm->m_data[vi].getContent();
 					if (c != CONTENT_AIR && c != CONTENT_IGNORE)
@@ -202,7 +202,7 @@ void Schematic::blitToVManip(MMVManip *vm, v3s16 p, Rotation rot, bool force_pla
 }
 
 
-bool Schematic::placeOnVManip(MMVManip *vm, v3s16 p, u32 flags,
+bool Schematic::placeOnVManip(MMVManip *vm, v3s16 p, uint32_t flags,
 	Rotation rot, bool force_place)
 {
 	assert(vm != NULL);
@@ -229,7 +229,7 @@ bool Schematic::placeOnVManip(MMVManip *vm, v3s16 p, u32 flags,
 	return vm->m_area.contains(VoxelArea(p, p + s - v3s16(1, 1, 1)));
 }
 
-void Schematic::placeOnMap(ServerMap *map, v3s16 p, u32 flags,
+void Schematic::placeOnMap(ServerMap *map, v3s16 p, uint32_t flags,
 	Rotation rot, bool force_place)
 {
 	std::map<v3s16, MapBlock *> lighting_modified_blocks;
@@ -287,7 +287,7 @@ bool Schematic::deserializeFromMts(std::istream *is,
 	bool have_cignore = false;
 
 	//// Read signature
-	u32 signature = readU32(ss);
+	uint32_t signature = readU32(ss);
 	if (signature != MTSCHEM_FILE_SIGNATURE) {
 		errorstream << __FUNCTION__ << ": invalid schematic "
 			"file" << std::endl;
@@ -295,7 +295,7 @@ bool Schematic::deserializeFromMts(std::istream *is,
 	}
 
 	//// Read version
-	u16 version = readU16(ss);
+	uint16_t version = readU16(ss);
 	if (version > MTSCHEM_FILE_VER_HIGHEST_READ) {
 		errorstream << __FUNCTION__ << ": unsupported schematic "
 			"file version" << std::endl;
@@ -307,12 +307,12 @@ bool Schematic::deserializeFromMts(std::istream *is,
 
 	//// Read Y-slice probability values
 	delete []slice_probs;
-	slice_probs = new u8[size.Y];
+	slice_probs = new uint8_t[size.Y];
 	for (int y = 0; y != size.Y; y++)
 		slice_probs[y] = (version >= 3) ? readU8(ss) : MTSCHEM_PROB_ALWAYS_OLD;
 
 	//// Read node names
-	u16 nidmapcount = readU16(ss);
+	uint16_t nidmapcount = readU16(ss);
 	for (int i = 0; i != nidmapcount; i++) {
 		std::string name = deSerializeString16(ss);
 
@@ -348,7 +348,7 @@ bool Schematic::deserializeFromMts(std::istream *is,
 
 	// Fix probability values for probability range truncation introduced in v4
 	if (version < 4) {
-		for (s16 y = 0; y != size.Y; y++)
+		for (int16_t y = 0; y != size.Y; y++)
 			slice_probs[y] >>= 1;
 		for (size_t i = 0; i != nodecount; i++)
 			schemdata[i].param1 >>= 1;
@@ -384,7 +384,7 @@ bool Schematic::serializeToMts(std::ostream *os,
 
 bool Schematic::serializeToLua(std::ostream *os,
 	const std::vector<std::string> &names, bool use_comments,
-	u32 indent_spaces) const
+	uint32_t indent_spaces) const
 {
 	std::ostream &ss = *os;
 
@@ -406,12 +406,12 @@ bool Schematic::serializeToLua(std::ostream *os,
 	{
 		ss << indent << "yslice_prob = {" << std::endl;
 
-		for (u16 y = 0; y != size.Y; y++) {
-			u8 probability = slice_probs[y] & MTSCHEM_PROB_MASK;
+		for (uint16_t y = 0; y != size.Y; y++) {
+			uint8_t probability = slice_probs[y] & MTSCHEM_PROB_MASK;
 
 			ss << indent << indent << "{"
 				<< "ypos=" << y
-				<< ", prob=" << (u16)probability * 2
+				<< ", prob=" << (uint16_t)probability * 2
 				<< "}," << std::endl;
 		}
 
@@ -422,9 +422,9 @@ bool Schematic::serializeToLua(std::ostream *os,
 	{
 		ss << indent << "data = {" << std::endl;
 
-		u32 i = 0;
-		for (u16 z = 0; z != size.Z; z++)
-		for (u16 y = 0; y != size.Y; y++) {
+		uint32_t i = 0;
+		for (uint16_t z = 0; z != size.Z; z++)
+		for (uint16_t y = 0; y != size.Y; y++) {
 			if (use_comments) {
 				ss << std::endl
 					<< indent << indent
@@ -432,14 +432,14 @@ bool Schematic::serializeToLua(std::ostream *os,
 					<< ", y=" << y << std::endl;
 			}
 
-			for (u16 x = 0; x != size.X; x++, i++) {
-				u8 probability   = schemdata[i].param1 & MTSCHEM_PROB_MASK;
+			for (uint16_t x = 0; x != size.X; x++, i++) {
+				uint8_t probability   = schemdata[i].param1 & MTSCHEM_PROB_MASK;
 				bool force_place = schemdata[i].param1 & MTSCHEM_FORCE_PLACE;
 
 				ss << indent << indent << "{"
 					<< "name=\"" << names[schemdata[i].getContent()]
-					<< "\", prob=" << (u16)probability * 2
-					<< ", param2=" << (u16)schemdata[i].param2;
+					<< "\", prob=" << (uint16_t)probability * 2
+					<< ", param2=" << (uint16_t)schemdata[i].param2;
 
 				if (force_place)
 					ss << ", force_place=true";
@@ -504,9 +504,9 @@ bool Schematic::saveSchematicToFile(const std::string &filename,
 	if (ndef) {
 		names = &ndef_nodenames;
 
-		u32 volume = size.X * size.Y * size.Z;
+		uint32_t volume = size.X * size.Y * size.Z;
 		schemdata = new MapNode[volume];
-		for (u32 i = 0; i != volume; i++)
+		for (uint32_t i = 0; i != volume; i++)
 			schemdata[i] = orig_schemdata[i];
 
 		generate_nodelist_and_update_ids(schemdata, volume, names, ndef);
@@ -539,17 +539,17 @@ bool Schematic::getSchematicFromMap(Map *map, v3s16 p1, v3s16 p2)
 
 	size = p2 - p1 + 1;
 
-	slice_probs = new u8[size.Y];
-	for (s16 y = 0; y != size.Y; y++)
+	slice_probs = new uint8_t[size.Y];
+	for (int16_t y = 0; y != size.Y; y++)
 		slice_probs[y] = MTSCHEM_PROB_ALWAYS;
 
 	schemdata = new MapNode[size.X * size.Y * size.Z];
 
-	u32 i = 0;
-	for (s16 z = p1.Z; z <= p2.Z; z++)
-	for (s16 y = p1.Y; y <= p2.Y; y++) {
-		u32 vi = vm->m_area.index(p1.X, y, z);
-		for (s16 x = p1.X; x <= p2.X; x++, i++, vi++) {
+	uint32_t i = 0;
+	for (int16_t z = p1.Z; z <= p2.Z; z++)
+	for (int16_t y = p1.Y; y <= p2.Y; y++) {
+		uint32_t vi = vm->m_area.index(p1.X, y, z);
+		for (int16_t x = p1.X; x <= p2.X; x++, i++, vi++) {
 			schemdata[i] = vm->m_data[vi];
 			schemdata[i].param1 = MTSCHEM_PROB_ALWAYS;
 		}
@@ -561,14 +561,14 @@ bool Schematic::getSchematicFromMap(Map *map, v3s16 p1, v3s16 p2)
 
 
 void Schematic::applyProbabilities(v3s16 p0,
-	std::vector<std::pair<v3s16, u8> > *plist,
-	std::vector<std::pair<s16, u8> > *splist)
+	std::vector<std::pair<v3s16, uint8_t> > *plist,
+	std::vector<std::pair<s16, uint8_t> > *splist)
 {
 	for (size_t i = 0; i != plist->size(); i++) {
 		v3s16 p = (*plist)[i].first - p0;
 		int index = p.Z * (size.Y * size.X) + p.Y * size.X + p.X;
 		if (index < size.Z * size.Y * size.X) {
-			u8 prob = (*plist)[i].second;
+			uint8_t prob = (*plist)[i].second;
 			schemdata[index].param1 = prob;
 
 			// trim unnecessary node names from schematic
@@ -578,7 +578,7 @@ void Schematic::applyProbabilities(v3s16 p0,
 	}
 
 	for (size_t i = 0; i != splist->size(); i++) {
-		s16 y = (*splist)[i].first - p0.Y;
+		int16_t y = (*splist)[i].first - p0.Y;
 		slice_probs[y] = (*splist)[i].second;
 	}
 }

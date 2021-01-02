@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <string>
 #include <vector>
 
-typedef u16 override_t;
+typedef uint16_t override_t;
 
 //! Bitmask enum specifying what a texture override should apply to
 enum class OverrideTarget : override_t

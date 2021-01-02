@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "plain.h"
 #include "settings.h"
 
-inline u32 scaledown(u32 coef, u32 size)
+inline uint32_t scaledown(uint32_t coef, uint32_t size)
 {
 	return (size + coef - 1) / coef;
 }

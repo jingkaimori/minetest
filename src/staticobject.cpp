@@ -37,7 +37,7 @@ void StaticObject::serialize(std::ostream &os)
 	// data
 	os<<serializeString16(data);
 }
-void StaticObject::deSerialize(std::istream &is, u8 version)
+void StaticObject::deSerialize(std::istream &is, uint8_t version)
 {
 	// type
 	type = readU8(is);
@@ -50,12 +50,12 @@ void StaticObject::deSerialize(std::istream &is, u8 version)
 void StaticObjectList::serialize(std::ostream &os)
 {
 	// version
-	u8 version = 0;
+	uint8_t version = 0;
 	writeU8(os, version);
 
 	// count
 	size_t count = m_stored.size() + m_active.size();
-	// Make sure it fits into u16, else it would get truncated and cause e.g.
+	// Make sure it fits into uint16_t, else it would get truncated and cause e.g.
 	// issue #2610 (Invalid block data in database: unsupported NameIdMapping version).
 	if (count > U16_MAX) {
 		errorstream << "StaticObjectList::serialize(): "
@@ -87,10 +87,10 @@ void StaticObjectList::deSerialize(std::istream &is)
 	m_stored.clear();
 
 	// version
-	u8 version = readU8(is);
+	uint8_t version = readU8(is);
 	// count
-	u16 count = readU16(is);
-	for(u16 i = 0; i < count; i++) {
+	uint16_t count = readU16(is);
+	for(uint16_t i = 0; i < count; i++) {
 		StaticObject s_obj;
 		s_obj.deSerialize(is, version);
 		m_stored.push_back(s_obj);

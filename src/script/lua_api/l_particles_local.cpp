@@ -148,7 +148,7 @@ int ModApiParticlesLocal::l_add_particlespawner(lua_State *L)
 
 	p.node_tile = getintfield_default(L, 1, "node_tile", p.node_tile);
 
-	u64 id = getClient(L)->getParticleManager()->generateSpawnerId();
+	uint64_t id = getClient(L)->getParticleManager()->generateSpawnerId();
 
 	auto event = new ClientEvent();
 	event->type                            = CE_ADD_PARTICLESPAWNER;
@@ -165,7 +165,7 @@ int ModApiParticlesLocal::l_add_particlespawner(lua_State *L)
 int ModApiParticlesLocal::l_delete_particlespawner(lua_State *L)
 {
 	// Get parameters
-	u32 id = luaL_checknumber(L, 1);
+	uint32_t id = luaL_checknumber(L, 1);
 
 	ClientEvent *event = new ClientEvent();
 	event->type                      = CE_DELETE_PARTICLESPAWNER;

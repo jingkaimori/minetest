@@ -76,7 +76,7 @@ struct ToolCapabilities
 		punch_attack_uses(punch_attack_uses_)
 	{}
 
-	void serialize(std::ostream &os, u16 version) const;
+	void serialize(std::ostream &os, uint16_t version) const;
 	void deSerialize(std::istream &is);
 	void serializeJson(std::ostream &os) const;
 	void deserializeJson(std::istream &is);
@@ -88,10 +88,10 @@ struct DigParams
 	// Digging time in seconds
 	float time;
 	// Caused wear
-	u16 wear;
+	uint16_t wear;
 	std::string main_group;
 
-	DigParams(bool a_diggable = false, float a_time = 0.0f, u16 a_wear = 0,
+	DigParams(bool a_diggable = false, float a_time = 0.0f, uint16_t a_wear = 0,
 			const std::string &a_main_group = ""):
 		diggable(a_diggable),
 		time(a_time),
@@ -105,10 +105,10 @@ DigParams getDigParams(const ItemGroupList &groups,
 
 struct HitParams
 {
-	s16 hp;
-	u16 wear;
+	int16_t hp;
+	uint16_t wear;
 
-	HitParams(s16 hp_ = 0, u16 wear_ = 0):
+	HitParams(int16_t hp_ = 0, uint16_t wear_ = 0):
 		hp(hp_),
 		wear(wear_)
 	{}

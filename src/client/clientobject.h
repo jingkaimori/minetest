@@ -36,13 +36,13 @@ class WieldMeshSceneNode;
 class ClientActiveObject : public ActiveObject
 {
 public:
-	ClientActiveObject(u16 id, Client *client, ClientEnvironment *env);
+	ClientActiveObject(uint16_t id, Client *client, ClientEnvironment *env);
 	virtual ~ClientActiveObject();
 
 	virtual void addToScene(ITextureSource *tsrc) {}
 	virtual void removeFromScene(bool permanent) {}
 
-	virtual void updateLight(u32 day_night_ratio) {}
+	virtual void updateLight(uint32_t day_night_ratio) {}
 
 	virtual bool getCollisionBox(aabb3f *toset) const { return false; }
 	virtual bool getSelectionBox(aabb3f *toset) const { return false; }
@@ -87,7 +87,7 @@ public:
 protected:
 	// Used for creating objects based on type
 	typedef ClientActiveObject *(*Factory)(Client *client, ClientEnvironment *env);
-	static void registerType(u16 type, Factory f);
+	static void registerType(uint16_t type, Factory f);
 	Client *m_client;
 	ClientEnvironment *m_env;
 private:
@@ -100,7 +100,7 @@ class DistanceSortedActiveObject
 public:
 	ClientActiveObject *obj;
 
-	DistanceSortedActiveObject(ClientActiveObject *a_obj, f32 a_d)
+	DistanceSortedActiveObject(ClientActiveObject *a_obj, float a_d)
 	{
 		obj = a_obj;
 		d = a_d;
@@ -112,5 +112,5 @@ public:
 	}
 
 private:
-	f32 d;
+	float d;
 };

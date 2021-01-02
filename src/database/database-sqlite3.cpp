@@ -491,7 +491,7 @@ void PlayerDatabaseSQLite3::savePlayer(RemotePlayer *player)
 	sqlite3_reset(m_stmt_player_remove_inventory_items);
 
 	std::vector<const InventoryList*> inventory_lists = sao->getInventory()->getLists();
-	for (u16 i = 0; i < inventory_lists.size(); i++) {
+	for (uint16_t i = 0; i < inventory_lists.size(); i++) {
 		const InventoryList* list = inventory_lists[i];
 
 		str_to_sqlite(m_stmt_player_add_inventory, 1, player->getName());
@@ -502,7 +502,7 @@ void PlayerDatabaseSQLite3::savePlayer(RemotePlayer *player)
 		sqlite3_vrfy(sqlite3_step(m_stmt_player_add_inventory), SQLITE_DONE);
 		sqlite3_reset(m_stmt_player_add_inventory);
 
-		for (u32 j = 0; j < list->getSize(); j++) {
+		for (uint32_t j = 0; j < list->getSize(); j++) {
 			std::ostringstream os;
 			list->getItem(j).serialize(os);
 			std::string itemStr = os.str();
@@ -546,8 +546,8 @@ bool PlayerDatabaseSQLite3::loadPlayer(RemotePlayer *player, PlayerSAO *sao)
 	sao->setLookPitch(sqlite_to_float(m_stmt_player_load, 0));
 	sao->setPlayerYaw(sqlite_to_float(m_stmt_player_load, 1));
 	sao->setBasePosition(sqlite_to_v3f(m_stmt_player_load, 2));
-	sao->setHPRaw((u16) MYMIN(sqlite_to_int(m_stmt_player_load, 5), U16_MAX));
-	sao->setBreath((u16) MYMIN(sqlite_to_int(m_stmt_player_load, 6), U16_MAX), false);
+	sao->setHPRaw((uint16_t) MYMIN(sqlite_to_int(m_stmt_player_load, 5), U16_MAX));
+	sao->setBreath((uint16_t) MYMIN(sqlite_to_int(m_stmt_player_load, 6), U16_MAX), false);
 	sqlite3_reset(m_stmt_player_load);
 
 	// Load inventory
@@ -558,7 +558,7 @@ bool PlayerDatabaseSQLite3::loadPlayer(RemotePlayer *player, PlayerSAO *sao)
 			sqlite_to_uint(m_stmt_player_load_inventory, 3));
 		invList->setWidth(sqlite_to_uint(m_stmt_player_load_inventory, 1));
 
-		u32 invId = sqlite_to_uint(m_stmt_player_load_inventory, 0);
+		uint32_t invId = sqlite_to_uint(m_stmt_player_load_inventory, 0);
 
 		str_to_sqlite(m_stmt_player_load_inventory_items, 1, player->getName());
 		int_to_sqlite(m_stmt_player_load_inventory_items, 2, invId);

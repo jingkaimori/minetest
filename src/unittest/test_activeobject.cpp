@@ -42,7 +42,7 @@ void TestActiveObject::runTests(IGameDef *gamedef)
 class TestAO : public ActiveObject
 {
 public:
-	TestAO(u16 id) : ActiveObject(id) {}
+	TestAO(uint16_t id) : ActiveObject(id) {}
 
 	virtual ActiveObjectType getType() const { return ACTIVEOBJECT_TYPE_TEST; }
 	virtual bool getCollisionBox(aabb3f *toset) const { return false; }

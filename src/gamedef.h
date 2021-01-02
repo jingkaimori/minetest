@@ -55,7 +55,7 @@ public:
 	virtual ICraftDefManager* getCraftDefManager()=0;
 
 	// Used for keeping track of names/ids of unknown nodes
-	virtual u16 allocateUnknownNodeId(const std::string &name)=0;
+	virtual uint16_t allocateUnknownNodeId(const std::string &name)=0;
 
 	// Only usable on the server, and NOT thread-safe. It is usable from the
 	// environment thread.

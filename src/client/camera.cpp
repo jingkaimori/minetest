@@ -154,13 +154,13 @@ bool Camera::successfullyCreated(std::string &error_message)
 }
 
 // Returns the fractional part of x
-inline f32 my_modf(f32 x)
+inline float my_modf(float x)
 {
 	double dummy;
 	return modf(x, &dummy);
 }
 
-void Camera::step(f32 dtime)
+void Camera::step(float dtime)
 {
 	if(m_view_bobbing_fall > 0)
 	{
@@ -177,8 +177,8 @@ void Camera::step(f32 dtime)
 
 	if (m_view_bobbing_state != 0)
 	{
-		//f32 offset = dtime * m_view_bobbing_speed * 0.035;
-		f32 offset = dtime * m_view_bobbing_speed * 0.030;
+		//float offset = dtime * m_view_bobbing_speed * 0.035;
+		float offset = dtime * m_view_bobbing_speed * 0.030;
 		if (m_view_bobbing_state == 2) {
 			// Animation is getting turned off
 			if (m_view_bobbing_anim < 0.25) {
@@ -216,7 +216,7 @@ void Camera::step(f32 dtime)
 	}
 
 	if (m_digging_button != -1) {
-		f32 offset = dtime * 3.5f;
+		float offset = dtime * 3.5f;
 		float m_digging_anim_was = m_digging_anim;
 		m_digging_anim += offset;
 		if (m_digging_anim >= 1)
@@ -238,11 +238,11 @@ void Camera::step(f32 dtime)
 
 static inline v2f dir(const v2f &pos_dist)
 {
-	f32 x = pos_dist.X - WIELDMESH_OFFSET_X;
-	f32 y = pos_dist.Y - WIELDMESH_OFFSET_Y;
+	float x = pos_dist.X - WIELDMESH_OFFSET_X;
+	float y = pos_dist.Y - WIELDMESH_OFFSET_Y;
 
-	f32 x_abs = std::fabs(x);
-	f32 y_abs = std::fabs(y);
+	float x_abs = std::fabs(x);
+	float y_abs = std::fabs(y);
 
 	if (x_abs >= y_abs) {
 		y *= (1.0f / x_abs);
@@ -257,13 +257,13 @@ static inline v2f dir(const v2f &pos_dist)
 	return v2f(std::fabs(x), std::fabs(y));
 }
 
-void Camera::addArmInertia(f32 player_yaw)
+void Camera::addArmInertia(float player_yaw)
 {
 	m_cam_vel.X = std::fabs(rangelim(m_last_cam_pos.X - player_yaw,
 		-100.0f, 100.0f) / 0.016f) * 0.01f;
 	m_cam_vel.Y = std::fabs((m_last_cam_pos.Y - m_camera_direction.Y) / 0.016f);
-	f32 gap_X = std::fabs(WIELDMESH_OFFSET_X - m_wieldmesh_offset.X);
-	f32 gap_Y = std::fabs(WIELDMESH_OFFSET_Y - m_wieldmesh_offset.Y);
+	float gap_X = std::fabs(WIELDMESH_OFFSET_X - m_wieldmesh_offset.X);
+	float gap_Y = std::fabs(WIELDMESH_OFFSET_Y - m_wieldmesh_offset.Y);
 
 	if (m_cam_vel.X > 1.0f || m_cam_vel.Y > 1.0f) {
 		/*
@@ -275,7 +275,7 @@ void Camera::addArmInertia(f32 player_yaw)
 			if (m_cam_vel.X > m_cam_vel_old.X)
 				m_cam_vel_old.X = m_cam_vel.X;
 
-			f32 acc_X = 0.12f * (m_cam_vel.X - (gap_X * 0.1f));
+			float acc_X = 0.12f * (m_cam_vel.X - (gap_X * 0.1f));
 			m_wieldmesh_offset.X += m_last_cam_pos.X < player_yaw ? acc_X : -acc_X;
 
 			if (m_last_cam_pos.X != player_yaw)
@@ -290,7 +290,7 @@ void Camera::addArmInertia(f32 player_yaw)
 			if (m_cam_vel.Y > m_cam_vel_old.Y)
 				m_cam_vel_old.Y = m_cam_vel.Y;
 
-			f32 acc_Y = 0.12f * (m_cam_vel.Y - (gap_Y * 0.1f));
+			float acc_Y = 0.12f * (m_cam_vel.Y - (gap_Y * 0.1f));
 			m_wieldmesh_offset.Y +=
 				m_last_cam_pos.Y > m_camera_direction.Y ? acc_Y : -acc_Y;
 
@@ -309,10 +309,10 @@ void Camera::addArmInertia(f32 player_yaw)
 		    following a vector, with a smooth deceleration factor.
 		*/
 
-		f32 dec_X = 0.35f * (std::min(15.0f, m_cam_vel_old.X) * (1.0f +
+		float dec_X = 0.35f * (std::min(15.0f, m_cam_vel_old.X) * (1.0f +
 			(1.0f - m_arm_dir.X))) * (gap_X / 20.0f);
 
-		f32 dec_Y = 0.25f * (std::min(15.0f, m_cam_vel_old.Y) * (1.0f +
+		float dec_Y = 0.25f * (std::min(15.0f, m_cam_vel_old.Y) * (1.0f +
 			(1.0f - m_arm_dir.Y))) * (gap_Y / 15.0f);
 
 		if (gap_X < 0.1f)
@@ -329,7 +329,7 @@ void Camera::addArmInertia(f32 player_yaw)
 	}
 }
 
-void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_reload_ratio)
+void Camera::update(LocalPlayer* player, float frametime, float busytime, float tool_reload_ratio)
 {
 	// Get player position
 	// Smooth the movement when walking up stairs
@@ -349,9 +349,9 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 	// when seen in 3rd person view.
 	bool flying = g_settings->getBool("free_move") && m_client->checkLocalPrivilege("fly");
 	if (player_position.Y > old_player_position.Y && !player->is_climbing && !flying) {
-		f32 oldy = old_player_position.Y;
-		f32 newy = player_position.Y;
-		f32 t = std::exp(-23 * frametime);
+		float oldy = old_player_position.Y;
+		float newy = player_position.Y;
+		float t = std::exp(-23 * frametime);
 		player_position.Y = oldy * t + newy * (1-t);
 	}
 
@@ -405,13 +405,13 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 
 	if (m_cache_view_bobbing_amount != 0.0f && m_view_bobbing_anim != 0.0f &&
 		m_camera_mode < CAMERA_MODE_THIRD) {
-		f32 bobfrac = my_modf(m_view_bobbing_anim * 2);
-		f32 bobdir = (m_view_bobbing_anim < 0.5) ? 1.0 : -1.0;
+		float bobfrac = my_modf(m_view_bobbing_anim * 2);
+		float bobdir = (m_view_bobbing_anim < 0.5) ? 1.0 : -1.0;
 
 		#if 1
-		f32 bobknob = 1.2;
-		f32 bobtmp = sin(pow(bobfrac, bobknob) * M_PI);
-		//f32 bobtmp2 = cos(pow(bobfrac, bobknob) * M_PI);
+		float bobknob = 1.2;
+		float bobtmp = sin(pow(bobfrac, bobknob) * M_PI);
+		//float bobtmp2 = cos(pow(bobfrac, bobknob) * M_PI);
 
 		v3f bobvec = v3f(
 			0.3 * bobdir * sin(bobfrac * M_PI),
@@ -431,9 +431,9 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 		//rel_cam_target.Y -= 0.005 * bobvec.Y * f;
 		rel_cam_up.rotateXYBy(-0.03 * bobdir * bobtmp * M_PI * f);
 		#else
-		f32 angle_deg = 1 * bobdir * sin(bobfrac * M_PI);
-		f32 angle_rad = angle_deg * M_PI / 180;
-		f32 r = 0.05;
+		float angle_deg = 1 * bobdir * sin(bobfrac * M_PI);
+		float angle_rad = angle_deg * M_PI / 180;
+		float r = 0.05;
 		v3f off = v3f(
 			r * sin(angle_rad),
 			r * (cos(angle_rad) - 1),
@@ -518,7 +518,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 	if (m_fov_transition_active) {
 		// Smooth FOV transition
 		// Dynamically calculate FOV delta based on frametimes
-		f32 delta = (frametime / m_transition_time) * m_fov_diff;
+		float delta = (frametime / m_transition_time) * m_fov_diff;
 		m_curr_fov_degrees += delta;
 
 		// Mark transition as complete if target FOV has been reached
@@ -560,13 +560,13 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 	wield_position.Y += fabs(m_wield_change_timer)*320 - 40;
 	if(m_digging_anim < 0.05 || m_digging_anim > 0.5)
 	{
-		f32 frac = 1.0;
+		float frac = 1.0;
 		if(m_digging_anim > 0.5)
 			frac = 2.0 * (m_digging_anim - 0.5);
 		// This value starts from 1 and settles to 0
-		f32 ratiothing = std::pow((1.0f - tool_reload_ratio), 0.5f);
-		//f32 ratiothing2 = pow(ratiothing, 0.5f);
-		f32 ratiothing2 = (easeCurve(ratiothing*0.5))*2.0;
+		float ratiothing = std::pow((1.0f - tool_reload_ratio), 0.5f);
+		//float ratiothing2 = pow(ratiothing, 0.5f);
+		float ratiothing2 = (easeCurve(ratiothing*0.5))*2.0;
 		wield_position.Y -= frac * 25.0 * pow(ratiothing2, 1.7f);
 		//wield_position.Z += frac * 5.0 * ratiothing2;
 		wield_position.X -= frac * 35.0 * pow(ratiothing2, 1.1f);
@@ -576,7 +576,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 	}
 	if (m_digging_button != -1)
 	{
-		f32 digfrac = m_digging_anim;
+		float digfrac = m_digging_anim;
 		wield_position.X -= 50 * sin(pow(digfrac, 0.8f) * M_PI);
 		wield_position.Y += 24 * sin(digfrac * 1.8 * M_PI);
 		wield_position.Z += 25 * 0.5;
@@ -589,7 +589,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 		quat_slerp.toEuler(wield_rotation);
 		wield_rotation *= core::RADTODEG;
 	} else {
-		f32 bobfrac = my_modf(m_view_bobbing_anim);
+		float bobfrac = my_modf(m_view_bobbing_anim);
 		wield_position.X -= sin(bobfrac*M_PI*2.0) * 3.0;
 		wield_position.Y += sin(my_modf(bobfrac*2.0)*M_PI) * 3.0;
 	}
@@ -624,7 +624,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, f32 busytime, f32 tool_r
 
 void Camera::updateViewingRange()
 {
-	f32 viewing_range = g_settings->getFloat("viewing_range");
+	float viewing_range = g_settings->getFloat("viewing_range");
 
 	// Ignore near_plane setting on all other platforms to prevent abuse
 #if ENABLE_GLES
@@ -642,7 +642,7 @@ void Camera::updateViewingRange()
 	m_cameranode->setFarValue((viewing_range < 2000) ? 2000 * BS : viewing_range * BS);
 }
 
-void Camera::setDigging(s32 button)
+void Camera::setDigging(int32_t button)
 {
 	if (m_digging_button == -1)
 		m_digging_button = button;
@@ -703,14 +703,14 @@ void Camera::drawNametags()
 			continue;
 		}
 		v3f pos = nametag->parent_node->getAbsolutePosition() + nametag->nametag_pos * BS;
-		f32 transformed_pos[4] = { pos.X, pos.Y, pos.Z, 1.0f };
+		float transformed_pos[4] = { pos.X, pos.Y, pos.Z, 1.0f };
 		trans.multiplyWith1x4Matrix(transformed_pos);
 		if (transformed_pos[3] > 0) {
 			std::wstring nametag_colorless =
 				unescape_translate(utf8_to_wide(nametag->nametag_text));
-			core::dimension2d<u32> textsize = font->getDimension(
+			core::dimension2d<uint32_t> textsize = font->getDimension(
 				nametag_colorless.c_str());
-			f32 zDiv = transformed_pos[3] == 0.0f ? 1.0f :
+			float zDiv = transformed_pos[3] == 0.0f ? 1.0f :
 				core::reciprocal(transformed_pos[3]);
 			v2s32 screen_pos;
 			screen_pos.X = screensize.X *

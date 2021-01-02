@@ -61,7 +61,7 @@ struct PointedThing
 	 * Only valid if type is POINTEDTHING_OBJECT.
 	 * The ID of the object the ray hit.
 	 */
-	s16 object_id = -1;
+	int16_t object_id = -1;
 	/*!
 	 * Only valid if type isn't POINTEDTHING_NONE.
 	 * First intersection point of the ray and the nodebox in irrlicht
@@ -79,21 +79,21 @@ struct PointedThing
 	 * Only valid if type isn't POINTEDTHING_NONE.
 	 * Indicates which selection box is selected, if there are more of them.
 	 */
-	u16 box_id = 0;
+	uint16_t box_id = 0;
 	/*!
 	 * Square of the distance between the pointing
 	 * ray's start point and the intersection point in irrlicht coordinates.
 	 */
-	f32 distanceSq = 0;
+	float distanceSq = 0;
 
 	//! Constructor for POINTEDTHING_NOTHING
 	PointedThing() = default;
 	//! Constructor for POINTEDTHING_NODE
 	PointedThing(const v3s16 &under, const v3s16 &above,
 		const v3s16 &real_under, const v3f &point, const v3s16 &normal,
-		u16 box_id, f32 distSq);
+		uint16_t box_id, float distSq);
 	//! Constructor for POINTEDTHING_OBJECT
-	PointedThing(s16 id, const v3f &point, const v3s16 &normal, f32 distSq);
+	PointedThing(int16_t id, const v3f &point, const v3s16 &normal, float distSq);
 	std::string dump() const;
 	void serialize(std::ostream &os) const;
 	void deSerialize(std::istream &is);

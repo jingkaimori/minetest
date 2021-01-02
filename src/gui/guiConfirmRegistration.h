@@ -31,7 +31,7 @@ class GUIConfirmRegistration : public GUIModalMenu
 {
 public:
 	GUIConfirmRegistration(gui::IGUIEnvironment *env, gui::IGUIElement *parent,
-			s32 id, IMenuManager *menumgr, Client *client,
+			int32_t id, IMenuManager *menumgr, Client *client,
 			const std::string &playername, const std::string &password,
 			bool *aborted, ISimpleTextureSource *tsrc);
 	~GUIConfirmRegistration();
@@ -56,8 +56,8 @@ public:
 #endif
 
 private:
-	std::wstring getLabelByID(s32 id) { return L""; }
-	std::string getNameByID(s32 id) { return "password"; }
+	std::wstring getLabelByID(int32_t id) { return L""; }
+	std::string getNameByID(int32_t id) { return "password"; }
 
 	Client *m_client = nullptr;
 	const std::string &m_playername;

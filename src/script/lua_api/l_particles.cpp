@@ -247,7 +247,7 @@ int ModApiParticles::l_add_particlespawner(lua_State *L)
 		p.node_tile = getintfield_default(L, 1, "node_tile", p.node_tile);
 	}
 
-	u32 id = getServer(L)->addParticleSpawner(p, attached, playername);
+	uint32_t id = getServer(L)->addParticleSpawner(p, attached, playername);
 	lua_pushnumber(L, id);
 
 	return 1;
@@ -260,7 +260,7 @@ int ModApiParticles::l_delete_particlespawner(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 
 	// Get parameters
-	u32 id = luaL_checknumber(L, 1);
+	uint32_t id = luaL_checknumber(L, 1);
 	std::string playername;
 	if (lua_gettop(L) == 2) {
 		playername = luaL_checkstring(L, 2);

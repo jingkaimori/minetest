@@ -46,13 +46,13 @@ static bool hasGroupItem(const std::vector<std::string> &recipe)
 	return false;
 }
 
-inline u64 getHashForString(const std::string &recipe_str)
+inline uint64_t getHashForString(const std::string &recipe_str)
 {
 	/*errorstream << "Hashing craft string  \"" << recipe_str << '"';*/
 	return murmur_hash_64_ua(recipe_str.data(), recipe_str.length(), 0xdeadbeef);
 }
 
-static u64 getHashForGrid(CraftHashType type, const std::vector<std::string> &grid_names)
+static uint64_t getHashForGrid(CraftHashType type, const std::vector<std::string> &grid_names)
 {
 	switch (type) {
 		case CRAFT_HASH_TYPE_ITEM_NAMES: {
@@ -66,7 +66,7 @@ static u64 getHashForGrid(CraftHashType type, const std::vector<std::string> &gr
 			}
 			return getHashForString(os.str());
 		} case CRAFT_HASH_TYPE_COUNT: {
-			u64 cnt = 0;
+			uint64_t cnt = 0;
 			for (const std::string &grid_name : grid_names)
 				if (!grid_name.empty())
 					cnt++;
@@ -147,8 +147,8 @@ static std::vector<ItemStack> craftGetItems(
 	std::vector<ItemStack> result;
 	result.reserve(items.size());
 	for (const auto &item : items) {
-		result.emplace_back(std::string(item), (u16)1,
-			(u16)0, gamedef->getItemDefManager());
+		result.emplace_back(std::string(item), (uint16_t)1,
+			(uint16_t)0, gamedef->getItemDefManager());
 	}
 	return result;
 }
@@ -438,7 +438,7 @@ void CraftDefinitionShaped::decrementInput(CraftInput &input, std::vector<ItemSt
 	craftDecrementOrReplaceInput(input, output_replacements, replacements, gamedef);
 }
 
-u64 CraftDefinitionShaped::getHash(CraftHashType type) const
+uint64_t CraftDefinitionShaped::getHash(CraftHashType type) const
 {
 	assert(hash_inited); // Pre-condition
 	assert((type == CRAFT_HASH_TYPE_ITEM_NAMES)
@@ -559,7 +559,7 @@ void CraftDefinitionShapeless::decrementInput(CraftInput &input, std::vector<Ite
 	craftDecrementOrReplaceInput(input, output_replacements, replacements, gamedef);
 }
 
-u64 CraftDefinitionShapeless::getHash(CraftHashType type) const
+uint64_t CraftDefinitionShapeless::getHash(CraftHashType type) const
 {
 	assert(hash_inited); // Pre-condition
 	assert(type == CRAFT_HASH_TYPE_ITEM_NAMES
@@ -614,10 +614,10 @@ static ItemStack craftToolRepair(
 		return ItemStack();
 	}
 
-	s32 item1_uses = 65536 - (u32) item1.wear;
-	s32 item2_uses = 65536 - (u32) item2.wear;
-	s32 new_uses = item1_uses + item2_uses;
-	s32 new_wear = 65536 - new_uses + floor(additional_wear * 65536 + 0.5);
+	int32_t item1_uses = 65536 - (uint32_t) item1.wear;
+	int32_t item2_uses = 65536 - (uint32_t) item2.wear;
+	int32_t new_uses = item1_uses + item2_uses;
+	int32_t new_wear = 65536 - new_uses + floor(additional_wear * 65536 + 0.5);
 	if (new_wear >= 65536)
 		return ItemStack();
 	if (new_wear < 0)
@@ -755,7 +755,7 @@ void CraftDefinitionCooking::decrementInput(CraftInput &input, std::vector<ItemS
 	craftDecrementOrReplaceInput(input, output_replacements, replacements, gamedef);
 }
 
-u64 CraftDefinitionCooking::getHash(CraftHashType type) const
+uint64_t CraftDefinitionCooking::getHash(CraftHashType type) const
 {
 	if (type == CRAFT_HASH_TYPE_ITEM_NAMES) {
 		return getHashForString(recipe_name);
@@ -857,7 +857,7 @@ void CraftDefinitionFuel::decrementInput(CraftInput &input, std::vector<ItemStac
 	craftDecrementOrReplaceInput(input, output_replacements, replacements, gamedef);
 }
 
-u64 CraftDefinitionFuel::getHash(CraftHashType type) const
+uint64_t CraftDefinitionFuel::getHash(CraftHashType type) const
 {
 	if (type == CRAFT_HASH_TYPE_ITEM_NAMES) {
 		return getHashForString(recipe_name);
@@ -928,7 +928,7 @@ public:
 			CraftDefinition::PRIORITY_NO_RECIPE;
 		CraftDefinition *def_best = nullptr;
 		for (int type = 0; type <= craft_hash_type_max; type++) {
-			u64 hash = getHashForGrid((CraftHashType) type, input_names);
+			uint64_t hash = getHashForGrid((CraftHashType) type, input_names);
 
 			/*errorstream << "Checking type " << type << " with hash " << hash << std::endl;*/
 
@@ -1097,7 +1097,7 @@ public:
 			// Initialize and get the definition's hash
 			def->initHash(gamedef);
 			CraftHashType type = def->getHashType();
-			u64 hash = def->getHash(type);
+			uint64_t hash = def->getHash(type);
 
 			// Enter the definition
 			m_craft_defs[type][hash].push_back(def);
@@ -1105,7 +1105,7 @@ public:
 		unhashed.clear();
 	}
 private:
-	std::vector<std::unordered_map<u64, std::vector<CraftDefinition*> > >
+	std::vector<std::unordered_map<uint64_t, std::vector<CraftDefinition*> > >
 		m_craft_defs;
 	std::unordered_map<std::string, std::vector<CraftDefinition*> >
 		m_output_craft_definitions;

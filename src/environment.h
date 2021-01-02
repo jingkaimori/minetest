@@ -57,24 +57,24 @@ public:
 		- Step mobs
 		- Run timers of map
 	*/
-	virtual void step(f32 dtime) = 0;
+	virtual void step(float dtime) = 0;
 
 	virtual Map &getMap() = 0;
 
-	u32 getDayNightRatio();
+	uint32_t getDayNightRatio();
 
 	// 0-23999
-	virtual void setTimeOfDay(u32 time);
-	u32 getTimeOfDay();
+	virtual void setTimeOfDay(uint32_t time);
+	uint32_t getTimeOfDay();
 	float getTimeOfDayF();
 
 	void stepTimeOfDay(float dtime);
 
 	void setTimeOfDaySpeed(float speed);
 
-	void setDayNightRatioOverride(bool enable, u32 value);
+	void setDayNightRatioOverride(bool enable, uint32_t value);
 
-	u32 getDayCount();
+	uint32_t getDayCount();
 
 	/*!
 	 * Returns false if the given line intersects with a
@@ -107,7 +107,7 @@ public:
 	void continueRaycast(RaycastState *state, PointedThing *result);
 
 	// counter used internally when triggering ABMs
-	u32 m_added_objects;
+	uint32_t m_added_objects;
 
 	IGameDef *getGameDef() { return m_gamedef; }
 
@@ -118,15 +118,15 @@ protected:
 	 * Below: values managed by m_time_lock
 	 */
 	// Time of day in milli-hours (0-23999), determines day and night
-	u32 m_time_of_day;
+	uint32_t m_time_of_day;
 	// Time of day in 0...1
 	float m_time_of_day_f;
-	// Stores the skew created by the float -> u32 conversion
+	// Stores the skew created by the float -> uint32_t conversion
 	// to be applied at next conversion, so that there is no real skew.
 	float m_time_conversion_skew = 0.0f;
 	// Overriding the day-night ratio is useful for custom sky visuals
 	bool m_enable_day_night_ratio_override = false;
-	u32 m_day_night_ratio_override = 0.0f;
+	uint32_t m_day_night_ratio_override = 0.0f;
 	// Days from the server start, accounts for time shift
 	// in game (e.g. /time or bed usage)
 	std::atomic<u32> m_day_count;

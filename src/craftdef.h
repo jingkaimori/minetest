@@ -174,7 +174,7 @@ public:
 	{
 		return hash_type;
 	}
-	virtual u64 getHash(CraftHashType type) const = 0;
+	virtual uint64_t getHash(CraftHashType type) const = 0;
 
 	// to be called after all mods are loaded, so that we catch all aliases
 	virtual void initHash(IGameDef *gamedef) = 0;
@@ -211,7 +211,7 @@ public:
 	virtual void decrementInput(CraftInput &input,
 		std::vector<ItemStack> &output_replacements, IGameDef *gamedef) const;
 
-	virtual u64 getHash(CraftHashType type) const;
+	virtual uint64_t getHash(CraftHashType type) const;
 
 	virtual void initHash(IGameDef *gamedef);
 
@@ -255,7 +255,7 @@ public:
 	virtual void decrementInput(CraftInput &input,
 		std::vector<ItemStack> &output_replacements, IGameDef *gamedef) const;
 
-	virtual u64 getHash(CraftHashType type) const;
+	virtual uint64_t getHash(CraftHashType type) const;
 
 	virtual void initHash(IGameDef *gamedef);
 
@@ -295,7 +295,7 @@ public:
 	virtual void decrementInput(CraftInput &input,
 		std::vector<ItemStack> &output_replacements, IGameDef *gamedef) const;
 
-	virtual u64 getHash(CraftHashType type) const { return 2; }
+	virtual uint64_t getHash(CraftHashType type) const { return 2; }
 
 	virtual void initHash(IGameDef *gamedef)
 	{
@@ -336,7 +336,7 @@ public:
 	virtual void decrementInput(CraftInput &input,
 		std::vector<ItemStack> &output_replacements, IGameDef *gamedef) const;
 
-	virtual u64 getHash(CraftHashType type) const;
+	virtual uint64_t getHash(CraftHashType type) const;
 
 	virtual void initHash(IGameDef *gamedef);
 
@@ -379,7 +379,7 @@ public:
 	virtual void decrementInput(CraftInput &input,
 		std::vector<ItemStack> &output_replacements, IGameDef *gamedef) const;
 
-	virtual u64 getHash(CraftHashType type) const;
+	virtual uint64_t getHash(CraftHashType type) const;
 
 	virtual void initHash(IGameDef *gamedef);
 

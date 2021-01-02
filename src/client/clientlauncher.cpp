@@ -169,7 +169,7 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 		video::IVideoDriver *driver = RenderingEngine::get_video_driver();
 		video::ITexture *sprite_texture = driver->getTexture(sprite_path.c_str());
 		if (sprite_texture) {
-			s32 sprite_id = sprites->addTextureAsSprite(sprite_texture);
+			int32_t sprite_id = sprites->addTextureAsSprite(sprite_texture);
 			if (sprite_id != -1)
 				skin->setIcon(gui::EGDI_CHECK_BOX_CHECKED, sprite_id);
 		}
@@ -367,7 +367,7 @@ void ClientLauncher::init_input()
 		if (RenderingEngine::get_raw_device()->activateJoysticks(infos)) {
 			infostream << "Joystick support enabled" << std::endl;
 			joystick_infos.reserve(infos.size());
-			for (u32 i = 0; i < infos.size(); i++) {
+			for (uint32_t i = 0; i < infos.size(); i++) {
 				joystick_infos.push_back(infos[i]);
 			}
 			input->joystick.onJoystickConnect(joystick_infos);
@@ -580,8 +580,8 @@ void ClientLauncher::main_menu(MainMenuData *menudata)
 void ClientLauncher::speed_tests()
 {
 	// volatile to avoid some potential compiler optimisations
-	volatile static s16 temp16;
-	volatile static f32 tempf;
+	volatile static int16_t temp16;
+	volatile static float tempf;
 	static v3f tempv3f1;
 	static v3f tempv3f2;
 	static std::string tempstring;
@@ -595,15 +595,15 @@ void ClientLauncher::speed_tests()
 	{
 		infostream << "The following test should take around 20ms." << std::endl;
 		TimeTaker timer("Testing std::string speed");
-		const u32 jj = 10000;
-		for (u32 j = 0; j < jj; j++) {
+		const uint32_t jj = 10000;
+		for (uint32_t j = 0; j < jj; j++) {
 			tempstring = "";
 			tempstring2 = "";
-			const u32 ii = 10;
-			for (u32 i = 0; i < ii; i++) {
+			const uint32_t ii = 10;
+			for (uint32_t i = 0; i < ii; i++) {
 				tempstring2 += "asd";
 			}
-			for (u32 i = 0; i < ii+1; i++) {
+			for (uint32_t i = 0; i < ii+1; i++) {
 				tempstring += "asd";
 				if (tempstring == tempstring2)
 					break;
@@ -617,7 +617,7 @@ void ClientLauncher::speed_tests()
 	{
 		TimeTaker timer("Testing floating-point conversion speed");
 		tempf = 0.001;
-		for (u32 i = 0; i < 4000000; i++) {
+		for (uint32_t i = 0; i < 4000000; i++) {
 			temp16 += tempf;
 			tempf += 0.001;
 		}
@@ -628,7 +628,7 @@ void ClientLauncher::speed_tests()
 
 		tempv3f1 = v3f(1, 2, 3);
 		tempv3f2 = v3f(4, 5, 6);
-		for (u32 i = 0; i < 10000000; i++) {
+		for (uint32_t i = 0; i < 10000000; i++) {
 			tempf += tempv3f1.dotProduct(tempv3f2);
 			tempv3f2 += v3f(7, 8, 9);
 		}
@@ -639,15 +639,15 @@ void ClientLauncher::speed_tests()
 
 		std::map<v2s16, f32> map1;
 		tempf = -324;
-		const s16 ii = 300;
-		for (s16 y = 0; y < ii; y++) {
-			for (s16 x = 0; x < ii; x++) {
+		const int16_t ii = 300;
+		for (int16_t y = 0; y < ii; y++) {
+			for (int16_t x = 0; x < ii; x++) {
 				map1[v2s16(x, y)] =  tempf;
 				tempf += 1;
 			}
 		}
-		for (s16 y = ii - 1; y >= 0; y--) {
-			for (s16 x = 0; x < ii; x++) {
+		for (int16_t y = ii - 1; y >= 0; y--) {
+			for (int16_t x = 0; x < ii; x++) {
 				tempf = map1[v2s16(x, y)];
 			}
 		}
@@ -658,8 +658,8 @@ void ClientLauncher::speed_tests()
 		TimeTaker timer("Testing mutex speed");
 
 		std::mutex m;
-		u32 n = 0;
-		u32 i = 0;
+		uint32_t n = 0;
+		uint32_t i = 0;
 		do {
 			n += 10000;
 			for (; i < n; i++) {
@@ -670,8 +670,8 @@ void ClientLauncher::speed_tests()
 		// Do at least 10ms
 		while(timer.getTimerTime() < 10);
 
-		u32 dtime = timer.stop();
-		u32 per_ms = n / dtime;
+		uint32_t dtime = timer.stop();
+		uint32_t per_ms = n / dtime;
 		infostream << "Done. " << dtime << "ms, " << per_ms << "/ms" << std::endl;
 	}
 }

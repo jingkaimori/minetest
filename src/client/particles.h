@@ -51,12 +51,12 @@ class Particle : public scene::ISceneNode
 		return m_box;
 	}
 
-	virtual u32 getMaterialCount() const
+	virtual uint32_t getMaterialCount() const
 	{
 		return 1;
 	}
 
-	virtual video::SMaterial& getMaterial(u32 i)
+	virtual video::SMaterial& getMaterial(uint32_t i)
 	{
 		return m_material;
 	}
@@ -101,7 +101,7 @@ private:
 	struct TileAnimationParams m_animation;
 	float m_animation_time = 0.0f;
 	int m_animation_frame = 0;
-	u8 m_glow;
+	uint8_t m_glow;
 };
 
 class ParticleSpawner
@@ -110,7 +110,7 @@ public:
 	ParticleSpawner(IGameDef* gamedef,
 		LocalPlayer *player,
 		const ParticleSpawnerParameters &p,
-		u16 attached_id,
+		uint16_t attached_id,
 		video::ITexture *texture,
 		ParticleManager* p_manager);
 
@@ -132,7 +132,7 @@ private:
 	ParticleSpawnerParameters p;
 	video::ITexture *m_texture;
 	std::vector<float> m_spawntimes;
-	u16 m_attached_id;
+	uint16_t m_attached_id;
 };
 
 /**
@@ -163,7 +163,7 @@ public:
 	 * never overlap (u64)
 	 * @return new id
 	 */
-	u64 generateSpawnerId()
+	uint64_t generateSpawnerId()
 	{
 		return m_next_particle_spawner_id++;
 	}
@@ -171,13 +171,13 @@ public:
 protected:
 	static bool getNodeParticleParams(const MapNode &n, const ContentFeatures &f,
 		ParticleParameters &p, video::ITexture **texture, v2f &texpos,
-		v2f &texsize, video::SColor *color, u8 tilenum = 0);
+		v2f &texsize, video::SColor *color, uint8_t tilenum = 0);
 
 	void addParticle(Particle* toadd);
 
 private:
-	void addParticleSpawner(u64 id, ParticleSpawner *toadd);
-	void deleteParticleSpawner(u64 id);
+	void addParticleSpawner(uint64_t id, ParticleSpawner *toadd);
+	void deleteParticleSpawner(uint64_t id);
 
 	void stepParticles(float dtime);
 	void stepSpawners(float dtime);
@@ -188,7 +188,7 @@ private:
 	std::unordered_map<u64, ParticleSpawner*> m_particle_spawners;
 	// Start the particle spawner ids generated from here after u32_max. lower values are
 	// for server sent spawners.
-	u64 m_next_particle_spawner_id = U32_MAX + 1;
+	uint64_t m_next_particle_spawner_id = U32_MAX + 1;
 
 	ClientEnvironment* m_env;
 	std::mutex m_particle_list_lock;

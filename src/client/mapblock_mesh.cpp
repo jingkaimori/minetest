@@ -98,10 +98,10 @@ void MeshMakeData::setSmoothLighting(bool smooth_lighting)
 	Calculate non-smooth lighting at interior of node.
 	Single light bank.
 */
-static u8 getInteriorLight(enum LightBank bank, MapNode n, s32 increment,
+static uint8_t getInteriorLight(enum LightBank bank, MapNode n, int32_t increment,
 	const NodeDefManager *ndef)
 {
-	u8 light = n.getLight(bank, ndef);
+	uint8_t light = n.getLight(bank, ndef);
 	if (light > 0)
 		light = rangelim(light + increment, 0, LIGHT_SUN);
 	return decode_light(light);
@@ -111,10 +111,10 @@ static u8 getInteriorLight(enum LightBank bank, MapNode n, s32 increment,
 	Calculate non-smooth lighting at interior of node.
 	Both light banks.
 */
-u16 getInteriorLight(MapNode n, s32 increment, const NodeDefManager *ndef)
+u16 getInteriorLight(MapNode n, int32_t increment, const NodeDefManager *ndef)
 {
-	u16 day = getInteriorLight(LIGHTBANK_DAY, n, increment, ndef);
-	u16 night = getInteriorLight(LIGHTBANK_NIGHT, n, increment, ndef);
+	uint16_t day = getInteriorLight(LIGHTBANK_DAY, n, increment, ndef);
+	uint16_t night = getInteriorLight(LIGHTBANK_NIGHT, n, increment, ndef);
 	return day | (night << 8);
 }
 
@@ -122,19 +122,19 @@ u16 getInteriorLight(MapNode n, s32 increment, const NodeDefManager *ndef)
 	Calculate non-smooth lighting at face of node.
 	Single light bank.
 */
-static u8 getFaceLight(enum LightBank bank, MapNode n, MapNode n2,
+static uint8_t getFaceLight(enum LightBank bank, MapNode n, MapNode n2,
 	v3s16 face_dir, const NodeDefManager *ndef)
 {
-	u8 light;
-	u8 l1 = n.getLight(bank, ndef);
-	u8 l2 = n2.getLight(bank, ndef);
+	uint8_t light;
+	uint8_t l1 = n.getLight(bank, ndef);
+	uint8_t l2 = n2.getLight(bank, ndef);
 	if(l1 > l2)
 		light = l1;
 	else
 		light = l2;
 
 	// Boost light level for light sources
-	u8 light_source = MYMAX(ndef->get(n).light_source,
+	uint8_t light_source = MYMAX(ndef->get(n).light_source,
 			ndef->get(n2).light_source);
 	if(light_source > light)
 		light = light_source;
@@ -149,8 +149,8 @@ static u8 getFaceLight(enum LightBank bank, MapNode n, MapNode n2,
 u16 getFaceLight(MapNode n, MapNode n2, const v3s16 &face_dir,
 	const NodeDefManager *ndef)
 {
-	u16 day = getFaceLight(LIGHTBANK_DAY, n, n2, face_dir, ndef);
-	u16 night = getFaceLight(LIGHTBANK_NIGHT, n, n2, face_dir, ndef);
+	uint16_t day = getFaceLight(LIGHTBANK_DAY, n, n2, face_dir, ndef);
+	uint16_t night = getFaceLight(LIGHTBANK_NIGHT, n, n2, face_dir, ndef);
 	return day | (night << 8);
 }
 
@@ -158,19 +158,19 @@ u16 getFaceLight(MapNode n, MapNode n2, const v3s16 &face_dir,
 	Calculate smooth lighting at the XYZ- corner of p.
 	Both light banks
 */
-static u16 getSmoothLightCombined(const v3s16 &p,
+static uint16_t getSmoothLightCombined(const v3s16 &p,
 	const std::array<v3s16,8> &dirs, MeshMakeData *data)
 {
 	const NodeDefManager *ndef = data->m_client->ndef();
 
-	u16 ambient_occlusion = 0;
-	u16 light_count = 0;
-	u8 light_source_max = 0;
-	u16 light_day = 0;
-	u16 light_night = 0;
+	uint16_t ambient_occlusion = 0;
+	uint16_t light_count = 0;
+	uint8_t light_source_max = 0;
+	uint16_t light_day = 0;
+	uint16_t light_night = 0;
 	bool direct_sunlight = false;
 
-	auto add_node = [&] (u8 i, bool obstructed = false) -> bool {
+	auto add_node = [&] (uint8_t i, bool obstructed = false) -> bool {
 		if (obstructed) {
 			ambient_occlusion++;
 			return false;
@@ -183,8 +183,8 @@ static u16 getSmoothLightCombined(const v3s16 &p,
 			light_source_max = f.light_source;
 		// Check f.solidness because fast-style leaves look better this way
 		if (f.param_type == CPT_LIGHT && f.solidness != 2) {
-			u8 light_level_day = n.getLightNoChecks(LIGHTBANK_DAY, &f);
-			u8 light_level_night = n.getLightNoChecks(LIGHTBANK_NIGHT, &f);
+			uint8_t light_level_day = n.getLightNoChecks(LIGHTBANK_DAY, &f);
+			uint8_t light_level_night = n.getLightNoChecks(LIGHTBANK_NIGHT, &f);
 			if (light_level_day == LIGHT_SUN)
 				direct_sunlight = true;
 			light_day += decode_light(light_level_day);
@@ -204,12 +204,12 @@ static u16 getSmoothLightCombined(const v3s16 &p,
 	obstructed[0] = opaque1 && opaque2;
 	obstructed[1] = opaque1 && opaque3;
 	obstructed[2] = opaque2 && opaque3;
-	for (u8 k = 0; k < 3; ++k)
+	for (uint8_t k = 0; k < 3; ++k)
 		if (add_node(k + 4, obstructed[k]))
 			obstructed[3] = false;
 	if (add_node(7, obstructed[3])) { // wrap light around nodes
 		ambient_occlusion -= 3;
-		for (u8 k = 0; k < 3; ++k)
+		for (uint8_t k = 0; k < 3; ++k)
 			add_node(k + 4, !obstructed[k]);
 	}
 
@@ -295,16 +295,16 @@ u16 getSmoothLightTransparent(const v3s16 &p, const v3s16 &corner, MeshMakeData 
 	return getSmoothLightCombined(p, dirs, data);
 }
 
-void get_sunlight_color(video::SColorf *sunlight, u32 daynight_ratio){
-	f32 rg = daynight_ratio / 1000.0f - 0.04f;
-	f32 b = (0.98f * daynight_ratio) / 1000.0f + 0.078f;
+void get_sunlight_color(video::SColorf *sunlight, uint32_t daynight_ratio){
+	float rg = daynight_ratio / 1000.0f - 0.04f;
+	float b = (0.98f * daynight_ratio) / 1000.0f + 0.078f;
 	sunlight->r = rg;
 	sunlight->g = rg;
 	sunlight->b = b;
 }
 
 void final_color_blend(video::SColor *result,
-		u16 light, u32 daynight_ratio)
+		uint16_t light, uint32_t daynight_ratio)
 {
 	video::SColorf dayLight;
 	get_sunlight_color(&dayLight, daynight_ratio);
@@ -318,15 +318,15 @@ void final_color_blend(video::SColor *result,
 	static const video::SColorf artificialColor(1.04f, 1.04f, 1.04f);
 
 	video::SColorf c(data);
-	f32 n = 1 - c.a;
+	float n = 1 - c.a;
 
-	f32 r = c.r * (c.a * dayLight.r + n * artificialColor.r) * 2.0f;
-	f32 g = c.g * (c.a * dayLight.g + n * artificialColor.g) * 2.0f;
-	f32 b = c.b * (c.a * dayLight.b + n * artificialColor.b) * 2.0f;
+	float r = c.r * (c.a * dayLight.r + n * artificialColor.r) * 2.0f;
+	float g = c.g * (c.a * dayLight.g + n * artificialColor.g) * 2.0f;
+	float b = c.b * (c.a * dayLight.b + n * artificialColor.b) * 2.0f;
 
 	// Emphase blue a bit in darker places
 	// Each entry of this array represents a range of 8 blue levels
-	static const u8 emphase_blue_when_dark[32] = {
+	static const uint8_t emphase_blue_when_dark[32] = {
 		1, 4, 6, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	};
@@ -387,7 +387,7 @@ static void getNodeVertexDirs(const v3s16 &dir, v3s16 *vertex_dirs)
 	assert(dir.X * dir.X + dir.Y * dir.Y + dir.Z * dir.Z == 1);
 
 	// Convert direction to single integer for table lookup
-	u8 idx = (dir.X + 2 * dir.Y + 3 * dir.Z) & 7;
+	uint8_t idx = (dir.X + 2 * dir.Y + 3 * dir.Z) & 7;
 	idx = (idx - 1) * 4;
 
 #if defined(__GNUC__) && !defined(__clang__)
@@ -439,7 +439,7 @@ struct FastFace
 	bool vertex_0_2_connected;
 };
 
-static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li3,
+static void makeFastFace(const TileSpec &tile, uint16_t li0, uint16_t li1, uint16_t li2, uint16_t li3,
 	const v3f &tp, const v3f &p, const v3s16 &dir, const v3f &scale, std::vector<FastFace> &dest)
 {
 	// Position is at the center of the cube.
@@ -457,7 +457,7 @@ static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li
 		getNodeTextureCoords(tp, scale, dir, &x0, &y0);
 
 	v3s16 t;
-	u16 t1;
+	uint16_t t1;
 	switch (tile.rotation) {
 	case 0:
 		break;
@@ -567,7 +567,7 @@ static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li
 		break;
 	}
 
-	for (u16 i = 0; i < 4; i++) {
+	for (uint16_t i = 0; i < 4; i++) {
 		vertex_pos[i] = v3f(
 				BS / 2 * vertex_dirs[i].X,
 				BS / 2 * vertex_dirs[i].Y,
@@ -582,18 +582,18 @@ static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li
 		vpos += pos;
 	}
 
-	f32 abs_scale = 1.0f;
+	float abs_scale = 1.0f;
 	if      (scale.X < 0.999f || scale.X > 1.001f) abs_scale = scale.X;
 	else if (scale.Y < 0.999f || scale.Y > 1.001f) abs_scale = scale.Y;
 	else if (scale.Z < 0.999f || scale.Z > 1.001f) abs_scale = scale.Z;
 
 	v3f normal(dir.X, dir.Y, dir.Z);
 
-	u16 li[4] = { li0, li1, li2, li3 };
-	u16 day[4];
-	u16 night[4];
+	uint16_t li[4] = { li0, li1, li2, li3 };
+	uint16_t day[4];
+	uint16_t night[4];
 
-	for (u8 i = 0; i < 4; i++) {
+	for (uint8_t i = 0; i < 4; i++) {
 		day[i] = li[i] >> 8;
 		night[i] = li[i] & 0xFF;
 	}
@@ -611,7 +611,7 @@ static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li
 	dest.emplace_back();
 	FastFace& face = *dest.rbegin();
 
-	for (u8 i = 0; i < 4; i++) {
+	for (uint8_t i = 0; i < 4; i++) {
 		video::SColor c = encode_light(li[i], tile.emissive_light);
 		if (!tile.emissive_light)
 			applyFacesShading(c, normal);
@@ -638,7 +638,7 @@ static void makeFastFace(const TileSpec &tile, u16 li0, u16 li1, u16 li2, u16 li
 
 	TODO: Add 3: Both faces drawn with backface culling, remove equivalent
 */
-static u8 face_contents(content_t m1, content_t m2, bool *equivalent,
+static uint8_t face_contents(content_t m1, content_t m2, bool *equivalent,
 	const NodeDefManager *ndef)
 {
 	*equivalent = false;
@@ -653,8 +653,8 @@ static u8 face_contents(content_t m1, content_t m2, bool *equivalent,
 	if (f1.sameLiquid(f2))
 		return 0;
 
-	u8 c1 = f1.solidness;
-	u8 c2 = f2.solidness;
+	uint8_t c1 = f1.solidness;
+	uint8_t c2 = f2.solidness;
 
 	if (c1 == c2)
 		return 0;
@@ -682,7 +682,7 @@ static u8 face_contents(content_t m1, content_t m2, bool *equivalent,
 /*
 	Gets nth node tile (0 <= n <= 5).
 */
-void getNodeTileN(MapNode mn, const v3s16 &p, u8 tileindex, MeshMakeData *data, TileSpec &tile)
+void getNodeTileN(MapNode mn, const v3s16 &p, uint8_t tileindex, MeshMakeData *data, TileSpec &tile)
 {
 	const NodeDefManager *ndef = data->m_client->ndef();
 	const ContentFeatures &f = ndef->get(mn);
@@ -719,12 +719,12 @@ void getNodeTile(MapNode mn, const v3s16 &p, const v3s16 &dir, MeshMakeData *dat
 	//  5 = (0,0,-1)
 	//  6 = (0,-1,0)
 	//  7 = (-1,0,0)
-	u8 dir_i = ((dir.X + 2 * dir.Y + 3 * dir.Z) & 7) * 2;
+	uint8_t dir_i = ((dir.X + 2 * dir.Y + 3 * dir.Z) & 7) * 2;
 
 	// Get rotation for things like chests
-	u8 facedir = mn.getFaceDir(ndef, true);
+	uint8_t facedir = mn.getFaceDir(ndef, true);
 
-	static const u16 dir_to_tile[24 * 16] =
+	static const uint16_t dir_to_tile[24 * 16] =
 	{
 		// 0     +X    +Y    +Z           -Z    -Y    -X   ->   value=tile,rotation
 		   0,0,  2,0 , 0,0 , 4,0 ,  0,0,  5,0 , 1,0 , 3,0 ,  // rotate around y+ 0 - 3
@@ -758,7 +758,7 @@ void getNodeTile(MapNode mn, const v3s16 &p, const v3s16 &dir, MeshMakeData *dat
 		   0,0,  4,2 , 1,1 , 2,2 ,  0,0,  3,2 , 0,3 , 5,2
 
 	};
-	u16 tile_index = facedir * 16 + dir_i;
+	uint16_t tile_index = facedir * 16 + dir_i;
 	getNodeTileN(mn, p, dir_to_tile[tile_index], data, tile);
 	tile.rotation = tile.world_aligned ? 0 : dir_to_tile[tile_index + 1];
 }
@@ -772,8 +772,8 @@ static void getTileInfo(
 		bool &makes_face,
 		v3s16 &p_corrected,
 		v3s16 &face_dir_corrected,
-		u16 *lights,
-		u8 &waving,
+		uint16_t *lights,
+		uint8_t &waving,
 		TileSpec &tile
 	)
 {
@@ -798,7 +798,7 @@ static void getTileInfo(
 
 	// This is hackish
 	bool equivalent = false;
-	u8 mf = face_contents(n0.getContent(), n1.getContent(),
+	uint8_t mf = face_contents(n0.getContent(), n1.getContent(),
 			&equivalent, ndef);
 
 	if (mf == 0) {
@@ -838,7 +838,7 @@ static void getTileInfo(
 		getNodeVertexDirs(face_dir_corrected, vertex_dirs);
 
 		v3s16 light_p = blockpos_nodes + p_corrected;
-		for (u16 i = 0; i < 4; i++)
+		for (uint16_t i = 0; i < 4; i++)
 			lights[i] = getSmoothLightSolid(light_p, face_dir_corrected, vertex_dirs[i], data);
 	}
 }
@@ -862,13 +862,13 @@ static void updateFastFaceRow(
 
 	v3s16 p = startpos;
 
-	u16 continuous_tiles_count = 1;
+	uint16_t continuous_tiles_count = 1;
 
 	bool makes_face = false;
 	v3s16 p_corrected;
 	v3s16 face_dir_corrected;
-	u16 lights[4] = {0, 0, 0, 0};
-	u8 waving = 0;
+	uint16_t lights[4] = {0, 0, 0, 0};
+	uint8_t waving = 0;
 	TileSpec tile;
 
 	// Get info of first tile
@@ -878,14 +878,14 @@ static void updateFastFaceRow(
 
 	// Unroll this variable which has a significant build cost
 	TileSpec next_tile;
-	for (u16 j = 0; j < MAP_BLOCKSIZE; j++) {
+	for (uint16_t j = 0; j < MAP_BLOCKSIZE; j++) {
 		// If tiling can be done, this is set to false in the next step
 		bool next_is_different = true;
 
 		bool next_makes_face = false;
 		v3s16 next_p_corrected;
 		v3s16 next_face_dir_corrected;
-		u16 next_lights[4] = {0, 0, 0, 0};
+		uint16_t next_lights[4] = {0, 0, 0, 0};
 
 		// If at last position, there is nothing to compare to and
 		// the face must be drawn anyway
@@ -951,8 +951,8 @@ static void updateAllFastFaceRows(MeshMakeData *data,
 	/*
 		Go through every y,z and get top(y+) faces in rows of x+
 	*/
-	for (s16 y = 0; y < MAP_BLOCKSIZE; y++)
-	for (s16 z = 0; z < MAP_BLOCKSIZE; z++)
+	for (int16_t y = 0; y < MAP_BLOCKSIZE; y++)
+	for (int16_t z = 0; z < MAP_BLOCKSIZE; z++)
 		updateFastFaceRow(data,
 				v3s16(0, y, z),
 				v3s16(1, 0, 0), //dir
@@ -963,8 +963,8 @@ static void updateAllFastFaceRows(MeshMakeData *data,
 	/*
 		Go through every x,y and get right(x+) faces in rows of z+
 	*/
-	for (s16 x = 0; x < MAP_BLOCKSIZE; x++)
-	for (s16 y = 0; y < MAP_BLOCKSIZE; y++)
+	for (int16_t x = 0; x < MAP_BLOCKSIZE; x++)
+	for (int16_t y = 0; y < MAP_BLOCKSIZE; y++)
 		updateFastFaceRow(data,
 				v3s16(x, y, 0),
 				v3s16(0, 0, 1), //dir
@@ -975,8 +975,8 @@ static void updateAllFastFaceRows(MeshMakeData *data,
 	/*
 		Go through every y,z and get back(z+) faces in rows of x+
 	*/
-	for (s16 z = 0; z < MAP_BLOCKSIZE; z++)
-	for (s16 y = 0; y < MAP_BLOCKSIZE; y++)
+	for (int16_t z = 0; z < MAP_BLOCKSIZE; z++)
+	for (int16_t y = 0; y < MAP_BLOCKSIZE; y++)
 		updateFastFaceRow(data,
 				v3s16(0, y, z),
 				v3s16(1, 0, 0), //dir
@@ -1009,7 +1009,7 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 	m_shdrsrc(data->m_client->getShaderSource()),
 	m_animation_force_timer(0), // force initial animation
 	m_last_crack(-1),
-	m_last_daynight_ratio((u32) -1)
+	m_last_daynight_ratio((uint32_t) -1)
 {
 	for (auto &m : m_mesh)
 		m = new scene::SMesh();
@@ -1055,9 +1055,9 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 		//TimeTaker timer2("MeshCollector building");
 
 		for (const FastFace &f : fastfaces_new) {
-			static const u16 indices[] = {0, 1, 2, 2, 3, 0};
-			static const u16 indices_alternate[] = {0, 1, 3, 2, 3, 1};
-			const u16 *indices_p =
+			static const uint16_t indices[] = {0, 1, 2, 2, 3, 0};
+			static const uint16_t indices_alternate[] = {0, 1, 3, 2, 3, 1};
+			const uint16_t *indices_p =
 				f.vertex_0_2_connected ? indices : indices_alternate;
 			collector.append(f.tile, f.vertices, 4, indices_p, 6);
 		}
@@ -1081,7 +1081,7 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 	*/
 
 	for (int layer = 0; layer < MAX_TILE_LAYERS; layer++) {
-		for(u32 i = 0; i < collector.prebuffers[layer].size(); i++)
+		for(uint32_t i = 0; i < collector.prebuffers[layer].size(); i++)
 		{
 			PreMeshBuffer &p = collector.prebuffers[layer][i];
 
@@ -1095,12 +1095,12 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 				os << m_tsrc->getTextureName(p.layer.texture_id) << "^[crack";
 				if (p.layer.material_flags & MATERIAL_FLAG_CRACK_OVERLAY)
 					os << "o";  // use ^[cracko
-				u8 tiles = p.layer.scale;
+				uint8_t tiles = p.layer.scale;
 				if (tiles > 1)
-					os << ":" << (u32)tiles;
-				os << ":" << (u32)p.layer.animation_frame_count << ":";
+					os << ":" << (uint32_t)tiles;
+				os << ":" << (uint32_t)p.layer.animation_frame_count << ":";
 				m_crack_materials.insert(std::make_pair(
-						std::pair<u8, u32>(layer, i), os.str()));
+						std::pair<uint8_t, uint32_t>(layer, i), os.str()));
 				// Replace tile texture with the cracked one
 				p.layer.texture = m_tsrc->getTextureForMesh(
 						os.str() + "0",
@@ -1109,18 +1109,18 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 			// - Texture animation
 			if (p.layer.material_flags & MATERIAL_FLAG_ANIMATION) {
 				// Add to MapBlockMesh in order to animate these tiles
-				m_animation_tiles[std::pair<u8, u32>(layer, i)] = p.layer;
-				m_animation_frames[std::pair<u8, u32>(layer, i)] = 0;
+				m_animation_tiles[std::pair<uint8_t, uint32_t>(layer, i)] = p.layer;
+				m_animation_frames[std::pair<uint8_t, uint32_t>(layer, i)] = 0;
 				if (g_settings->getBool(
 						"desynchronize_mapblock_texture_animation")) {
 					// Get starting position from noise
-					m_animation_frame_offsets[std::pair<u8, u32>(layer, i)] =
+					m_animation_frame_offsets[std::pair<uint8_t, uint32_t>(layer, i)] =
 							100000 * (2.0 + noise3d(
 							data->m_blockpos.X, data->m_blockpos.Y,
 							data->m_blockpos.Z, 0));
 				} else {
 					// Play all synchronized
-					m_animation_frame_offsets[std::pair<u8, u32>(layer, i)] = 0;
+					m_animation_frame_offsets[std::pair<uint8_t, uint32_t>(layer, i)] = 0;
 				}
 				// Replace tile texture with the first animation frame
 				p.layer.texture = (*p.layer.frames)[0].texture;
@@ -1131,14 +1131,14 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data, v3s16 camera_offset):
 				// Dummy sunlight to handle non-sunlit areas
 				video::SColorf sunlight;
 				get_sunlight_color(&sunlight, 0);
-				u32 vertex_count = p.vertices.size();
-				for (u32 j = 0; j < vertex_count; j++) {
+				uint32_t vertex_count = p.vertices.size();
+				for (uint32_t j = 0; j < vertex_count; j++) {
 					video::SColor *vc = &p.vertices[j].Color;
 					video::SColor copy = *vc;
 					if (vc->getAlpha() == 0) // No sunlight - no need to animate
 						final_color_blend(vc, copy, sunlight); // Finalize color
 					else // Record color to animate
-						m_daynight_diffs[std::pair<u8, u32>(layer, i)][j] = copy;
+						m_daynight_diffs[std::pair<uint8_t, uint32_t>(layer, i)][j] = copy;
 
 					// The sunlight ratio has been stored,
 					// delete alpha (for the final rendering).
@@ -1202,7 +1202,7 @@ MapBlockMesh::~MapBlockMesh()
 {
 	for (scene::IMesh *m : m_mesh) {
 		if (m_enable_vbo) {
-			for (u32 i = 0; i < m->getMeshBufferCount(); i++) {
+			for (uint32_t i = 0; i < m->getMeshBufferCount(); i++) {
 				scene::IMeshBuffer *buf = m->getMeshBuffer(i);
 				RenderingEngine::get_video_driver()->removeHardwareBuffer(buf);
 			}
@@ -1213,7 +1213,7 @@ MapBlockMesh::~MapBlockMesh()
 }
 
 bool MapBlockMesh::animate(bool faraway, float time, int crack,
-	u32 daynight_ratio)
+	uint32_t daynight_ratio)
 {
 	if (!m_has_animation) {
 		m_animation_force_timer = 100000;
@@ -1232,7 +1232,7 @@ bool MapBlockMesh::animate(bool faraway, float time, int crack,
 			// Create new texture name from original
 			std::ostringstream os;
 			os << basename << crack;
-			u32 new_texture_id = 0;
+			uint32_t new_texture_id = 0;
 			video::ITexture *new_texture =
 					m_tsrc->getTextureForMesh(os.str(), &new_texture_id);
 			buf->getMaterial().setTexture(0, new_texture);
@@ -1301,11 +1301,11 @@ bool MapBlockMesh::animate(bool faraway, float time, int crack,
 	return true;
 }
 
-video::SColor encode_light(u16 light, u8 emissive_light)
+video::SColor encode_light(uint16_t light, uint8_t emissive_light)
 {
 	// Get components
-	u32 day = (light & 0xff);
-	u32 night = (light >> 8);
+	uint32_t day = (light & 0xff);
+	uint32_t night = (light >> 8);
 	// Add emissive light
 	night += emissive_light * 2.5f;
 	if (night > 255)
@@ -1317,9 +1317,9 @@ video::SColor encode_light(u16 light, u8 emissive_light)
 		day = 0;
 	else
 		day = day - night;
-	u32 sum = day + night;
+	uint32_t sum = day + night;
 	// Ratio of sunlight:
-	u32 r;
+	uint32_t r;
 	if (sum > 0)
 		r = day * 255 / sum;
 	else

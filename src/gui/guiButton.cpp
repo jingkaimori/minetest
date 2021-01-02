@@ -27,7 +27,7 @@ using namespace gui;
 
 //! constructor
 GUIButton::GUIButton(IGUIEnvironment* environment, IGUIElement* parent,
-			s32 id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
+			int32_t id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
 			bool noclip)
 : IGUIButton(environment, parent, id, rectangle),
 	SpriteBank(0), OverrideFont(0),
@@ -95,36 +95,36 @@ void GUIButton::setSpriteBank(IGUISpriteBank* sprites)
 	SpriteBank = sprites;
 }
 
-void GUIButton::setSprite(EGUI_BUTTON_STATE state, s32 index, video::SColor color, bool loop, bool scale)
+void GUIButton::setSprite(EGUI_BUTTON_STATE state, int32_t index, video::SColor color, bool loop, bool scale)
 {
-	ButtonSprites[(u32)state].Index	= index;
-	ButtonSprites[(u32)state].Color	= color;
-	ButtonSprites[(u32)state].Loop	= loop;
-	ButtonSprites[(u32)state].Scale = scale;
+	ButtonSprites[(uint32_t)state].Index	= index;
+	ButtonSprites[(uint32_t)state].Color	= color;
+	ButtonSprites[(uint32_t)state].Loop	= loop;
+	ButtonSprites[(uint32_t)state].Scale = scale;
 }
 
 //! Get the sprite-index for the given state or -1 when no sprite is set
 s32 GUIButton::getSpriteIndex(EGUI_BUTTON_STATE state) const
 {
-	return ButtonSprites[(u32)state].Index;
+	return ButtonSprites[(uint32_t)state].Index;
 }
 
 //! Get the sprite color for the given state. Color is only used when a sprite is set.
 video::SColor GUIButton::getSpriteColor(EGUI_BUTTON_STATE state) const
 {
-	return ButtonSprites[(u32)state].Color;
+	return ButtonSprites[(uint32_t)state].Color;
 }
 
 //! Returns if the sprite in the given state does loop
 bool GUIButton::getSpriteLoop(EGUI_BUTTON_STATE state) const
 {
-	return ButtonSprites[(u32)state].Loop;
+	return ButtonSprites[(uint32_t)state].Loop;
 }
 
 //! Returns if the sprite in the given state is scaled
 bool GUIButton::getSpriteScale(EGUI_BUTTON_STATE state) const
 {
-	return ButtonSprites[(u32)state].Scale;
+	return ButtonSprites[(uint32_t)state].Scale;
 }
 
 //! called if an event happened.
@@ -181,15 +181,15 @@ bool GUIButton::OnEvent(const SEvent& event)
 			{
 				if (!IsPushButton)
 					setPressed(false);
-				FocusTime = (u32)porting::getTimeMs();
+				FocusTime = (uint32_t)porting::getTimeMs();
 			}
 			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
 			{
-				FocusTime = (u32)porting::getTimeMs();
+				FocusTime = (uint32_t)porting::getTimeMs();
 			}
 			else if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED || event.GUIEvent.EventType == EGET_ELEMENT_LEFT)
 			{
-				HoverTime = (u32)porting::getTimeMs();
+				HoverTime = (uint32_t)porting::getTimeMs();
 			}
 		}
 		break;
@@ -290,12 +290,12 @@ void GUIButton::draw()
 	// The image changes based on the state, so we use the default every time.
 	EGUI_BUTTON_IMAGE_STATE imageState = EGBIS_IMAGE_UP;
 	// END PATCH
-	if ( ButtonImages[(u32)imageState].Texture )
+	if ( ButtonImages[(uint32_t)imageState].Texture )
 	{
 		core::position2d<s32> pos(buttonCenter);
-		core::rect<s32> sourceRect(ButtonImages[(u32)imageState].SourceRect);
+		core::rect<s32> sourceRect(ButtonImages[(uint32_t)imageState].SourceRect);
 		if ( sourceRect.getWidth() == 0 && sourceRect.getHeight() == 0 )
-			sourceRect = core::rect<s32>(core::position2di(0,0), ButtonImages[(u32)imageState].Texture->getOriginalSize());
+			sourceRect = core::rect<s32>(core::position2di(0,0), ButtonImages[(uint32_t)imageState].Texture->getOriginalSize());
 
 		pos.X -= sourceRect.getWidth() / 2;
 		pos.Y -= sourceRect.getHeight() / 2;
@@ -304,7 +304,7 @@ void GUIButton::draw()
 		{
 			// Create a pressed-down effect by moving the image when it looks identical to the unpressed state image
 			EGUI_BUTTON_IMAGE_STATE unpressedState = getImageState(false);
-			if ( unpressedState == imageState || ButtonImages[(u32)imageState] == ButtonImages[(u32)unpressedState] )
+			if ( unpressedState == imageState || ButtonImages[(uint32_t)imageState] == ButtonImages[(uint32_t)unpressedState] )
 			{
 				pos.X += skin->getSize(EGDS_BUTTON_PRESSED_IMAGE_OFFSET_X);
 				pos.Y += skin->getSize(EGDS_BUTTON_PRESSED_IMAGE_OFFSET_Y);
@@ -312,7 +312,7 @@ void GUIButton::draw()
 		}
 
 		// PATCH
-		video::ITexture* texture = ButtonImages[(u32)imageState].Texture;
+		video::ITexture* texture = ButtonImages[(uint32_t)imageState].Texture;
 		video::SColor image_colors[] = { BgColor, BgColor, BgColor, BgColor };
 		if (BgMiddle.getArea() == 0) {
 			driver->draw2DImage(texture,
@@ -361,9 +361,9 @@ void GUIButton::draw()
 	IGUIElement::draw();
 }
 
-void GUIButton::drawSprite(EGUI_BUTTON_STATE state, u32 startTime, const core::position2di& center)
+void GUIButton::drawSprite(EGUI_BUTTON_STATE state, uint32_t startTime, const core::position2di& center)
 {
-	u32 stateIdx = (u32)state;
+	uint32_t stateIdx = (uint32_t)state;
 
 	if (ButtonSprites[stateIdx].Index != -1)
 	{
@@ -423,7 +423,7 @@ EGUI_BUTTON_IMAGE_STATE GUIButton::getImageState(bool pressed, const ButtonImage
 	}
 
 	// find a compatible state that has images
-	while ( state != EGBIS_IMAGE_UP && !images[(u32)state].Texture )
+	while ( state != EGBIS_IMAGE_UP && !images[(uint32_t)state].Texture )
 	{
 		// PATCH
 		switch ( state )
@@ -524,7 +524,7 @@ void GUIButton::setImage(EGUI_BUTTON_IMAGE_STATE state, video::ITexture* image, 
 	if ( image )
 		image->grab();
 
-	u32 stateIdx = (u32)state;
+	uint32_t stateIdx = (uint32_t)state;
 	if ( ButtonImages[stateIdx].Texture )
 		ButtonImages[stateIdx].Texture->drop();
 
@@ -634,7 +634,7 @@ void GUIButton::serializeAttributes(io::IAttributes* out, io::SAttributeReadWrit
 	if (IsPushButton)
 		out->addBool("Pressed",		    Pressed);
 
-	for ( u32 i=0; i<(u32)EGBIS_COUNT; ++i )
+	for ( uint32_t i=0; i<(uint32_t)EGBIS_COUNT; ++i )
 	{
 		if ( ButtonImages[i].Texture )
 		{
@@ -649,7 +649,7 @@ void GUIButton::serializeAttributes(io::IAttributes* out, io::SAttributeReadWrit
 	out->addBool	("Border",		    DrawBorder);
 	out->addBool	("ScaleImage",		ScaleImage);
 
-	for ( u32 i=0; i<(u32)EGBS_COUNT; ++i )
+	for ( uint32_t i=0; i<(uint32_t)EGBS_COUNT; ++i )
 	{
 		if ( ButtonSprites[i].Index >= 0 )
 		{
@@ -707,7 +707,7 @@ void GUIButton::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWri
 // PATCH
 GUIButton* GUIButton::addButton(IGUIEnvironment *environment,
 		const core::rect<s32>& rectangle, ISimpleTextureSource *tsrc,
-		IGUIElement* parent, s32 id, const wchar_t* text,
+		IGUIElement* parent, int32_t id, const wchar_t* text,
 		const wchar_t *tooltiptext)
 {
 	GUIButton* button = new GUIButton(environment, parent ? parent : environment->getRootGUIElement(), id, rectangle, tsrc);

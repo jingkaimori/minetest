@@ -38,10 +38,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define checkCSMRestrictionFlag(flag) \
 	( getClient(L)->checkCSMRestrictionFlag(CSMRestrictionFlags::flag) )
 
-// Not the same as FlagDesc, which contains an `u32 flag`
+// Not the same as FlagDesc, which contains an `uint32_t flag`
 struct CSMFlagDesc {
 	const char *name;
-	u64 flag;
+	uint64_t flag;
 };
 
 /*
@@ -271,7 +271,7 @@ int ModApiClient::l_sound_play(lua_State *L)
 	float gain = 1.0f;
 	float pitch = 1.0f;
 	bool looped = false;
-	s32 handle;
+	int32_t handle;
 
 	if (lua_istable(L, 2)) {
 		getfloatfield(L, 2, "gain", gain);
@@ -298,7 +298,7 @@ int ModApiClient::l_sound_play(lua_State *L)
 // sound_stop(handle)
 int ModApiClient::l_sound_stop(lua_State *L)
 {
-	s32 handle = luaL_checkinteger(L, 1);
+	int32_t handle = luaL_checkinteger(L, 1);
 
 	getClient(L)->getSoundManager()->stopSound(handle);
 
@@ -308,7 +308,7 @@ int ModApiClient::l_sound_stop(lua_State *L)
 // sound_fade(handle, step, gain)
 int ModApiClient::l_sound_fade(lua_State *L)
 {
-	s32 handle = luaL_checkinteger(L, 1);
+	int32_t handle = luaL_checkinteger(L, 1);
 	float step = readParam<float>(L, 2);
 	float gain = readParam<float>(L, 3);
 	getClient(L)->getSoundManager()->fadeSound(handle, step, gain);
@@ -404,7 +404,7 @@ int ModApiClient::l_get_builtin_path(lua_State *L)
 // get_csm_restrictions()
 int ModApiClient::l_get_csm_restrictions(lua_State *L)
 {
-	u64 flags = getClient(L)->getCSMRestrictionFlags();
+	uint64_t flags = getClient(L)->getCSMRestrictionFlags();
 	const CSMFlagDesc *flagdesc = flagdesc_csm_restriction;
 
 	lua_newtable(L);

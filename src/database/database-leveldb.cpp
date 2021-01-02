@@ -117,13 +117,13 @@ PlayerDatabaseLevelDB::~PlayerDatabaseLevelDB()
 void PlayerDatabaseLevelDB::savePlayer(RemotePlayer *player)
 {
 	/*
-	u8 version = 1
-	u16 hp
+	uint8_t version = 1
+	uint16_t hp
 	v3f position
-	f32 pitch
-	f32 yaw
-	u16 breath
-	u32 attribute_count
+	float pitch
+	float yaw
+	uint16_t breath
+	uint32_t attribute_count
 	for each attribute {
 		std::string name
 		std::string (long) value
@@ -181,8 +181,8 @@ bool PlayerDatabaseLevelDB::loadPlayer(RemotePlayer *player, PlayerSAO *sao)
 	sao->setPlayerYaw(readF32(is));
 	sao->setBreath(readU16(is), false);
 
-	u32 attribute_count = readU32(is);
-	for (u32 i = 0; i < attribute_count; i++) {
+	uint32_t attribute_count = readU32(is);
+	for (uint32_t i = 0; i < attribute_count; i++) {
 		std::string name = deSerializeString16(is);
 		std::string value = deSerializeString32(is);
 		sao->getMeta().setString(name, value);
@@ -233,9 +233,9 @@ bool AuthDatabaseLevelDB::getAuth(const std::string &name, AuthEntry &res)
 	std::istringstream is(raw);
 
 	/*
-	u8 version = 1
+	uint8_t version = 1
 	std::string password
-	u16 number of privileges
+	uint16_t number of privileges
 	for each privilege {
 		std::string privilege
 	}
@@ -249,10 +249,10 @@ bool AuthDatabaseLevelDB::getAuth(const std::string &name, AuthEntry &res)
 	res.name = name;
 	res.password = deSerializeString16(is);
 
-	u16 privilege_count = readU16(is);
+	uint16_t privilege_count = readU16(is);
 	res.privileges.clear();
 	res.privileges.reserve(privilege_count);
-	for (u16 i = 0; i < privilege_count; i++) {
+	for (uint16_t i = 0; i < privilege_count; i++) {
 		res.privileges.push_back(deSerializeString16(is));
 	}
 

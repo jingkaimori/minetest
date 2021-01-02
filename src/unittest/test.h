@@ -32,7 +32,7 @@ class TestFailedException : public std::exception {
 
 // Runs a unit test and reports results
 #define TEST(fxn, ...) {                                                      \
-	u64 t1 = porting::getTimeMs();                                            \
+	uint64_t t1 = porting::getTimeMs();                                            \
 	try {                                                                     \
 		fxn(__VA_ARGS__);                                                     \
 		rawstream << "[PASS] ";                                               \
@@ -45,7 +45,7 @@ class TestFailedException : public std::exception {
 		num_tests_failed++;                                                   \
 	}                                                                         \
 	num_tests_run++;                                                          \
-	u64 tdiff = porting::getTimeMs() - t1;                                    \
+	uint64_t tdiff = porting::getTimeMs() - t1;                                    \
 	rawstream << #fxn << " - " << tdiff << "ms" << std::endl;                 \
 }
 
@@ -110,8 +110,8 @@ public:
 	virtual void runTests(IGameDef *gamedef) = 0;
 	virtual const char *getName() = 0;
 
-	u32 num_tests_failed;
-	u32 num_tests_run;
+	uint32_t num_tests_failed;
+	uint32_t num_tests_run;
 
 private:
 	std::string m_test_dir;

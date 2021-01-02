@@ -27,7 +27,7 @@ class Client;
 class GUIItemImage : public gui::IGUIElement
 {
 public:
-	GUIItemImage(gui::IGUIEnvironment *env, gui::IGUIElement *parent, s32 id,
+	GUIItemImage(gui::IGUIEnvironment *env, gui::IGUIElement *parent, int32_t id,
 		const core::rect<s32> &rectangle, const std::string &item_name,
 		gui::IGUIFont *font, Client *client);
 

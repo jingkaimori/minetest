@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "guiBox.h"
 
-GUIBox::GUIBox(gui::IGUIEnvironment *env, gui::IGUIElement *parent, s32 id,
+GUIBox::GUIBox(gui::IGUIEnvironment *env, gui::IGUIElement *parent, int32_t id,
 	const core::rect<s32> &rectangle,
 	const std::array<video::SColor, 4> &colors,
 	const std::array<video::SColor, 4> &bordercolors,

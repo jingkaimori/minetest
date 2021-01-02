@@ -30,7 +30,7 @@ class ServerActiveObject;
 
 struct StaticObject
 {
-	u8 type = 0;
+	uint8_t type = 0;
 	v3f pos;
 	std::string data;
 
@@ -38,7 +38,7 @@ struct StaticObject
 	StaticObject(const ServerActiveObject *s_obj, const v3f &pos_);
 
 	void serialize(std::ostream &os);
-	void deSerialize(std::istream &is, u8 version);
+	void deSerialize(std::istream &is, uint8_t version);
 };
 
 class StaticObjectList
@@ -48,7 +48,7 @@ public:
 		Inserts an object to the container.
 		Id must be unique (active) or 0 (stored).
 	*/
-	void insert(u16 id, const StaticObject &obj)
+	void insert(uint16_t id, const StaticObject &obj)
 	{
 		if(id == 0)
 		{
@@ -66,7 +66,7 @@ public:
 		}
 	}
 
-	void remove(u16 id)
+	void remove(uint16_t id)
 	{
 		assert(id != 0); // Pre-condition
 		if(m_active.find(id) == m_active.end())

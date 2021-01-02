@@ -237,7 +237,7 @@ void TestAuthDatabase::testRecallChanged()
 	// the order of privileges is unimportant
 	std::sort(authEntry.privileges.begin(), authEntry.privileges.end());
 	UASSERTEQ(std::string, str_join(authEntry.privileges, ","), "interact,shout");
-	UASSERTEQ(u64, authEntry.last_login, 1002);
+	UASSERTEQ(uint64_t, authEntry.last_login, 1002);
 }
 
 void TestAuthDatabase::testChangePrivileges()

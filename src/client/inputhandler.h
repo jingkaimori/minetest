@@ -155,9 +155,9 @@ public:
 	void listenForKey(const KeyPress &keyCode) { keysListenedFor.set(keyCode); }
 	void dontListenForKeys() { keysListenedFor.clear(); }
 
-	s32 getMouseWheel()
+	int32_t getMouseWheel()
 	{
-		s32 a = mouse_wheel;
+		int32_t a = mouse_wheel;
 		mouse_wheel = 0;
 		return a;
 	}
@@ -189,7 +189,7 @@ public:
 #endif
 	}
 
-	s32 mouse_wheel = 0;
+	int32_t mouse_wheel = 0;
 
 	JoystickController *joystick = nullptr;
 
@@ -247,9 +247,9 @@ public:
 	virtual void dontListenForKeys() {}
 
 	virtual v2s32 getMousePos() = 0;
-	virtual void setMousePos(s32 x, s32 y) = 0;
+	virtual void setMousePos(int32_t x, int32_t y) = 0;
 
-	virtual s32 getMouseWheel() = 0;
+	virtual int32_t getMouseWheel() = 0;
 
 	virtual void step(float dtime) {}
 
@@ -313,7 +313,7 @@ public:
 		return m_mousepos;
 	}
 
-	virtual void setMousePos(s32 x, s32 y)
+	virtual void setMousePos(int32_t x, int32_t y)
 	{
 		if (RenderingEngine::get_raw_device()->getCursorControl()) {
 			RenderingEngine::get_raw_device()
@@ -324,7 +324,7 @@ public:
 		}
 	}
 
-	virtual s32 getMouseWheel() { return m_receiver->getMouseWheel(); }
+	virtual int32_t getMouseWheel() { return m_receiver->getMouseWheel(); }
 
 	void clear()
 	{
@@ -353,13 +353,13 @@ public:
 	virtual bool wasKeyReleased(GameKeyType k) { return false; }
 	virtual bool cancelPressed() { return false; }
 	virtual v2s32 getMousePos() { return mousepos; }
-	virtual void setMousePos(s32 x, s32 y) { mousepos = v2s32(x, y); }
+	virtual void setMousePos(int32_t x, int32_t y) { mousepos = v2s32(x, y); }
 
-	virtual s32 getMouseWheel() { return 0; }
+	virtual int32_t getMouseWheel() { return 0; }
 
 	virtual void step(float dtime);
 
-	s32 Rand(s32 min, s32 max);
+	int32_t Rand(int32_t min, int32_t max);
 
 private:
 	KeyList keydown;

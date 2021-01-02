@@ -49,7 +49,7 @@ bool ServerActiveObject::setWieldedItem(const ItemStack &item)
 	return false;
 }
 
-std::string ServerActiveObject::generateUpdateInfantCommand(u16 infant_id, u16 protocol_version)
+std::string ServerActiveObject::generateUpdateInfantCommand(uint16_t infant_id, uint16_t protocol_version)
 {
 	std::ostringstream os(std::ios::binary);
 	// command

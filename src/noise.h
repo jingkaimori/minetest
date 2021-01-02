@@ -42,7 +42,7 @@ extern FlagDesc flagdesc_noiseparams[];
 // optimizability may be preserved in the common use case
 class PseudoRandom {
 public:
-	const static u32 RANDOM_RANGE = 32767;
+	const static uint32_t RANDOM_RANGE = 32767;
 
 	inline PseudoRandom(int seed=0):
 		m_next(seed)
@@ -82,21 +82,21 @@ private:
 
 class PcgRandom {
 public:
-	const static s32 RANDOM_MIN   = -0x7fffffff - 1;
-	const static s32 RANDOM_MAX   = 0x7fffffff;
-	const static u32 RANDOM_RANGE = 0xffffffff;
+	const static int32_t RANDOM_MIN   = -0x7fffffff - 1;
+	const static int32_t RANDOM_MAX   = 0x7fffffff;
+	const static uint32_t RANDOM_RANGE = 0xffffffff;
 
-	PcgRandom(u64 state=0x853c49e6748fea9bULL, u64 seq=0xda3e39cb94b95bdbULL);
-	void seed(u64 state, u64 seq=0xda3e39cb94b95bdbULL);
-	u32 next();
-	u32 range(u32 bound);
-	s32 range(s32 min, s32 max);
+	PcgRandom(uint64_t state=0x853c49e6748fea9bULL, uint64_t seq=0xda3e39cb94b95bdbULL);
+	void seed(uint64_t state, uint64_t seq=0xda3e39cb94b95bdbULL);
+	uint32_t next();
+	uint32_t range(uint32_t bound);
+	int32_t range(int32_t min, int32_t max);
 	void bytes(void *out, size_t len);
-	s32 randNormalDist(s32 min, s32 max, int num_trials=6);
+	int32_t randNormalDist(int32_t min, int32_t max, int num_trials=6);
 
 private:
-	u64 m_state;
-	u64 m_inc;
+	uint64_t m_state;
+	uint64_t m_inc;
 };
 
 #define NOISE_FLAG_DEFAULTS    0x01
@@ -111,17 +111,17 @@ struct NoiseParams {
 	float offset = 0.0f;
 	float scale = 1.0f;
 	v3f spread = v3f(250, 250, 250);
-	s32 seed = 12345;
-	u16 octaves = 3;
+	int32_t seed = 12345;
+	uint16_t octaves = 3;
 	float persist = 0.6f;
 	float lacunarity = 2.0f;
-	u32 flags = NOISE_FLAG_DEFAULTS;
+	uint32_t flags = NOISE_FLAG_DEFAULTS;
 
 	NoiseParams() = default;
 
-	NoiseParams(float offset_, float scale_, const v3f &spread_, s32 seed_,
-		u16 octaves_, float persist_, float lacunarity_,
-		u32 flags_=NOISE_FLAG_DEFAULTS)
+	NoiseParams(float offset_, float scale_, const v3f &spread_, int32_t seed_,
+		uint16_t octaves_, float persist_, float lacunarity_,
+		uint32_t flags_=NOISE_FLAG_DEFAULTS)
 	{
 		offset     = offset_;
 		scale      = scale_;
@@ -137,30 +137,30 @@ struct NoiseParams {
 class Noise {
 public:
 	NoiseParams np;
-	s32 seed;
-	u32 sx;
-	u32 sy;
-	u32 sz;
+	int32_t seed;
+	uint32_t sx;
+	uint32_t sy;
+	uint32_t sz;
 	float *noise_buf = nullptr;
 	float *gradient_buf = nullptr;
 	float *persist_buf = nullptr;
 	float *result = nullptr;
 
-	Noise(NoiseParams *np, s32 seed, u32 sx, u32 sy, u32 sz=1);
+	Noise(NoiseParams *np, int32_t seed, uint32_t sx, uint32_t sy, uint32_t sz=1);
 	~Noise();
 
-	void setSize(u32 sx, u32 sy, u32 sz=1);
+	void setSize(uint32_t sx, uint32_t sy, uint32_t sz=1);
 	void setSpreadFactor(v3f spread);
 	void setOctaves(int octaves);
 
 	void gradientMap2D(
 		float x, float y,
 		float step_x, float step_y,
-		s32 seed);
+		int32_t seed);
 	void gradientMap3D(
 		float x, float y, float z,
 		float step_x, float step_y, float step_z,
-		s32 seed);
+		int32_t seed);
 
 	float *perlinMap2D(float x, float y, float *persistence_map=NULL);
 	float *perlinMap3D(float x, float y, float z, float *persistence_map=NULL);
@@ -192,11 +192,11 @@ private:
 
 };
 
-float NoisePerlin2D(NoiseParams *np, float x, float y, s32 seed);
-float NoisePerlin3D(NoiseParams *np, float x, float y, float z, s32 seed);
+float NoisePerlin2D(NoiseParams *np, float x, float y, int32_t seed);
+float NoisePerlin3D(NoiseParams *np, float x, float y, float z, int32_t seed);
 
 inline float NoisePerlin2D_PO(NoiseParams *np, float x, float xoff,
-	float y, float yoff, s32 seed)
+	float y, float yoff, int32_t seed)
 {
 	return NoisePerlin2D(np,
 		x + xoff * np->spread.X,
@@ -205,7 +205,7 @@ inline float NoisePerlin2D_PO(NoiseParams *np, float x, float xoff,
 }
 
 inline float NoisePerlin3D_PO(NoiseParams *np, float x, float xoff,
-	float y, float yoff, float z, float zoff, s32 seed)
+	float y, float yoff, float z, float zoff, int32_t seed)
 {
 	return NoisePerlin3D(np,
 		x + xoff * np->spread.X,
@@ -215,22 +215,22 @@ inline float NoisePerlin3D_PO(NoiseParams *np, float x, float xoff,
 }
 
 // Return value: -1 ... 1
-float noise2d(int x, int y, s32 seed);
-float noise3d(int x, int y, int z, s32 seed);
+float noise2d(int x, int y, int32_t seed);
+float noise3d(int x, int y, int z, int32_t seed);
 
-float noise2d_gradient(float x, float y, s32 seed, bool eased=true);
-float noise3d_gradient(float x, float y, float z, s32 seed, bool eased=false);
+float noise2d_gradient(float x, float y, int32_t seed, bool eased=true);
+float noise3d_gradient(float x, float y, float z, int32_t seed, bool eased=false);
 
-float noise2d_perlin(float x, float y, s32 seed,
+float noise2d_perlin(float x, float y, int32_t seed,
 		int octaves, float persistence, bool eased=true);
 
-float noise2d_perlin_abs(float x, float y, s32 seed,
+float noise2d_perlin_abs(float x, float y, int32_t seed,
 		int octaves, float persistence, bool eased=true);
 
-float noise3d_perlin(float x, float y, float z, s32 seed,
+float noise3d_perlin(float x, float y, float z, int32_t seed,
 		int octaves, float persistence, bool eased=false);
 
-float noise3d_perlin_abs(float x, float y, float z, s32 seed,
+float noise3d_perlin_abs(float x, float y, float z, int32_t seed,
 		int octaves, float persistence, bool eased=false);
 
 inline float easeCurve(float t)

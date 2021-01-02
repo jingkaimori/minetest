@@ -391,7 +391,7 @@ int LuaItemStack::l_take_item(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 	LuaItemStack *o = checkobject(L, 1);
 	ItemStack &item = o->m_stack;
-	u32 takecount = 1;
+	uint32_t takecount = 1;
 	if(!lua_isnone(L, 2))
 		takecount = luaL_checkinteger(L, 2);
 	ItemStack taken = item.takeItem(takecount);
@@ -405,7 +405,7 @@ int LuaItemStack::l_peek_item(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 	LuaItemStack *o = checkobject(L, 1);
 	ItemStack &item = o->m_stack;
-	u32 peekcount = 1;
+	uint32_t peekcount = 1;
 	if(!lua_isnone(L, 2))
 		peekcount = lua_tointeger(L, 2);
 	ItemStack peekaboo = item.peekItem(peekcount);

@@ -128,10 +128,10 @@ public:
 	IShaderSource() = default;
 	virtual ~IShaderSource() = default;
 
-	virtual u32 getShaderIdDirect(const std::string &name,
+	virtual uint32_t getShaderIdDirect(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype = NDT_NORMAL){return 0;}
-	virtual ShaderInfo getShaderInfo(u32 id){return ShaderInfo();}
-	virtual u32 getShader(const std::string &name,
+	virtual ShaderInfo getShaderInfo(uint32_t id){return ShaderInfo();}
+	virtual uint32_t getShader(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype = NDT_NORMAL){return 0;}
 };
 

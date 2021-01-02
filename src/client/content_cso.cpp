@@ -46,7 +46,7 @@ public:
 		m_spritenode->setVisible(true);
 		m_spritenode->setSize(size);
 		/* Update brightness */
-		u8 light;
+		uint8_t light;
 		bool pos_ok;
 		MapNode n = env->getMap().getNode(floatToInt(pos, BS), &pos_ok);
 		light = pos_ok ? decode_light(n.getLightBlend(env->getDayNightRatio(),

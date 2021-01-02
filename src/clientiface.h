@@ -229,17 +229,17 @@ public:
 	//       Also, the client must be moved to some other container.
 	session_t peer_id = PEER_ID_INEXISTENT;
 	// The serialization version to use with the client
-	u8 serialization_version = SER_FMT_VER_INVALID;
+	uint8_t serialization_version = SER_FMT_VER_INVALID;
 	//
-	u16 net_proto_version = 0;
+	uint16_t net_proto_version = 0;
 
 	/* Authentication information */
 	std::string enc_pwd = "";
 	bool create_player_on_auth_success = false;
 	AuthMechanism chosen_mech  = AUTH_MECHANISM_NONE;
 	void *auth_data = nullptr;
-	u32 allowed_auth_mechs = 0;
-	u32 allowed_sudo_mechs = 0;
+	uint32_t allowed_auth_mechs = 0;
+	uint32_t allowed_sudo_mechs = 0;
 
 	bool isSudoMechAllowed(AuthMechanism mech)
 	{ return allowed_sudo_mechs & mech; }
@@ -272,7 +272,7 @@ public:
 	 */
 	void ResendBlockIfOnWire(v3s16 p);
 
-	u32 getSendingCount() const { return m_blocks_sending.size(); }
+	uint32_t getSendingCount() const { return m_blocks_sending.size(); }
 
 	bool isBlockSent(v3s16 p) const
 	{
@@ -313,20 +313,20 @@ public:
 	void notifyEvent(ClientStateEvent event);
 
 	/* set expected serialization version */
-	void setPendingSerializationVersion(u8 version)
+	void setPendingSerializationVersion(uint8_t version)
 		{ m_pending_serialization_version = version; }
 
-	void setDeployedCompressionMode(u16 byteFlag)
+	void setDeployedCompressionMode(uint16_t byteFlag)
 		{ m_deployed_compression = byteFlag; }
 
 	void confirmSerializationVersion()
 		{ serialization_version = m_pending_serialization_version; }
 
 	/* get uptime */
-	u64 uptime() const;
+	uint64_t uptime() const;
 
 	/* set version information */
-	void setVersionInfo(u8 major, u8 minor, u8 patch, const std::string &full)
+	void setVersionInfo(uint8_t major, uint8_t minor, uint8_t patch, const std::string &full)
 	{
 		m_version_major = major;
 		m_version_minor = minor;
@@ -335,16 +335,16 @@ public:
 	}
 
 	/* read version information */
-	u8 getMajor() const { return m_version_major; }
-	u8 getMinor() const { return m_version_minor; }
-	u8 getPatch() const { return m_version_patch; }
+	uint8_t getMajor() const { return m_version_major; }
+	uint8_t getMinor() const { return m_version_minor; }
+	uint8_t getPatch() const { return m_version_patch; }
 	const std::string &getFull() const { return m_full_version; }
 	
 	void setLangCode(const std::string &code) { m_lang_code = code; }
 	const std::string &getLangCode() const { return m_lang_code; }
 private:
 	// Version is stored in here after INIT before INIT2
-	u8 m_pending_serialization_version = SER_FMT_VER_INVALID;
+	uint8_t m_pending_serialization_version = SER_FMT_VER_INVALID;
 
 	/* current state of client */
 	ClientState m_state = CS_Created;
@@ -362,15 +362,15 @@ private:
 		No MapBlock* is stored here because the blocks can get deleted.
 	*/
 	std::set<v3s16> m_blocks_sent;
-	s16 m_nearest_unsent_d = 0;
+	int16_t m_nearest_unsent_d = 0;
 	v3s16 m_last_center;
 	v3f m_last_camera_dir;
 
-	const u16 m_max_simul_sends;
+	const uint16_t m_max_simul_sends;
 	const float m_min_time_from_building;
-	const s16 m_max_send_distance;
-	const s16 m_block_optimize_distance;
-	const s16 m_max_gen_distance;
+	const int16_t m_max_send_distance;
+	const int16_t m_block_optimize_distance;
+	const int16_t m_max_gen_distance;
 	const bool m_occ_cull;
 
 	/*
@@ -400,7 +400,7 @@ private:
 		and the client then sends two GOTBLOCKs.
 		This is resetted by PrintInfo()
 	*/
-	u32 m_excess_gotblocks = 0;
+	uint32_t m_excess_gotblocks = 0;
 
 	// CPU usage optimization
 	float m_nothing_to_send_pause_timer = 0.0f;
@@ -413,18 +413,18 @@ private:
 	/*
 		client information
 	 */
-	u8 m_version_major = 0;
-	u8 m_version_minor = 0;
-	u8 m_version_patch = 0;
+	uint8_t m_version_major = 0;
+	uint8_t m_version_minor = 0;
+	uint8_t m_version_patch = 0;
 
 	std::string m_full_version = "unknown";
 
-	u16 m_deployed_compression = 0;
+	uint16_t m_deployed_compression = 0;
 
 	/*
 		time this client was created
 	 */
-	const u64 m_connection_time = porting::getTimeS();
+	const uint64_t m_connection_time = porting::getTimeS();
 };
 
 typedef std::unordered_map<u16, RemoteClient*> RemoteClientMap;
@@ -453,11 +453,11 @@ public:
 	const std::vector<std::string> &getPlayerNames() const { return m_clients_names; }
 
 	/* send message to client */
-	void send(session_t peer_id, u8 channelnum, NetworkPacket *pkt, bool reliable);
+	void send(session_t peer_id, uint8_t channelnum, NetworkPacket *pkt, bool reliable);
 
 	/* send to all clients */
 	void sendToAll(NetworkPacket *pkt);
-	void sendToAllCompat(NetworkPacket *pkt, NetworkPacket *legacypkt, u16 min_proto_ver);
+	void sendToAllCompat(NetworkPacket *pkt, NetworkPacket *legacypkt, uint16_t min_proto_ver);
 
 	/* delete a client */
 	void DeleteClient(session_t peer_id);
@@ -478,10 +478,10 @@ public:
 	void setPlayerName(session_t peer_id, const std::string &name);
 
 	/* get protocol version of client */
-	u16 getProtocolVersion(session_t peer_id);
+	uint16_t getProtocolVersion(session_t peer_id);
 
 	/* set client version */
-	void setClientVersion(session_t peer_id, u8 major, u8 minor, u8 patch,
+	void setClientVersion(session_t peer_id, uint8_t major, uint8_t minor, uint8_t patch,
 			const std::string &full);
 
 	/* event to update client state */

@@ -194,7 +194,7 @@ void read_object_properties(lua_State *L, int index,
 
 	int hp_max = 0;
 	if (getintfield(L, -1, "hp_max", hp_max)) {
-		prop->hp_max = (u16)rangelim(hp_max, 0, U16_MAX);
+		prop->hp_max = (uint16_t)rangelim(hp_max, 0, U16_MAX);
 
 		if (prop->hp_max < sao->getHP()) {
 			PlayerHPChangeReason reason(PlayerHPChangeReason::SET_HP);
@@ -237,7 +237,7 @@ void read_object_properties(lua_State *L, int index,
 		// Backwards compatibility: Also accept { x = ?, y = ? }
 		v2f scale_xy = read_v2f(L, -1);
 
-		f32 scale_z = scale_xy.X;
+		float scale_z = scale_xy.X;
 		lua_getfield(L, -1, "z");
 		if (lua_isnumber(L, -1))
 			scale_z = lua_tonumber(L, -1);
@@ -362,7 +362,7 @@ void push_object_properties(lua_State *L, ObjectProperties *prop)
 	lua_setfield(L, -2, "visual_size");
 
 	lua_createtable(L, prop->textures.size(), 0);
-	u16 i = 1;
+	uint16_t i = 1;
 	for (const std::string &texture : prop->textures) {
 		lua_pushlstring(L, texture.c_str(), texture.size());
 		lua_rawseti(L, -2, i++);
@@ -425,7 +425,7 @@ void push_object_properties(lua_State *L, ObjectProperties *prop)
 }
 
 /******************************************************************************/
-TileDef read_tiledef(lua_State *L, int index, u8 drawtype)
+TileDef read_tiledef(lua_State *L, int index, uint8_t drawtype)
 {
 	if(index < 0)
 		index = lua_gettop(L) + 1 + index;
@@ -857,7 +857,7 @@ void push_content_features(lua_State *L, const ContentFeatures &c)
 	lua_setfield(L, -2, "connect_sides");
 
 	lua_createtable(L, c.connects_to.size(), 0);
-	u16 i = 1;
+	uint16_t i = 1;
 	for (const std::string &it : c.connects_to) {
 		lua_pushlstring(L, it.c_str(), it.size());
 		lua_rawseti(L, -2, i++);
@@ -982,7 +982,7 @@ void push_nodebox(lua_State *L, const NodeBox &box)
 void push_box(lua_State *L, const std::vector<aabb3f> &box)
 {
 	lua_createtable(L, box.size(), 0);
-	u8 i = 1;
+	uint8_t i = 1;
 	for (const aabb3f &it : box) {
 		push_aabb3f(L, it);
 		lua_rawseti(L, -2, i++);
@@ -1127,13 +1127,13 @@ MapNode readnode(lua_State *L, int index, const NodeDefManager *ndef)
 	std::string name = lua_tostring(L, -1);
 	lua_pop(L, 1);
 
-	u8 param1 = 0;
+	uint8_t param1 = 0;
 	lua_getfield(L, index, "param1");
 	if (!lua_isnil(L, -1))
 		param1 = lua_tonumber(L, -1);
 	lua_pop(L, 1);
 
-	u8 param2 = 0;
+	uint8_t param2 = 0;
 	lua_getfield(L, index, "param2");
 	if (!lua_isnil(L, -1))
 		param2 = lua_tonumber(L, -1);
@@ -1316,7 +1316,7 @@ void push_inventory_list(lua_State *L, Inventory *inv, const char *name)
 		return;
 	}
 	std::vector<ItemStack> items;
-	for(u32 i=0; i<invlist->getSize(); i++)
+	for(uint32_t i=0; i<invlist->getSize(); i++)
 		items.push_back(invlist->getItem(i));
 	push_items(L, items);
 }
@@ -1449,7 +1449,7 @@ ToolCapabilities read_tool_capabilities(
 		while(lua_next(L, table_damage_groups) != 0){
 			// key at index -2 and value at index -1
 			std::string groupname = luaL_checkstring(L, -2);
-			u16 value = luaL_checkinteger(L, -1);
+			uint16_t value = luaL_checkinteger(L, -1);
 			toolcap.damageGroups[groupname] = value;
 			// removes value, keeps key for next iteration
 			lua_pop(L, 1);
@@ -1479,7 +1479,7 @@ void push_hit_params(lua_State *L,const HitParams &params)
 /******************************************************************************/
 
 bool getflagsfield(lua_State *L, int table, const char *fieldname,
-	FlagDesc *flagdesc, u32 *flags, u32 *flagmask)
+	FlagDesc *flagdesc, uint32_t *flags, uint32_t *flagmask)
 {
 	lua_getfield(L, table, fieldname);
 
@@ -1491,7 +1491,7 @@ bool getflagsfield(lua_State *L, int table, const char *fieldname,
 }
 
 bool read_flags(lua_State *L, int index, FlagDesc *flagdesc,
-	u32 *flags, u32 *flagmask)
+	uint32_t *flags, uint32_t *flagmask)
 {
 	if (lua_isstring(L, index)) {
 		std::string flagstr = lua_tostring(L, index);
@@ -1505,9 +1505,9 @@ bool read_flags(lua_State *L, int index, FlagDesc *flagdesc,
 	return true;
 }
 
-u32 read_flags_table(lua_State *L, int table, FlagDesc *flagdesc, u32 *flagmask)
+uint32_t read_flags_table(lua_State *L, int table, FlagDesc *flagdesc, uint32_t *flagmask)
 {
-	u32 flags = 0, mask = 0;
+	uint32_t flags = 0, mask = 0;
 	char fnamebuf[64] = "no";
 
 	for (int i = 0; flagdesc[i].name; i++) {
@@ -1530,7 +1530,7 @@ u32 read_flags_table(lua_State *L, int table, FlagDesc *flagdesc, u32 *flagmask)
 	return flags;
 }
 
-void push_flags_string(lua_State *L, FlagDesc *flagdesc, u32 flags, u32 flagmask)
+void push_flags_string(lua_State *L, FlagDesc *flagdesc, uint32_t flags, uint32_t flagmask)
 {
 	std::string flagstring = writeFlagString(flags, flagdesc, flagmask);
 	lua_pushlstring(L, flagstring.c_str(), flagstring.size());
@@ -1578,7 +1578,7 @@ void push_groups(lua_State *L, const ItemGroupList &groups)
 void push_items(lua_State *L, const std::vector<ItemStack> &items)
 {
 	lua_createtable(L, items.size(), 0);
-	for (u32 i = 0; i != items.size(); i++) {
+	for (uint32_t i = 0; i != items.size(); i++) {
 		LuaItemStack::create(L, items[i]);
 		lua_rawseti(L, -2, i + 1);
 	}
@@ -1594,11 +1594,11 @@ std::vector<ItemStack> read_items(lua_State *L, int index, Server *srv)
 	luaL_checktype(L, index, LUA_TTABLE);
 	lua_pushnil(L);
 	while (lua_next(L, index)) {
-		s32 key = luaL_checkinteger(L, -2);
+		int32_t key = luaL_checkinteger(L, -2);
 		if (key < 1) {
 			throw LuaError("Invalid inventory list index");
 		}
-		if (items.size() < (u32) key) {
+		if (items.size() < (uint32_t) key) {
 			items.resize(key);
 		}
 		items[key - 1] = read_item(L, -1, srv->idef());
@@ -1608,7 +1608,7 @@ std::vector<ItemStack> read_items(lua_State *L, int index, Server *srv)
 }
 
 /******************************************************************************/
-void luaentity_get(lua_State *L, u16 id)
+void luaentity_get(lua_State *L, uint16_t id)
 {
 	// Get luaentities[i]
 	lua_getglobal(L, "core");
@@ -1637,8 +1637,8 @@ bool read_noiseparams(lua_State *L, int index, NoiseParams *np)
 	getintfield(L,   index, "seed",        np->seed);
 	getintfield(L,   index, "octaves",     np->octaves);
 
-	u32 flags    = 0;
-	u32 flagmask = 0;
+	uint32_t flags    = 0;
+	uint32_t flagmask = 0;
 	np->flags = getflagsfield(L, index, "flags", flagdesc_noiseparams,
 		&flags, &flagmask) ? flags : NOISE_FLAG_DEFAULTS;
 
@@ -1759,7 +1759,7 @@ bool push_json_value(lua_State *L, const Json::Value &value, int nullindex)
 }
 
 // Converts Lua table --> JSON
-void read_json_value(lua_State *L, Json::Value &root, int index, u8 recursion)
+void read_json_value(lua_State *L, Json::Value &root, int index, uint8_t recursion)
 {
 	if (recursion > 16) {
 		throw SerializationError("Maximum recursion depth exceeded");
@@ -1845,7 +1845,7 @@ void push_pointed_thing(lua_State *L, const PointedThing &pointed, bool csm,
 	}
 }
 
-void push_objectRef(lua_State *L, const u16 id)
+void push_objectRef(lua_State *L, const uint16_t id)
 {
 	// Get core.object_refs[i]
 	lua_getglobal(L, "core");
@@ -1912,7 +1912,7 @@ void push_hud_element(lua_State *L, HudElement *elem)
 {
 	lua_newtable(L);
 
-	lua_pushstring(L, es_HudElementType[(u8)elem->type].str);
+	lua_pushstring(L, es_HudElementType[(uint8_t)elem->type].str);
 	lua_setfield(L, -2, "type");
 
 	push_v2f(L, elem->pos);

@@ -57,7 +57,7 @@ struct EnumString ModApiEnvMod::es_ClearObjectsMode[] =
 
 
 void LuaABM::trigger(ServerEnvironment *env, v3s16 p, MapNode n,
-		u32 active_object_count, u32 active_object_count_wider)
+		uint32_t active_object_count, uint32_t active_object_count_wider)
 {
 	ServerScripting *scriptIface = env->getScriptIface();
 	scriptIface->realityCheck();
@@ -290,7 +290,7 @@ int ModApiEnvMod::l_bulk_set_node(lua_State *L)
 		return 0;
 	}
 
-	s32 len = lua_objlen(L, 1);
+	int32_t len = lua_objlen(L, 1);
 	if (len == 0) {
 		lua_pushboolean(L, true);
 		return 1;
@@ -300,7 +300,7 @@ int ModApiEnvMod::l_bulk_set_node(lua_State *L)
 
 	// Do it
 	bool succeeded = true;
-	for (s32 i = 1; i <= len; i++) {
+	for (int32_t i = 1; i <= len; i++) {
 		lua_rawgeti(L, 1, i);
 		if (!env->setNode(read_v3s16(L, -1), n))
 			succeeded = false;
@@ -390,11 +390,11 @@ int ModApiEnvMod::l_get_node_light(lua_State *L)
 
 	// Do it
 	v3s16 pos = read_v3s16(L, 1);
-	u32 time_of_day = env->getTimeOfDay();
+	uint32_t time_of_day = env->getTimeOfDay();
 	if(lua_isnumber(L, 2))
 		time_of_day = 24000.0 * lua_tonumber(L, 2);
 	time_of_day %= 24000;
-	u32 dnr = time_to_daynight_ratio(time_of_day, true);
+	uint32_t dnr = time_to_daynight_ratio(time_of_day, true);
 
 	bool is_position_ok;
 	MapNode n = env->getMap().getNode(pos, &is_position_ok);
@@ -423,20 +423,20 @@ int ModApiEnvMod::l_get_natural_light(lua_State *L)
 		return 0;
 
 	// If the daylight is 0, nothing needs to be calculated
-	u8 daylight = n.param1 & 0x0f;
+	uint8_t daylight = n.param1 & 0x0f;
 	if (daylight == 0) {
 		lua_pushinteger(L, 0);
 		return 1;
 	}
 
-	u32 time_of_day;
+	uint32_t time_of_day;
 	if (lua_isnumber(L, 2)) {
 		time_of_day = 24000.0 * lua_tonumber(L, 2);
 		time_of_day %= 24000;
 	} else {
 		time_of_day = env->getTimeOfDay();
 	}
-	u32 dnr = time_to_daynight_ratio(time_of_day, true);
+	uint32_t dnr = time_to_daynight_ratio(time_of_day, true);
 
 	// If it's the same as the artificial light, the sunlight needs to be
 	// searched for because the value may not emanate from the sun
@@ -558,7 +558,7 @@ int ModApiEnvMod::l_set_node_level(lua_State *L)
 	GET_ENV_PTR;
 
 	v3s16 pos = read_v3s16(L, 1);
-	u8 level = 1;
+	uint8_t level = 1;
 	if(lua_isnumber(L, 2))
 		level = lua_tonumber(L, 2);
 	MapNode n = env->getMap().getNode(pos);
@@ -575,7 +575,7 @@ int ModApiEnvMod::l_add_node_level(lua_State *L)
 	GET_ENV_PTR;
 
 	v3s16 pos = read_v3s16(L, 1);
-	s16 level = 1;
+	int16_t level = 1;
 	if(lua_isnumber(L, 2))
 		level = lua_tonumber(L, 2);
 	MapNode n = env->getMap().getNode(pos);
@@ -688,7 +688,7 @@ int ModApiEnvMod::l_get_connected_players(lua_State *L)
 	}
 
 	lua_createtable(L, env->getPlayerCount(), 0);
-	u32 i = 0;
+	uint32_t i = 0;
 	for (RemotePlayer *player : env->getPlayers()) {
 		if (player->getPeerId() == PEER_ID_INEXISTENT)
 			continue;
@@ -892,7 +892,7 @@ int ModApiEnvMod::l_find_nodes_in_area(lua_State *L)
 
 	v3s16 cube = maxp - minp + 1;
 	// Volume limit equal to 8 default mapchunks, (80 * 2) ^ 3 = 4,096,000
-	if ((u64)cube.X * (u64)cube.Y * (u64)cube.Z > 4096000) {
+	if ((uint64_t)cube.X * (uint64_t)cube.Y * (uint64_t)cube.Z > 4096000) {
 		luaL_error(L, "find_nodes_in_area(): area volume"
 				" exceeds allowed value of 4096000");
 		return 0;
@@ -909,9 +909,9 @@ int ModApiEnvMod::l_find_nodes_in_area(lua_State *L)
 		int base = lua_gettop(L);
 
 		// create one table for each filter
-		std::vector<u32> idx;
+		std::vector<uint32_t> idx;
 		idx.resize(filter.size());
-		for (u32 i = 0; i < filter.size(); i++)
+		for (uint32_t i = 0; i < filter.size(); i++)
 			lua_newtable(L);
 
 		v3s16 p;
@@ -923,14 +923,14 @@ int ModApiEnvMod::l_find_nodes_in_area(lua_State *L)
 			auto it = std::find(filter.begin(), filter.end(), c);
 			if (it != filter.end()) {
 				// Calculate index of the table and append the position
-				u32 filt_index = it - filter.begin();
+				uint32_t filt_index = it - filter.begin();
 				push_v3s16(L, p);
 				lua_rawseti(L, base + 1 + filt_index, ++idx[filt_index]);
 			}
 		}
 
 		// last filter table is at top of stack
-		u32 i = filter.size() - 1;
+		uint32_t i = filter.size() - 1;
 		do {
 			if (idx[i] == 0) {
 				// No such node found -> drop the empty table
@@ -944,11 +944,11 @@ int ModApiEnvMod::l_find_nodes_in_area(lua_State *L)
 		assert(lua_gettop(L) == base);
 		return 1;
 	} else {
-		std::vector<u32> individual_count;
+		std::vector<uint32_t> individual_count;
 		individual_count.resize(filter.size());
 
 		lua_newtable(L);
-		u32 i = 0;
+		uint32_t i = 0;
 		v3s16 p;
 		for (p.X = minp.X; p.X <= maxp.X; p.X++)
 		for (p.Y = minp.Y; p.Y <= maxp.Y; p.Y++)
@@ -960,13 +960,13 @@ int ModApiEnvMod::l_find_nodes_in_area(lua_State *L)
 				push_v3s16(L, p);
 				lua_rawseti(L, -2, ++i);
 
-				u32 filt_index = it - filter.begin();
+				uint32_t filt_index = it - filter.begin();
 				individual_count[filt_index]++;
 			}
 		}
 
 		lua_createtable(L, 0, filter.size());
-		for (u32 i = 0; i < filter.size(); i++) {
+		for (uint32_t i = 0; i < filter.size(); i++) {
 			lua_pushinteger(L, individual_count[i]);
 			lua_setfield(L, -2, ndef->get(filter[i]).name.c_str());
 		}
@@ -1003,7 +1003,7 @@ int ModApiEnvMod::l_find_nodes_in_area_under_air(lua_State *L)
 
 	v3s16 cube = maxp - minp + 1;
 	// Volume limit equal to 8 default mapchunks, (80 * 2) ^ 3 = 4,096,000
-	if ((u64)cube.X * (u64)cube.Y * (u64)cube.Z > 4096000) {
+	if ((uint64_t)cube.X * (uint64_t)cube.Y * (uint64_t)cube.Z > 4096000) {
 		luaL_error(L, "find_nodes_in_area_under_air(): area volume"
 				" exceeds allowed value of 4096000");
 		return 0;
@@ -1013,7 +1013,7 @@ int ModApiEnvMod::l_find_nodes_in_area_under_air(lua_State *L)
 	collectNodeIds(L, 3, ndef, filter);
 
 	lua_newtable(L);
-	u32 i = 0;
+	uint32_t i = 0;
 	v3s16 p;
 	for (p.X = minp.X; p.X <= maxp.X; p.X++)
 	for (p.Z = minp.Z; p.Z <= maxp.Z; p.Z++) {
@@ -1070,7 +1070,7 @@ int ModApiEnvMod::l_get_perlin_map(lua_State *L)
 		return 0;
 	v3s16 size = read_v3s16(L, 2);
 
-	s32 seed = (s32)(env->getServerMap().getSeed());
+	int32_t seed = (s32)(env->getServerMap().getSeed());
 	LuaPerlinNoiseMap *n = new LuaPerlinNoiseMap(&np, seed, size);
 	*(void **)(lua_newuserdata(L, sizeof(void *))) = n;
 	luaL_getmetatable(L, "PerlinNoiseMap");
@@ -1181,9 +1181,9 @@ int ModApiEnvMod::l_load_area(lua_State *L)
 	} else {
 		v3s16 bp2 = getNodeBlockPos(check_v3s16(L, 2));
 		sortBoxVerticies(bp1, bp2);
-		for (s16 z = bp1.Z; z <= bp2.Z; z++)
-		for (s16 y = bp1.Y; y <= bp2.Y; y++)
-		for (s16 x = bp1.X; x <= bp2.X; x++) {
+		for (int16_t z = bp1.Z; z <= bp2.Z; z++)
+		for (int16_t y = bp1.Y; y <= bp2.Y; y++)
+		for (int16_t x = bp1.X; x <= bp2.X; x++) {
 			map->emergeBlock(v3s16(x, y, z));
 		}
 	}
@@ -1226,9 +1226,9 @@ int ModApiEnvMod::l_emerge_area(lua_State *L)
 		state->origin       = getScriptApiBase(L)->getOrigin();
 	}
 
-	for (s16 z = bpmin.Z; z <= bpmax.Z; z++)
-	for (s16 y = bpmin.Y; y <= bpmax.Y; y++)
-	for (s16 x = bpmin.X; x <= bpmax.X; x++) {
+	for (int16_t z = bpmin.Z; z <= bpmax.Z; z++)
+	for (int16_t y = bpmin.Y; y <= bpmax.Y; y++)
+	for (int16_t x = bpmin.X; x <= bpmax.X; x++) {
 		emerge->enqueueBlockEmergeEx(v3s16(x, y, z), PEER_ID_INEXISTENT,
 			BLOCK_EMERGE_ALLOW_GEN | BLOCK_EMERGE_FORCE_QUEUE, callback, state);
 	}
@@ -1252,9 +1252,9 @@ int ModApiEnvMod::l_delete_area(lua_State *L)
 	event.type = MEET_OTHER;
 
 	bool success = true;
-	for (s16 z = bpmin.Z; z <= bpmax.Z; z++)
-	for (s16 y = bpmin.Y; y <= bpmax.Y; y++)
-	for (s16 x = bpmin.X; x <= bpmax.X; x++) {
+	for (int16_t z = bpmin.Z; z <= bpmax.Z; z++)
+	for (int16_t y = bpmin.Y; y <= bpmax.Y; y++)
+	for (int16_t x = bpmin.X; x <= bpmax.X; x++) {
 		v3s16 bp(x, y, z);
 		if (map.deleteBlock(bp)) {
 			env->setStaticForActiveObjectsInBlock(bp, false);

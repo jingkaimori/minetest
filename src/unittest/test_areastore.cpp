@@ -116,7 +116,7 @@ void TestAreaStore::genericStoreTest(AreaStore *store)
 
 	store->getAreasForPos(&res, v3s16(-75, -250, -150));
 	UASSERTEQ(size_t, res.size(), 1);
-	UASSERTEQ(u16, res[0]->data.size(), 3);
+	UASSERTEQ(uint16_t, res[0]->data.size(), 3);
 	UASSERT(strncmp(res[0]->data.c_str(), "Hi!", 3) == 0);
 	res.clear();
 
@@ -168,6 +168,6 @@ void TestAreaStore::testSerialization()
 	c.data = "Area CC";
 	store.insertArea(&c);
 
-	UASSERTEQ(u32, c.id, 2);
+	UASSERTEQ(uint32_t, c.id, 2);
 }
 

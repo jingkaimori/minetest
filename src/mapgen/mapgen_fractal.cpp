@@ -177,16 +177,16 @@ void MapgenFractalParams::setDefaultSettings(Settings *settings)
 int MapgenFractal::getSpawnLevelAtPoint(v2s16 p)
 {
 	bool solid_below = false; // Fractal node is present below to spawn on
-	u8 air_count = 0; // Consecutive air nodes above a fractal node
-	s16 search_start = 0; // No terrain search start
+	uint8_t air_count = 0; // Consecutive air nodes above a fractal node
+	int16_t search_start = 0; // No terrain search start
 
 	// If terrain present, don't start search below terrain or water level
 	if (noise_seabed) {
-		s16 seabed_level = NoisePerlin2D(&noise_seabed->np, p.X, p.Y, seed);
+		int16_t seabed_level = NoisePerlin2D(&noise_seabed->np, p.X, p.Y, seed);
 		search_start = MYMAX(search_start, MYMAX(seabed_level, water_level));
 	}
 
-	for (s16 y = search_start; y <= search_start + 4096; y++) {
+	for (int16_t y = search_start; y <= search_start + 4096; y++) {
 		if (getFractalAtPoint(p.X, y, p.Y)) {
 			// Fractal node
 			solid_below = true;
@@ -226,7 +226,7 @@ void MapgenFractal::makeChunk(BlockMakeData *data)
 	blockseed = getBlockSeed2(full_node_min, seed);
 
 	// Generate fractal and optional terrain
-	s16 stone_surface_max_y = generateTerrain();
+	int16_t stone_surface_max_y = generateTerrain();
 
 	// Create heightmap
 	updateHeightmap(node_min, node_max);
@@ -274,7 +274,7 @@ void MapgenFractal::makeChunk(BlockMakeData *data)
 }
 
 
-bool MapgenFractal::getFractalAtPoint(s16 x, s16 y, s16 z)
+bool MapgenFractal::getFractalAtPoint(int16_t x, int16_t y, int16_t z)
 {
 	float cx, cy, cz, cw, ox, oy, oz, ow;
 
@@ -303,7 +303,7 @@ bool MapgenFractal::getFractalAtPoint(s16 x, s16 y, s16 z)
 	float nz = 0.0f;
 	float nw = 0.0f;
 
-	for (u16 iter = 0; iter < iterations; iter++) {
+	for (uint16_t iter = 0; iter < iterations; iter++) {
 		switch (formula) {
 		default:
 		case 1: // 4D "Roundy"
@@ -410,20 +410,20 @@ s16 MapgenFractal::generateTerrain()
 	MapNode n_stone(c_stone);
 	MapNode n_water(c_water_source);
 
-	s16 stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
-	u32 index2d = 0;
+	int16_t stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
+	uint32_t index2d = 0;
 
 	if (noise_seabed)
 		noise_seabed->perlinMap2D(node_min.X, node_min.Z);
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++) {
-		for (s16 y = node_min.Y - 1; y <= node_max.Y + 1; y++) {
-			u32 vi = vm->m_area.index(node_min.X, y, z);
-			for (s16 x = node_min.X; x <= node_max.X; x++, vi++, index2d++) {
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++) {
+		for (int16_t y = node_min.Y - 1; y <= node_max.Y + 1; y++) {
+			uint32_t vi = vm->m_area.index(node_min.X, y, z);
+			for (int16_t x = node_min.X; x <= node_max.X; x++, vi++, index2d++) {
 				if (vm->m_data[vi].getContent() != CONTENT_IGNORE)
 					continue;
 
-				s16 seabed_height = -MAX_MAP_GENERATION_LIMIT;
+				int16_t seabed_height = -MAX_MAP_GENERATION_LIMIT;
 				if (noise_seabed)
 					seabed_height = noise_seabed->result[index2d];
 

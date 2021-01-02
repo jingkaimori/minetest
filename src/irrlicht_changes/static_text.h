@@ -37,7 +37,7 @@ namespace gui
 		// StaticText is translated by EnrichedString.
 		// No need to use translate_string()
 		StaticText(const EnrichedString &text, bool border, IGUIEnvironment* environment,
-			IGUIElement* parent, s32 id, const core::rect<s32>& rectangle,
+			IGUIElement* parent, int32_t id, const core::rect<s32>& rectangle,
 			bool background = false);
 
 		//! destructor
@@ -46,11 +46,11 @@ namespace gui
 		static irr::gui::IGUIStaticText *add(
 			irr::gui::IGUIEnvironment *guienv,
 			const EnrichedString &text,
-			const core::rect< s32 > &rectangle,
+			const core::rect< int32_t > &rectangle,
 			bool border = false,
 			bool wordWrap = true,
 			irr::gui::IGUIElement *parent = NULL,
-			s32 id = -1,
+			int32_t id = -1,
 			bool fillBackground = false)
 		{
 			if (parent == NULL) {
@@ -86,11 +86,11 @@ namespace gui
 		static irr::gui::IGUIStaticText *add(
 			irr::gui::IGUIEnvironment *guienv,
 			const wchar_t *text,
-			const core::rect< s32 > &rectangle,
+			const core::rect< int32_t > &rectangle,
 			bool border = false,
 			bool wordWrap = true,
 			irr::gui::IGUIElement *parent = NULL,
-			s32 id = -1,
+			int32_t id = -1,
 			bool fillBackground = false)
 		{
 			return add(guienv, EnrichedString(text), rectangle, border, wordWrap, parent,
@@ -164,10 +164,10 @@ namespace gui
 		virtual void setText(const wchar_t* text);
 
 		//! Returns the height of the text in pixels when it is drawn.
-		virtual s32 getTextHeight() const;
+		virtual int32_t getTextHeight() const;
 
 		//! Returns the width of the current text, in the current font
-		virtual s32 getTextWidth() const;
+		virtual int32_t getTextWidth() const;
 
 		//! Updates the absolute position, splits text if word wrap is enabled
 		virtual void updateAbsolutePosition();
@@ -248,11 +248,11 @@ public:
 	static irr::gui::IGUIStaticText *add(
 		irr::gui::IGUIEnvironment *guienv,
 		const EnrichedString &text,
-		const core::rect< s32 > &rectangle,
+		const core::rect< int32_t > &rectangle,
 		bool border = false,
 		bool wordWrap = true,
 		irr::gui::IGUIElement *parent = NULL,
-		s32 id = -1,
+		int32_t id = -1,
 		bool fillBackground = false)
 	{
 		return guienv->addStaticText(text.c_str(), rectangle, border, wordWrap, parent, id, fillBackground);

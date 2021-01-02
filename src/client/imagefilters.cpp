@@ -31,14 +31,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * transparent.  Should be 127 for 3d where alpha is threshold, but 0 for
  * 2d where alpha is blended.
  */
-void imageCleanTransparent(video::IImage *src, u32 threshold)
+void imageCleanTransparent(video::IImage *src, uint32_t threshold)
 {
-	core::dimension2d<u32> dim = src->getDimension();
+	core::dimension2d<uint32_t> dim = src->getDimension();
 
 	// Walk each pixel looking for fully transparent ones.
 	// Note: loop y around x for better cache locality.
-	for (u32 ctry = 0; ctry < dim.Height; ctry++)
-	for (u32 ctrx = 0; ctrx < dim.Width; ctrx++) {
+	for (uint32_t ctry = 0; ctry < dim.Height; ctry++)
+	for (uint32_t ctrx = 0; ctrx < dim.Width; ctrx++) {
 
 		// Ignore opaque pixels.
 		irr::video::SColor c = src->getPixel(ctrx, ctry);
@@ -46,12 +46,12 @@ void imageCleanTransparent(video::IImage *src, u32 threshold)
 			continue;
 
 		// Sample size and total weighted r, g, b values.
-		u32 ss = 0, sr = 0, sg = 0, sb = 0;
+		uint32_t ss = 0, sr = 0, sg = 0, sb = 0;
 
 		// Walk each neighbor pixel (clipped to image bounds).
-		for (u32 sy = (ctry < 1) ? 0 : (ctry - 1);
+		for (uint32_t sy = (ctry < 1) ? 0 : (ctry - 1);
 				sy <= (ctry + 1) && sy < dim.Height; sy++)
-		for (u32 sx = (ctrx < 1) ? 0 : (ctrx - 1);
+		for (uint32_t sx = (ctrx < 1) ? 0 : (ctrx - 1);
 				sx <= (ctrx + 1) && sx < dim.Width; sx++) {
 
 			// Ignore transparent pixels.
@@ -60,7 +60,7 @@ void imageCleanTransparent(video::IImage *src, u32 threshold)
 				continue;
 
 			// Add RGB values weighted by alpha.
-			u32 a = d.getAlpha();
+			uint32_t a = d.getAlpha();
 			ss += a;
 			sr += a * d.getRed();
 			sg += a * d.getGreen();
@@ -88,7 +88,7 @@ void imageCleanTransparent(video::IImage *src, u32 threshold)
 void imageScaleNNAA(video::IImage *src, const core::rect<s32> &srcrect, video::IImage *dest)
 {
 	double sx, sy, minsx, maxsx, minsy, maxsy, area, ra, ga, ba, aa, pw, ph, pa;
-	u32 dy, dx;
+	uint32_t dy, dx;
 	video::SColor pxl;
 
 	// Cache rectangle boundaries.
@@ -99,7 +99,7 @@ void imageScaleNNAA(video::IImage *src, const core::rect<s32> &srcrect, video::I
 
 	// Walk each destination image pixel.
 	// Note: loop y around x for better cache locality.
-	core::dimension2d<u32> dim = dest->getDimension();
+	core::dimension2d<uint32_t> dim = dest->getDimension();
 	for (dy = 0; dy < dim.Height; dy++)
 	for (dx = 0; dx < dim.Width; dx++) {
 
@@ -147,7 +147,7 @@ void imageScaleNNAA(video::IImage *src, const core::rect<s32> &srcrect, video::I
 
 			// Get source pixel and add it to totals, weighted
 			// by covered area and alpha.
-			pxl = src->getPixel((u32)sx, (u32)sy);
+			pxl = src->getPixel((uint32_t)sx, (uint32_t)sy);
 			area += pa;
 			ra += pa * pxl.getRed();
 			ga += pa * pxl.getGreen();

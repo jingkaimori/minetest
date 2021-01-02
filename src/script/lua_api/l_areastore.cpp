@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "filesys.h"
 #include <fstream>
 
-static inline void get_data_and_border_flags(lua_State *L, u8 start_i,
+static inline void get_data_and_border_flags(lua_State *L, uint8_t start_i,
 		bool *borders, bool *data)
 {
 	if (!lua_isboolean(L, start_i))
@@ -102,7 +102,7 @@ int LuaAreaStore::l_get_area(lua_State *L)
 	LuaAreaStore *o = checkobject(L, 1);
 	AreaStore *ast = o->as;
 
-	u32 id = luaL_checknumber(L, 2);
+	uint32_t id = luaL_checknumber(L, 2);
 
 	bool include_borders = true;
 	bool include_data = false;
@@ -214,7 +214,7 @@ int LuaAreaStore::l_remove_area(lua_State *L)
 	LuaAreaStore *o = checkobject(L, 1);
 	AreaStore *ast = o->as;
 
-	u32 id = luaL_checknumber(L, 2);
+	uint32_t id = luaL_checknumber(L, 2);
 	bool success = ast->removeArea(id);
 
 	lua_pushboolean(L, success);
@@ -232,7 +232,7 @@ int LuaAreaStore::l_set_cache_params(lua_State *L)
 	luaL_checktype(L, 2, LUA_TTABLE);
 
 	bool enabled = getboolfield_default(L, 2, "enabled", true);
-	u8 block_radius = getintfield_default(L, 2, "block_radius", 64);
+	uint8_t block_radius = getintfield_default(L, 2, "block_radius", 64);
 	size_t limit = getintfield_default(L, 2, "block_radius", 1000);
 
 	ast->setCacheParams(enabled, block_radius, limit);

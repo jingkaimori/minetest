@@ -38,7 +38,7 @@ void MeshBufListList::clear()
 		list.clear();
 }
 
-void MeshBufListList::add(scene::IMeshBuffer *buf, v3s16 position, u8 layer)
+void MeshBufListList::add(scene::IMeshBuffer *buf, v3s16 position, uint8_t layer)
 {
 	// Append to the correct layer
 	std::vector<MeshBufList> &list = lists[layer];
@@ -65,7 +65,7 @@ void MeshBufListList::add(scene::IMeshBuffer *buf, v3s16 position, u8 layer)
 ClientMap::ClientMap(
 		Client *client,
 		MapDrawControl &control,
-		s32 id
+		int32_t id
 ):
 	Map(client),
 	scene::ISceneNode(RenderingEngine::get_scene_manager()->getRootSceneNode(),
@@ -158,7 +158,7 @@ void ClientMap::updateDrawList()
 
 	// Use a higher fov to accomodate faster camera movements.
 	// Blocks are cropped better when they are drawn.
-	const f32 camera_fov = m_camera_fov * 1.1f;
+	const float camera_fov = m_camera_fov * 1.1f;
 
 	v3s16 cam_pos_nodes = floatToInt(camera_position, BS);
 	v3s16 p_blocks_min;
@@ -166,11 +166,11 @@ void ClientMap::updateDrawList()
 	getBlocksInViewRange(cam_pos_nodes, &p_blocks_min, &p_blocks_max);
 
 	// Number of blocks currently loaded by the client
-	u32 blocks_loaded = 0;
+	uint32_t blocks_loaded = 0;
 	// Number of blocks with mesh in rendering range
-	u32 blocks_in_range_with_mesh = 0;
+	uint32_t blocks_in_range_with_mesh = 0;
 	// Number of blocks occlusion culled
-	u32 blocks_occlusion_culled = 0;
+	uint32_t blocks_occlusion_culled = 0;
 
 	// No occlusion culling when free_move is on and camera is
 	// inside ground
@@ -205,7 +205,7 @@ void ClientMap::updateDrawList()
 			Loop through blocks in sector
 		*/
 
-		u32 sector_blocks_drawn = 0;
+		uint32_t sector_blocks_drawn = 0;
 
 		for (MapBlock *block : sectorblocks) {
 			/*
@@ -258,7 +258,7 @@ void ClientMap::updateDrawList()
 	g_profiler->avg("MapBlocks loaded [#]", blocks_loaded);
 }
 
-void ClientMap::renderMap(video::IVideoDriver* driver, s32 pass)
+void ClientMap::renderMap(video::IVideoDriver* driver, int32_t pass)
 {
 	bool is_transparent_pass = pass == scene::ESNRP_TRANSPARENT;
 
@@ -279,22 +279,22 @@ void ClientMap::renderMap(video::IVideoDriver* driver, s32 pass)
 	*/
 	const float animation_time = m_client->getAnimationTime();
 	const int crack = m_client->getCrackLevel();
-	const u32 daynight_ratio = m_client->getEnv().getDayNightRatio();
+	const uint32_t daynight_ratio = m_client->getEnv().getDayNightRatio();
 
 	const v3f camera_position = m_camera_position;
 	const v3f camera_direction = m_camera_direction;
-	const f32 camera_fov = m_camera_fov;
+	const float camera_fov = m_camera_fov;
 
 	/*
 		Get all blocks and draw all visible ones
 	*/
 
-	u32 vertex_count = 0;
-	u32 drawcall_count = 0;
+	uint32_t vertex_count = 0;
+	uint32_t drawcall_count = 0;
 
 	// For limiting number of mesh animations per frame
-	u32 mesh_animate_count = 0;
-	//u32 mesh_animate_count_far = 0;
+	uint32_t mesh_animate_count = 0;
+	//uint32_t mesh_animate_count_far = 0;
 
 	/*
 		Draw the selected MapBlocks
@@ -347,8 +347,8 @@ void ClientMap::renderMap(video::IVideoDriver* driver, s32 pass)
 				scene::IMesh *mesh = mapBlockMesh->getMesh(layer);
 				assert(mesh);
 
-				u32 c = mesh->getMeshBufferCount();
-				for (u32 i = 0; i < c; i++) {
+				uint32_t c = mesh->getMeshBufferCount();
+				for (uint32_t i = 0; i < c; i++) {
 					scene::IMeshBuffer *buf = mesh->getMeshBuffer(i);
 
 					video::SMaterial& material = buf->getMaterial();
@@ -418,7 +418,7 @@ void ClientMap::renderMap(video::IVideoDriver* driver, s32 pass)
 
 static bool getVisibleBrightness(Map *map, const v3f &p0, v3f dir, float step,
 	float step_multiplier, float start_distance, float end_distance,
-	const NodeDefManager *ndef, u32 daylight_factor, float sunlight_min_d,
+	const NodeDefManager *ndef, uint32_t daylight_factor, float sunlight_min_d,
 	int *result, bool *sunlight_seen)
 {
 	int brightness_sum = 0;
@@ -489,19 +489,19 @@ static bool getVisibleBrightness(Map *map, const v3f &p0, v3f dir, float step,
 	return true;
 }
 
-int ClientMap::getBackgroundBrightness(float max_d, u32 daylight_factor,
+int ClientMap::getBackgroundBrightness(float max_d, uint32_t daylight_factor,
 		int oldvalue, bool *sunlight_seen_result)
 {
 	ScopeProfiler sp(g_profiler, "CM::getBackgroundBrightness", SPT_AVG);
 	static v3f z_directions[50] = {
 		v3f(-100, 0, 0)
 	};
-	static f32 z_offsets[sizeof(z_directions)/sizeof(*z_directions)] = {
+	static float z_offsets[sizeof(z_directions)/sizeof(*z_directions)] = {
 		-1000,
 	};
 
 	if(z_directions[0].X < -99){
-		for(u32 i=0; i<sizeof(z_directions)/sizeof(*z_directions); i++){
+		for(uint32_t i=0; i<sizeof(z_directions)/sizeof(*z_directions); i++){
 			// Assumes FOV of 72 and 16/9 aspect ratio
 			z_directions[i] = v3f(
 				0.02 * myrand_range(-100, 100),
@@ -517,7 +517,7 @@ int ClientMap::getBackgroundBrightness(float max_d, u32 daylight_factor,
 	if(sunlight_min_d > 35*BS)
 		sunlight_min_d = 35*BS;
 	std::vector<int> values;
-	for(u32 i=0; i<sizeof(z_directions)/sizeof(*z_directions); i++){
+	for(uint32_t i=0; i<sizeof(z_directions)/sizeof(*z_directions); i++){
 		v3f z_dir = z_directions[i];
 		core::CMatrix4<f32> a;
 		a.buildRotateFromTo(v3f(0,1,0), z_dir);
@@ -545,14 +545,14 @@ int ClientMap::getBackgroundBrightness(float max_d, u32 daylight_factor,
 	int brightness_sum = 0;
 	int brightness_count = 0;
 	std::sort(values.begin(), values.end());
-	u32 num_values_to_use = values.size();
+	uint32_t num_values_to_use = values.size();
 	if(num_values_to_use >= 10)
 		num_values_to_use -= num_values_to_use/2;
 	else if(num_values_to_use >= 7)
 		num_values_to_use -= num_values_to_use/3;
-	u32 first_value_i = (values.size() - num_values_to_use) / 2;
+	uint32_t first_value_i = (values.size() - num_values_to_use) / 2;
 
-	for (u32 i=first_value_i; i < first_value_i + num_values_to_use; i++) {
+	for (uint32_t i=first_value_i; i < first_value_i + num_values_to_use; i++) {
 		brightness_sum += values[i];
 		brightness_count++;
 	}

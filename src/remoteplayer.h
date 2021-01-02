@@ -51,12 +51,12 @@ public:
 
 	const RemotePlayerChatResult canSendChatMessage();
 
-	void setHotbarItemcount(s32 hotbar_itemcount)
+	void setHotbarItemcount(int32_t hotbar_itemcount)
 	{
 		hud_hotbar_itemcount = hotbar_itemcount;
 	}
 
-	s32 getHotbarItemcount() const { return hud_hotbar_itemcount; }
+	int32_t getHotbarItemcount() const { return hud_hotbar_itemcount; }
 
 	void overrideDayNightRatio(bool do_override, float ratio)
 	{
@@ -130,10 +130,10 @@ public:
 
 	void setDirty(bool dirty) { m_dirty = true; }
 
-	u16 protocol_version = 0;
+	uint16_t protocol_version = 0;
 
 	// v1 for clients older than 5.1.0-dev
-	u16 formspec_version = 1;
+	uint16_t formspec_version = 1;
 
 	session_t getPeerId() const { return m_peer_id; }
 
@@ -155,11 +155,11 @@ private:
 
 	static bool m_setting_cache_loaded;
 	static float m_setting_chat_message_limit_per_10sec;
-	static u16 m_setting_chat_message_limit_trigger_kick;
+	static uint16_t m_setting_chat_message_limit_trigger_kick;
 
-	u32 m_last_chat_message_sent = std::time(0);
+	uint32_t m_last_chat_message_sent = std::time(0);
 	float m_chat_message_allowance = 5.0f;
-	u16 m_message_rate_overhead = 0;
+	uint16_t m_message_rate_overhead = 0;
 
 	bool m_day_night_ratio_do_override = false;
 	float m_day_night_ratio;

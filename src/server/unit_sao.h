@@ -29,7 +29,7 @@ public:
 	UnitSAO(ServerEnvironment *env, v3f pos);
 	virtual ~UnitSAO() = default;
 
-	u16 getHP() const { return m_hp; }
+	uint16_t getHP() const { return m_hp; }
 	// Use a function, if isDead can be defined by other conditions
 	bool isDead() const { return m_hp == 0; }
 
@@ -39,7 +39,7 @@ public:
 	v3f getRadRotation() { return m_rotation * core::DEGTORAD; }
 
 	// Deprecated
-	f32 getRadYawDep() const { return (m_rotation.Y + 90.) * core::DEGTORAD; }
+	float getRadYawDep() const { return (m_rotation.Y + 90.) * core::DEGTORAD; }
 
 	// Armor groups
 	inline bool isImmortal() const
@@ -85,14 +85,14 @@ public:
 	std::string generateUpdateArmorGroupsCommand() const;
 	static std::string generateUpdatePositionCommand(const v3f &position,
 			const v3f &velocity, const v3f &acceleration, const v3f &rotation,
-			bool do_interpolate, bool is_movement_end, f32 update_interval);
+			bool do_interpolate, bool is_movement_end, float update_interval);
 	std::string generateSetPropertiesCommand(const ObjectProperties &prop) const;
 	static std::string generateUpdateBonePositionCommand(const std::string &bone,
 			const v3f &position, const v3f &rotation);
 	void sendPunchCommand();
 
 protected:
-	u16 m_hp = 1;
+	uint16_t m_hp = 1;
 
 	v3f m_rotation;
 
@@ -111,7 +111,7 @@ private:
 	void onAttach(int parent_id);
 	void onDetach(int parent_id);
 
-	std::string generatePunchCommand(u16 result_hp) const;
+	std::string generatePunchCommand(uint16_t result_hp) const;
 
 	// Armor groups
 	bool m_armor_groups_sent = false;

@@ -67,14 +67,14 @@ int LuaVoxelManip::l_get_data(lua_State *L)
 
 	MMVManip *vm = o->vm;
 
-	u32 volume = vm->m_area.getVolume();
+	uint32_t volume = vm->m_area.getVolume();
 
 	if (use_buffer)
 		lua_pushvalue(L, 2);
 	else
 		lua_createtable(L, volume, 0);
 
-	for (u32 i = 0; i != volume; i++) {
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_Integer cid = vm->m_data[i].getContent();
 		lua_pushinteger(L, cid);
 		lua_rawseti(L, -2, i + 1);
@@ -93,8 +93,8 @@ int LuaVoxelManip::l_set_data(lua_State *L)
 	if (!lua_istable(L, 2))
 		throw LuaError("VoxelManip:set_data called with missing parameter");
 
-	u32 volume = vm->m_area.getVolume();
-	for (u32 i = 0; i != volume; i++) {
+	uint32_t volume = vm->m_area.getVolume();
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_rawgeti(L, 2, i + 1);
 		content_t c = lua_tointeger(L, -1);
 
@@ -230,7 +230,7 @@ int LuaVoxelManip::l_set_lighting(lua_State *L)
 	if (!lua_istable(L, 2))
 		throw LuaError("VoxelManip:set_lighting called with missing parameter");
 
-	u8 light;
+	uint8_t light;
 	light  = (getintfield_default(L, 2, "day",   0) & 0x0F);
 	light |= (getintfield_default(L, 2, "night", 0) & 0x0F) << 4;
 
@@ -259,10 +259,10 @@ int LuaVoxelManip::l_get_light_data(lua_State *L)
 	LuaVoxelManip *o = checkobject(L, 1);
 	MMVManip *vm = o->vm;
 
-	u32 volume = vm->m_area.getVolume();
+	uint32_t volume = vm->m_area.getVolume();
 
 	lua_createtable(L, volume, 0);
-	for (u32 i = 0; i != volume; i++) {
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_Integer light = vm->m_data[i].param1;
 		lua_pushinteger(L, light);
 		lua_rawseti(L, -2, i + 1);
@@ -282,10 +282,10 @@ int LuaVoxelManip::l_set_light_data(lua_State *L)
 		throw LuaError("VoxelManip:set_light_data called with missing "
 				"parameter");
 
-	u32 volume = vm->m_area.getVolume();
-	for (u32 i = 0; i != volume; i++) {
+	uint32_t volume = vm->m_area.getVolume();
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_rawgeti(L, 2, i + 1);
-		u8 light = lua_tointeger(L, -1);
+		uint8_t light = lua_tointeger(L, -1);
 
 		vm->m_data[i].param1 = light;
 
@@ -304,14 +304,14 @@ int LuaVoxelManip::l_get_param2_data(lua_State *L)
 
 	MMVManip *vm = o->vm;
 
-	u32 volume = vm->m_area.getVolume();
+	uint32_t volume = vm->m_area.getVolume();
 
 	if (use_buffer)
 		lua_pushvalue(L, 2);
 	else
 		lua_createtable(L, volume, 0);
 
-	for (u32 i = 0; i != volume; i++) {
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_Integer param2 = vm->m_data[i].param2;
 		lua_pushinteger(L, param2);
 		lua_rawseti(L, -2, i + 1);
@@ -331,10 +331,10 @@ int LuaVoxelManip::l_set_param2_data(lua_State *L)
 		throw LuaError("VoxelManip:set_param2_data called with missing "
 				"parameter");
 
-	u32 volume = vm->m_area.getVolume();
-	for (u32 i = 0; i != volume; i++) {
+	uint32_t volume = vm->m_area.getVolume();
+	for (uint32_t i = 0; i != volume; i++) {
 		lua_rawgeti(L, 2, i + 1);
-		u8 param2 = lua_tointeger(L, -1);
+		uint8_t param2 = lua_tointeger(L, -1);
 
 		vm->m_data[i].param2 = param2;
 

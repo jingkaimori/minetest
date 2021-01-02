@@ -185,7 +185,7 @@ std::string get_sysinfo();
 
 extern double perf_freq;
 
-inline u64 os_get_time(double mult)
+inline uint64_t os_get_time(double mult)
 {
 	LARGE_INTEGER t;
 	QueryPerformanceCounter(&t);
@@ -193,10 +193,10 @@ inline u64 os_get_time(double mult)
 }
 
 // Resolution is <1us.
-inline u64 getTimeS() { return os_get_time(1); }
-inline u64 getTimeMs() { return os_get_time(1000); }
-inline u64 getTimeUs() { return os_get_time(1000*1000); }
-inline u64 getTimeNs() { return os_get_time(1000*1000*1000); }
+inline uint64_t getTimeS() { return os_get_time(1); }
+inline uint64_t getTimeMs() { return os_get_time(1000); }
+inline uint64_t getTimeUs() { return os_get_time(1000*1000); }
+inline uint64_t getTimeNs() { return os_get_time(1000*1000*1000); }
 
 #else // Posix
 
@@ -223,28 +223,28 @@ inline void os_get_clock(struct timespec *ts)
 #endif
 }
 
-inline u64 getTimeS()
+inline uint64_t getTimeS()
 {
 	struct timespec ts;
 	os_get_clock(&ts);
 	return ts.tv_sec;
 }
 
-inline u64 getTimeMs()
+inline uint64_t getTimeMs()
 {
 	struct timespec ts;
 	os_get_clock(&ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
-inline u64 getTimeUs()
+inline uint64_t getTimeUs()
 {
 	struct timespec ts;
 	os_get_clock(&ts);
 	return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
 }
 
-inline u64 getTimeNs()
+inline uint64_t getTimeNs()
 {
 	struct timespec ts;
 	os_get_clock(&ts);
@@ -253,7 +253,7 @@ inline u64 getTimeNs()
 
 #endif
 
-inline u64 getTime(TimePrecision prec)
+inline uint64_t getTime(TimePrecision prec)
 {
 	switch (prec) {
 	case PRECISION_SECONDS: return getTimeS();
@@ -270,7 +270,7 @@ inline u64 getTime(TimePrecision prec)
  * @param new_time_ms new time for delta calculation
  * @return positive delta value
  */
-inline u64 getDeltaMs(u64 old_time_ms, u64 new_time_ms)
+inline uint64_t getDeltaMs(uint64_t old_time_ms, uint64_t new_time_ms)
 {
 	if (new_time_ms >= old_time_ms) {
 		return (new_time_ms - old_time_ms);

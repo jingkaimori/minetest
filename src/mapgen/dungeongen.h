@@ -39,7 +39,7 @@ int dir_to_facedir(v3s16 d);
 
 
 struct DungeonParams {
-	s32 seed;
+	int32_t seed;
 
 	content_t c_wall;
 	// Randomly scattered alternative wall nodes
@@ -51,11 +51,11 @@ struct DungeonParams {
 
 	// Number of dungeons generated in mapchunk. All will use the same set of
 	// dungeonparams.
-	u16 num_dungeons;
+	uint16_t num_dungeons;
 	// Dungeons only generate in ground
 	bool only_in_ground;
 	// Number of rooms
-	u16 num_rooms;
+	uint16_t num_rooms;
 	// Room size random range. Includes walls / floor / ceilng
 	v3s16 room_size_min;
 	v3s16 room_size_max;
@@ -66,15 +66,15 @@ struct DungeonParams {
 	// Value 1 results in 1 large room, the first generated room.
 	// Value > 1 makes the first generated room large, all other rooms have a
 	// '1 in value' chance of being large.
-	u16 large_room_chance;
+	uint16_t large_room_chance;
 	// Dimensions of 3D 'brush' that creates corridors.
 	// Dimensions are of the empty space, not including walls / floor / ceilng.
 	// Diagonal corridors must have hole width >=2 to be passable.
 	// Currently, hole width >= 3 causes stair corridor bugs.
 	v3s16 holesize;
 	// Corridor length random range
-	u16 corridor_len_min;
-	u16 corridor_len_max;
+	uint16_t corridor_len_min;
+	uint16_t corridor_len_max;
 	// Diagonal corridors are possible, 1 in 4 corridors will be diagonal
 	bool diagonal_dirs;
 	// Usually 'GENNOTIFY_DUNGEON', but mapgen v6 uses 'GENNOTIFY_TEMPLE' for
@@ -88,7 +88,7 @@ public:
 	const NodeDefManager *ndef;
 	GenerateNotifier *gennotify;
 
-	u32 blockseed;
+	uint32_t blockseed;
 	PseudoRandom random;
 	v3s16 csize;
 
@@ -102,14 +102,14 @@ public:
 	DungeonGen(const NodeDefManager *ndef,
 		GenerateNotifier *gennotify, DungeonParams *dparams);
 
-	void generate(MMVManip *vm, u32 bseed, v3s16 full_node_min, v3s16 full_node_max);
+	void generate(MMVManip *vm, uint32_t bseed, v3s16 full_node_min, v3s16 full_node_max);
 
 	void makeDungeon(v3s16 start_padding);
 	void makeRoom(v3s16 roomsize, v3s16 roomplace);
 	void makeCorridor(v3s16 doorplace, v3s16 doordir,
 		v3s16 &result_place, v3s16 &result_dir);
 	void makeDoor(v3s16 doorplace, v3s16 doordir);
-	void makeFill(v3s16 place, v3s16 size, u8 avoid_flags, MapNode n, u8 or_flags);
+	void makeFill(v3s16 place, v3s16 size, uint8_t avoid_flags, MapNode n, uint8_t or_flags);
 	void makeHole(v3s16 place);
 
 	bool findPlaceForDoor(v3s16 &result_place, v3s16 &result_dir);

@@ -73,7 +73,7 @@ public:
 	// Returns NULL if queue is empty
 	QueuedMeshUpdate *pop();
 
-	u32 size()
+	uint32_t size()
 	{
 		MutexAutoLock lock(m_mutex);
 		return m_queue.size();

@@ -81,7 +81,7 @@ public:
 		return mm && mm->preprocessEvent(event);
 	}
 
-	u32 menuCount()
+	uint32_t menuCount()
 	{
 		return m_stack.size();
 	}

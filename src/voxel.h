@@ -48,8 +48,8 @@ class NodeDefManager;
 /*
 	Debug stuff
 */
-extern u64 emerge_time;
-extern u64 emerge_load_time;
+extern uint64_t emerge_time;
+extern uint64_t emerge_load_time;
 
 /*
 	This class resembles aabbox3d<s16> a lot, but has inclusive
@@ -137,7 +137,7 @@ public:
 		return MaxEdge - MinEdge == v3s16(-1, -1, -1);
 	}
 
-	s32 getVolume() const
+	int32_t getVolume() const
 	{
 		return (s32)m_cache_extent.X * (s32)m_cache_extent.Y * (s32)m_cache_extent.Z;
 	}
@@ -163,7 +163,7 @@ public:
 			p.Z >= MinEdge.Z && p.Z <= MaxEdge.Z
 		);
 	}
-	bool contains(s32 i) const
+	bool contains(int32_t i) const
 	{
 		return (i >= 0 && i < getVolume());
 	}
@@ -265,14 +265,14 @@ public:
 	/*
 		Translates position from virtual coordinates to array index
 	*/
-	s32 index(s16 x, s16 y, s16 z) const
+	int32_t index(int16_t x, int16_t y, int16_t z) const
 	{
-		s32 i = (s32)(z - MinEdge.Z) * m_cache_extent.Y * m_cache_extent.X
+		int32_t i = (s32)(z - MinEdge.Z) * m_cache_extent.Y * m_cache_extent.X
 			+ (y - MinEdge.Y) * m_cache_extent.X
 			+ (x - MinEdge.X);
 		return i;
 	}
-	s32 index(v3s16 p) const
+	int32_t index(v3s16 p) const
 	{
 		return index(p.X, p.Y, p.Z);
 	}
@@ -280,7 +280,7 @@ public:
 	/**
 	 * Translate index in the X coordinate
 	 */
-	static void add_x(const v3s16 &extent, u32 &i, s16 a)
+	static void add_x(const v3s16 &extent, uint32_t &i, int16_t a)
 	{
 		i += a;
 	}
@@ -288,7 +288,7 @@ public:
 	/**
 	 * Translate index in the Y coordinate
 	 */
-	static void add_y(const v3s16 &extent, u32 &i, s16 a)
+	static void add_y(const v3s16 &extent, uint32_t &i, int16_t a)
 	{
 		i += a * extent.X;
 	}
@@ -296,7 +296,7 @@ public:
 	/**
 	 * Translate index in the Z coordinate
 	 */
-	static void add_z(const v3s16 &extent, u32 &i, s16 a)
+	static void add_z(const v3s16 &extent, uint32_t &i, int16_t a)
 	{
 		i += a * extent.X * extent.Y;
 	}
@@ -304,7 +304,7 @@ public:
 	/**
 	 * Translate index in space
 	 */
-	static void add_p(const v3s16 &extent, u32 &i, v3s16 a)
+	static void add_p(const v3s16 &extent, uint32_t &i, v3s16 a)
 	{
 		i += a.Z * extent.X * extent.Y + a.Y * extent.X + a.X;
 	}
@@ -407,7 +407,7 @@ public:
 
 	const MapNode & getNodeRefUnsafeCheckFlags(const v3s16 &p)
 	{
-		s32 index = m_area.index(p);
+		int32_t index = m_area.index(p);
 
 		if (m_flags[index] & VOXELFLAG_NO_DATA)
 			return ContentIgnoreNode;
@@ -415,7 +415,7 @@ public:
 		return m_data[index];
 	}
 
-	u8 & getFlagsRefUnsafe(const v3s16 &p)
+	uint8_t & getFlagsRefUnsafe(const v3s16 &p)
 	{
 		return m_flags[m_area.index(p)];
 	}
@@ -480,7 +480,7 @@ public:
 		Algorithms
 	*/
 
-	void clearFlag(u8 flag);
+	void clearFlag(uint8_t flag);
 
 	/*
 		Member variables
@@ -502,7 +502,7 @@ public:
 	/*
 		Flags of all nodes
 	*/
-	u8 *m_flags = nullptr;
+	uint8_t *m_flags = nullptr;
 
 	static const MapNode ContentIgnoreNode;
 };

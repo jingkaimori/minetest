@@ -102,7 +102,7 @@ content_t trans_table_19[21][2] = {
 	{CONTENT_BOOKSHELF, 29},
 };
 
-MapNode mapnode_translate_to_internal(MapNode n_from, u8 version)
+MapNode mapnode_translate_to_internal(MapNode n_from, uint8_t version)
 {
 	MapNode result = n_from;
 	if(version <= 19)

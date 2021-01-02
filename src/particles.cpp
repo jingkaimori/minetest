@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "particles.h"
 #include "util/serialize.h"
 
-void ParticleParameters::serialize(std::ostream &os, u16 protocol_ver) const
+void ParticleParameters::serialize(std::ostream &os, uint16_t protocol_ver) const
 {
 	writeV3F32(os, pos);
 	writeV3F32(os, vel);
@@ -39,7 +39,7 @@ void ParticleParameters::serialize(std::ostream &os, u16 protocol_ver) const
 	writeU8(os, node_tile);
 }
 
-void ParticleParameters::deSerialize(std::istream &is, u16 protocol_ver)
+void ParticleParameters::deSerialize(std::istream &is, uint16_t protocol_ver)
 {
 	pos                = readV3F32(is);
 	vel                = readV3F32(is);
@@ -54,7 +54,7 @@ void ParticleParameters::deSerialize(std::istream &is, u16 protocol_ver)
 	glow               = readU8(is);
 	object_collision   = readU8(is);
 	// This is kinda awful
-	u16 tmp_param0 = readU16(is);
+	uint16_t tmp_param0 = readU16(is);
 	if (is.eof())
 		return;
 	node.param0 = tmp_param0;

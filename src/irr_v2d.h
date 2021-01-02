@@ -23,8 +23,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <vector2d.h>
 
-typedef core::vector2d<f32> v2f;
-typedef core::vector2d<s16> v2s16;
-typedef core::vector2d<s32> v2s32;
-typedef core::vector2d<u32> v2u32;
-typedef core::vector2d<f32> v2f32;
+typedef irr::core::vector2d<float> v2f;
+typedef irr::core::vector2d<int16_t> v2s16;
+typedef irr::core::vector2d<int32_t> v2s32;
+typedef irr::core::vector2d<uint32_t> v2u32;
+typedef irr::core::vector2d<float> v2f32;

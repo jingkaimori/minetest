@@ -75,7 +75,7 @@ public:
 
 	//! constructor
 	GUIButton(gui::IGUIEnvironment* environment, gui::IGUIElement* parent,
-			   s32 id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
+			   int32_t id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
 			   bool noclip=false);
 
 	//! destructor
@@ -139,18 +139,18 @@ public:
 	\param index: The sprite number from the current sprite bank
 	\param color: The color of the sprite
 	*/
-	virtual void setSprite(gui::EGUI_BUTTON_STATE state, s32 index,
+	virtual void setSprite(gui::EGUI_BUTTON_STATE state, int32_t index,
 						   video::SColor color=video::SColor(255,255,255,255),
 						   bool loop=false, bool scale=false);
 
 #if (IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR <= 8)
-	void setSprite(gui::EGUI_BUTTON_STATE state, s32 index, video::SColor color, bool loop) override {
+	void setSprite(gui::EGUI_BUTTON_STATE state, int32_t index, video::SColor color, bool loop) override {
 		setSprite(state, index, color, loop, false);
 	}
 #endif
 
 	//! Get the sprite-index for the given state or -1 when no sprite is set
-	virtual s32 getSpriteIndex(gui::EGUI_BUTTON_STATE state) const;
+	virtual int32_t getSpriteIndex(gui::EGUI_BUTTON_STATE state) const;
 
 	//! Get the sprite color for the given state. Color is only used when a sprite is set.
 	virtual video::SColor getSpriteColor(gui::EGUI_BUTTON_STATE state) const;
@@ -234,11 +234,11 @@ public:
 	//! Do not drop returned handle
 	static GUIButton* addButton(gui::IGUIEnvironment *environment,
 			const core::rect<s32>& rectangle, ISimpleTextureSource *tsrc,
-			IGUIElement* parent, s32 id, const wchar_t* text,
+			IGUIElement* parent, int32_t id, const wchar_t* text,
 			const wchar_t *tooltiptext=L"");
 
 protected:
-	void drawSprite(gui::EGUI_BUTTON_STATE state, u32 startTime, const core::position2di& center);
+	void drawSprite(gui::EGUI_BUTTON_STATE state, uint32_t startTime, const core::position2di& center);
 	gui::EGUI_BUTTON_IMAGE_STATE getImageState(bool pressed) const;
 
 	ISimpleTextureSource *getTextureSource() { return TSrc; }
@@ -299,7 +299,7 @@ private:
 			return Index == other.Index && Color == other.Color && Loop == other.Loop && Scale == other.Scale;
 		}
 
-		s32 Index;
+		int32_t Index;
 		video::SColor Color;
 		bool Loop;
 		bool Scale;
@@ -317,7 +317,7 @@ private:
 	bool OverrideColorEnabled;
 	video::SColor OverrideColor;
 
-	u32 ClickTime, HoverTime, FocusTime;
+	uint32_t ClickTime, HoverTime, FocusTime;
 
 	bool ClickShiftState;
 	bool ClickControlState;

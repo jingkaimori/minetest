@@ -38,17 +38,17 @@ struct MapgenCarpathianParams : public MapgenParams
 	float valley_width     = 0.25f;
 
 	float cave_width         = 0.09f;
-	s16 large_cave_depth     = -33;
-	u16 small_cave_num_min   = 0;
-	u16 small_cave_num_max   = 0;
-	u16 large_cave_num_min   = 0;
-	u16 large_cave_num_max   = 2;
+	int16_t large_cave_depth     = -33;
+	uint16_t small_cave_num_min   = 0;
+	uint16_t small_cave_num_max   = 0;
+	uint16_t large_cave_num_min   = 0;
+	uint16_t large_cave_num_max   = 2;
 	float large_cave_flooded = 0.5f;
-	s16 cavern_limit         = -256;
-	s16 cavern_taper         = 256;
+	int16_t cavern_limit         = -256;
+	int16_t cavern_taper         = 256;
 	float cavern_threshold   = 0.7f;
-	s16 dungeon_ymin         = -31000;
-	s16 dungeon_ymax         = 31000;
+	int16_t dungeon_ymin         = -31000;
+	int16_t dungeon_ymax         = 31000;
 
 	NoiseParams np_filler_depth;
 	NoiseParams np_height1;
@@ -106,7 +106,7 @@ private:
 	Noise *noise_rivers = nullptr;
 	Noise *noise_mnt_var;
 
-	s32 grad_wl;
+	int32_t grad_wl;
 
 	float getSteps(float noise);
 	inline float getLerp(float noise1, float noise2, float mod);

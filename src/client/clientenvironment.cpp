@@ -157,17 +157,17 @@ void ClientEnvironment::step(float dtime)
 	*/
 	bool is_climbing = lplayer->is_climbing;
 
-	f32 player_speed = lplayer->getSpeed().getLength();
+	float player_speed = lplayer->getSpeed().getLength();
 
 	/*
 		Maximum position increment
 	*/
-	//f32 position_max_increment = 0.05*BS;
-	f32 position_max_increment = 0.1*BS;
+	//float position_max_increment = 0.05*BS;
+	float position_max_increment = 0.1*BS;
 
 	// Maximum time increment (for collision detection etc)
 	// time = distance / speed
-	f32 dtime_max_increment = 1;
+	float dtime_max_increment = 1;
 	if(player_speed > 0.001)
 		dtime_max_increment = position_max_increment / player_speed;
 
@@ -183,8 +183,8 @@ void ClientEnvironment::step(float dtime)
 		Stuff that has a maximum time increment
 	*/
 
-	u32 steps = ceil(dtime / dtime_max_increment);
-	f32 dtime_part = dtime / steps;
+	uint32_t steps = ceil(dtime / dtime_max_increment);
+	float dtime_part = dtime / steps;
 	for (; steps > 0; --steps) {
 		/*
 			Local player handling
@@ -211,10 +211,10 @@ void ClientEnvironment::step(float dtime)
 				// How much the node's viscosity blocks movement, ranges
 				// between 0 and 1. Should match the scale at which viscosity
 				// increase affects other liquid attributes.
-				static const f32 viscosity_factor = 0.3f;
+				static const float viscosity_factor = 0.3f;
 
 				v3f d_wanted = -speed / lplayer->movement_liquid_fluidity;
-				f32 dl = d_wanted.getLength();
+				float dl = d_wanted.getLength();
 				if (dl > lplayer->movement_liquid_fluidity_smooth)
 					dl = lplayer->movement_liquid_fluidity_smooth;
 
@@ -246,9 +246,9 @@ void ClientEnvironment::step(float dtime)
 		// Get rid of other components
 		speed_diff.X = 0;
 		speed_diff.Z = 0;
-		f32 pre_factor = 1; // 1 hp per node/s
-		f32 tolerance = BS*14; // 5 without damage
-		f32 post_factor = 1; // 1 hp per node/s
+		float pre_factor = 1; // 1 hp per node/s
+		float tolerance = BS*14; // 5 without damage
+		float post_factor = 1; // 1 hp per node/s
 		if (info.type == COLLISION_NODE) {
 			const ContentFeatures &f = m_client->ndef()->
 				get(m_map->getNode(info.node_p));
@@ -258,8 +258,8 @@ void ClientEnvironment::step(float dtime)
 		}
 		float speed = pre_factor * speed_diff.getLength();
 		if (speed > tolerance && !player_immortal) {
-			f32 damage_f = (speed - tolerance) / BS * post_factor;
-			u16 damage = (u16)MYMIN(damage_f + 0.5, U16_MAX);
+			float damage_f = (speed - tolerance) / BS * post_factor;
+			uint16_t damage = (uint16_t)MYMIN(damage_f + 0.5, U16_MAX);
 			if (damage != 0) {
 				damageLocalPlayer(damage, true);
 				m_client->getEventManager()->put(
@@ -272,7 +272,7 @@ void ClientEnvironment::step(float dtime)
 		m_script->environment_step(dtime);
 
 	// Update lighting on local player (used for wield item)
-	u32 day_night_ratio = getDayNightRatio();
+	uint32_t day_night_ratio = getDayNightRatio();
 	{
 		// Get node at head
 
@@ -283,7 +283,7 @@ void ClientEnvironment::step(float dtime)
 		v3s16 p = lplayer->getLightPosition();
 		node_at_lplayer = m_map->getNode(p);
 
-		u16 light = getInteriorLight(node_at_lplayer, 0, m_client->ndef());
+		uint16_t light = getInteriorLight(node_at_lplayer, 0, m_client->ndef());
 		final_color_blend(&lplayer->light_color, light, day_night_ratio);
 	}
 
@@ -325,7 +325,7 @@ void ClientEnvironment::addSimpleObject(ClientSimpleObject *simple)
 	m_simple_objects.push_back(simple);
 }
 
-GenericCAO* ClientEnvironment::getGenericCAO(u16 id)
+GenericCAO* ClientEnvironment::getGenericCAO(uint16_t id)
 {
 	ClientActiveObject *obj = getActiveObject(id);
 	if (obj && obj->getType() == ACTIVEOBJECT_TYPE_GENERIC)
@@ -334,7 +334,7 @@ GenericCAO* ClientEnvironment::getGenericCAO(u16 id)
 	return NULL;
 }
 
-bool isFreeClientActiveObjectId(const u16 id,
+bool isFreeClientActiveObjectId(const uint16_t id,
 	ClientActiveObjectMap &objects)
 {
 	return id != 0 && objects.find(id) == objects.end();
@@ -354,7 +354,7 @@ u16 ClientEnvironment::addActiveObject(ClientActiveObject *object)
 	return object->getId();
 }
 
-void ClientEnvironment::addActiveObject(u16 id, u8 type,
+void ClientEnvironment::addActiveObject(uint16_t id, uint8_t type,
 	const std::string &init_data)
 {
 	ClientActiveObject* obj =
@@ -383,7 +383,7 @@ void ClientEnvironment::addActiveObject(u16 id, u8 type,
 			<<std::endl;
 	}
 
-	u16 new_id = addActiveObject(obj);
+	uint16_t new_id = addActiveObject(obj);
 	// Object initialized:
 	if ((obj = getActiveObject(new_id))) {
 		// Final step is to update all children which are already known
@@ -397,7 +397,7 @@ void ClientEnvironment::addActiveObject(u16 id, u8 type,
 }
 
 
-void ClientEnvironment::removeActiveObject(u16 id)
+void ClientEnvironment::removeActiveObject(uint16_t id)
 {
 	// Get current attachment childs to detach them visually
 	std::unordered_set<int> attachment_childs;
@@ -413,7 +413,7 @@ void ClientEnvironment::removeActiveObject(u16 id)
 	}
 }
 
-void ClientEnvironment::processActiveObjectMessage(u16 id, const std::string &data)
+void ClientEnvironment::processActiveObjectMessage(uint16_t id, const std::string &data)
 {
 	ClientActiveObject *obj = getActiveObject(id);
 	if (obj == NULL) {
@@ -437,7 +437,7 @@ void ClientEnvironment::processActiveObjectMessage(u16 id, const std::string &da
 	Callbacks for activeobjects
 */
 
-void ClientEnvironment::damageLocalPlayer(u16 damage, bool handle_hp)
+void ClientEnvironment::damageLocalPlayer(uint16_t damage, bool handle_hp)
 {
 	LocalPlayer *lplayer = getLocalPlayer();
 	assert(lplayer);

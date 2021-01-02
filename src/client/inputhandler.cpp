@@ -209,7 +209,7 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
 /*
  * RandomInputHandler
  */
-s32 RandomInputHandler::Rand(s32 min, s32 max)
+s32 RandomInputHandler::Rand(int32_t min, int32_t max)
 {
 	return (myrand() % (max - min + 1)) + min;
 }

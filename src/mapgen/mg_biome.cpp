@@ -104,7 +104,7 @@ BiomeManager *BiomeManager::clone() const
 
 // For BiomeGen type 'BiomeGenOriginal'
 float BiomeManager::getHeatAtPosOriginal(v3s16 pos, NoiseParams &np_heat,
-	NoiseParams &np_heat_blend, u64 seed) const
+	NoiseParams &np_heat_blend, uint64_t seed) const
 {
 	return
 		NoisePerlin2D(&np_heat,       pos.X, pos.Z, seed) +
@@ -114,7 +114,7 @@ float BiomeManager::getHeatAtPosOriginal(v3s16 pos, NoiseParams &np_heat,
 
 // For BiomeGen type 'BiomeGenOriginal'
 float BiomeManager::getHumidityAtPosOriginal(v3s16 pos, NoiseParams &np_humidity,
-	NoiseParams &np_humidity_blend, u64 seed) const
+	NoiseParams &np_humidity_blend, uint64_t seed) const
 {
 	return
 		NoisePerlin2D(&np_humidity,       pos.X, pos.Z, seed) +
@@ -154,7 +154,7 @@ const Biome *BiomeManager::getBiomeFromNoiseOriginal(float heat,
 		}
 	}
 
-	const u64 seed = pos.Y + (heat + humidity) * 0.9f;
+	const uint64_t seed = pos.Y + (heat + humidity) * 0.9f;
 	PcgRandom rng(seed);
 
 	if (biome_closest_blend && dist_min_blend <= dist_min &&
@@ -247,18 +247,18 @@ void BiomeGenOriginal::calcBiomeNoise(v3s16 pmin)
 	noise_heat_blend->perlinMap2D(pmin.X, pmin.Z);
 	noise_humidity_blend->perlinMap2D(pmin.X, pmin.Z);
 
-	for (s32 i = 0; i < m_csize.X * m_csize.Z; i++) {
+	for (int32_t i = 0; i < m_csize.X * m_csize.Z; i++) {
 		noise_heat->result[i]     += noise_heat_blend->result[i];
 		noise_humidity->result[i] += noise_humidity_blend->result[i];
 	}
 }
 
 
-biome_t *BiomeGenOriginal::getBiomes(s16 *heightmap, v3s16 pmin)
+biome_t *BiomeGenOriginal::getBiomes(int16_t *heightmap, v3s16 pmin)
 {
-	for (s16 zr = 0; zr < m_csize.Z; zr++)
-	for (s16 xr = 0; xr < m_csize.X; xr++) {
-		s32 i = zr * m_csize.X + xr;
+	for (int16_t zr = 0; zr < m_csize.Z; zr++)
+	for (int16_t xr = 0; xr < m_csize.X; xr++) {
+		int32_t i = zr * m_csize.X + xr;
 		Biome *biome = calcBiomeFromNoise(
 			noise_heat->result[i],
 			noise_humidity->result[i],
@@ -321,7 +321,7 @@ Biome *BiomeGenOriginal::calcBiomeFromNoise(float heat, float humidity, v3s16 po
 	// Carefully tune pseudorandom seed variation to avoid single node dither
 	// and create larger scale blending patterns similar to horizontal biome
 	// blend.
-	const u64 seed = pos.Y + (heat + humidity) * 0.9f;
+	const uint64_t seed = pos.Y + (heat + humidity) * 0.9f;
 	PcgRandom rng(seed);
 
 	if (biome_closest_blend && dist_min_blend <= dist_min &&

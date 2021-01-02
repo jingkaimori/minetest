@@ -65,7 +65,7 @@ public:
 
 struct AuthEntry
 {
-	u64 id;
+	uint64_t id;
 	std::string name;
 	std::string password;
 	std::vector<std::string> privileges;

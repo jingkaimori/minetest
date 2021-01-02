@@ -103,7 +103,7 @@ class GUIFormSpecMenu : public GUIModalMenu
 		FieldSpec() = default;
 
 		FieldSpec(const std::string &name, const std::wstring &label,
-				const std::wstring &default_text, s32 id, int priority = 0,
+				const std::wstring &default_text, int32_t id, int priority = 0,
 				gui::ECURSOR_ICON cursor_icon = ECI_NORMAL) :
 			fname(name),
 			flabel(label),
@@ -120,7 +120,7 @@ class GUIFormSpecMenu : public GUIModalMenu
 		std::string fname;
 		std::wstring flabel;
 		std::wstring fdefault;
-		s32 fid;
+		int32_t fid;
 		bool send;
 		FormspecFieldType ftype;
 		bool is_exit;
@@ -149,7 +149,7 @@ class GUIFormSpecMenu : public GUIModalMenu
 
 public:
 	GUIFormSpecMenu(JoystickController *joystick,
-			gui::IGUIElement* parent, s32 id,
+			gui::IGUIElement* parent, int32_t id,
 			IMenuManager *menumgr,
 			Client *client,
 			ISimpleTextureSource *tsrc,
@@ -227,7 +227,7 @@ public:
 		return m_selected_item;
 	}
 
-	const u16 getSelectedAmount() const
+	const uint16_t getSelectedAmount() const
 	{
 		return m_selected_amount;
 	}
@@ -271,9 +271,9 @@ protected:
 	{
 			return padding + offset + AbsoluteRect.UpperLeftCorner;
 	}
-	std::wstring getLabelByID(s32 id);
-	std::string getNameByID(s32 id);
-	const FieldSpec *getSpecByID(s32 id);
+	std::wstring getLabelByID(int32_t id);
+	std::string getNameByID(int32_t id);
+	const FieldSpec *getSpecByID(int32_t id);
 	v2s32 getElementBasePos(const std::vector<std::string> *v_pos);
 	v2s32 getRealCoordinateBasePos(const std::vector<std::string> &v_pos);
 	v2s32 getRealCoordinateGeometry(const std::vector<std::string> &v_geom);
@@ -323,16 +323,16 @@ protected:
 	std::vector<std::pair<std::string, GUIScrollContainer *>> m_scroll_containers;
 
 	GUIInventoryList::ItemSpec *m_selected_item = nullptr;
-	u16 m_selected_amount = 0;
+	uint16_t m_selected_amount = 0;
 	bool m_selected_dragging = false;
 	ItemStack m_selected_swap;
 
 	gui::IGUIStaticText *m_tooltip_element = nullptr;
 
-	u64 m_tooltip_show_delay;
+	uint64_t m_tooltip_show_delay;
 	bool m_tooltip_append_itemname;
-	u64 m_hovered_time = 0;
-	s32 m_old_tooltip_id = -1;
+	uint64_t m_hovered_time = 0;
+	int32_t m_old_tooltip_id = -1;
 
 	bool m_auto_place = false;
 
@@ -351,7 +351,7 @@ private:
 	IFormSource        *m_form_src;
 	TextDest           *m_text_dst;
 	std::string         m_last_formname;
-	u16                 m_formspec_version = 1;
+	uint16_t                 m_formspec_version = 1;
 	std::string         m_focused_element = "";
 	JoystickController *m_joystick;
 	bool m_show_debug = false;
@@ -359,7 +359,7 @@ private:
 	struct parserData {
 		bool explicit_size;
 		bool real_coordinates;
-		u8 simple_field_count;
+		uint8_t simple_field_count;
 		v2f invsize;
 		v2s32 size;
 		v2f32 offset;
@@ -374,11 +374,11 @@ private:
 		GUIInventoryList::Options inventorylist_options;
 
 		struct {
-			s32 max = 1000;
-			s32 min = 0;
-			s32 small_step = 10;
-			s32 large_step = 100;
-			s32 thumb_size = 1;
+			int32_t max = 1000;
+			int32_t min = 0;
+			int32_t small_step = 10;
+			int32_t large_step = 100;
+			int32_t thumb_size = 1;
 			GUIScrollBar::ArrowVisibility arrow_visiblity = GUIScrollBar::DEFAULT;
 		} scrollbar_options;
 

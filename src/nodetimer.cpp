@@ -43,7 +43,7 @@ void NodeTimer::deSerialize(std::istream &is)
 	NodeTimerList
 */
 
-void NodeTimerList::serialize(std::ostream &os, u8 map_format_version) const
+void NodeTimerList::serialize(std::ostream &os, uint8_t map_format_version) const
 {
 	if (map_format_version == 24) {
 		// Version 0 is a placeholder for "nothing to see here; go away."
@@ -66,18 +66,18 @@ void NodeTimerList::serialize(std::ostream &os, u8 map_format_version) const
 			t.timeout - (f32)(timer.first - m_time), t.position);
 		v3s16 p = t.position;
 
-		u16 p16 = p.Z * MAP_BLOCKSIZE * MAP_BLOCKSIZE + p.Y * MAP_BLOCKSIZE + p.X;
+		uint16_t p16 = p.Z * MAP_BLOCKSIZE * MAP_BLOCKSIZE + p.Y * MAP_BLOCKSIZE + p.X;
 		writeU16(os, p16);
 		nt.serialize(os);
 	}
 }
 
-void NodeTimerList::deSerialize(std::istream &is, u8 map_format_version)
+void NodeTimerList::deSerialize(std::istream &is, uint8_t map_format_version)
 {
 	clear();
 
 	if (map_format_version == 24) {
-		u8 timer_version = readU8(is);
+		uint8_t timer_version = readU8(is);
 		if(timer_version == 0)
 			return;
 		if(timer_version != 1)
@@ -85,15 +85,15 @@ void NodeTimerList::deSerialize(std::istream &is, u8 map_format_version)
 	}
 
 	if (map_format_version >= 25) {
-		u8 timer_data_len = readU8(is);
+		uint8_t timer_data_len = readU8(is);
 		if(timer_data_len != 2+4+4)
 			throw SerializationError("unsupported NodeTimer data length");
 	}
 
-	u16 count = readU16(is);
+	uint16_t count = readU16(is);
 
-	for (u16 i = 0; i < count; i++) {
-		u16 p16 = readU16(is);
+	for (uint16_t i = 0; i < count; i++) {
+		uint16_t p16 = readU16(is);
 
 		v3s16 p;
 		p.Z = p16 / MAP_BLOCKSIZE / MAP_BLOCKSIZE;

@@ -37,7 +37,7 @@ const int ID_soundSlider = 265;
 const int ID_soundMuteButton = 266;
 
 GUIVolumeChange::GUIVolumeChange(gui::IGUIEnvironment* env,
-		gui::IGUIElement* parent, s32 id,
+		gui::IGUIElement* parent, int32_t id,
 		IMenuManager *menumgr, ISimpleTextureSource *tsrc
 ):
 	GUIModalMenu(env, parent, id, menumgr),
@@ -179,7 +179,7 @@ bool GUIVolumeChange::OnEvent(const SEvent& event)
 		}
 		if (event.GUIEvent.EventType == gui::EGET_SCROLL_BAR_CHANGED) {
 			if (event.GUIEvent.Caller->getID() == ID_soundSlider) {
-				s32 pos = ((gui::IGUIScrollBar*)event.GUIEvent.Caller)->getPos();
+				int32_t pos = ((gui::IGUIScrollBar*)event.GUIEvent.Caller)->getPos();
 				g_settings->setFloat("sound_volume", (float) pos / 100);
 
 				gui::IGUIElement *e = getElementFromId(ID_soundText);

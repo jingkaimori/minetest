@@ -20,8 +20,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "guiScrollContainer.h"
 
 GUIScrollContainer::GUIScrollContainer(gui::IGUIEnvironment *env,
-		gui::IGUIElement *parent, s32 id, const core::rect<s32> &rectangle,
-		const std::string &orientation, f32 scrollfactor) :
+		gui::IGUIElement *parent, int32_t id, const core::rect<s32> &rectangle,
+		const std::string &orientation, float scrollfactor) :
 		gui::IGUIElement(gui::EGUIET_ELEMENT, env, parent, id, rectangle),
 		m_scrollbar(nullptr), m_scrollfactor(scrollfactor)
 {
@@ -70,7 +70,7 @@ void GUIScrollContainer::draw()
 
 void GUIScrollContainer::updateScrolling()
 {
-	s32 pos = m_scrollbar->getPos();
+	int32_t pos = m_scrollbar->getPos();
 	core::rect<s32> rect = getRelativePosition();
 
 	if (m_orientation == VERTICAL)

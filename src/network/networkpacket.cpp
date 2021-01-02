@@ -23,13 +23,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "util/serialize.h"
 #include "networkprotocol.h"
 
-NetworkPacket::NetworkPacket(u16 command, u32 datasize, session_t peer_id):
+NetworkPacket::NetworkPacket(uint16_t command, uint32_t datasize, session_t peer_id):
 m_datasize(datasize), m_command(command), m_peer_id(peer_id)
 {
 	m_data.resize(m_datasize);
 }
 
-NetworkPacket::NetworkPacket(u16 command, u32 datasize):
+NetworkPacket::NetworkPacket(uint16_t command, uint32_t datasize):
 m_datasize(datasize), m_command(command)
 {
 	m_data.resize(m_datasize);
@@ -40,7 +40,7 @@ NetworkPacket::~NetworkPacket()
 	m_data.clear();
 }
 
-void NetworkPacket::checkReadOffset(u32 from_offset, u32 field_size)
+void NetworkPacket::checkReadOffset(uint32_t from_offset, uint32_t field_size)
 {
 	if (from_offset + field_size > m_datasize) {
 		std::stringstream ss;
@@ -50,7 +50,7 @@ void NetworkPacket::checkReadOffset(u32 from_offset, u32 field_size)
 	}
 }
 
-void NetworkPacket::putRawPacket(u8 *data, u32 datasize, session_t peer_id)
+void NetworkPacket::putRawPacket(uint8_t *data, uint32_t datasize, session_t peer_id)
 {
 	// If a m_command is already set, we are rewriting on same packet
 	// This is not permitted
@@ -75,14 +75,14 @@ void NetworkPacket::clear()
 	m_peer_id = 0;
 }
 
-const char* NetworkPacket::getString(u32 from_offset)
+const char* NetworkPacket::getString(uint32_t from_offset)
 {
 	checkReadOffset(from_offset, 0);
 
 	return (char*)&m_data[from_offset];
 }
 
-void NetworkPacket::putRawString(const char* src, u32 len)
+void NetworkPacket::putRawString(const char* src, uint32_t len)
 {
 	if (m_read_offset + len > m_datasize) {
 		m_datasize = m_read_offset + len;
@@ -99,7 +99,7 @@ void NetworkPacket::putRawString(const char* src, u32 len)
 NetworkPacket& NetworkPacket::operator>>(std::string& dst)
 {
 	checkReadOffset(m_read_offset, 2);
-	u16 strLen = readU16(&m_data[m_read_offset]);
+	uint16_t strLen = readU16(&m_data[m_read_offset]);
 	m_read_offset += 2;
 
 	dst.clear();
@@ -123,11 +123,11 @@ NetworkPacket& NetworkPacket::operator<<(const std::string &src)
 		throw PacketError("String too long");
 	}
 
-	u16 msgsize = src.size();
+	uint16_t msgsize = src.size();
 
 	*this << msgsize;
 
-	putRawString(src.c_str(), (u32)msgsize);
+	putRawString(src.c_str(), (uint32_t)msgsize);
 
 	return *this;
 }
@@ -138,7 +138,7 @@ void NetworkPacket::putLongString(const std::string &src)
 		throw PacketError("String too long");
 	}
 
-	u32 msgsize = src.size();
+	uint32_t msgsize = src.size();
 
 	*this << msgsize;
 
@@ -148,7 +148,7 @@ void NetworkPacket::putLongString(const std::string &src)
 NetworkPacket& NetworkPacket::operator>>(std::wstring& dst)
 {
 	checkReadOffset(m_read_offset, 2);
-	u16 strLen = readU16(&m_data[m_read_offset]);
+	uint16_t strLen = readU16(&m_data[m_read_offset]);
 	m_read_offset += 2;
 
 	dst.clear();
@@ -160,10 +160,10 @@ NetworkPacket& NetworkPacket::operator>>(std::wstring& dst)
 	checkReadOffset(m_read_offset, strLen * 2);
 
 	dst.reserve(strLen);
-	for(u16 i=0; i<strLen; i++) {
+	for(uint16_t i=0; i<strLen; i++) {
 		wchar_t c16 = readU16(&m_data[m_read_offset]);
 		dst.append(&c16, 1);
-		m_read_offset += sizeof(u16);
+		m_read_offset += sizeof(uint16_t);
 	}
 
 	return *this;
@@ -175,13 +175,13 @@ NetworkPacket& NetworkPacket::operator<<(const std::wstring &src)
 		throw PacketError("String too long");
 	}
 
-	u16 msgsize = src.size();
+	uint16_t msgsize = src.size();
 
 	*this << msgsize;
 
 	// Write string
-	for (u16 i=0; i<msgsize; i++) {
-		*this << (u16) src[i];
+	for (uint16_t i=0; i<msgsize; i++) {
+		*this << (uint16_t) src[i];
 	}
 
 	return *this;
@@ -190,7 +190,7 @@ NetworkPacket& NetworkPacket::operator<<(const std::wstring &src)
 std::string NetworkPacket::readLongString()
 {
 	checkReadOffset(m_read_offset, 4);
-	u32 strLen = readU32(&m_data[m_read_offset]);
+	uint32_t strLen = readU32(&m_data[m_read_offset]);
 	m_read_offset += 4;
 
 	if (strLen == 0) {
@@ -233,7 +233,7 @@ NetworkPacket& NetworkPacket::operator<<(char src)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(u8 src)
+NetworkPacket& NetworkPacket::operator<<(uint8_t src)
 {
 	checkDataSize(1);
 
@@ -253,7 +253,7 @@ NetworkPacket& NetworkPacket::operator<<(bool src)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(u16 src)
+NetworkPacket& NetworkPacket::operator<<(uint16_t src)
 {
 	checkDataSize(2);
 
@@ -263,7 +263,7 @@ NetworkPacket& NetworkPacket::operator<<(u16 src)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(u32 src)
+NetworkPacket& NetworkPacket::operator<<(uint32_t src)
 {
 	checkDataSize(4);
 
@@ -273,7 +273,7 @@ NetworkPacket& NetworkPacket::operator<<(u32 src)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(u64 src)
+NetworkPacket& NetworkPacket::operator<<(uint64_t src)
 {
 	checkDataSize(8);
 
@@ -303,7 +303,7 @@ NetworkPacket& NetworkPacket::operator>>(bool& dst)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator>>(u8& dst)
+NetworkPacket& NetworkPacket::operator>>(uint8_t& dst)
 {
 	checkReadOffset(m_read_offset, 1);
 
@@ -313,14 +313,14 @@ NetworkPacket& NetworkPacket::operator>>(u8& dst)
 	return *this;
 }
 
-u8 NetworkPacket::getU8(u32 offset)
+uint8_t NetworkPacket::getU8(uint32_t offset)
 {
 	checkReadOffset(offset, 1);
 
 	return readU8(&m_data[offset]);
 }
 
-u8* NetworkPacket::getU8Ptr(u32 from_offset)
+u8* NetworkPacket::getU8Ptr(uint32_t from_offset)
 {
 	if (m_datasize == 0) {
 		return NULL;
@@ -328,10 +328,10 @@ u8* NetworkPacket::getU8Ptr(u32 from_offset)
 
 	checkReadOffset(from_offset, 1);
 
-	return (u8*)&m_data[from_offset];
+	return (uint8_t*)&m_data[from_offset];
 }
 
-NetworkPacket& NetworkPacket::operator>>(u16& dst)
+NetworkPacket& NetworkPacket::operator>>(uint16_t& dst)
 {
 	checkReadOffset(m_read_offset, 2);
 
@@ -341,14 +341,14 @@ NetworkPacket& NetworkPacket::operator>>(u16& dst)
 	return *this;
 }
 
-u16 NetworkPacket::getU16(u32 from_offset)
+u16 NetworkPacket::getU16(uint32_t from_offset)
 {
 	checkReadOffset(from_offset, 2);
 
 	return readU16(&m_data[from_offset]);
 }
 
-NetworkPacket& NetworkPacket::operator>>(u32& dst)
+NetworkPacket& NetworkPacket::operator>>(uint32_t& dst)
 {
 	checkReadOffset(m_read_offset, 4);
 
@@ -358,7 +358,7 @@ NetworkPacket& NetworkPacket::operator>>(u32& dst)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator>>(u64& dst)
+NetworkPacket& NetworkPacket::operator>>(uint64_t& dst)
 {
 	checkReadOffset(m_read_offset, 8);
 
@@ -408,9 +408,9 @@ NetworkPacket& NetworkPacket::operator>>(s16& dst)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(s16 src)
+NetworkPacket& NetworkPacket::operator<<(int16_t src)
 {
-	*this << (u16) src;
+	*this << (uint16_t) src;
 	return *this;
 }
 
@@ -424,9 +424,9 @@ NetworkPacket& NetworkPacket::operator>>(s32& dst)
 	return *this;
 }
 
-NetworkPacket& NetworkPacket::operator<<(s32 src)
+NetworkPacket& NetworkPacket::operator<<(int32_t src)
 {
-	*this << (u32) src;
+	*this << (uint32_t) src;
 	return *this;
 }
 
@@ -518,12 +518,12 @@ NetworkPacket& NetworkPacket::operator<<(video::SColor src)
 	return *this;
 }
 
-SharedBuffer<u8> NetworkPacket::oldForgePacket()
+SharedBuffer<uint8_t> NetworkPacket::oldForgePacket()
 {
-	SharedBuffer<u8> sb(m_datasize + 2);
+	SharedBuffer<uint8_t> sb(m_datasize + 2);
 	writeU16(&sb[0], m_command);
 
-	u8* datas = getU8Ptr(0);
+	uint8_t* datas = getU8Ptr(0);
 
 	if (datas != NULL)
 		memcpy(&sb[2], datas, m_datasize);

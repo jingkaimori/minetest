@@ -80,7 +80,7 @@ class LuaPerlinNoiseMap : public ModApiBase
 	static int l_get_map_slice(lua_State *L);
 
 public:
-	LuaPerlinNoiseMap(NoiseParams *np, s32 seed, v3s16 size);
+	LuaPerlinNoiseMap(NoiseParams *np, int32_t seed, v3s16 size);
 
 	~LuaPerlinNoiseMap();
 
@@ -113,7 +113,7 @@ private:
 	static int l_next(lua_State *L);
 
 public:
-	LuaPseudoRandom(s32 seed) : m_pseudo(seed) {}
+	LuaPseudoRandom(int32_t seed) : m_pseudo(seed) {}
 
 	// LuaPseudoRandom(seed)
 	// Creates an LuaPseudoRandom and leaves it on top of stack
@@ -148,8 +148,8 @@ private:
 	static int l_rand_normal_dist(lua_State *L);
 
 public:
-	LuaPcgRandom(u64 seed) : m_rnd(seed) {}
-	LuaPcgRandom(u64 seed, u64 seq) : m_rnd(seed, seq) {}
+	LuaPcgRandom(uint64_t seed) : m_rnd(seed) {}
+	LuaPcgRandom(uint64_t seed, uint64_t seq) : m_rnd(seed, seq) {}
 
 	// LuaPcgRandom(seed)
 	// Creates an LuaPcgRandom and leaves it on top of stack
@@ -170,7 +170,7 @@ private:
 	static const char className[];
 	static const luaL_Reg methods[];
 
-	u32 m_rand_idx;
+	uint32_t m_rand_idx;
 	char m_rand_buf[RAND_BUF_SIZE];
 
 	// Exported functions

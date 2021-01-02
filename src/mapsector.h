@@ -50,9 +50,9 @@ public:
 		return m_pos;
 	}
 
-	MapBlock * getBlockNoCreateNoEx(s16 y);
-	MapBlock * createBlankBlockNoInsert(s16 y);
-	MapBlock * createBlankBlock(s16 y);
+	MapBlock * getBlockNoCreateNoEx(int16_t y);
+	MapBlock * createBlankBlockNoInsert(int16_t y);
+	MapBlock * createBlankBlock(int16_t y);
 
 	void insertBlock(MapBlock *block);
 
@@ -77,11 +77,11 @@ protected:
 	// Last-used block is cached here for quicker access.
 	// Be sure to set this to nullptr when the cached block is deleted
 	MapBlock *m_block_cache = nullptr;
-	s16 m_block_cache_y;
+	int16_t m_block_cache_y;
 
 	/*
 		Private methods
 	*/
-	MapBlock *getBlockBuffered(s16 y);
+	MapBlock *getBlockBuffered(int16_t y);
 
 };

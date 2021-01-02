@@ -41,7 +41,7 @@ struct ToServerCommandHandler
 struct ClientCommandFactory
 {
 	const char* name;
-	u8 channel;
+	uint8_t channel;
 	bool reliable;
 };
 

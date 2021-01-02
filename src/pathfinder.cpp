@@ -229,7 +229,7 @@ private:
 	 * Get gridnode at a specific index position
 	 * @return gridnode for index
 	 */
-	PathGridnode &getIdxElem(s16 x, s16 y, s16 z);
+	PathGridnode &getIdxElem(int16_t x, int16_t y, int16_t z);
 
 	/**
 	 * invert a 3D position (change sign of coordinates)
@@ -974,7 +974,7 @@ PathGridnode &Pathfinder::getIndexElement(v3s16 ipos)
 }
 
 /******************************************************************************/
-inline PathGridnode &Pathfinder::getIdxElem(s16 x, s16 y, s16 z)
+inline PathGridnode &Pathfinder::getIdxElem(int16_t x, int16_t y, int16_t z)
 {
 	return m_nodes_container->access(v3s16(x,y,z));
 }
@@ -1208,7 +1208,7 @@ bool Pathfinder::buildPath(std::vector<v3s16> &path, v3s16 ipos)
 {
 	// The cost calculation should have set a source direction for all relevant nodes.
 	// To build the path, we go backwards from the destination until we reach the start.
-	for(u32 waypoints = 1; waypoints++; ) {
+	for(uint32_t waypoints = 1; waypoints++; ) {
 		if (waypoints > PATHFINDER_MAX_WAYPOINTS) {
 			ERROR_TARGET << "Pathfinder: buildPath: path is too long (too many waypoints), aborting" << std::endl;
 			return false;

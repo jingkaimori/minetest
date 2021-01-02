@@ -44,7 +44,7 @@ public:
 	std::wstring teststring2_w;
 	std::string teststring2_w_encoded;
 
-	static const u8 test_serialized_data[12 * 11 - 2];
+	static const uint8_t test_serialized_data[12 * 11 - 2];
 };
 
 static TestSerialization g_test_instance;
@@ -300,11 +300,11 @@ void TestSerialization::testStreamWrite()
 void TestSerialization::testFloatFormat()
 {
 	FloatType type = getFloatSerializationType();
-	u32 i;
-	f32 fs, fm;
+	uint32_t i;
+	float fs, fm;
 
 	// Check precision of float calculations on this platform
-	const std::unordered_map<f32, u32> float_results = {
+	const std::unordered_map<f32, uint32_t> float_results = {
 		{  0.0f, 0x00000000UL },
 		{  1.0f, 0x3F800000UL },
 		{ -1.0f, 0xBF800000UL },
@@ -350,7 +350,7 @@ void TestSerialization::testFloatFormat()
 	if (!is_iec559)
 		return;
 
-	auto test_single = [&fs, &fm](const u32 &i) -> bool {
+	auto test_single = [&fs, &fm](const uint32_t &i) -> bool {
 		memcpy(&fm, &i, 4);
 		fs = u32Tof32Slow(i);
 		if (fm != fs) {
@@ -380,7 +380,7 @@ void TestSerialization::testFloatFormat()
 		UASSERT(test_single(i));
 }
 
-const u8 TestSerialization::test_serialized_data[12 * 11 - 2] = {
+const uint8_t TestSerialization::test_serialized_data[12 * 11 - 2] = {
 	0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc,
 	0xdd, 0xee, 0xff, 0x80, 0x75, 0x30, 0xff, 0xff, 0xff, 0xfa, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xd5, 0x00, 0x00, 0xd1, 0x1e, 0xee, 0x1e,

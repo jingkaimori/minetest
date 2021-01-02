@@ -43,5 +43,5 @@ private:
 	v3s16 m_block_pos, m_rel_block_pos;
 	UniqueQueue<v3s16> *m_liquid_queue = nullptr;
 	MapBlock *m_lookup[3 * 3 * 3];
-	u32 m_lookup_state_bitset;
+	uint32_t m_lookup_state_bitset;
 };

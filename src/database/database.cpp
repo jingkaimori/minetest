@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * It's a lot more complicated than it looks.
  */
 
-static inline s16 unsigned_to_signed(u16 i, u16 max_positive)
+static inline int16_t unsigned_to_signed(uint16_t i, uint16_t max_positive)
 {
 	if (i < max_positive) {
 		return i;
@@ -39,7 +39,7 @@ static inline s16 unsigned_to_signed(u16 i, u16 max_positive)
 
 
 // Modulo of a negative number does not work consistently in C
-static inline s64 pythonmodulo(s64 i, s16 mod)
+static inline s64 pythonmodulo(s64 i, int16_t mod)
 {
 	if (i >= 0) {
 		return i % mod;
@@ -50,9 +50,9 @@ static inline s64 pythonmodulo(s64 i, s16 mod)
 
 s64 MapDatabase::getBlockAsInteger(const v3s16 &pos)
 {
-	return (u64) pos.Z * 0x1000000 +
-		(u64) pos.Y * 0x1000 +
-		(u64) pos.X;
+	return (uint64_t) pos.Z * 0x1000000 +
+		(uint64_t) pos.Y * 0x1000 +
+		(uint64_t) pos.X;
 }
 
 

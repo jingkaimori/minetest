@@ -204,7 +204,7 @@ private:
 	IEventReceiver *m_receiver;
 	ISimpleTextureSource *m_texturesource;
 	v2u32 m_screensize;
-	s32 button_size;
+	int32_t button_size;
 	double m_touchscreen_threshold;
 	std::map<int, rect<s32>> m_hud_rects;
 	std::map<size_t, irr::EKEY_CODE> m_hud_ids;
@@ -229,7 +229,7 @@ private:
 
 	int m_move_id = -1;
 	bool m_move_has_really_moved = false;
-	u64 m_move_downtime = 0;
+	uint64_t m_move_downtime = 0;
 	bool m_move_sent_as_mouse_event = false;
 	v2s32 m_move_downlocation = v2s32(-10000, -10000);
 
@@ -244,7 +244,7 @@ private:
 	button_info m_buttons[after_last_element_id];
 
 	// gui button detection
-	touch_gui_button_id getButtonID(s32 x, s32 y);
+	touch_gui_button_id getButtonID(int32_t x, int32_t y);
 
 	// gui button by eventID
 	touch_gui_button_id getButtonID(size_t eventID);
@@ -290,9 +290,9 @@ private:
 	// double-click detection variables
 	struct key_event
 	{
-		u64 down_time;
-		s32 x;
-		s32 y;
+		uint64_t down_time;
+		int32_t x;
+		int32_t y;
 	};
 
 	// array for saving last known position of a pointer

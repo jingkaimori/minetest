@@ -61,19 +61,19 @@ struct ClientEvent
 		//} none;
 		struct
 		{
-			u16 amount;
+			uint16_t amount;
 		} player_damage;
 		struct
 		{
-			f32 pitch;
-			f32 yaw;
+			float pitch;
+			float yaw;
 		} player_force_move;
 		struct
 		{
 			bool set_camera_point_target;
-			f32 camera_point_target_x;
-			f32 camera_point_target_y;
-			f32 camera_point_target_z;
+			float camera_point_target_x;
+			float camera_point_target_y;
+			float camera_point_target_z;
 		} deathscreen;
 		struct
 		{
@@ -86,42 +86,42 @@ struct ClientEvent
 		struct
 		{
 			ParticleSpawnerParameters *p;
-			u16 attached_id;
-			u64 id;
+			uint16_t attached_id;
+			uint64_t id;
 		} add_particlespawner;
 		struct
 		{
-			u32 id;
+			uint32_t id;
 		} delete_particlespawner;
 		struct
 		{
-			u32 server_id;
-			u8 type;
+			uint32_t server_id;
+			uint8_t type;
 			v2f *pos;
 			std::string *name;
 			v2f *scale;
 			std::string *text;
-			u32 number;
-			u32 item;
-			u32 dir;
+			uint32_t number;
+			uint32_t item;
+			uint32_t dir;
 			v2f *align;
 			v2f *offset;
 			v3f *world_pos;
 			v2s32 *size;
-			s16 z_index;
+			int16_t z_index;
 			std::string *text2;
 		} hudadd;
 		struct
 		{
-			u32 id;
+			uint32_t id;
 		} hudrm;
 		struct
 		{
-			u32 id;
+			uint32_t id;
 			HudElementStat stat;
 			v2f *v2fdata;
 			std::string *sdata;
-			u32 data;
+			uint32_t data;
 			v3f *v3fdata;
 			v2s32 *v2s32data;
 		} hudchange;
@@ -133,13 +133,13 @@ struct ClientEvent
 		} override_day_night_ratio;
 		struct
 		{
-			f32 density;
-			u32 color_bright;
-			u32 color_ambient;
-			f32 height;
-			f32 thickness;
-			f32 speed_x;
-			f32 speed_y;
+			float density;
+			uint32_t color_bright;
+			uint32_t color_ambient;
+			float height;
+			float thickness;
+			float speed_x;
+			float speed_y;
 		} cloud_params;
 		SunParams *sun_params;
 		MoonParams *moon_params;

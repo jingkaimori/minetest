@@ -57,7 +57,7 @@ namespace gui
 
 //! constructor
 intlGUIEditBox::intlGUIEditBox(const wchar_t* text, bool border,
-		IGUIEnvironment* environment, IGUIElement* parent, s32 id,
+		IGUIEnvironment* environment, IGUIElement* parent, int32_t id,
 		const core::rect<s32>& rectangle, bool writable, bool has_vscrollbar)
 	: IGUIEditBox(environment, parent, id, rectangle),
 	Border(border), FrameRect(rectangle),
@@ -315,8 +315,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 		return false;
 
 	bool textChanged = false;
-	s32 newMarkBegin = MarkBegin;
-	s32 newMarkEnd = MarkEnd;
+	int32_t newMarkBegin = MarkBegin;
+	int32_t newMarkEnd = MarkEnd;
 
 	// control shortcut handling
 
@@ -340,8 +340,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 			// copy to clipboard
 			if (!PasswordBox && Operator && MarkBegin != MarkEnd)
 			{
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				core::stringc s;
 				s = Text.subString(realmbgn, realmend - realmbgn).c_str();
@@ -351,8 +351,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 		case KEY_KEY_X:
 			// cut to the clipboard
 			if (!PasswordBox && Operator && MarkBegin != MarkEnd) {
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				// copy
 				core::stringc sc;
@@ -380,8 +380,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 			// paste from the clipboard
 			if (Operator)
 			{
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				// add new character
 				const c8* p = Operator->getTextFromClipboard();
@@ -463,7 +463,7 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 	{
 	case KEY_END:
 		{
-			s32 p = Text.size();
+			int32_t p = Text.size();
 			if (WordWrap || MultiLine)
 			{
 				p = getLineFromPos(CursorPos);
@@ -491,7 +491,7 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 	case KEY_HOME:
 		{
 
-			s32 p = 0;
+			int32_t p = 0;
 			if (WordWrap || MultiLine)
 			{
 				p = getLineFromPos(CursorPos);
@@ -549,7 +549,7 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 	case KEY_RIGHT:
 		if (event.KeyInput.Shift)
 		{
-			if (Text.size() > (u32)CursorPos)
+			if (Text.size() > (uint32_t)CursorPos)
 			{
 				if (MarkBegin == MarkEnd)
 					newMarkBegin = CursorPos;
@@ -563,17 +563,17 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (Text.size() > (u32)CursorPos) CursorPos++;
+		if (Text.size() > (uint32_t)CursorPos) CursorPos++;
 		BlinkStartTime = porting::getTimeMs();
 		break;
 	case KEY_UP:
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
-			s32 lineNo = getLineFromPos(CursorPos);
-			s32 mb = (MarkBegin == MarkEnd) ? CursorPos : (MarkBegin > MarkEnd ? MarkBegin : MarkEnd);
+			int32_t lineNo = getLineFromPos(CursorPos);
+			int32_t mb = (MarkBegin == MarkEnd) ? CursorPos : (MarkBegin > MarkEnd ? MarkBegin : MarkEnd);
 			if (lineNo > 0)
 			{
-				s32 cp = CursorPos - BrokenTextPositions[lineNo];
+				int32_t cp = CursorPos - BrokenTextPositions[lineNo];
 				if ((s32)BrokenText[lineNo-1].size() < cp)
 					CursorPos = BrokenTextPositions[lineNo-1] + (s32)BrokenText[lineNo-1].size()-1;
 				else
@@ -600,11 +600,11 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 	case KEY_DOWN:
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
-			s32 lineNo = getLineFromPos(CursorPos);
-			s32 mb = (MarkBegin == MarkEnd) ? CursorPos : (MarkBegin < MarkEnd ? MarkBegin : MarkEnd);
+			int32_t lineNo = getLineFromPos(CursorPos);
+			int32_t mb = (MarkBegin == MarkEnd) ? CursorPos : (MarkBegin < MarkEnd ? MarkBegin : MarkEnd);
 			if (lineNo < (s32)BrokenText.size()-1)
 			{
-				s32 cp = CursorPos - BrokenTextPositions[lineNo];
+				int32_t cp = CursorPos - BrokenTextPositions[lineNo];
 				if ((s32)BrokenText[lineNo+1].size() < cp)
 					CursorPos = BrokenTextPositions[lineNo+1] + BrokenText[lineNo+1].size()-1;
 				else
@@ -639,8 +639,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 			if (MarkBegin != MarkEnd)
 			{
 				// delete marked text
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				s = Text.subString(0, realmbgn);
 				s.append( Text.subString(realmend, Text.size()-realmend) );
@@ -678,8 +678,8 @@ bool intlGUIEditBox::processKey(const SEvent& event)
 			if (MarkBegin != MarkEnd)
 			{
 				// delete marked text
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				s = Text.subString(0, realmbgn);
 				s.append( Text.subString(realmend, Text.size()-realmend) );
@@ -795,8 +795,8 @@ void intlGUIEditBox::draw()
 	if (!OverrideFont)
 		font = skin->getFont();
 
-	s32 cursorLine = 0;
-	s32 charcursorpos = 0;
+	int32_t cursorLine = 0;
+	int32_t charcursorpos = 0;
 
 	if (font)
 	{
@@ -808,17 +808,17 @@ void intlGUIEditBox::draw()
 		// calculate cursor pos
 
 		core::stringw *txtLine = &Text;
-		s32 startPos = 0;
+		int32_t startPos = 0;
 
 		core::stringw s, s2;
 
 		// get mark position
 		const bool ml = (!PasswordBox && (WordWrap || MultiLine));
-		const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-		const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
-		const s32 hlineStart = ml ? getLineFromPos(realmbgn) : 0;
-		const s32 hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
-		const s32 lineCount = ml ? BrokenText.size() : 1;
+		const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+		const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+		const int32_t hlineStart = ml ? getLineFromPos(realmbgn) : 0;
+		const int32_t hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
+		const int32_t lineCount = ml ? BrokenText.size() : 1;
 
 		// Save the override color information.
 		// Then, alter it if the edit box is disabled.
@@ -832,7 +832,7 @@ void intlGUIEditBox::draw()
 				OverrideColor = skin->getColor(EGDC_GRAY_TEXT);
 			}
 
-			for (s32 i=0; i < lineCount; ++i)
+			for (int32_t i=0; i < lineCount; ++i)
 			{
 				setTextRect(i);
 
@@ -853,7 +853,7 @@ void intlGUIEditBox::draw()
 					if (BrokenText[0].size() != Text.size())
 					{
 						BrokenText[0] = Text;
-						for (u32 q = 0; q < Text.size(); ++q)
+						for (uint32_t q = 0; q < Text.size(); ++q)
 						{
 							BrokenText[0] [q] = PasswordChar;
 						}
@@ -877,8 +877,8 @@ void intlGUIEditBox::draw()
 				if (focus && MarkBegin != MarkEnd && i >= hlineStart && i < hlineStart + hlineCount)
 				{
 
-					s32 mbegin = 0, mend = 0;
-					s32 lineStartPos = 0, lineEndPos = txtLine->size();
+					int32_t mbegin = 0, mend = 0;
+					int32_t lineStartPos = 0, lineEndPos = txtLine->size();
 
 					if (i == hlineStart)
 					{
@@ -958,7 +958,7 @@ void intlGUIEditBox::draw()
 void intlGUIEditBox::setText(const wchar_t* text)
 {
 	Text = text;
-	if (u32(CursorPos) > Text.size())
+	if (uint32_t(CursorPos) > Text.size())
 		CursorPos = Text.size();
 	HScrollPos = 0;
 	breakText();
@@ -990,7 +990,7 @@ core::dimension2du intlGUIEditBox::getTextDimension()
 	setTextRect(0);
 	ret = CurrentTextRect;
 
-	for (u32 i=1; i < BrokenText.size(); ++i)
+	for (uint32_t i=1; i < BrokenText.size(); ++i)
 	{
 		setTextRect(i);
 		ret.addInternalPoint(CurrentTextRect.UpperLeftCorner);
@@ -1004,7 +1004,7 @@ core::dimension2du intlGUIEditBox::getTextDimension()
 //! Sets the maximum amount of characters which may be entered in the box.
 //! \param max: Maximum amount of characters. If 0, the character amount is
 //! infinity.
-void intlGUIEditBox::setMax(u32 max)
+void intlGUIEditBox::setMax(uint32_t max)
 {
 	Max = max;
 
@@ -1014,7 +1014,7 @@ void intlGUIEditBox::setMax(u32 max)
 
 
 //! Returns maximum amount of characters, previously set by setMax();
-u32 intlGUIEditBox::getMax() const
+uint32_t intlGUIEditBox::getMax() const
 {
 	return Max;
 }
@@ -1069,7 +1069,7 @@ bool intlGUIEditBox::processMouse(const SEvent& event)
 			// move cursor
 			CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
 
-			s32 newMarkBegin = MarkBegin;
+			int32_t newMarkBegin = MarkBegin;
 			if (!MouseMarking)
 				newMarkBegin = CursorPos;
 
@@ -1081,8 +1081,8 @@ bool intlGUIEditBox::processMouse(const SEvent& event)
 		break;
 	case EMIE_MOUSE_WHEEL:
 		if (m_vscrollbar && m_vscrollbar->isVisible()) {
-			s32 pos = m_vscrollbar->getPos();
-			s32 step = m_vscrollbar->getSmallStep();
+			int32_t pos = m_vscrollbar->getPos();
+			int32_t step = m_vscrollbar->getSmallStep();
 			m_vscrollbar->setPos(pos - event.MouseInput.Wheel * step);
 		}
 		break;
@@ -1094,18 +1094,18 @@ bool intlGUIEditBox::processMouse(const SEvent& event)
 }
 
 
-s32 intlGUIEditBox::getCursorPos(s32 x, s32 y)
+s32 intlGUIEditBox::getCursorPos(int32_t x, int32_t y)
 {
 	IGUIFont* font = OverrideFont;
 	IGUISkin* skin = Environment->getSkin();
 	if (!OverrideFont)
 		font = skin->getFont();
 
-	const u32 lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
+	const uint32_t lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
 
 	core::stringw *txtLine = NULL;
-	s32 startPos = 0;
-	u32 curr_line_idx = 0;
+	int32_t startPos = 0;
+	uint32_t curr_line_idx = 0;
 	x += 3;
 
 	for (; curr_line_idx < lineCount; ++curr_line_idx) {
@@ -1129,7 +1129,7 @@ s32 intlGUIEditBox::getCursorPos(s32 x, s32 y)
 	else if (x > CurrentTextRect.LowerRightCorner.X)
 		x = CurrentTextRect.LowerRightCorner.X;
 
-	s32 idx = font->getCharacterFromPos(txtLine->c_str(), x - CurrentTextRect.UpperLeftCorner.X);
+	int32_t idx = font->getCharacterFromPos(txtLine->c_str(), x - CurrentTextRect.UpperLeftCorner.X);
 	// Special handling for last line, if we are on limits, add 1 extra shift because idx
 	// will be the last char, not null char of the wstring
 	if (curr_line_idx == lineCount - 1 && x == CurrentTextRect.LowerRightCorner.X)
@@ -1162,13 +1162,13 @@ void intlGUIEditBox::breakText()
 	core::stringw line;
 	core::stringw word;
 	core::stringw whitespace;
-	s32 lastLineStart = 0;
-	s32 size = Text.size();
-	s32 length = 0;
-	s32 elWidth = RelativeRect.getWidth() - m_scrollbar_width - 10;
+	int32_t lastLineStart = 0;
+	int32_t size = Text.size();
+	int32_t length = 0;
+	int32_t elWidth = RelativeRect.getWidth() - m_scrollbar_width - 10;
 	wchar_t c;
 
-	for (s32 i=0; i<size; ++i)
+	for (int32_t i=0; i<size; ++i)
 	{
 		c = Text[i];
 		bool lineBreak = false;
@@ -1198,8 +1198,8 @@ void intlGUIEditBox::breakText()
 			if (!word.empty()) {
 				// here comes the next whitespace, look if
 				// we can break the last word to the next line.
-				s32 whitelgth = font->getDimension(whitespace.c_str()).Width;
-				s32 worldlgth = font->getDimension(word.c_str()).Width;
+				int32_t whitelgth = font->getDimension(whitespace.c_str()).Width;
+				int32_t worldlgth = font->getDimension(word.c_str()).Width;
 
 				if (WordWrap && length + worldlgth + whitelgth > elWidth)
 				{
@@ -1252,7 +1252,7 @@ void intlGUIEditBox::breakText()
 }
 
 
-void intlGUIEditBox::setTextRect(s32 line)
+void intlGUIEditBox::setTextRect(int32_t line)
 {
 	core::dimension2du d;
 
@@ -1266,7 +1266,7 @@ void intlGUIEditBox::setTextRect(s32 line)
 		return;
 
 	// get text dimension
-	const u32 lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
+	const uint32_t lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
 	if (WordWrap || MultiLine)
 	{
 		d = font->getDimension(BrokenText[line].c_str());
@@ -1326,12 +1326,12 @@ void intlGUIEditBox::setTextRect(s32 line)
 }
 
 
-s32 intlGUIEditBox::getLineFromPos(s32 pos)
+s32 intlGUIEditBox::getLineFromPos(int32_t pos)
 {
 	if (!WordWrap && !MultiLine)
 		return 0;
 
-	s32 i=0;
+	int32_t i=0;
 	while (i < (s32)BrokenTextPositions.size())
 	{
 		if (BrokenTextPositions[i] > pos)
@@ -1356,8 +1356,8 @@ void intlGUIEditBox::inputChar(wchar_t c)
 			if (MarkBegin != MarkEnd)
 			{
 				// replace marked text
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+				const int32_t realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+				const int32_t realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				s = Text.subString(0, realmbgn);
 				s.append(c);
@@ -1391,7 +1391,7 @@ void intlGUIEditBox::calculateScrollPos()
 		return;
 
 	// calculate horizontal scroll position
-	s32 cursLine = getLineFromPos(CursorPos);
+	int32_t cursLine = getLineFromPos(CursorPos);
 	setTextRect(cursLine);
 
 	// don't do horizontal scrolling when wordwrap is enabled.
@@ -1406,12 +1406,12 @@ void intlGUIEditBox::calculateScrollPos()
 			return;
 
 		core::stringw *txtLine = MultiLine ? &BrokenText[cursLine] : &Text;
-		s32 cPos = MultiLine ? CursorPos - BrokenTextPositions[cursLine] : CursorPos;
+		int32_t cPos = MultiLine ? CursorPos - BrokenTextPositions[cursLine] : CursorPos;
 
-		s32 cStart = CurrentTextRect.UpperLeftCorner.X + HScrollPos +
+		int32_t cStart = CurrentTextRect.UpperLeftCorner.X + HScrollPos +
 			font->getDimension(txtLine->subString(0, cPos).c_str()).Width;
 
-		s32 cEnd = cStart + font->getDimension(L"_ ").Width;
+		int32_t cEnd = cStart + font->getDimension(L"_ ").Width;
 
 		if (FrameRect.LowerRightCorner.X < cEnd)
 			HScrollPos = cEnd - FrameRect.LowerRightCorner.X;
@@ -1438,7 +1438,7 @@ void intlGUIEditBox::calculateScrollPos()
 }
 
 //! set text markers
-void intlGUIEditBox::setTextMarkers(s32 begin, s32 end)
+void intlGUIEditBox::setTextMarkers(int32_t begin, int32_t end)
 {
     if ( begin != MarkBegin || end != MarkEnd )
     {
@@ -1466,7 +1466,7 @@ void intlGUIEditBox::sendGuiEvent(EGUI_EVENT_TYPE type)
 //! Create a vertical scrollbar
 void intlGUIEditBox::createVScrollBar()
 {
-	s32 fontHeight = 1;
+	int32_t fontHeight = 1;
 
 	if (OverrideFont) {
 		fontHeight = OverrideFont->getDimension(L"").Height;
@@ -1496,11 +1496,11 @@ void intlGUIEditBox::updateVScrollBar()
 
 	// OnScrollBarChanged(...)
 	if (m_vscrollbar->getPos() != VScrollPos) {
-		s32 deltaScrollY = m_vscrollbar->getPos() - VScrollPos;
+		int32_t deltaScrollY = m_vscrollbar->getPos() - VScrollPos;
 		CurrentTextRect.UpperLeftCorner.Y -= deltaScrollY;
 		CurrentTextRect.LowerRightCorner.Y -= deltaScrollY;
 
-		s32 scrollymax = getTextDimension().Height - FrameRect.getHeight();
+		int32_t scrollymax = getTextDimension().Height - FrameRect.getHeight();
 		if (scrollymax != m_vscrollbar->getMax()) {
 			// manage a newline or a deleted line
 			m_vscrollbar->setMax(scrollymax);
@@ -1513,8 +1513,8 @@ void intlGUIEditBox::updateVScrollBar()
 	}
 
 	// check if a vertical scrollbar is needed ?
-	if (getTextDimension().Height > (u32) FrameRect.getHeight()) {
-		s32 scrollymax = getTextDimension().Height - FrameRect.getHeight();
+	if (getTextDimension().Height > (uint32_t) FrameRect.getHeight()) {
+		int32_t scrollymax = getTextDimension().Height - FrameRect.getHeight();
 		if (scrollymax != m_vscrollbar->getMax()) {
 			m_vscrollbar->setMax(scrollymax);
 			m_vscrollbar->setPageSize(s32(getTextDimension().Height));

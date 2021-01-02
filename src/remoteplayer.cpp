@@ -203,7 +203,7 @@ void RemotePlayer::serialize(std::ostream &os)
 const RemotePlayerChatResult RemotePlayer::canSendChatMessage()
 {
 	// Rate limit messages
-	u32 now = time(NULL);
+	uint32_t now = time(NULL);
 	float time_passed = now - m_last_chat_message_sent;
 	m_last_chat_message_sent = now;
 

@@ -36,7 +36,7 @@ void RenderingCoreInterlaced::initMaterial()
 	mat.UseMipMaps = false;
 	mat.ZBuffer = false;
 	mat.ZWriteEnable = false;
-	u32 shader = s->getShader("3d_interlaced_merge", TILE_MATERIAL_BASIC);
+	uint32_t shader = s->getShader("3d_interlaced_merge", TILE_MATERIAL_BASIC);
 	mat.MaterialType = s->getShaderInfo(shader).material;
 	for (int k = 0; k < 3; ++k) {
 		mat.TextureLayer[k].AnisotropicFilter = false;
@@ -70,9 +70,9 @@ void RenderingCoreInterlaced::clearTextures()
 
 void RenderingCoreInterlaced::initMask()
 {
-	u8 *data = reinterpret_cast<u8 *>(mask->lock());
-	for (u32 j = 0; j < screensize.Y; j++) {
-		u8 val = j % 2 ? 0xff : 0x00;
+	uint8_t *data = reinterpret_cast<uint8_t *>(mask->lock());
+	for (uint32_t j = 0; j < screensize.Y; j++) {
+		uint8_t val = j % 2 ? 0xff : 0x00;
 		memset(data, val, 4 * screensize.X);
 		data += 4 * screensize.X;
 	}
@@ -98,7 +98,7 @@ void RenderingCoreInterlaced::merge()
 			video::S3DVertex(1.0, 1.0, 0.0, 0.0, 0.0, -1.0,
 					video::SColor(255, 255, 255, 255), 1.0, 1.0),
 	};
-	static const u16 indices[6] = {0, 1, 2, 2, 3, 0};
+	static const uint16_t indices[6] = {0, 1, 2, 2, 3, 0};
 	driver->setMaterial(mat);
 	driver->drawVertexPrimitiveList(&vertices, 4, &indices, 2);
 }

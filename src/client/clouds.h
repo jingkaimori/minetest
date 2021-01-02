@@ -36,8 +36,8 @@ class Clouds : public scene::ISceneNode
 {
 public:
 	Clouds(scene::ISceneManager* mgr,
-			s32 id,
-			u32 seed
+			int32_t id,
+			uint32_t seed
 	);
 
 	~Clouds();
@@ -55,12 +55,12 @@ public:
 		return m_box;
 	}
 
-	virtual u32 getMaterialCount() const
+	virtual uint32_t getMaterialCount() const
 	{
 		return 1;
 	}
 
-	virtual video::SMaterial& getMaterial(u32 i)
+	virtual video::SMaterial& getMaterial(uint32_t i)
 	{
 		return m_material;
 	}
@@ -131,9 +131,9 @@ private:
 
 	video::SMaterial m_material;
 	aabb3f m_box;
-	u16 m_cloud_radius_i;
+	uint16_t m_cloud_radius_i;
 	bool m_enable_3d;
-	u32 m_seed;
+	uint32_t m_seed;
 	v3f m_camera_pos;
 	v2f m_origin;
 	v3s16 m_camera_offset;

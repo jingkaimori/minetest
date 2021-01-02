@@ -52,7 +52,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class Settings;
 struct ToolCapabilities;
 
-std::unordered_map<u16, ClientActiveObject::Factory> ClientActiveObject::m_types;
+std::unordered_map<uint16_t, ClientActiveObject::Factory> ClientActiveObject::m_types;
 
 template<typename T>
 void SmoothTranslator<T>::init(T current)
@@ -83,31 +83,31 @@ void SmoothTranslator<T>::update(T new_target, bool is_end_position, float updat
 }
 
 template<typename T>
-void SmoothTranslator<T>::translate(f32 dtime)
+void SmoothTranslator<T>::translate(float dtime)
 {
 	anim_time_counter = anim_time_counter + dtime;
 	T val_diff = val_target - val_old;
-	f32 moveratio = 1.0;
+	float moveratio = 1.0;
 	if (anim_time > 0.001)
 		moveratio = anim_time_counter / anim_time;
-	f32 move_end = aim_is_end ? 1.0 : 1.5;
+	float move_end = aim_is_end ? 1.0 : 1.5;
 
 	// Move a bit less than should, to avoid oscillation
 	moveratio = std::min(moveratio * 0.8f, move_end);
 	val_current = val_old + val_diff * moveratio;
 }
 
-void SmoothTranslatorWrapped::translate(f32 dtime)
+void SmoothTranslatorWrapped::translate(float dtime)
 {
 	anim_time_counter = anim_time_counter + dtime;
-	f32 val_diff = std::abs(val_target - val_old);
+	float val_diff = std::abs(val_target - val_old);
 	if (val_diff > 180.f)
 		val_diff = 360.f - val_diff;
 
-	f32 moveratio = 1.0;
+	float moveratio = 1.0;
 	if (anim_time > 0.001)
 		moveratio = anim_time_counter / anim_time;
-	f32 move_end = aim_is_end ? 1.0 : 1.5;
+	float move_end = aim_is_end ? 1.0 : 1.5;
 
 	// Move a bit less than should, to avoid oscillation
 	moveratio = std::min(moveratio * 0.8f, move_end);
@@ -115,7 +115,7 @@ void SmoothTranslatorWrapped::translate(f32 dtime)
 		val_diff * moveratio, 360.f);
 }
 
-void SmoothTranslatorWrappedv3f::translate(f32 dtime)
+void SmoothTranslatorWrappedv3f::translate(float dtime)
 {
 	anim_time_counter = anim_time_counter + dtime;
 
@@ -133,10 +133,10 @@ void SmoothTranslatorWrappedv3f::translate(f32 dtime)
 	if (val_diff_v3f.Z > 180.f)
 		val_diff_v3f.Z = 360.f - val_diff_v3f.Z;
 
-	f32 moveratio = 1.0;
+	float moveratio = 1.0;
 	if (anim_time > 0.001)
 		moveratio = anim_time_counter / anim_time;
-	f32 move_end = aim_is_end ? 1.0 : 1.5;
+	float move_end = aim_is_end ? 1.0 : 1.5;
 
 	// Move a bit less than should, to avoid oscillation
 	moveratio = std::min(moveratio * 0.8f, move_end);
@@ -191,7 +191,7 @@ public:
 
 	void addToScene(ITextureSource *tsrc);
 	void removeFromScene(bool permanent);
-	void updateLight(u32 day_night_ratio);
+	void updateLight(uint32_t day_night_ratio);
 	void updateNodePos();
 
 	void step(float dtime, ClientEnvironment *env);
@@ -237,7 +237,7 @@ void TestCAO::addToScene(ITextureSource *tsrc)
 		video::S3DVertex(BS/2,BS/4,0, 0,0,0, c, 1,0),
 		video::S3DVertex(-BS/2,BS/4,0, 0,0,0, c, 0,0),
 	};
-	u16 indices[] = {0,1,2,2,3,0};
+	uint16_t indices[] = {0,1,2,2,3,0};
 	buf->append(vertices, 4, indices, 6);
 	// Set material
 	buf->getMaterial().setFlag(video::EMF_LIGHTING, false);
@@ -263,7 +263,7 @@ void TestCAO::removeFromScene(bool permanent)
 	m_node = NULL;
 }
 
-void TestCAO::updateLight(u32 day_night_ratio)
+void TestCAO::updateLight(uint32_t day_night_ratio)
 {
 }
 
@@ -291,7 +291,7 @@ void TestCAO::processMessage(const std::string &data)
 {
 	infostream<<"TestCAO: Got data: "<<data<<std::endl;
 	std::istringstream is(data, std::ios::binary);
-	u16 cmd;
+	uint16_t cmd;
 	is>>cmd;
 	if(cmd == 0)
 	{
@@ -365,7 +365,7 @@ void GenericCAO::initialize(const std::string &data)
 void GenericCAO::processInitData(const std::string &data)
 {
 	std::istringstream is(data, std::ios::binary);
-	const u8 version = readU8(is);
+	const uint8_t version = readU8(is);
 
 	if (version < 1) {
 		errorstream << "GenericCAO: Unsupported init data version"
@@ -381,7 +381,7 @@ void GenericCAO::processInitData(const std::string &data)
 	m_rotation = readV3F32(is);
 	m_hp = readU16(is);
 
-	const u8 num_messages = readU8(is);
+	const uint8_t num_messages = readU8(is);
 
 	for (int i = 0; i < num_messages; i++) {
 		std::string message = deSerializeString32(is);
@@ -456,7 +456,7 @@ scene::IAnimatedMeshSceneNode *GenericCAO::getAnimatedMeshSceneNode() const
 
 void GenericCAO::setChildrenVisible(bool toset)
 {
-	for (u16 cao_id : m_attachment_child_ids) {
+	for (uint16_t cao_id : m_attachment_child_ids) {
 		GenericCAO *obj = m_env->getGenericCAO(cao_id);
 		if (obj) {
 			// Check if the entity is forced to appear in first person.
@@ -617,7 +617,7 @@ void GenericCAO::addToScene(ITextureSource *tsrc)
 			material_type = (m_prop.use_texture_alpha) ?
 				TILE_MATERIAL_PLAIN_ALPHA : TILE_MATERIAL_PLAIN;
 
-		u32 shader_id = shader_source->getShader("object_shader", material_type, NDT_NORMAL);
+		uint32_t shader_id = shader_source->getShader("object_shader", material_type, NDT_NORMAL);
 		m_material_type = shader_source->getShaderInfo(shader_id).material;
 	} else {
 		m_material_type = (m_prop.use_texture_alpha) ?
@@ -680,7 +680,7 @@ void GenericCAO::addToScene(ITextureSource *tsrc)
 				for (video::S3DVertex &vertex : vertices)
 					vertex.Pos.Y += dy;
 			}
-			u16 indices[] = {0,1,2,2,3,0};
+			uint16_t indices[] = {0,1,2,2,3,0};
 			buf->append(vertices, 4, indices, 6);
 			// Set material
 			buf->getMaterial().setFlag(video::EMF_LIGHTING, false);
@@ -711,7 +711,7 @@ void GenericCAO::addToScene(ITextureSource *tsrc)
 				for (video::S3DVertex &vertex : vertices)
 					vertex.Pos.Y += dy;
 			}
-			u16 indices[] = {0,1,2,2,3,0};
+			uint16_t indices[] = {0,1,2,2,3,0};
 			buf->append(vertices, 4, indices, 6);
 			// Set material
 			buf->getMaterial().setFlag(video::EMF_LIGHTING, false);
@@ -826,21 +826,21 @@ void GenericCAO::addToScene(ITextureSource *tsrc)
 	updateMeshCulling();
 }
 
-void GenericCAO::updateLight(u32 day_night_ratio)
+void GenericCAO::updateLight(uint32_t day_night_ratio)
 {
 	if (m_glow < 0)
 		return;
 
-	u8 light_at_pos = 0;
+	uint8_t light_at_pos = 0;
 	bool pos_ok = false;
 
 	v3s16 pos[3];
-	u16 npos = getLightPosition(pos);
-	for (u16 i = 0; i < npos; i++) {
+	uint16_t npos = getLightPosition(pos);
+	for (uint16_t i = 0; i < npos; i++) {
 		bool this_ok;
 		MapNode n = m_env->getMap().getNode(pos[i], &this_ok);
 		if (this_ok) {
-			u8 this_light = n.getLightBlend(day_night_ratio, m_client->ndef());
+			uint8_t this_light = n.getLightBlend(day_night_ratio, m_client->ndef());
 			light_at_pos = MYMAX(light_at_pos, this_light);
 			pos_ok = true;
 		}
@@ -848,14 +848,14 @@ void GenericCAO::updateLight(u32 day_night_ratio)
 	if (!pos_ok)
 		light_at_pos = blend_light(day_night_ratio, LIGHT_SUN, 0);
 
-	u8 light = decode_light(light_at_pos + m_glow);
+	uint8_t light = decode_light(light_at_pos + m_glow);
 	if (light != m_last_light) {
 		m_last_light = light;
 		setNodeLight(light);
 	}
 }
 
-void GenericCAO::setNodeLight(u8 light)
+void GenericCAO::setNodeLight(uint8_t light)
 {
 	video::SColor color(255, light, light, light);
 
@@ -871,7 +871,7 @@ void GenericCAO::setNodeLight(u8 light)
 				return;
 
 			scene::IMesh *mesh = m_meshnode->getMesh();
-			for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i) {
+			for (uint32_t i = 0; i < mesh->getMeshBufferCount(); ++i) {
 				scene::IMeshBuffer *buf = mesh->getMeshBuffer(i);
 				buf->getMaterial().EmissiveColor = color;
 			}
@@ -880,7 +880,7 @@ void GenericCAO::setNodeLight(u8 light)
 			if (!node)
 				return;
 
-			for (u32 i = 0; i < node->getMaterialCount(); ++i) {
+			for (uint32_t i = 0; i < node->getMaterialCount(); ++i) {
 				video::SMaterial &material = node->getMaterial(i);
 				material.EmissiveColor = color;
 			}
@@ -1003,7 +1003,7 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 					controls.sidew_move_joystick_axis != 0.f)
 				walking = true;
 
-			f32 new_speed = player->local_animation_speed;
+			float new_speed = player->local_animation_speed;
 			v2s32 new_anim = v2s32(0,0);
 			bool allow_update = false;
 
@@ -1060,7 +1060,7 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 
 		// Attachments, part 1: All attached objects must be unparented first,
 		// or Irrlicht causes a segmentation fault
-		for (u16 cao_id : m_attachment_child_ids) {
+		for (uint16_t cao_id : m_attachment_child_ids) {
 			ClientActiveObject *obj = m_env->getActiveObject(cao_id);
 			if (obj) {
 				scene::ISceneNode *child_node = obj->getSceneNode();
@@ -1075,7 +1075,7 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 		addToScene(m_client->tsrc());
 
 		// Attachments, part 2: Now that the parent has been refreshed, put its attachments back
-		for (u16 cao_id : m_attachment_child_ids) {
+		for (uint16_t cao_id : m_attachment_child_ids) {
 			ClientActiveObject *obj = m_env->getActiveObject(cao_id);
 			if (obj)
 				obj->updateAttachments();
@@ -1105,7 +1105,7 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 			box.MinEdge *= BS;
 			box.MaxEdge *= BS;
 			collisionMoveResult moveresult;
-			f32 pos_max_d = BS*0.125; // Distance per iteration
+			float pos_max_d = BS*0.125; // Distance per iteration
 			v3f p_pos = m_position;
 			v3f p_velocity = m_velocity;
 			moveresult = collisionMoveSimple(env,env->getGameDef(),
@@ -1315,7 +1315,7 @@ void GenericCAO::updateTextures(std::string mod)
 
 	else if (m_animated_meshnode) {
 		if (m_prop.visual == "mesh") {
-			for (u32 i = 0; i < m_prop.textures.size() &&
+			for (uint32_t i = 0; i < m_prop.textures.size() &&
 					i < m_animated_meshnode->getMaterialCount(); ++i) {
 				std::string texturestring = m_prop.textures[i];
 				if (texturestring.empty())
@@ -1338,8 +1338,8 @@ void GenericCAO::updateTextures(std::string mod)
 
 				// don't filter low-res textures, makes them look blurry
 				// player models have a res of 64
-				const core::dimension2d<u32> &size = texture->getOriginalSize();
-				const u32 res = std::min(size.Height, size.Width);
+				const core::dimension2d<uint32_t> &size = texture->getOriginalSize();
+				const uint32_t res = std::min(size.Height, size.Width);
 				use_trilinear_filter &= res > 64;
 				use_bilinear_filter &= res > 64;
 
@@ -1350,7 +1350,7 @@ void GenericCAO::updateTextures(std::string mod)
 				m_animated_meshnode->getMaterial(i)
 						.setFlag(video::EMF_ANISOTROPIC_FILTER, use_anisotropic_filter);
 			}
-			for (u32 i = 0; i < m_prop.colors.size() &&
+			for (uint32_t i = 0; i < m_prop.colors.size() &&
 			i < m_animated_meshnode->getMaterialCount(); ++i)
 			{
 				// This allows setting per-material colors. However, until a real lighting
@@ -1366,7 +1366,7 @@ void GenericCAO::updateTextures(std::string mod)
 	else if (m_meshnode) {
 		if(m_prop.visual == "cube")
 		{
-			for (u32 i = 0; i < 6; ++i)
+			for (uint32_t i = 0; i < 6; ++i)
 			{
 				std::string texturestring = "unknown_node.png";
 				if(m_prop.textures.size() > i)
@@ -1502,7 +1502,7 @@ void GenericCAO::updateBonePosition()
 	}
 
 	// search through bones to find mistakenly rotated bones due to bug in Irrlicht
-	for (u32 i = 0; i < m_animated_meshnode->getJointCount(); ++i) {
+	for (uint32_t i = 0; i < m_animated_meshnode->getJointCount(); ++i) {
 		irr::scene::IBoneSceneNode *bone = m_animated_meshnode->getJointNode(i);
 		if (!bone)
 			continue;
@@ -1532,7 +1532,7 @@ void GenericCAO::updateBonePosition()
 	// The following is needed for set_bone_pos to propagate to
 	// attached objects correctly.
 	// Irrlicht ought to do this, but doesn't when using EJUOR_CONTROL.
-	for (u32 i = 0; i < m_animated_meshnode->getJointCount(); ++i) {
+	for (uint32_t i = 0; i < m_animated_meshnode->getJointCount(); ++i) {
 		auto bone = m_animated_meshnode->getJointNode(i);
 		// Look for the root bone.
 		if (bone && bone->getParent() == m_animated_meshnode) {
@@ -1624,7 +1624,7 @@ void GenericCAO::processMessage(const std::string &data)
 	//infostream<<"GenericCAO: Got message"<<std::endl;
 	std::istringstream is(data, std::ios::binary);
 	// command
-	u8 cmd = readU8(is);
+	uint8_t cmd = readU8(is);
 	if (cmd == AO_CMD_SET_PROPERTIES) {
 		ObjectProperties newprops;
 		newprops.show_on_minimap = m_is_player; // default
@@ -1794,7 +1794,7 @@ void GenericCAO::processMessage(const std::string &data)
 
 		// updateBonePosition(); now called every step
 	} else if (cmd == AO_CMD_ATTACH_TO) {
-		u16 parent_id = readS16(is);
+		uint16_t parent_id = readS16(is);
 		std::string bone = deSerializeString16(is);
 		v3f position = readV3F32(is);
 		v3f rotation = readV3F32(is);
@@ -1802,10 +1802,10 @@ void GenericCAO::processMessage(const std::string &data)
 
 		setAttachment(parent_id, bone, position, rotation, force_visible);
 	} else if (cmd == AO_CMD_PUNCHED) {
-		u16 result_hp = readU16(is);
+		uint16_t result_hp = readU16(is);
 
 		// Use this instead of the send damage to not interfere with prediction
-		s32 damage = (s32)m_hp - (s32)result_hp;
+		int32_t damage = (s32)m_hp - (s32)result_hp;
 
 		m_hp = result_hp;
 
@@ -1847,8 +1847,8 @@ void GenericCAO::processMessage(const std::string &data)
 			m_armor_groups[name] = rating;
 		}
 	} else if (cmd == AO_CMD_SPAWN_INFANT) {
-		u16 child_id = readU16(is);
-		u8 type = readU8(is); // maybe this will be useful later
+		uint16_t child_id = readU16(is);
+		uint8_t type = readU8(is); // maybe this will be useful later
 		(void)type;
 
 		addAttachmentChild(child_id);
@@ -1922,8 +1922,8 @@ void GenericCAO::updateMeshCulling()
 	const bool hidden = m_client->getCamera()->getCameraMode() == CAMERA_MODE_FIRST;
 
 	if (m_meshnode && m_prop.visual == "upright_sprite") {
-		u32 buffers = m_meshnode->getMesh()->getMeshBufferCount();
-		for (u32 i = 0; i < buffers; i++) {
+		uint32_t buffers = m_meshnode->getMesh()->getMeshBufferCount();
+		for (uint32_t i = 0; i < buffers; i++) {
 			video::SMaterial &mat = m_meshnode->getMesh()->getMeshBuffer(i)->getMaterial();
 			// upright sprite has no backface culling
 			mat.setFlag(video::EMF_FRONT_FACE_CULLING, hidden);

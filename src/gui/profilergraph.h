@@ -50,12 +50,12 @@ private:
 	std::deque<Piece> m_log;
 
 public:
-	u32 m_log_max_size = 200;
+	uint32_t m_log_max_size = 200;
 
 	ProfilerGraph() = default;
 
 	void put(const Profiler::GraphValues &values);
 
-	void draw(s32 x_left, s32 y_bottom, video::IVideoDriver *driver,
+	void draw(int32_t x_left, int32_t y_bottom, video::IVideoDriver *driver,
 			gui::IGUIFont *font) const;
 };

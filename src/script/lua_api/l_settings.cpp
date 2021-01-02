@@ -135,7 +135,7 @@ int LuaSettings::l_get_flags(lua_State *L)
 	LuaSettings *o = checkobject(L, 1);
 	std::string key = std::string(luaL_checkstring(L, 2));
 
-	u32 flags = 0;
+	uint32_t flags = 0;
 	auto flagdesc = o->m_settings->getFlagDescFallback(key);
 	if (o->m_settings->getFlagStrNoEx(key, flags, flagdesc)) {
 		lua_newtable(L);

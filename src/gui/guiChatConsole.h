@@ -31,7 +31,7 @@ class GUIChatConsole : public gui::IGUIElement
 public:
 	GUIChatConsole(gui::IGUIEnvironment* env,
 			gui::IGUIElement* parent,
-			s32 id,
+			int32_t id,
 			ChatBackend* backend,
 			Client* client,
 			IMenuManager* menumgr);
@@ -40,7 +40,7 @@ public:
 	// Open the console (height = desired fraction of screen size)
 	// This doesn't open immediately but initiates an animation.
 	// You should call isOpenInhibited() before this.
-	void openConsole(f32 scale);
+	void openConsole(float scale);
 
 	bool isOpen() const;
 
@@ -62,8 +62,8 @@ public:
 	void setCursor(
 		bool visible,
 		bool blinking = false,
-		f32 blink_speed = 1.0,
-		f32 relative_height = 1.0);
+		float blink_speed = 1.0,
+		float relative_height = 1.0);
 
 	// Irrlicht draw method
 	virtual void draw();
@@ -79,7 +79,7 @@ private:
 	void recalculateConsolePosition();
 
 	// These methods are called by draw
-	void animate(u32 msec);
+	void animate(uint32_t msec);
 	void drawBackground();
 	void drawText();
 	void drawPrompt();
@@ -93,30 +93,30 @@ private:
 	v2u32 m_screensize;
 
 	// used to compute how much time passed since last animate()
-	u64 m_animate_time_old;
+	uint64_t m_animate_time_old;
 
 	// should the console be opened or closed?
 	bool m_open = false;
 	// should it close after you press enter?
 	bool m_close_on_enter = false;
 	// current console height [pixels]
-	s32 m_height = 0;
+	int32_t m_height = 0;
 	// desired height [pixels]
-	f32 m_desired_height = 0.0f;
+	float m_desired_height = 0.0f;
 	// desired height [screen height fraction]
-	f32 m_desired_height_fraction = 0.0f;
+	float m_desired_height_fraction = 0.0f;
 	// console open/close animation speed [screen height fraction / second]
-	f32 m_height_speed = 5.0f;
+	float m_height_speed = 5.0f;
 	// if nonzero, opening the console is inhibited [milliseconds]
-	u32 m_open_inhibited = 0;
+	uint32_t m_open_inhibited = 0;
 
 	// cursor blink frame (16-bit value)
 	// cursor is off during [0,32767] and on during [32768,65535]
-	u32 m_cursor_blink = 0;
+	uint32_t m_cursor_blink = 0;
 	// cursor blink speed [on/off toggles / second]
-	f32 m_cursor_blink_speed = 0.0f;
+	float m_cursor_blink_speed = 0.0f;
 	// cursor height [line height]
-	f32 m_cursor_height = 0.0f;
+	float m_cursor_height = 0.0f;
 
 	// background texture
 	video::ITexture *m_background = nullptr;

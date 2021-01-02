@@ -29,7 +29,7 @@ class GUIButtonImage : public GUIButton
 public:
 	//! constructor
 	GUIButtonImage(gui::IGUIEnvironment *environment, gui::IGUIElement *parent,
-			s32 id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
+			int32_t id, core::rect<s32> rectangle, ISimpleTextureSource *tsrc,
 			bool noclip = false);
 
 	void setForegroundImage(video::ITexture *image = nullptr);
@@ -42,7 +42,7 @@ public:
 	//! Do not drop returned handle
 	static GUIButtonImage *addButton(gui::IGUIEnvironment *environment,
 			const core::rect<s32> &rectangle, ISimpleTextureSource *tsrc,
-			IGUIElement *parent, s32 id, const wchar_t *text,
+			IGUIElement *parent, int32_t id, const wchar_t *text,
 			const wchar_t *tooltiptext = L"");
 
 private:

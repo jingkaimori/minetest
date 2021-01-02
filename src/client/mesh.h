@@ -63,7 +63,7 @@ void setMeshColor(scene::IMesh *mesh, const video::SColor &color);
 	Sets texture coords for vertices in the mesh buffer.
 	`uv[]` must have `count` elements
 */
-void setMeshBufferTextureCoords(scene::IMeshBuffer *buf, const v2f *uv, u32 count);
+void setMeshBufferTextureCoords(scene::IMeshBuffer *buf, const v2f *uv, uint32_t count);
 
 /*
 	Set a constant color for an animated mesh
@@ -121,7 +121,7 @@ scene::SMesh* cloneMesh(scene::IMesh *src_mesh);
 	expand - factor by which cuboids will be resized
 */
 scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
-		const f32 *uv_coords = NULL, float expand = 0);
+		const float *uv_coords = NULL, float expand = 0);
 
 /*
 	Update bounding box for a mesh.

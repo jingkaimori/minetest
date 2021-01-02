@@ -30,7 +30,7 @@ int ModApiSound::l_sound_play(lua_State *L)
 	read_soundspec(L, 1, spec);
 	bool looped = readParam<bool>(L, 2);
 
-	s32 handle = getGuiEngine(L)->playSound(spec, looped);
+	int32_t handle = getGuiEngine(L)->playSound(spec, looped);
 
 	lua_pushinteger(L, handle);
 
@@ -39,7 +39,7 @@ int ModApiSound::l_sound_play(lua_State *L)
 
 int ModApiSound::l_sound_stop(lua_State *L)
 {
-	u32 handle = luaL_checkinteger(L, 1);
+	uint32_t handle = luaL_checkinteger(L, 1);
 
 	getGuiEngine(L)->stopSound(handle);
 

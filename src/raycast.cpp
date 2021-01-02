@@ -28,7 +28,7 @@ bool RaycastSort::operator() (const PointedThing &pt1,
 	// "nothing" can not be sorted
 	assert(pt1.type != POINTEDTHING_NOTHING);
 	assert(pt2.type != POINTEDTHING_NOTHING);
-	f32 pt1_distSq = pt1.distanceSq;
+	float pt1_distSq = pt1.distanceSq;
 
 	// Add some bonus when one of them is an object
 	if (pt1.type != pt2.type) {

@@ -31,7 +31,7 @@ LuaEntitySAO::LuaEntitySAO(ServerEnvironment *env, v3f pos, const std::string &d
 {
 	std::string name;
 	std::string state;
-	u16 hp = 1;
+	uint16_t hp = 1;
 	v3f velocity;
 	v3f rotation;
 
@@ -39,8 +39,8 @@ LuaEntitySAO::LuaEntitySAO(ServerEnvironment *env, v3f pos, const std::string &d
 		std::istringstream is(data, std::ios::binary);
 		// 'version' does not allow to incrementally extend the parameter list thus
 		// we need another variable to build on top of 'version=1'. Ugly hack but works™
-		u8 version2 = 0;
-		u8 version = readU8(is);
+		uint8_t version2 = 0;
+		uint8_t version = readU8(is);
 
 		name = deSerializeString16(is);
 		state = deSerializeString32(is);
@@ -85,12 +85,12 @@ LuaEntitySAO::~LuaEntitySAO()
 		m_env->getScriptIface()->luaentity_Remove(m_id);
 	}
 
-	for (u32 attached_particle_spawner : m_attached_particle_spawners) {
+	for (uint32_t attached_particle_spawner : m_attached_particle_spawners) {
 		m_env->deleteParticleSpawner(attached_particle_spawner, false);
 	}
 }
 
-void LuaEntitySAO::addedToEnvironment(u32 dtime_s)
+void LuaEntitySAO::addedToEnvironment(uint32_t dtime_s)
 {
 	ServerActiveObject::addedToEnvironment(dtime_s);
 
@@ -150,7 +150,7 @@ void LuaEntitySAO::step(float dtime, bool send_recommended)
 			aabb3f box = m_prop.collisionbox;
 			box.MinEdge *= BS;
 			box.MaxEdge *= BS;
-			f32 pos_max_d = BS*0.25; // Distance per iteration
+			float pos_max_d = BS*0.25; // Distance per iteration
 			v3f p_pos = m_base_position;
 			v3f p_velocity = m_velocity;
 			v3f p_acceleration = m_acceleration;
@@ -219,7 +219,7 @@ void LuaEntitySAO::step(float dtime, bool send_recommended)
 	sendOutdatedData();
 }
 
-std::string LuaEntitySAO::getClientInitializationData(u16 protocol_version)
+std::string LuaEntitySAO::getClientInitializationData(uint16_t protocol_version)
 {
 	std::ostringstream os(std::ios::binary);
 
@@ -308,7 +308,7 @@ u16 LuaEntitySAO::punch(v3f dir,
 
 	FATAL_ERROR_IF(!puncher, "Punch action called without SAO");
 
-	s32 old_hp = getHP();
+	int32_t old_hp = getHP();
 	ItemStack selected_item, hand_item;
 	ItemStack tool_item = puncher->getWieldedItem(&selected_item, &hand_item);
 
@@ -387,7 +387,7 @@ std::string LuaEntitySAO::getDescription()
 	return oss.str();
 }
 
-void LuaEntitySAO::setHP(s32 hp, const PlayerHPChangeReason &reason)
+void LuaEntitySAO::setHP(int32_t hp, const PlayerHPChangeReason &reason)
 {
 	m_hp = rangelim(hp, 0, U16_MAX);
 }
@@ -440,8 +440,8 @@ std::string LuaEntitySAO::generateSetTextureModCommand() const
 	return os.str();
 }
 
-std::string LuaEntitySAO::generateSetSpriteCommand(v2s16 p, u16 num_frames,
-	f32 framelength, bool select_horiz_by_yawpitch)
+std::string LuaEntitySAO::generateSetSpriteCommand(v2s16 p, uint16_t num_frames,
+	float framelength, bool select_horiz_by_yawpitch)
 {
 	std::ostringstream os(std::ios::binary);
 	// command

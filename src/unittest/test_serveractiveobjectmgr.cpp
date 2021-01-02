@@ -63,7 +63,7 @@ void TestServerActiveObjectMgr::runTests(IGameDef *gamedef)
 
 void clearSAOMgr(server::ActiveObjectMgr *saomgr)
 {
-	auto clear_cb = [](ServerActiveObject *obj, u16 id) {
+	auto clear_cb = [](ServerActiveObject *obj, uint16_t id) {
 		delete obj;
 		return true;
 	};
@@ -75,16 +75,16 @@ void clearSAOMgr(server::ActiveObjectMgr *saomgr)
 void TestServerActiveObjectMgr::testFreeID()
 {
 	server::ActiveObjectMgr saomgr;
-	std::vector<u16> aoids;
+	std::vector<uint16_t> aoids;
 
-	u16 aoid = saomgr.getFreeId();
+	uint16_t aoid = saomgr.getFreeId();
 	// Ensure it's not the same id
 	UASSERT(saomgr.getFreeId() != aoid);
 
 	aoids.push_back(aoid);
 
 	// Register basic objects, ensure we never found
-	for (u8 i = 0; i < UINT8_MAX; i++) {
+	for (uint8_t i = 0; i < UINT8_MAX; i++) {
 		// Register an object
 		auto tsao = new TestServerActiveObject();
 		saomgr.registerObject(tsao);
@@ -104,7 +104,7 @@ void TestServerActiveObjectMgr::testRegisterObject()
 	auto tsao = new TestServerActiveObject();
 	UASSERT(saomgr.registerObject(tsao));
 
-	u16 id = tsao->getId();
+	uint16_t id = tsao->getId();
 
 	auto tsaoToCompare = saomgr.getActiveObject(id);
 	UASSERT(tsaoToCompare->getId() == id);
@@ -124,7 +124,7 @@ void TestServerActiveObjectMgr::testRemoveObject()
 	auto tsao = new TestServerActiveObject();
 	UASSERT(saomgr.registerObject(tsao));
 
-	u16 id = tsao->getId();
+	uint16_t id = tsao->getId();
 	UASSERT(saomgr.getActiveObject(id) != nullptr)
 
 	saomgr.removeObject(tsao->getId());
@@ -186,12 +186,12 @@ void TestServerActiveObjectMgr::testGetAddedActiveObjectsAroundPos()
 		saomgr.registerObject(new TestServerActiveObject(p));
 	}
 
-	std::queue<u16> result;
-	std::set<u16> cur_objects;
+	std::queue<uint16_t> result;
+	std::set<uint16_t> cur_objects;
 	saomgr.getAddedActiveObjectsAroundPos(v3f(), 100, 50, cur_objects, result);
 	UASSERTCMP(int, ==, result.size(), 1);
 
-	result = std::queue<u16>();
+	result = std::queue<uint16_t>();
 	cur_objects.clear();
 	saomgr.getAddedActiveObjectsAroundPos(v3f(), 740, 50, cur_objects, result);
 	UASSERTCMP(int, ==, result.size(), 2);

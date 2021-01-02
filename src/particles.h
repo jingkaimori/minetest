@@ -34,9 +34,9 @@ struct CommonParticleParams {
 	bool vertical = false;
 	std::string texture;
 	struct TileAnimationParams animation;
-	u8 glow = 0;
+	uint8_t glow = 0;
 	MapNode node;
-	u8 node_tile = 0;
+	uint8_t node_tile = 0;
 
 	CommonParticleParams() {
 		animation.type = TAT_NONE;
@@ -62,18 +62,18 @@ struct ParticleParameters : CommonParticleParams {
 	v3f pos;
 	v3f vel;
 	v3f acc;
-	f32 expirationtime = 1;
-	f32 size = 1;
+	float expirationtime = 1;
+	float size = 1;
 
-	void serialize(std::ostream &os, u16 protocol_ver) const;
-	void deSerialize(std::istream &is, u16 protocol_ver);
+	void serialize(std::ostream &os, uint16_t protocol_ver) const;
+	void deSerialize(std::istream &is, uint16_t protocol_ver);
 };
 
 struct ParticleSpawnerParameters : CommonParticleParams {
-	u16 amount = 1;
+	uint16_t amount = 1;
 	v3f minpos, maxpos, minvel, maxvel, minacc, maxacc;
-	f32 time = 1;
-	f32 minexptime = 1, maxexptime = 1, minsize = 1, maxsize = 1;
+	float time = 1;
+	float minexptime = 1, maxexptime = 1, minsize = 1, maxsize = 1;
 
 	// For historical reasons no (de-)serialization methods here
 };

@@ -71,10 +71,10 @@ void NodeBox::reset()
 	disconnected_sides.clear();
 }
 
-void NodeBox::serialize(std::ostream &os, u16 protocol_version) const
+void NodeBox::serialize(std::ostream &os, uint16_t protocol_version) const
 {
 	// Protocol >= 36
-	const u8 version = 6;
+	const uint8_t version = 6;
 	writeU8(os, version);
 
 	switch (type) {
@@ -142,7 +142,7 @@ void NodeBox::deSerialize(std::istream &is)
 
 	if(type == NODEBOX_FIXED || type == NODEBOX_LEVELED)
 	{
-		u16 fixed_count = readU16(is);
+		uint16_t fixed_count = readU16(is);
 		while(fixed_count--)
 		{
 			aabb3f box;
@@ -170,7 +170,7 @@ void NodeBox::deSerialize(std::istream &is)
 			v3f max = readV3F32(is); \
 			(box).emplace_back(min, max); }; }
 
-		u16 count;
+		uint16_t count;
 
 		READBOXES(fixed);
 		READBOXES(connect_top);
@@ -201,16 +201,16 @@ void NodeBox::deSerialize(std::istream &is)
 #define TILE_FLAG_HAS_SCALE	(1 << 4)
 #define TILE_FLAG_HAS_ALIGN_STYLE	(1 << 5)
 
-void TileDef::serialize(std::ostream &os, u16 protocol_version) const
+void TileDef::serialize(std::ostream &os, uint16_t protocol_version) const
 {
 	// protocol_version >= 36
-	u8 version = 6;
+	uint8_t version = 6;
 	writeU8(os, version);
 
 	os << serializeString16(name);
 	animation.serialize(os, version);
 	bool has_scale = scale > 0;
-	u16 flags = 0;
+	uint16_t flags = 0;
 	if (backface_culling)
 		flags |= TILE_FLAG_BACKFACE_CULLING;
 	if (tileable_horizontal)
@@ -235,7 +235,7 @@ void TileDef::serialize(std::ostream &os, u16 protocol_version) const
 		writeU8(os, align_style);
 }
 
-void TileDef::deSerialize(std::istream &is, u8 contentfeatures_version,
+void TileDef::deSerialize(std::istream &is, uint8_t contentfeatures_version,
 	NodeDrawType drawtype)
 {
 	int version = readU8(is);
@@ -243,7 +243,7 @@ void TileDef::deSerialize(std::istream &is, u8 contentfeatures_version,
 		throw SerializationError("unsupported TileDef version");
 	name = deSerializeString16(is);
 	animation.deSerialize(is, version);
-	u16 flags = readU16(is);
+	uint16_t flags = readU16(is);
 	backface_culling = flags & TILE_FLAG_BACKFACE_CULLING;
 	tileable_horizontal = flags & TILE_FLAG_TILEABLE_HORIZONTAL;
 	tileable_vertical = flags & TILE_FLAG_TILEABLE_VERTICAL;
@@ -315,11 +315,11 @@ ContentFeatures::ContentFeatures()
 ContentFeatures::~ContentFeatures()
 {
 #ifndef SERVER
-	for (u16 j = 0; j < 6; j++) {
+	for (uint16_t j = 0; j < 6; j++) {
 		delete tiles[j].layers[0].frames;
 		delete tiles[j].layers[1].frames;
 	}
-	for (u16 j = 0; j < CF_SPECIAL_COUNT; j++)
+	for (uint16_t j = 0; j < CF_SPECIAL_COUNT; j++)
 		delete special_tiles[j].layers[0].frames;
 #endif
 }
@@ -405,9 +405,9 @@ void ContentFeatures::reset()
 	node_dig_prediction = "air";
 }
 
-void ContentFeatures::serialize(std::ostream &os, u16 protocol_version) const
+void ContentFeatures::serialize(std::ostream &os, uint16_t protocol_version) const
 {
-	const u8 version = CONTENTFEATURES_VERSION;
+	const uint8_t version = CONTENTFEATURES_VERSION;
 	writeU8(os, version);
 
 	// general
@@ -441,7 +441,7 @@ void ContentFeatures::serialize(std::ostream &os, u16 protocol_version) const
 	writeU8(os, waving);
 	writeU8(os, connect_sides);
 	writeU16(os, connects_to_ids.size());
-	for (u16 connects_to_id : connects_to_ids)
+	for (uint16_t connects_to_id : connects_to_ids)
 		writeU16(os, connects_to_id);
 	writeARGB8(os, post_effect_color);
 	writeU8(os, leveled);
@@ -509,15 +509,15 @@ void ContentFeatures::correctAlpha(TileDef *tiles, int length)
 void ContentFeatures::deSerialize(std::istream &is)
 {
 	// version detection
-	const u8 version = readU8(is);
+	const uint8_t version = readU8(is);
 	if (version < CONTENTFEATURES_VERSION)
 		throw SerializationError("unsupported ContentFeatures version");
 
 	// general
 	name = deSerializeString16(is);
 	groups.clear();
-	u32 groups_size = readU16(is);
-	for (u32 i = 0; i < groups_size; i++) {
+	uint32_t groups_size = readU16(is);
+	for (uint32_t i = 0; i < groups_size; i++) {
 		std::string name = deSerializeString16(is);
 		int value = readS16(is);
 		groups[name] = value;
@@ -546,9 +546,9 @@ void ContentFeatures::deSerialize(std::istream &is)
 	palette_name = deSerializeString16(is);
 	waving = readU8(is);
 	connect_sides = readU8(is);
-	u16 connects_to_size = readU16(is);
+	uint16_t connects_to_size = readU16(is);
 	connects_to_ids.clear();
-	for (u16 i = 0; i < connects_to_size; i++)
+	for (uint16_t i = 0; i < connects_to_size; i++)
 		connects_to_ids.push_back(readU16(is));
 	post_effect_color = readARGB8(is);
 	leveled = readU8(is);
@@ -597,7 +597,7 @@ void ContentFeatures::deSerialize(std::istream &is)
 
 	try {
 		node_dig_prediction = deSerializeString16(is);
-		u8 tmp_leveled_max = readU8(is);
+		uint8_t tmp_leveled_max = readU8(is);
 		if (is.eof()) /* readU8 doesn't throw exceptions so we have to do this */
 			throw SerializationError("");
 		leveled_max = tmp_leveled_max;
@@ -607,7 +607,7 @@ void ContentFeatures::deSerialize(std::istream &is)
 #ifndef SERVER
 static void fillTileAttribs(ITextureSource *tsrc, TileLayer *layer,
 		const TileSpec &tile, const TileDef &tiledef, video::SColor color,
-		u8 material_type, u32 shader_id, bool backface_culling,
+		uint8_t material_type, uint32_t shader_id, bool backface_culling,
 		const TextureSettings &tsettings)
 {
 	layer->shader_id     = shader_id;
@@ -703,10 +703,10 @@ bool ContentFeatures::textureAlphaCheck(ITextureSource *tsrc, const TileDef *til
 			core::position2d<s32>(0, 0), texture->getOriginalSize());
 		if (!image)
 			continue;
-		core::dimension2d<u32> dim = image->getDimension();
+		core::dimension2d<uint32_t> dim = image->getDimension();
 		bool ok = true;
-		for (u16 x = 0; x < dim.Width; x++) {
-			for (u16 y = 0; y < dim.Height; y++) {
+		for (uint16_t x = 0; x < dim.Width; x++) {
+			for (uint16_t y = 0; y < dim.Height; y++) {
 				if (image->getPixel(x, y).getAlpha() < 255) {
 					ok = false;
 					goto break_loop;
@@ -758,18 +758,18 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 
 	// Figure out the actual tiles to use
 	TileDef tdef[6];
-	for (u32 j = 0; j < 6; j++) {
+	for (uint32_t j = 0; j < 6; j++) {
 		tdef[j] = tiledef[j];
 		if (tdef[j].name.empty())
 			tdef[j].name = "unknown_node.png";
 	}
 	// also the overlay tiles
 	TileDef tdef_overlay[6];
-	for (u32 j = 0; j < 6; j++)
+	for (uint32_t j = 0; j < 6; j++)
 		tdef_overlay[j] = tiledef_overlay[j];
 	// also the special tiles
 	TileDef tdef_spec[6];
-	for (u32 j = 0; j < CF_SPECIAL_COUNT; j++)
+	for (uint32_t j = 0; j < CF_SPECIAL_COUNT; j++)
 		tdef_spec[j] = tiledef_special[j];
 
 	bool is_liquid = false;
@@ -824,7 +824,7 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 			solidness = 0;
 			visual_solidness = 1;
 		} else if (tsettings.leaves_style == LEAVES_SIMPLE) {
-			for (u32 j = 0; j < 6; j++) {
+			for (uint32_t j = 0; j < 6; j++) {
 				if (!tdef_spec[j].name.empty())
 					tdef[j].name = tdef_spec[j].name;
 			}
@@ -890,7 +890,7 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 		}
 	}
 
-	u32 tile_shader = shdsrc->getShader("nodes_shader", material_type, drawtype);
+	uint32_t tile_shader = shdsrc->getShader("nodes_shader", material_type, drawtype);
 
 	MaterialType overlay_material = material_type;
 	if (overlay_material == TILE_MATERIAL_OPAQUE)
@@ -898,10 +898,10 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 	else if (overlay_material == TILE_MATERIAL_LIQUID_OPAQUE)
 		overlay_material = TILE_MATERIAL_LIQUID_TRANSPARENT;
 
-	u32 overlay_shader = shdsrc->getShader("nodes_shader", overlay_material, drawtype);
+	uint32_t overlay_shader = shdsrc->getShader("nodes_shader", overlay_material, drawtype);
 
 	// Tiles (fill in f->tiles[])
-	for (u16 j = 0; j < 6; j++) {
+	for (uint16_t j = 0; j < 6; j++) {
 		tiles[j].world_aligned = isWorldAligned(tdef[j].align_style,
 				tsettings.world_aligned_mode, drawtype);
 		fillTileAttribs(tsrc, &tiles[j].layers[0], tiles[j], tdef[j],
@@ -920,10 +920,10 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 		else if (waving == 2)
 			special_material = TILE_MATERIAL_WAVING_LEAVES;
 	}
-	u32 special_shader = shdsrc->getShader("nodes_shader", special_material, drawtype);
+	uint32_t special_shader = shdsrc->getShader("nodes_shader", special_material, drawtype);
 
 	// Special tiles (fill in f->special_tiles[])
-	for (u16 j = 0; j < CF_SPECIAL_COUNT; j++)
+	for (uint16_t j = 0; j < CF_SPECIAL_COUNT; j++)
 		fillTileAttribs(tsrc, &special_tiles[j].layers[0], special_tiles[j], tdef_spec[j],
 				color, special_material, special_shader,
 				tdef_spec[j].backface_culling, tsettings);
@@ -949,7 +949,7 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 	if (tsettings.enable_mesh_cache && mesh_ptr[0] &&
 			(param_type_2 == CPT2_FACEDIR
 			|| param_type_2 == CPT2_COLORED_FACEDIR)) {
-		for (u16 j = 1; j < 24; j++) {
+		for (uint16_t j = 1; j < 24; j++) {
 			mesh_ptr[j] = cloneMesh(mesh_ptr[0]);
 			rotateMeshBy6dFacedir(mesh_ptr[j], j);
 			recalculateBoundingBox(mesh_ptr[j]);
@@ -958,8 +958,8 @@ void ContentFeatures::updateTextures(ITextureSource *tsrc, IShaderSource *shdsrc
 	} else if (tsettings.enable_mesh_cache && mesh_ptr[0]
 			&& (param_type_2 == CPT2_WALLMOUNTED ||
 			param_type_2 == CPT2_COLORED_WALLMOUNTED)) {
-		static const u8 wm_to_6d[6] = { 20, 0, 16 + 1, 12 + 3, 8, 4 + 2 };
-		for (u16 j = 1; j < 6; j++) {
+		static const uint8_t wm_to_6d[6] = { 20, 0, 16 + 1, 12 + 3, 8, 4 + 2 };
+		for (uint16_t j = 1; j < 6; j++) {
 			mesh_ptr[j] = cloneMesh(mesh_ptr[0]);
 			rotateMeshBy6dFacedir(mesh_ptr[j], wm_to_6d[j]);
 			recalculateBoundingBox(mesh_ptr[j]);
@@ -1010,7 +1010,7 @@ void NodeDefManager::clear()
 
 	resetNodeResolveState();
 
-	u32 initial_length = 0;
+	uint32_t initial_length = 0;
 	initial_length = MYMAX(initial_length, CONTENT_UNKNOWN + 1);
 	initial_length = MYMAX(initial_length, CONTENT_AIR + 1);
 	initial_length = MYMAX(initial_length, CONTENT_IGNORE + 1);
@@ -1178,14 +1178,14 @@ void getNodeBoxUnion(const NodeBox &nodebox, const ContentFeatures &features,
 			if (features.param_type_2 == CPT2_FACEDIR ||
 					features.param_type_2 == CPT2_COLORED_FACEDIR) {
 				// Get maximal coordinate
-				f32 coords[] = {
+				float coords[] = {
 					fabsf(half_processed.MinEdge.X),
 					fabsf(half_processed.MinEdge.Y),
 					fabsf(half_processed.MinEdge.Z),
 					fabsf(half_processed.MaxEdge.X),
 					fabsf(half_processed.MaxEdge.Y),
 					fabsf(half_processed.MaxEdge.Z) };
-				f32 max = 0;
+				float max = 0;
 				for (float coord : coords) {
 					if (max < coord) {
 						max = coord;
@@ -1204,12 +1204,12 @@ void getNodeBoxUnion(const NodeBox &nodebox, const ContentFeatures &features,
 			box_union->addInternalBox(nodebox.wall_top);
 			box_union->addInternalBox(nodebox.wall_bottom);
 			// Find maximal coordinate in the X-Z plane
-			f32 coords[] = {
+			float coords[] = {
 				fabsf(nodebox.wall_side.MinEdge.X),
 				fabsf(nodebox.wall_side.MinEdge.Z),
 				fabsf(nodebox.wall_side.MaxEdge.X),
 				fabsf(nodebox.wall_side.MaxEdge.Z) };
-			f32 max = 0;
+			float max = 0;
 			for (float coord : coords) {
 				if (max < coord) {
 					max = coord;
@@ -1421,7 +1421,7 @@ void NodeDefManager::applyTextureOverrides(const std::vector<TextureOverride> &o
 }
 
 void NodeDefManager::updateTextures(IGameDef *gamedef,
-	void (*progress_callback)(void *progress_args, u32 progress, u32 max_progress),
+	void (*progress_callback)(void *progress_args, uint32_t progress, uint32_t max_progress),
 	void *progress_callback_args)
 {
 #ifndef SERVER
@@ -1436,9 +1436,9 @@ void NodeDefManager::updateTextures(IGameDef *gamedef,
 	TextureSettings tsettings;
 	tsettings.readSettings();
 
-	u32 size = m_content_features.size();
+	uint32_t size = m_content_features.size();
 
-	for (u32 i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		ContentFeatures *f = &(m_content_features[i]);
 		f->updateTextures(tsrc, shdsrc, meshmanip, client, tsettings);
 		progress_callback(progress_callback_args, i, size);
@@ -1446,12 +1446,12 @@ void NodeDefManager::updateTextures(IGameDef *gamedef,
 #endif
 }
 
-void NodeDefManager::serialize(std::ostream &os, u16 protocol_version) const
+void NodeDefManager::serialize(std::ostream &os, uint16_t protocol_version) const
 {
 	writeU8(os, 1); // version
-	u16 count = 0;
+	uint16_t count = 0;
 	std::ostringstream os2(std::ios::binary);
-	for (u32 i = 0; i < m_content_features.size(); i++) {
+	for (uint32_t i = 0; i < m_content_features.size(); i++) {
 		if (i == CONTENT_IGNORE || i == CONTENT_AIR
 				|| i == CONTENT_UNKNOWN)
 			continue;
@@ -1466,7 +1466,7 @@ void NodeDefManager::serialize(std::ostream &os, u16 protocol_version) const
 		os2<<serializeString16(wrapper_os.str());
 
 		// must not overflow
-		u16 next = count + 1;
+		uint16_t next = count + 1;
 		FATAL_ERROR_IF(next < count, "Overflow");
 		count++;
 	}
@@ -1481,11 +1481,11 @@ void NodeDefManager::deSerialize(std::istream &is)
 	int version = readU8(is);
 	if (version != 1)
 		throw SerializationError("unsupported NodeDefinitionManager version");
-	u16 count = readU16(is);
+	uint16_t count = readU16(is);
 	std::istringstream is2(deSerializeString32(is), std::ios::binary);
 	ContentFeatures f;
-	for (u16 n = 0; n < count; n++) {
-		u16 i = readU16(is2);
+	for (uint16_t n = 0; n < count; n++) {
+		uint16_t i = readU16(is2);
 
 		// Read it from the string wrapper
 		std::string wrapper = deSerializeString16(is2);
@@ -1505,7 +1505,7 @@ void NodeDefManager::deSerialize(std::istream &is)
 		}
 
 		// Ignore aliases
-		u16 existing_id;
+		uint16_t existing_id;
 		if (m_name_id_mapping.getId(f.name, existing_id) && i != existing_id) {
 			warningstream << "NodeDefManager::deSerialize(): "
 				"already defined with different ID: " << f.name << std::endl;
@@ -1514,7 +1514,7 @@ void NodeDefManager::deSerialize(std::istream &is)
 
 		// All is ok, add node definition with the requested ID
 		if (i >= m_content_features.size())
-			m_content_features.resize((u32)(i) + 1);
+			m_content_features.resize((uint32_t)(i) + 1);
 		m_content_features[i] = f;
 		addNameIdMapping(i, f.name);
 		TRACESTREAM(<< "NodeDef: deserialized " << f.name << std::endl);
@@ -1612,7 +1612,7 @@ void NodeDefManager::resolveCrossrefs()
 }
 
 bool NodeDefManager::nodeboxConnects(MapNode from, MapNode to,
-	u8 connect_face) const
+	uint8_t connect_face) const
 {
 	const ContentFeatures &f1 = get(from);
 
@@ -1634,7 +1634,7 @@ bool NodeDefManager::nodeboxConnects(MapNode from, MapNode to,
 		if ((f2.param_type_2 == CPT2_FACEDIR ||
 				f2.param_type_2 == CPT2_COLORED_FACEDIR)
 				&& (connect_face >= 4)) {
-			static const u8 rot[33 * 4] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			static const uint8_t rot[33 * 4] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 4, 32, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, // 4 - back
 				8, 4, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

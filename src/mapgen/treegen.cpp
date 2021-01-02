@@ -33,7 +33,7 @@ namespace treegen
 {
 
 void make_tree(MMVManip &vmanip, v3s16 p0, bool is_apple_tree,
-	const NodeDefManager *ndef, s32 seed)
+	const NodeDefManager *ndef, int32_t seed)
 {
 	/*
 		NOTE: Tree-placing code is currently duplicated in the engine
@@ -51,11 +51,11 @@ void make_tree(MMVManip &vmanip, v3s16 p0, bool is_apple_tree,
 		errorstream << "Treegen: Mapgen alias 'mapgen_apple' is invalid!" << std::endl;
 
 	PseudoRandom pr(seed);
-	s16 trunk_h = pr.range(4, 5);
+	int16_t trunk_h = pr.range(4, 5);
 	v3s16 p1 = p0;
-	for (s16 ii = 0; ii < trunk_h; ii++) {
+	for (int16_t ii = 0; ii < trunk_h; ii++) {
 		if (vmanip.m_area.contains(p1)) {
-			u32 vi = vmanip.m_area.index(p1);
+			uint32_t vi = vmanip.m_area.index(p1);
 			vmanip.m_data[vi] = treenode;
 		}
 		p1.Y++;
@@ -65,40 +65,40 @@ void make_tree(MMVManip &vmanip, v3s16 p0, bool is_apple_tree,
 	p1.Y -= 1;
 
 	VoxelArea leaves_a(v3s16(-2, -1, -2), v3s16(2, 2, 2));
-	Buffer<u8> leaves_d(leaves_a.getVolume());
-	for (s32 i = 0; i < leaves_a.getVolume(); i++)
+	Buffer<uint8_t> leaves_d(leaves_a.getVolume());
+	for (int32_t i = 0; i < leaves_a.getVolume(); i++)
 		leaves_d[i] = 0;
 
 	// Force leaves at near the end of the trunk
-	s16 d = 1;
-	for (s16 z = -d; z <= d; z++)
-	for (s16 y = -d; y <= d; y++)
-	for (s16 x = -d; x <= d; x++) {
+	int16_t d = 1;
+	for (int16_t z = -d; z <= d; z++)
+	for (int16_t y = -d; y <= d; y++)
+	for (int16_t x = -d; x <= d; x++) {
 		leaves_d[leaves_a.index(v3s16(x, y, z))] = 1;
 	}
 
 	// Add leaves randomly
-	for (u32 iii = 0; iii < 7; iii++) {
+	for (uint32_t iii = 0; iii < 7; iii++) {
 		v3s16 p(
 			pr.range(leaves_a.MinEdge.X, leaves_a.MaxEdge.X - d),
 			pr.range(leaves_a.MinEdge.Y, leaves_a.MaxEdge.Y - d),
 			pr.range(leaves_a.MinEdge.Z, leaves_a.MaxEdge.Z - d)
 		);
 
-		for (s16 z = 0; z <= d; z++)
-		for (s16 y = 0; y <= d; y++)
-		for (s16 x = 0; x <= d; x++) {
+		for (int16_t z = 0; z <= d; z++)
+		for (int16_t y = 0; y <= d; y++)
+		for (int16_t x = 0; x <= d; x++) {
 			leaves_d[leaves_a.index(p + v3s16(x, y, z))] = 1;
 		}
 	}
 
 	// Blit leaves to vmanip
-	for (s16 z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
-	for (s16 y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
+	for (int16_t z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
+	for (int16_t y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
 		v3s16 pmin(leaves_a.MinEdge.X, y, z);
-		u32 i = leaves_a.index(pmin);
-		u32 vi = vmanip.m_area.index(pmin + p1);
-		for (s16 x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
+		uint32_t i = leaves_a.index(pmin);
+		uint32_t vi = vmanip.m_area.index(pmin + p1);
+		for (int16_t x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
 			v3s16 p(x, y, z);
 			if (vmanip.m_area.contains(p + p1) &&
 					(vmanip.m_data[vi].getContent() == CONTENT_AIR ||
@@ -148,7 +148,7 @@ treegen::error spawn_ltree(ServerMap *map, v3s16 p0,
 treegen::error make_ltree(MMVManip &vmanip, v3s16 p0,
 	const NodeDefManager *ndef, TreeDef tree_definition)
 {
-	s32 seed;
+	int32_t seed;
 	if (tree_definition.explicit_seed)
 		seed = tree_definition.seed + 14002;
 	else
@@ -162,13 +162,13 @@ treegen::error make_ltree(MMVManip &vmanip, v3s16 p0,
 	double prop_d = 6;
 
 	//randomize tree growth level, minimum=2
-	s16 iterations = tree_definition.iterations;
+	int16_t iterations = tree_definition.iterations;
 	if (tree_definition.iterations_random_level > 0)
 		iterations -= ps.range(0, tree_definition.iterations_random_level);
 	if (iterations < 2)
 		iterations = 2;
 
-	s16 MAX_ANGLE_OFFSET = 5;
+	int16_t MAX_ANGLE_OFFSET = 5;
 	double angle_in_radians = (double)tree_definition.angle * M_PI / 180;
 	double angleOffset_in_radians = (s16)(ps.range(0, 1) % MAX_ANGLE_OFFSET) * M_PI / 180;
 
@@ -184,9 +184,9 @@ treegen::error make_ltree(MMVManip &vmanip, v3s16 p0,
 
 	//generate axiom
 	std::string axiom = tree_definition.initial_axiom;
-	for (s16 i = 0; i < iterations; i++) {
+	for (int16_t i = 0; i < iterations; i++) {
 		std::string temp;
-		for (s16 j = 0; j < (s16)axiom.size(); j++) {
+		for (int16_t j = 0; j < (s16)axiom.size(); j++) {
 			char axiom_char = axiom.at(j);
 			switch (axiom_char) {
 			case 'A':
@@ -293,8 +293,8 @@ treegen::error make_ltree(MMVManip &vmanip, v3s16 p0,
 
     */
 
-	s16 x,y,z;
-	for (s16 i = 0; i < (s16)axiom.size(); i++) {
+	int16_t x,y,z;
+	for (int16_t i = 0; i < (s16)axiom.size(); i++) {
 		char axiom_char = axiom.at(i);
 		core::matrix4 temp_rotation;
 		temp_rotation.makeIdentity();
@@ -408,7 +408,7 @@ treegen::error make_ltree(MMVManip &vmanip, v3s16 p0,
 				);
 			}
 			if (!stack_orientation.empty()) {
-				s16 size = 1;
+				int16_t size = 1;
 				for (x = -size; x <= size; x++)
 				for (y = -size; y <= size; y++)
 				for (z = -size; z <= size; z++) {
@@ -533,7 +533,7 @@ void tree_trunk_placement(MMVManip &vmanip, v3f p0, TreeDef &tree_definition)
 	v3s16 p1 = v3s16(myround(p0.X), myround(p0.Y), myround(p0.Z));
 	if (!vmanip.m_area.contains(p1))
 		return;
-	u32 vi = vmanip.m_area.index(p1);
+	uint32_t vi = vmanip.m_area.index(p1);
 	content_t current_node = vmanip.m_data[vi].getContent();
 	if (current_node != CONTENT_AIR && current_node != CONTENT_IGNORE
 			&& current_node != tree_definition.leavesnode.getContent()
@@ -553,7 +553,7 @@ void tree_leaves_placement(MMVManip &vmanip, v3f p0,
 	v3s16 p1 = v3s16(myround(p0.X), myround(p0.Y), myround(p0.Z));
 	if (!vmanip.m_area.contains(p1))
 		return;
-	u32 vi = vmanip.m_area.index(p1);
+	uint32_t vi = vmanip.m_area.index(p1);
 	if (vmanip.m_data[vi].getContent() != CONTENT_AIR
 			&& vmanip.m_data[vi].getContent() != CONTENT_IGNORE)
 		return;
@@ -577,7 +577,7 @@ void tree_single_leaves_placement(MMVManip &vmanip, v3f p0,
 	v3s16 p1 = v3s16(myround(p0.X), myround(p0.Y), myround(p0.Z));
 	if (!vmanip.m_area.contains(p1))
 		return;
-	u32 vi = vmanip.m_area.index(p1);
+	uint32_t vi = vmanip.m_area.index(p1);
 	if (vmanip.m_data[vi].getContent() != CONTENT_AIR
 			&& vmanip.m_data[vi].getContent() != CONTENT_IGNORE)
 		return;
@@ -590,7 +590,7 @@ void tree_fruit_placement(MMVManip &vmanip, v3f p0, TreeDef &tree_definition)
 	v3s16 p1 = v3s16(myround(p0.X), myround(p0.Y), myround(p0.Z));
 	if (!vmanip.m_area.contains(p1))
 		return;
-	u32 vi = vmanip.m_area.index(p1);
+	uint32_t vi = vmanip.m_area.index(p1);
 	if (vmanip.m_data[vi].getContent() != CONTENT_AIR
 			&& vmanip.m_data[vi].getContent() != CONTENT_IGNORE)
 		return;
@@ -640,7 +640,7 @@ v3f transposeMatrix(irr::core::matrix4 M, v3f v)
 
 
 void make_jungletree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
-	s32 seed)
+	int32_t seed)
 {
 	/*
 		NOTE: Tree-placing code is currently duplicated in the engine
@@ -662,14 +662,14 @@ void make_jungletree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	MapNode leavesnode(c_leaves);
 
 	PseudoRandom pr(seed);
-	for (s16 x= -1; x <= 1; x++)
-	for (s16 z= -1; z <= 1; z++) {
+	for (int16_t x= -1; x <= 1; x++)
+	for (int16_t z= -1; z <= 1; z++) {
 		if (pr.range(0, 2) == 0)
 			continue;
 		v3s16 p1 = p0 + v3s16(x, 0, z);
 		v3s16 p2 = p0 + v3s16(x, -1, z);
-		u32 vi1 = vmanip.m_area.index(p1);
-		u32 vi2 = vmanip.m_area.index(p2);
+		uint32_t vi1 = vmanip.m_area.index(p1);
+		uint32_t vi2 = vmanip.m_area.index(p2);
 
 		if (vmanip.m_area.contains(p2) &&
 				vmanip.m_data[vi2].getContent() == CONTENT_AIR)
@@ -680,11 +680,11 @@ void make_jungletree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	}
 	vmanip.m_data[vmanip.m_area.index(p0)] = treenode;
 
-	s16 trunk_h = pr.range(8, 12);
+	int16_t trunk_h = pr.range(8, 12);
 	v3s16 p1 = p0;
-	for (s16 ii = 0; ii < trunk_h; ii++) {
+	for (int16_t ii = 0; ii < trunk_h; ii++) {
 		if (vmanip.m_area.contains(p1)) {
-			u32 vi = vmanip.m_area.index(p1);
+			uint32_t vi = vmanip.m_area.index(p1);
 			vmanip.m_data[vi] = treenode;
 		}
 		p1.Y++;
@@ -694,41 +694,41 @@ void make_jungletree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	p1.Y -= 1;
 
 	VoxelArea leaves_a(v3s16(-3, -2, -3), v3s16(3, 2, 3));
-	//SharedPtr<u8> leaves_d(new u8[leaves_a.getVolume()]);
-	Buffer<u8> leaves_d(leaves_a.getVolume());
-	for (s32 i = 0; i < leaves_a.getVolume(); i++)
+	//SharedPtr<uint8_t> leaves_d(new uint8_t[leaves_a.getVolume()]);
+	Buffer<uint8_t> leaves_d(leaves_a.getVolume());
+	for (int32_t i = 0; i < leaves_a.getVolume(); i++)
 		leaves_d[i] = 0;
 
 	// Force leaves at near the end of the trunk
-	s16 d = 1;
-	for (s16 z = -d; z <= d; z++)
-	for (s16 y = -d; y <= d; y++)
-	for (s16 x = -d; x <= d; x++) {
+	int16_t d = 1;
+	for (int16_t z = -d; z <= d; z++)
+	for (int16_t y = -d; y <= d; y++)
+	for (int16_t x = -d; x <= d; x++) {
 		leaves_d[leaves_a.index(v3s16(x,y,z))] = 1;
 	}
 
 	// Add leaves randomly
-	for (u32 iii = 0; iii < 30; iii++) {
+	for (uint32_t iii = 0; iii < 30; iii++) {
 		v3s16 p(
 			pr.range(leaves_a.MinEdge.X, leaves_a.MaxEdge.X - d),
 			pr.range(leaves_a.MinEdge.Y, leaves_a.MaxEdge.Y - d),
 			pr.range(leaves_a.MinEdge.Z, leaves_a.MaxEdge.Z - d)
 		);
 
-		for (s16 z = 0; z <= d; z++)
-		for (s16 y = 0; y <= d; y++)
-		for (s16 x = 0; x <= d; x++) {
+		for (int16_t z = 0; z <= d; z++)
+		for (int16_t y = 0; y <= d; y++)
+		for (int16_t x = 0; x <= d; x++) {
 			leaves_d[leaves_a.index(p + v3s16(x, y, z))] = 1;
 		}
 	}
 
 	// Blit leaves to vmanip
-	for (s16 z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
-	for (s16 y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
+	for (int16_t z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
+	for (int16_t y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
 		v3s16 pmin(leaves_a.MinEdge.X, y, z);
-		u32 i = leaves_a.index(pmin);
-		u32 vi = vmanip.m_area.index(pmin + p1);
-		for (s16 x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
+		uint32_t i = leaves_a.index(pmin);
+		uint32_t vi = vmanip.m_area.index(pmin + p1);
+		for (int16_t x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
 			v3s16 p(x, y, z);
 			if (vmanip.m_area.contains(p + p1) &&
 					(vmanip.m_data[vi].getContent() == CONTENT_AIR ||
@@ -744,7 +744,7 @@ void make_jungletree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 
 
 void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
-	s32 seed)
+	int32_t seed)
 {
 	/*
 		NOTE: Tree-placing code is currently duplicated in the engine
@@ -770,11 +770,11 @@ void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	MapNode snownode(c_snow);
 
 	PseudoRandom pr(seed);
-	u16 trunk_h = pr.range(9, 13);
+	uint16_t trunk_h = pr.range(9, 13);
 	v3s16 p1 = p0;
-	for (u16 ii = 0; ii < trunk_h; ii++) {
+	for (uint16_t ii = 0; ii < trunk_h; ii++) {
 		if (vmanip.m_area.contains(p1)) {
-			u32 vi = vmanip.m_area.index(p1);
+			uint32_t vi = vmanip.m_area.index(p1);
 			vmanip.m_data[vi] = treenode;
 		}
 		p1.Y++;
@@ -784,17 +784,17 @@ void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	p1.Y -= 1;
 
 	VoxelArea leaves_a(v3s16(-3, -6, -3), v3s16(3, 3, 3));
-	Buffer<u8> leaves_d(leaves_a.getVolume());
-	for (s32 i = 0; i < leaves_a.getVolume(); i++)
+	Buffer<uint8_t> leaves_d(leaves_a.getVolume());
+	for (int32_t i = 0; i < leaves_a.getVolume(); i++)
 		leaves_d[i] = 0;
 
 	// Upper branches
-	u16 dev = 3;
-	for (s16 yy = -1; yy <= 1; yy++) {
-		for (s16 zz = -dev; zz <= dev; zz++) {
-			u32 i = leaves_a.index(v3s16(-dev, yy, zz));
-			u32 ia = leaves_a.index(v3s16(-dev, yy+1, zz));
-			for (s16 xx = -dev; xx <= dev; xx++) {
+	uint16_t dev = 3;
+	for (int16_t yy = -1; yy <= 1; yy++) {
+		for (int16_t zz = -dev; zz <= dev; zz++) {
+			uint32_t i = leaves_a.index(v3s16(-dev, yy, zz));
+			uint32_t ia = leaves_a.index(v3s16(-dev, yy+1, zz));
+			for (int16_t xx = -dev; xx <= dev; xx++) {
 				if (pr.range(0, 20) <= 19 - dev) {
 					leaves_d[i] = 1;
 					leaves_d[ia] = 2;
@@ -812,17 +812,17 @@ void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	leaves_d[leaves_a.index(v3s16(0, 3, 0))] = 2;
 
 	// Lower branches
-	s16 my = -6;
-	for (u32 iii = 0; iii < 20; iii++) {
-		s16 xi = pr.range(-3, 2);
-		s16 yy = pr.range(-6, -5);
-		s16 zi = pr.range(-3, 2);
+	int16_t my = -6;
+	for (uint32_t iii = 0; iii < 20; iii++) {
+		int16_t xi = pr.range(-3, 2);
+		int16_t yy = pr.range(-6, -5);
+		int16_t zi = pr.range(-3, 2);
 		if (yy > my)
 			my = yy;
-		for (s16 zz = zi; zz <= zi + 1; zz++) {
-			u32 i = leaves_a.index(v3s16(xi, yy, zz));
-			u32 ia = leaves_a.index(v3s16(xi, yy + 1, zz));
-			for (s32 xx = xi; xx <= xi + 1; xx++) {
+		for (int16_t zz = zi; zz <= zi + 1; zz++) {
+			uint32_t i = leaves_a.index(v3s16(xi, yy, zz));
+			uint32_t ia = leaves_a.index(v3s16(xi, yy + 1, zz));
+			for (int32_t xx = xi; xx <= xi + 1; xx++) {
 				leaves_d[i] = 1;
 				if (leaves_d[ia] == 0)
 					leaves_d[ia] = 2;
@@ -833,11 +833,11 @@ void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	}
 
 	dev = 2;
-	for (s16 yy = my + 1; yy <= my + 2; yy++) {
-		for (s16 zz = -dev; zz <= dev; zz++) {
-			u32 i = leaves_a.index(v3s16(-dev, yy, zz));
-			u32 ia = leaves_a.index(v3s16(-dev, yy + 1, zz));
-			for (s16 xx = -dev; xx <= dev; xx++) {
+	for (int16_t yy = my + 1; yy <= my + 2; yy++) {
+		for (int16_t zz = -dev; zz <= dev; zz++) {
+			uint32_t i = leaves_a.index(v3s16(-dev, yy, zz));
+			uint32_t ia = leaves_a.index(v3s16(-dev, yy + 1, zz));
+			for (int16_t xx = -dev; xx <= dev; xx++) {
 				if (pr.range(0, 20) <= 19 - dev) {
 					leaves_d[i] = 1;
 					leaves_d[ia] = 2;
@@ -850,12 +850,12 @@ void make_pine_tree(MMVManip &vmanip, v3s16 p0, const NodeDefManager *ndef,
 	}
 
 	// Blit leaves to vmanip
-	for (s16 z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
-	for (s16 y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
+	for (int16_t z = leaves_a.MinEdge.Z; z <= leaves_a.MaxEdge.Z; z++)
+	for (int16_t y = leaves_a.MinEdge.Y; y <= leaves_a.MaxEdge.Y; y++) {
 		v3s16 pmin(leaves_a.MinEdge.X, y, z);
-		u32 i = leaves_a.index(pmin);
-		u32 vi = vmanip.m_area.index(pmin + p1);
-		for (s16 x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
+		uint32_t i = leaves_a.index(pmin);
+		uint32_t vi = vmanip.m_area.index(pmin + p1);
+		for (int16_t x = leaves_a.MinEdge.X; x <= leaves_a.MaxEdge.X; x++) {
 			v3s16 p(x, y, z);
 			if (vmanip.m_area.contains(p + p1) &&
 					(vmanip.m_data[vi].getContent() == CONTENT_AIR ||

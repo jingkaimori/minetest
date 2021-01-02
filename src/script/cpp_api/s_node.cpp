@@ -214,7 +214,7 @@ void ScriptApiNode::node_after_destruct(v3s16 p, MapNode node)
 	lua_pop(L, 1);  // Pop error handler
 }
 
-bool ScriptApiNode::node_on_timer(v3s16 p, MapNode node, f32 dtime)
+bool ScriptApiNode::node_on_timer(v3s16 p, MapNode node, float dtime)
 {
 	SCRIPTAPI_PRECHECKHEADER
 

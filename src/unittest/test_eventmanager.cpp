@@ -47,11 +47,11 @@ public:
 		emt->m_test_value = e->getType();
 	}
 
-	u64 getTestValue() const { return m_test_value; }
+	uint64_t getTestValue() const { return m_test_value; }
 	void resetValue() { m_test_value = 0; }
 
 private:
-	u64 m_test_value = 0;
+	uint64_t m_test_value = 0;
 };
 
 static TestEventManager g_test_instance;

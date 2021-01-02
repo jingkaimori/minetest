@@ -72,8 +72,8 @@
 #include "path.h"
 
 //! UTF-16 surrogate start values.
-static const irr::u16 UTF16_HI_SURROGATE = 0xD800;
-static const irr::u16 UTF16_LO_SURROGATE = 0xDC00;
+static const irr::uint16_t UTF16_HI_SURROGATE = 0xD800;
+static const irr::uint16_t UTF16_LO_SURROGATE = 0xDC00;
 
 //! Is a UTF-16 code point a surrogate?
 #define UTF16_IS_SURROGATE(c)		(((c) & 0xF800) == 0xD800)
@@ -90,9 +90,9 @@ namespace irr
 	typedef char16_t uchar16_t;
 	typedef char uchar8_t;
 #else
-	typedef u32 uchar32_t;
-	typedef u16 uchar16_t;
-	typedef u8 uchar8_t;
+	typedef uint32_t uchar32_t;
+	typedef uint16_t uchar16_t;
+	typedef uint8_t uchar8_t;
 #endif
 
 namespace core
@@ -102,7 +102,7 @@ namespace unicode
 {
 
 //! The unicode replacement character.  Used to replace invalid characters.
-const irr::u16 UTF_REPLACEMENT_CHARACTER = 0xFFFD;
+const irr::uint16_t UTF_REPLACEMENT_CHARACTER = 0xFFFD;
 
 //! Convert a UTF-16 surrogate pair into a UTF-32 character.
 //! \param high The high value of the pair.
@@ -134,24 +134,24 @@ inline uchar32_t swapEndian32(const uchar32_t& c)
 }
 
 //! The Unicode byte order mark.
-const u16 BOM = 0xFEFF;
+const uint16_t BOM = 0xFEFF;
 
 //! The size of the Unicode byte order mark in terms of the Unicode character size.
-const u8 BOM_UTF8_LEN = 3;
-const u8 BOM_UTF16_LEN = 1;
-const u8 BOM_UTF32_LEN = 1;
+const uint8_t BOM_UTF8_LEN = 3;
+const uint8_t BOM_UTF16_LEN = 1;
+const uint8_t BOM_UTF32_LEN = 1;
 
 //! Unicode byte order marks for file operations.
-const u8 BOM_ENCODE_UTF8[3] = { 0xEF, 0xBB, 0xBF };
-const u8 BOM_ENCODE_UTF16_BE[2] = { 0xFE, 0xFF };
-const u8 BOM_ENCODE_UTF16_LE[2] = { 0xFF, 0xFE };
-const u8 BOM_ENCODE_UTF32_BE[4] = { 0x00, 0x00, 0xFE, 0xFF };
-const u8 BOM_ENCODE_UTF32_LE[4] = { 0xFF, 0xFE, 0x00, 0x00 };
+const uint8_t BOM_ENCODE_UTF8[3] = { 0xEF, 0xBB, 0xBF };
+const uint8_t BOM_ENCODE_UTF16_BE[2] = { 0xFE, 0xFF };
+const uint8_t BOM_ENCODE_UTF16_LE[2] = { 0xFF, 0xFE };
+const uint8_t BOM_ENCODE_UTF32_BE[4] = { 0x00, 0x00, 0xFE, 0xFF };
+const uint8_t BOM_ENCODE_UTF32_LE[4] = { 0xFF, 0xFE, 0x00, 0x00 };
 
 //! The size in bytes of the Unicode byte marks for file operations.
-const u8 BOM_ENCODE_UTF8_LEN = 3;
-const u8 BOM_ENCODE_UTF16_LEN = 2;
-const u8 BOM_ENCODE_UTF32_LEN = 4;
+const uint8_t BOM_ENCODE_UTF8_LEN = 3;
+const uint8_t BOM_ENCODE_UTF16_LEN = 2;
+const uint8_t BOM_ENCODE_UTF32_LEN = 4;
 
 //! Unicode encoding type.
 enum EUTF_ENCODE
@@ -257,7 +257,7 @@ public:
 	class _ustring16_iterator_access
 	{
 		public:
-			_ustring16_iterator_access(const ustring16<TAlloc>* s, u32 p) : ref(s), pos(p) {}
+			_ustring16_iterator_access(const ustring16<TAlloc>* s, uint32_t p) : ref(s), pos(p) {}
 
 			//! Allow the class to be interpreted as a single UTF-32 character.
 			operator uchar32_t() const
@@ -442,7 +442,7 @@ public:
 			}
 
 			const ustring16<TAlloc>* ref;
-			u32 pos;
+			uint32_t pos;
 	};
 	typedef typename ustring16<TAlloc>::_ustring16_iterator_access access;
 
@@ -474,8 +474,8 @@ public:
 			typedef const_reference reference;
 #else
 			typedef access value_type;
-			typedef u32 difference_type;
-			typedef u32 distance_type;
+			typedef uint32_t difference_type;
+			typedef uint32_t distance_type;
 			typedef const_pointer pointer;
 			typedef const_reference reference;
 #endif
@@ -483,14 +483,14 @@ public:
 			//! Constructors.
 			_ustring16_const_iterator(const _Iter& i) : ref(i.ref), pos(i.pos) {}
 			_ustring16_const_iterator(const ustring16<TAlloc>& s) : ref(&s), pos(0) {}
-			_ustring16_const_iterator(const ustring16<TAlloc>& s, const u32 p) : ref(&s), pos(0)
+			_ustring16_const_iterator(const ustring16<TAlloc>& s, const uint32_t p) : ref(&s), pos(0)
 			{
 				if (ref->size_raw() == 0 || p == 0)
 					return;
 
 				// Go to the appropriate position.
-				u32 i = p;
-				u32 sr = ref->size_raw();
+				uint32_t i = p;
+				uint32_t sr = ref->size_raw();
 				const uchar16_t* a = ref->c_str();
 				while (i != 0 && pos < sr)
 				{
@@ -567,9 +567,9 @@ public:
 					return *this;
 
 				// Go to the appropriate position.
-				// TODO: Don't force u32 on an x64 OS.  Make it agnostic.
-				u32 i = (u32)v;
-				u32 sr = ref->size_raw();
+				// TODO: Don't force uint32_t on an x64 OS.  Make it agnostic.
+				uint32_t i = (u32)v;
+				uint32_t sr = ref->size_raw();
 				const uchar16_t* a = ref->c_str();
 				while (i != 0 && pos < sr)
 				{
@@ -595,8 +595,8 @@ public:
 					return *this;
 
 				// Go to the appropriate position.
-				// TODO: Don't force u32 on an x64 OS.  Make it agnostic.
-				u32 i = (u32)v;
+				// TODO: Don't force uint32_t on an x64 OS.  Make it agnostic.
+				uint32_t i = (u32)v;
 				const uchar16_t* a = ref->c_str();
 				while (i != 0 && pos != 0)
 				{
@@ -661,7 +661,7 @@ public:
 				if (pos >= ref->size_raw())
 				{
 					const uchar16_t* a = ref->c_str();
-					u32 p = ref->size_raw();
+					uint32_t p = ref->size_raw();
 					if (UTF16_IS_SURROGATE_LO(a[p]))
 						--p;
 					reference ret(ref, p);
@@ -677,7 +677,7 @@ public:
 				if (pos >= ref->size_raw())
 				{
 					const uchar16_t* a = ref->c_str();
-					u32 p = ref->size_raw();
+					uint32_t p = ref->size_raw();
 					if (UTF16_IS_SURROGATE_LO(a[p]))
 						--p;
 					reference ret(ref, p);
@@ -728,14 +728,14 @@ public:
 
 			//! Returns the iterator's position.
 			//! \return The iterator's position.
-			u32 getPos() const
+			uint32_t getPos() const
 			{
 				return pos;
 			}
 
 		protected:
 			const ustring16<TAlloc>* ref;
-			u32 pos;
+			uint32_t pos;
 	};
 
 	//! Iterator to iterate through a UTF-16 string.
@@ -760,7 +760,7 @@ public:
 			//! Constructors.
 			_ustring16_iterator(const _Iter& i) : _ustring16_const_iterator(i) {}
 			_ustring16_iterator(const ustring16<TAlloc>& s) : _ustring16_const_iterator(s) {}
-			_ustring16_iterator(const ustring16<TAlloc>& s, const u32 p) : _ustring16_const_iterator(s, p) {}
+			_ustring16_iterator(const ustring16<TAlloc>& s, const uint32_t p) : _ustring16_const_iterator(s, p) {}
 
 			//! Accesses the full character at the iterator's position.
 			reference operator*() const
@@ -768,7 +768,7 @@ public:
 				if (pos >= ref->size_raw())
 				{
 					const uchar16_t* a = ref->c_str();
-					u32 p = ref->size_raw();
+					uint32_t p = ref->size_raw();
 					if (UTF16_IS_SURROGATE_LO(a[p]))
 						--p;
 					reference ret(ref, p);
@@ -784,7 +784,7 @@ public:
 				if (pos >= ref->size_raw())
 				{
 					const uchar16_t* a = ref->c_str();
-					u32 p = ref->size_raw();
+					uint32_t p = ref->size_raw();
 					if (UTF16_IS_SURROGATE_LO(a[p]))
 						--p;
 					reference ret(ref, p);
@@ -906,7 +906,7 @@ public:
 
 
 	//! Constructor for copying a character string from a pointer with a given length.
-	ustring16(const char* const c, u32 length)
+	ustring16(const char* const c, uint32_t length)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -949,7 +949,7 @@ public:
 
 
 	//! Constructor for copying a UTF-8 string from a pointer with a given length.
-	ustring16(const uchar8_t* const c, u32 length)
+	ustring16(const uchar8_t* const c, uint32_t length)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -977,7 +977,7 @@ public:
 
 
 	//! Constructor for copying a UTF-16 string from a pointer with a given length
-	ustring16(const uchar16_t* const c, u32 length)
+	ustring16(const uchar16_t* const c, uint32_t length)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -1005,7 +1005,7 @@ public:
 
 
 	//! Constructor for copying a UTF-32 from a pointer with a given length.
-	ustring16(const uchar32_t* const c, u32 length)
+	ustring16(const uchar32_t* const c, uint32_t length)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -1038,7 +1038,7 @@ public:
 
 
 	//! Constructor for copying a wchar_t string from a pointer with a given length.
-	ustring16(const wchar_t* const c, u32 length)
+	ustring16(const wchar_t* const c, uint32_t length)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -1091,7 +1091,7 @@ public:
 		}
 
 		const uchar16_t* p = other.c_str();
-		for (u32 i=0; i<=used; ++i, ++p)
+		for (uint32_t i=0; i<=used; ++i, ++p)
 			array[i] = *p;
 
 		array[used] = 0;
@@ -1221,7 +1221,7 @@ public:
 
 
 	//! Direct access operator
-	access operator [](const u32 index)
+	access operator [](const uint32_t index)
 	{
 		_IRR_DEBUG_BREAK_IF(index>=size()) // bad index
 		iterator iter(*this, index);
@@ -1230,7 +1230,7 @@ public:
 
 
 	//! Direct access operator
-	const access operator [](const u32 index) const
+	const access operator [](const uint32_t index) const
 	{
 		_IRR_DEBUG_BREAK_IF(index>=size()) // bad index
 		const_iterator iter(*this, index);
@@ -1244,7 +1244,7 @@ public:
 		if (!str)
 			return false;
 
-		u32 i;
+		uint32_t i;
 		for(i=0; array[i] && str[i]; ++i)
 			if (array[i] != str[i])
 				return false;
@@ -1256,7 +1256,7 @@ public:
 	//! Equality operator
 	bool operator ==(const ustring16<TAlloc>& other) const
 	{
-		for(u32 i=0; array[i] && other.array[i]; ++i)
+		for(uint32_t i=0; array[i] && other.array[i]; ++i)
 			if (array[i] != other.array[i])
 				return false;
 
@@ -1267,9 +1267,9 @@ public:
 	//! Is smaller comparator
 	bool operator <(const ustring16<TAlloc>& other) const
 	{
-		for(u32 i=0; array[i] && other.array[i]; ++i)
+		for(uint32_t i=0; array[i] && other.array[i]; ++i)
 		{
-			s32 diff = array[i] - other.array[i];
+			int32_t diff = array[i] - other.array[i];
 			if ( diff )
 				return diff < 0;
 		}
@@ -1294,10 +1294,10 @@ public:
 
 	//! Returns the length of a ustring16 in full characters.
 	//! \return Length of a ustring16 in full characters.
-	u32 size() const
+	uint32_t size() const
 	{
 		const_iterator i(*this, 0);
-		u32 pos = 0;
+		uint32_t pos = 0;
 		while (!i.atEnd())
 		{
 			++i;
@@ -1327,9 +1327,9 @@ public:
 	//! \param other Other string to compare to.
 	//! \param n Number of characters to compare.
 	//! \return True if the n first characters of both strings are equal.
-	bool equalsn(const ustring16<TAlloc>& other, u32 n) const
+	bool equalsn(const ustring16<TAlloc>& other, uint32_t n) const
 	{
-		u32 i;
+		uint32_t i;
 		const uchar16_t* oa = other.c_str();
 		for(i=0; i < n && array[i] && oa[i]; ++i)
 			if (array[i] != oa[i])
@@ -1345,11 +1345,11 @@ public:
 	//! \param str Other string to compare to.
 	//! \param n Number of characters to compare.
 	//! \return True if the n first characters of both strings are equal.
-	bool equalsn(const uchar16_t* const str, u32 n) const
+	bool equalsn(const uchar16_t* const str, uint32_t n) const
 	{
 		if (!str)
 			return false;
-		u32 i;
+		uint32_t i;
 		for(i=0; i < n && array[i] && str[i]; ++i)
 			if (array[i] != str[i])
 				return false;
@@ -1394,13 +1394,13 @@ public:
 	//! \param other The UTF-8 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar8_t* const other, u32 length=0xffffffff)
+	ustring16<TAlloc>& append(const uchar8_t* const other, uint32_t length=0xffffffff)
 	{
 		if (!other)
 			return *this;
 
 		// Determine if the string is long enough for a BOM.
-		u32 len = 0;
+		uint32_t len = 0;
 		const uchar8_t* p = other;
 		do
 		{
@@ -1436,11 +1436,11 @@ public:
 		// If we need to grow the array, do it now.
 		if (used + len >= allocated)
 			reallocate(used + (len * 2));
-		u32 start = used;
+		uint32_t start = used;
 
 		// Convert UTF-8 to UTF-16.
-		u32 pos = start;
-		for (u32 l = 0; l<len;)
+		uint32_t pos = start;
+		for (uint32_t l = 0; l<len;)
 		{
 			++used;
 			if (((c2[l] >> 6) & 0x03) == 0x02)
@@ -1465,7 +1465,7 @@ public:
 
 				// Validate.
 				bool valid = true;
-				u8 l2 = 0;
+				uint8_t l2 = 0;
 				if (valid && (((c2[l+1] >> 6) & 0x03) == 0x02)) ++l2; else valid = false;
 				if (valid && (((c2[l+2] >> 6) & 0x03) == 0x02)) ++l2; else valid = false;
 				if (valid && (((c2[l+3] >> 6) & 0x03) == 0x02)) ++l2; else valid = false;
@@ -1504,7 +1504,7 @@ public:
 
 				// Validate.
 				bool valid = true;
-				u8 l2 = 0;
+				uint8_t l2 = 0;
 				if (valid && (((c2[l+1] >> 6) & 0x03) == 0x02)) ++l2; else valid = false;
 				if (valid && (((c2[l+2] >> 6) & 0x03) == 0x02)) ++l2; else valid = false;
 				if (!valid)
@@ -1570,13 +1570,13 @@ public:
 	//! \param other The UTF-16 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar16_t* const other, u32 length=0xffffffff)
+	ustring16<TAlloc>& append(const uchar16_t* const other, uint32_t length=0xffffffff)
 	{
 		if (!other)
 			return *this;
 
 		// Determine if the string is long enough for a BOM.
-		u32 len = 0;
+		uint32_t len = 0;
 		const uchar16_t* p = other;
 		do
 		{
@@ -1611,12 +1611,12 @@ public:
 		// If we need to grow the size of the array, do it now.
 		if (used + len >= allocated)
 			reallocate(used + (len * 2));
-		u32 start = used;
+		uint32_t start = used;
 		used += len;
 
 		// Copy the string now.
 		unicode::EUTF_ENDIAN m_end = getEndianness();
-		for (u32 l = start; l < start + len; ++l)
+		for (uint32_t l = start; l < start + len; ++l)
 		{
 			array[l] = (uchar16_t)c2[l];
 			if (c_end != unicode::EUTFEE_NATIVE && c_end != m_end)
@@ -1635,7 +1635,7 @@ public:
 	//! \param other The UTF-32 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar32_t* const other, u32 length=0xffffffff)
+	ustring16<TAlloc>& append(const uchar32_t* const other, uint32_t length=0xffffffff)
 	{
 		if (!other)
 			return *this;
@@ -1656,7 +1656,7 @@ public:
 		}
 
 		// Calculate the size of the string to read in.
-		u32 len = 0;
+		uint32_t len = 0;
 		const uchar32_t* p = c2;
 		do
 		{
@@ -1669,12 +1669,12 @@ public:
 		// In case all of the UTF-32 string is split into surrogate pairs, do len * 2.
 		if (used + (len * 2) >= allocated)
 			reallocate(used + ((len * 2) * 2));
-		u32 start = used;
+		uint32_t start = used;
 
 		// Convert UTF-32 to UTF-16.
 		unicode::EUTF_ENDIAN m_end = getEndianness();
-		u32 pos = start;
-		for (u32 l = 0; l<len; ++l)
+		uint32_t pos = start;
+		for (uint32_t l = 0; l<len; ++l)
 		{
 			++used;
 
@@ -1715,12 +1715,12 @@ public:
 	{
 		const uchar16_t* oa = other.c_str();
 
-		u32 len = other.size_raw();
+		uint32_t len = other.size_raw();
 
 		if (used + len >= allocated)
 			reallocate(used + len);
 
-		for (u32 l=0; l<len; ++l)
+		for (uint32_t l=0; l<len; ++l)
 			array[used+l] = oa[l];
 
 		used += len;
@@ -1734,7 +1734,7 @@ public:
 	//! \param other The string to append to this one.
 	//! \param length How many characters of the other string to add to this one.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const ustring16<TAlloc>& other, u32 length)
+	ustring16<TAlloc>& append(const ustring16<TAlloc>& other, uint32_t length)
 	{
 		if (other.size() == 0)
 			return *this;
@@ -1749,7 +1749,7 @@ public:
 			reallocate(used + length * 2);
 
 		const_iterator iter(other, 0);
-		u32 l = length;
+		uint32_t l = length;
 		while (!iter.atEnd() && l)
 		{
 			uchar32_t c = *iter;
@@ -1764,7 +1764,7 @@ public:
 
 	//! Reserves some memory.
 	//! \param count The amount of characters to reserve.
-	void reserve(u32 count)
+	void reserve(uint32_t count)
 	{
 		if (count < allocated)
 			return;
@@ -1776,11 +1776,11 @@ public:
 	//! Finds first occurrence of character.
 	//! \param c The character to search for.
 	//! \return Position where the character has been found, or -1 if not found.
-	s32 findFirst(uchar32_t c) const
+	int32_t findFirst(uchar32_t c) const
 	{
 		const_iterator i(*this, 0);
 
-		s32 pos = 0;
+		int32_t pos = 0;
 		while (!i.atEnd())
 		{
 			uchar32_t t = *i;
@@ -1797,18 +1797,18 @@ public:
 	//! \param c A list of characters to find. For example if the method should find the first occurrence of 'a' or 'b', this parameter should be "ab".
 	//! \param count The amount of characters in the list. Usually, this should be strlen(c).
 	//! \return Position where one of the characters has been found, or -1 if not found.
-	s32 findFirstChar(const uchar32_t* const c, u32 count=1) const
+	int32_t findFirstChar(const uchar32_t* const c, uint32_t count=1) const
 	{
 		if (!c || !count)
 			return -1;
 
 		const_iterator i(*this, 0);
 
-		s32 pos = 0;
+		int32_t pos = 0;
 		while (!i.atEnd())
 		{
 			uchar32_t t = *i;
-			for (u32 j=0; j<count; ++j)
+			for (uint32_t j=0; j<count; ++j)
 				if (t == c[j])
 					return pos;
 			++pos;
@@ -1823,18 +1823,18 @@ public:
 	//! \param c A list of characters to NOT find. For example if the method should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
 	//! \param count The amount of characters in the list. Usually, this should be strlen(c).
 	//! \return Position where the character has been found, or -1 if not found.
-	s32 findFirstCharNotInList(const uchar32_t* const c, u32 count=1) const
+	int32_t findFirstCharNotInList(const uchar32_t* const c, uint32_t count=1) const
 	{
 		if (!c || !count)
 			return -1;
 
 		const_iterator i(*this, 0);
 
-		s32 pos = 0;
+		int32_t pos = 0;
 		while (!i.atEnd())
 		{
 			uchar32_t t = *i;
-			u32 j;
+			uint32_t j;
 			for (j=0; j<count; ++j)
 				if (t == c[j])
 					break;
@@ -1852,7 +1852,7 @@ public:
 	//! \param c A list of characters to NOT find. For example if the method should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
 	//! \param count The amount of characters in the list. Usually, this should be strlen(c).
 	//! \return Position where the character has been found, or -1 if not found.
-	s32 findLastCharNotInList(const uchar32_t* const c, u32 count=1) const
+	int32_t findLastCharNotInList(const uchar32_t* const c, uint32_t count=1) const
 	{
 		if (!c || !count)
 			return -1;
@@ -1860,11 +1860,11 @@ public:
 		const_iterator i(end());
 		--i;
 
-		s32 pos = size() - 1;
+		int32_t pos = size() - 1;
 		while (!i.atStart())
 		{
 			uchar32_t t = *i;
-			u32 j;
+			uint32_t j;
 			for (j=0; j<count; ++j)
 				if (t == c[j])
 					break;
@@ -1882,11 +1882,11 @@ public:
 	//! \param c The character to search for.
 	//! \param startPos The position in the string to start searching.
 	//! \return Position where the character has been found, or -1 if not found.
-	s32 findNext(uchar32_t c, u32 startPos) const
+	int32_t findNext(uchar32_t c, uint32_t startPos) const
 	{
 		const_iterator i(*this, startPos);
 
-		s32 pos = startPos;
+		int32_t pos = startPos;
 		while (!i.atEnd())
 		{
 			uchar32_t t = *i;
@@ -1904,13 +1904,13 @@ public:
 	//! \param c The character to search for.
 	//! \param start The start position of the reverse search ( default = -1, on end ).
 	//! \return Position where the character has been found, or -1 if not found.
-	s32 findLast(uchar32_t c, s32 start = -1) const
+	int32_t findLast(uchar32_t c, int32_t start = -1) const
 	{
-		u32 s = size();
+		uint32_t s = size();
 		start = core::clamp ( start < 0 ? (s32)s : start, 0, (s32)s ) - 1;
 
 		const_iterator i(*this, start);
-		u32 pos = start;
+		uint32_t pos = start;
 		while (!i.atStart())
 		{
 			uchar32_t t = *i;
@@ -1927,7 +1927,7 @@ public:
 	//! \param c A list of strings to find. For example if the method should find the last occurrence of 'a' or 'b', this parameter should be "ab".
 	//! \param count The amount of characters in the list. Usually, this should be strlen(c).
 	//! \return Position where one of the characters has been found, or -1 if not found.
-	s32 findLastChar(const uchar32_t* const c, u32 count=1) const
+	int32_t findLastChar(const uchar32_t* const c, uint32_t count=1) const
 	{
 		if (!c || !count)
 			return -1;
@@ -1935,11 +1935,11 @@ public:
 		const_iterator i(end());
 		--i;
 
-		s32 pos = size();
+		int32_t pos = size();
 		while (!i.atStart())
 		{
 			uchar32_t t = *i;
-			for (u32 j=0; j<count; ++j)
+			for (uint32_t j=0; j<count; ++j)
 				if (t == c[j])
 					return pos;
 			--pos;
@@ -1954,17 +1954,17 @@ public:
 	//! \param str The string to find.
 	//! \param start The start position of the search.
 	//! \return Positions where the ustring16 has been found, or -1 if not found.
-	s32 find(const ustring16<TAlloc>& str, const u32 start = 0) const
+	int32_t find(const ustring16<TAlloc>& str, const uint32_t start = 0) const
 	{
-		u32 my_size = size();
-		u32 their_size = str.size();
+		uint32_t my_size = size();
+		uint32_t their_size = str.size();
 
 		if (their_size == 0 || my_size - start < their_size)
 			return -1;
 
 		const_iterator i(*this, start);
 
-		s32 pos = start;
+		int32_t pos = start;
 		while (!i.atEnd())
 		{
 			const_iterator i2(i);
@@ -1992,12 +1992,12 @@ public:
 	//! \param str The string to find.
 	//! \param start The start position of the search.
 	//! \return Positions where the string has been found, or -1 if not found.
-	s32 find_raw(const ustring16<TAlloc>& str, const u32 start = 0) const
+	int32_t find_raw(const ustring16<TAlloc>& str, const uint32_t start = 0) const
 	{
 		const uchar16_t* data = str.c_str();
 		if (data && *data)
 		{
-			u32 len = 0;
+			uint32_t len = 0;
 
 			while (data[len])
 				++len;
@@ -2005,9 +2005,9 @@ public:
 			if (len > used)
 				return -1;
 
-			for (u32 i=start; i<=used-len; ++i)
+			for (uint32_t i=start; i<=used-len; ++i)
 			{
-				u32 j=0;
+				uint32_t j=0;
 
 				while(data[j] && array[i+j] == data[j])
 					++j;
@@ -2025,9 +2025,9 @@ public:
 	//! \param begin: Start of substring.
 	//! \param length: Length of substring.
 	//! \return A reference to our current string.
-	ustring16<TAlloc> subString(u32 begin, s32 length) const
+	ustring16<TAlloc> subString(uint32_t begin, int32_t length) const
 	{
-		u32 len = size();
+		uint32_t len = size();
 		// if start after ustring16
 		// or no proper substring length
 		if ((length <= 0) || (begin>=len))
@@ -2192,19 +2192,19 @@ public:
 
 		const uchar16_t* other = toReplace.c_str();
 		const uchar16_t* replace = replaceWith.c_str();
-		const u32 other_size = toReplace.size_raw();
-		const u32 replace_size = replaceWith.size_raw();
+		const uint32_t other_size = toReplace.size_raw();
+		const uint32_t replace_size = replaceWith.size_raw();
 
 		// Determine the delta.  The algorithm will change depending on the delta.
-		s32 delta = replace_size - other_size;
+		int32_t delta = replace_size - other_size;
 
 		// A character for character replace.  The string will not shrink or grow.
 		if (delta == 0)
 		{
-			s32 pos = 0;
+			int32_t pos = 0;
 			while ((pos = find_raw(other, pos)) != -1)
 			{
-				for (u32 i = 0; i < replace_size; ++i)
+				for (uint32_t i = 0; i < replace_size; ++i)
 					array[pos + i] = replace[i];
 				++pos;
 			}
@@ -2214,14 +2214,14 @@ public:
 		// We are going to be removing some characters.  The string will shrink.
 		if (delta < 0)
 		{
-			u32 i = 0;
-			for (u32 pos = 0; pos <= used; ++i, ++pos)
+			uint32_t i = 0;
+			for (uint32_t pos = 0; pos <= used; ++i, ++pos)
 			{
 				// Is this potentially a match?
 				if (array[pos] == *other)
 				{
 					// Check to see if we have a match.
-					u32 j;
+					uint32_t j;
 					for (j = 0; j < other_size; ++j)
 					{
 						if (array[pos + j] != other[j])
@@ -2250,8 +2250,8 @@ public:
 
 		// We are going to be adding characters, so the string size will increase.
 		// Count the number of times toReplace exists in the string so we can allocate the new size.
-		u32 find_count = 0;
-		s32 pos = 0;
+		uint32_t find_count = 0;
+		int32_t pos = 0;
 		while ((pos = find_raw(other, pos)) != -1)
 		{
 			++find_count;
@@ -2259,7 +2259,7 @@ public:
 		}
 
 		// Re-allocate the string now, if needed.
-		u32 len = delta * find_count;
+		uint32_t len = delta * find_count;
 		if (used + len >= allocated)
 			reallocate(used + len);
 
@@ -2280,7 +2280,7 @@ public:
 			}
 
 			// Add the new string now.
-			for (u32 i = 0; i < replace_size; ++i)
+			for (uint32_t i = 0; i < replace_size; ++i)
 				array[pos + i] = replace[i];
 
 			pos += replace_size;
@@ -2298,10 +2298,10 @@ public:
 	//! \return A reference to our current string.
 	ustring16<TAlloc>& remove(uchar32_t c)
 	{
-		u32 pos = 0;
-		u32 found = 0;
-		u32 len = (c > 0xFFFF ? 2 : 1);		// Remove characters equal to the size of c as a UTF-16 character.
-		for (u32 i=0; i<=used; ++i)
+		uint32_t pos = 0;
+		uint32_t found = 0;
+		uint32_t len = (c > 0xFFFF ? 2 : 1);		// Remove characters equal to the size of c as a UTF-16 character.
+		for (uint32_t i=0; i<=used; ++i)
 		{
 			uchar32_t uc32 = 0;
 			if (!UTF16_IS_SURROGATE_HI(array[i]))
@@ -2311,7 +2311,7 @@ public:
 				// Convert the surrogate pair into a single UTF-32 character.
 				uc32 = unicode::toUTF32(array[i], array[i + 1]);
 			}
-			u32 len2 = (uc32 > 0xFFFF ? 2 : 1);
+			uint32_t len2 = (uc32 > 0xFFFF ? 2 : 1);
 
 			if (uc32 == c)
 			{
@@ -2334,15 +2334,15 @@ public:
 	//! \return A reference to our current string.
 	ustring16<TAlloc>& remove(const ustring16<TAlloc>& toRemove)
 	{
-		u32 size = toRemove.size_raw();
+		uint32_t size = toRemove.size_raw();
 		if (size == 0) return *this;
 
 		const uchar16_t* tra = toRemove.c_str();
-		u32 pos = 0;
-		u32 found = 0;
-		for (u32 i=0; i<=used; ++i)
+		uint32_t pos = 0;
+		uint32_t found = 0;
+		for (uint32_t i=0; i<=used; ++i)
 		{
-			u32 j = 0;
+			uint32_t j = 0;
 			while (j < size)
 			{
 				if (array[i + j] != tra[j])
@@ -2372,10 +2372,10 @@ public:
 		if (characters.size_raw() == 0)
 			return *this;
 
-		u32 pos = 0;
-		u32 found = 0;
+		uint32_t pos = 0;
+		uint32_t found = 0;
 		const_iterator iter(characters);
-		for (u32 i=0; i<=used; ++i)
+		for (uint32_t i=0; i<=used; ++i)
 		{
 			uchar32_t uc32 = 0;
 			if (!UTF16_IS_SURROGATE_HI(array[i]))
@@ -2385,7 +2385,7 @@ public:
 				// Convert the surrogate pair into a single UTF-32 character.
 				uc32 = unicode::toUTF32(array[i], array[i+1]);
 			}
-			u32 len2 = (uc32 > 0xFFFF ? 2 : 1);
+			uint32_t len2 = (uc32 > 0xFFFF ? 2 : 1);
 
 			bool cont = false;
 			iter.toStart();
@@ -2422,11 +2422,11 @@ public:
 		core::array<uchar32_t> utf32white = whitespace.toUTF32();
 
 		// find start and end of the substring without the specified characters
-		const s32 begin = findFirstCharNotInList(utf32white.const_pointer(), whitespace.used + 1);
+		const int32_t begin = findFirstCharNotInList(utf32white.const_pointer(), whitespace.used + 1);
 		if (begin == -1)
 			return (*this="");
 
-		const s32 end = findLastCharNotInList(utf32white.const_pointer(), whitespace.used + 1);
+		const int32_t end = findLastCharNotInList(utf32white.const_pointer(), whitespace.used + 1);
 
 		return (*this = subString(begin, (end +1) - begin));
 	}
@@ -2436,16 +2436,16 @@ public:
 	//! May be slow, because all elements following after the erased element have to be copied.
 	//! \param index Index of element to be erased.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& erase(u32 index)
+	ustring16<TAlloc>& erase(uint32_t index)
 	{
 		_IRR_DEBUG_BREAK_IF(index>used) // access violation
 
 		iterator i(*this, index);
 
 		uchar32_t t = *i;
-		u32 len = (t > 0xFFFF ? 2 : 1);
+		uint32_t len = (t > 0xFFFF ? 2 : 1);
 
-		for (u32 j = static_cast<u32>(i.getPos()) + len; j <= used; ++j)
+		for (uint32_t j = static_cast<u32>(i.getPos()) + len; j <= used; ++j)
 			array[j - len] = array[j];
 
 		used -= len;
@@ -2460,7 +2460,7 @@ public:
 	ustring16<TAlloc>& validate()
 	{
 		// Validate all unicode characters.
-		for (u32 i=0; i<allocated; ++i)
+		for (uint32_t i=0; i<allocated; ++i)
 		{
 			// Terminate on existing null.
 			if (array[i] == 0)
@@ -2537,22 +2537,22 @@ public:
 	\return The number of resulting substrings
 	*/
 	template<class container>
-	u32 split(container& ret, const uchar32_t* const c, u32 count=1, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
+	uint32_t split(container& ret, const uchar32_t* const c, uint32_t count=1, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
 	{
 		if (!c)
 			return 0;
 
 		const_iterator i(*this);
-		const u32 oldSize=ret.size();
-		u32 pos = 0;
-		u32 lastpos = 0;
-		u32 lastpospos = 0;
+		const uint32_t oldSize=ret.size();
+		uint32_t pos = 0;
+		uint32_t lastpos = 0;
+		uint32_t lastpospos = 0;
 		bool lastWasSeparator = false;
 		while (!i.atEnd())
 		{
 			uchar32_t ch = *i;
 			bool foundSeparator = false;
-			for (u32 j=0; j<count; ++j)
+			for (uint32_t j=0; j<count; ++j)
 			{
 				if (ch == c[j])
 				{
@@ -2569,7 +2569,7 @@ public:
 			++pos;
 			++i;
 		}
-		u32 s = size() + 1;
+		uint32_t s = size() + 1;
 		if (s > lastpos)
 			ret.push_back(ustring16<TAlloc>(&array[lastpospos], s - lastpos));
 		return ret.size()-oldSize;
@@ -2594,7 +2594,7 @@ public:
 	\return The number of resulting substrings
 	*/
 	template<class container>
-	u32 split(container& ret, const ustring16<TAlloc>& c, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
+	uint32_t split(container& ret, const ustring16<TAlloc>& c, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
 	{
 		core::array<uchar32_t> v = c.toUTF32();
 		return split(ret, v.pointer(), v.size(), ignoreEmptyTokens, keepSeparators);
@@ -2603,7 +2603,7 @@ public:
 
 	//! Gets the size of the allocated memory buffer for the string.
 	//! \return The size of the allocated memory buffer.
-	u32 capacity() const
+	uint32_t capacity() const
 	{
 		return allocated;
 	}
@@ -2611,7 +2611,7 @@ public:
 
 	//! Returns the raw number of UTF-16 code points in the string which includes the individual surrogates.
 	//! \return The raw number of UTF-16 code points, excluding the trialing NUL.
-	u32 size_raw() const
+	uint32_t size_raw() const
 	{
 		return used;
 	}
@@ -2621,9 +2621,9 @@ public:
 	//! \param c The character to insert.
 	//! \param pos The position to insert the character.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert(uchar32_t c, u32 pos)
+	ustring16<TAlloc>& insert(uchar32_t c, uint32_t pos)
 	{
-		u8 len = (c > 0xFFFF ? 2 : 1);
+		uint8_t len = (c > 0xFFFF ? 2 : 1);
 
 		if (used + len >= allocated)
 			reallocate(used + len);
@@ -2631,7 +2631,7 @@ public:
 		used += len;
 
 		iterator iter(*this, pos);
-		for (u32 i = used - 2; i > iter.getPos(); --i)
+		for (uint32_t i = used - 2; i > iter.getPos(); --i)
 			array[i] = array[i - len];
 
 		if (c > 0xFFFF)
@@ -2656,9 +2656,9 @@ public:
 	//! \param c The string to insert.
 	//! \param pos The position to insert the string.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert(const ustring16<TAlloc>& c, u32 pos)
+	ustring16<TAlloc>& insert(const ustring16<TAlloc>& c, uint32_t pos)
 	{
-		u32 len = c.size_raw();
+		uint32_t len = c.size_raw();
 		if (len == 0) return *this;
 
 		if (used + len >= allocated)
@@ -2667,11 +2667,11 @@ public:
 		used += len;
 
 		iterator iter(*this, pos);
-		for (u32 i = used - 2; i > iter.getPos() + len; --i)
+		for (uint32_t i = used - 2; i > iter.getPos() + len; --i)
 			array[i] = array[i - len];
 
 		const uchar16_t* s = c.c_str();
-		for (u32 i = 0; i < len; ++i)
+		for (uint32_t i = 0; i < len; ++i)
 		{
 			array[pos++] = *s;
 			++s;
@@ -2686,14 +2686,14 @@ public:
 	//! \param c The character to insert.
 	//! \param pos The position to insert the character.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert_raw(uchar16_t c, u32 pos)
+	ustring16<TAlloc>& insert_raw(uchar16_t c, uint32_t pos)
 	{
 		if (used + 1 >= allocated)
 			reallocate(used + 1);
 
 		++used;
 
-		for (u32 i = used - 1; i > pos; --i)
+		for (uint32_t i = used - 1; i > pos; --i)
 			array[i] = array[i - 1];
 
 		array[pos] = c;
@@ -2705,9 +2705,9 @@ public:
 	//! Removes a character from string.
 	//! \param pos Position of the character to remove.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& erase_raw(u32 pos)
+	ustring16<TAlloc>& erase_raw(uint32_t pos)
 	{
-		for (u32 i=pos; i<=used; ++i)
+		for (uint32_t i=pos; i<=used; ++i)
 		{
 			array[i] = array[i + 1];
 		}
@@ -2721,7 +2721,7 @@ public:
 	//! \param c The new character.
 	//! \param pos The position of the character to replace.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& replace_raw(uchar16_t c, u32 pos)
+	ustring16<TAlloc>& replace_raw(uchar16_t c, uint32_t pos)
 	{
 		array[pos] = c;
 		return *this;
@@ -2932,7 +2932,7 @@ public:
 		if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
 		{
 			char16_t* ptr = ret.c_str();
-			for (u32 i = 0; i < ret.size(); ++i)
+			for (uint32_t i = 0; i < ret.size(); ++i)
 				*ptr++ = unicode::swapEndian16(*ptr);
 		}
 		return ret;
@@ -2973,7 +2973,7 @@ public:
 		memcpy((void*)ptr, (void*)array, used * sizeof(uchar16_t));
 		if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
 		{
-			for (u32 i = 0; i <= used; ++i)
+			for (uint32_t i = 0; i <= used; ++i)
 				ptr[i] = unicode::swapEndian16(ptr[i]);
 		}
 		ret.set_used(used + (addBOM ? unicode::BOM_UTF16_LEN : 0));
@@ -3003,7 +3003,7 @@ public:
 				union
 				{
 					uchar32_t full;
-					u8 chunk[4];
+					uint8_t chunk[4];
 				} t;
 
 				if (endian == unicode::EUTFEE_LITTLE)
@@ -3057,7 +3057,7 @@ public:
 				union
 				{
 					uchar32_t full;
-					u8 chunk[4];
+					uint8_t chunk[4];
 				} t;
 
 				if (endian == unicode::EUTFEE_LITTLE)
@@ -3248,7 +3248,7 @@ private:
 
 	//! Reallocate the string, making it bigger or smaller.
 	//! \param new_size The new size of the string.
-	void reallocate(u32 new_size)
+	void reallocate(uint32_t new_size)
 	{
 		uchar16_t* old_array = array;
 
@@ -3256,8 +3256,8 @@ private:
 		allocated = new_size + 1;
 		if (old_array == 0) return;
 
-		u32 amount = used < new_size ? used : new_size;
-		for (u32 i=0; i<=amount; ++i)
+		uint32_t amount = used < new_size ? used : new_size;
+		for (uint32_t i=0; i<=amount; ++i)
 			array[i] = old_array[i];
 
 		if (allocated <= used)
@@ -3272,8 +3272,8 @@ private:
 
 	uchar16_t* array;
 	unicode::EUTF_ENCODE encoding;
-	u32 allocated;
-	u32 used;
+	uint32_t allocated;
+	uint32_t used;
 	TAlloc allocator;
 	//irrAllocator<uchar16_t> allocator;
 };
@@ -3874,7 +3874,7 @@ class hash : public std::unary_function<core::ustring, size_t>
 			core::ustring::const_iterator i = s.begin();
 			while (i != s.end())
 			{
-				// TODO: Don't force u32 on an x64 OS.  Make it agnostic.
+				// TODO: Don't force uint32_t on an x64 OS.  Make it agnostic.
 				ret = 16777619U * ret ^ (size_t)s[(u32)index];
 				index += stride;
 				i += stride;

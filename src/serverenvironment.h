@@ -64,13 +64,13 @@ public:
 	// Trigger interval in seconds
 	virtual float getTriggerInterval() = 0;
 	// Random chance of (1 / return value), 0 is disallowed
-	virtual u32 getTriggerChance() = 0;
+	virtual uint32_t getTriggerChance() = 0;
 	// Whether to modify chance to simulate time lost by an unnattended block
 	virtual bool getSimpleCatchUp() = 0;
 	// This is called usually at interval for 1/chance of the nodes
 	virtual void trigger(ServerEnvironment *env, v3s16 p, MapNode n){};
 	virtual void trigger(ServerEnvironment *env, v3s16 p, MapNode n,
-		u32 active_object_count, u32 active_object_count_wider){};
+		uint32_t active_object_count, uint32_t active_object_count_wider){};
 };
 
 struct ABMWithState
@@ -118,13 +118,13 @@ public:
 	void addLBMDef(LoadingBlockModifierDef *lbm_def);
 
 	void loadIntroductionTimes(const std::string &times,
-		IGameDef *gamedef, u32 now);
+		IGameDef *gamedef, uint32_t now);
 
 	// Don't call this before loadIntroductionTimes() ran.
 	std::string createIntroductionTimesString();
 
 	// Don't call this before loadIntroductionTimes() ran.
-	void applyLBMs(ServerEnvironment *env, MapBlock *block, u32 stamp);
+	void applyLBMs(ServerEnvironment *env, MapBlock *block, uint32_t stamp);
 
 	// Warning: do not make this std::unordered_map, order is relevant here
 	typedef std::map<u32, LBMContentMapping> lbm_lookup_map;
@@ -146,7 +146,7 @@ private:
 	// Returns an iterator to the LBMs that were introduced
 	// after the given time. This is guaranteed to return
 	// valid values for everything
-	lbm_lookup_map::const_iterator getLBMsIntroducedAfter(u32 time)
+	lbm_lookup_map::const_iterator getLBMsIntroducedAfter(uint32_t time)
 	{ return m_lbm_lookup.lower_bound(time); }
 };
 
@@ -158,8 +158,8 @@ class ActiveBlockList
 {
 public:
 	void update(std::vector<PlayerSAO*> &active_players,
-		s16 active_block_range,
-		s16 active_object_range,
+		int16_t active_block_range,
+		int16_t active_object_range,
 		std::set<v3s16> &blocks_removed,
 		std::set<v3s16> &blocks_added);
 
@@ -236,16 +236,16 @@ public:
 	void saveMeta();
 	void loadMeta();
 
-	u32 addParticleSpawner(float exptime);
-	u32 addParticleSpawner(float exptime, u16 attached_id);
-	void deleteParticleSpawner(u32 id, bool remove_from_object = true);
+	uint32_t addParticleSpawner(float exptime);
+	uint32_t addParticleSpawner(float exptime, uint16_t attached_id);
+	void deleteParticleSpawner(uint32_t id, bool remove_from_object = true);
 
 	/*
 		External ActiveObject interface
 		-------------------------------------------
 	*/
 
-	ServerActiveObject* getActiveObject(u16 id)
+	ServerActiveObject* getActiveObject(uint16_t id)
 	{
 		return m_ao_manager.getActiveObject(id);
 	}
@@ -258,7 +258,7 @@ public:
 		Returns the id of the object.
 		Returns 0 if not added and thus deleted.
 	*/
-	u16 addActiveObject(ServerActiveObject *object);
+	uint16_t addActiveObject(ServerActiveObject *object);
 
 	/*
 		Add an active object as a static object to the corresponding
@@ -273,8 +273,8 @@ public:
 		Find out what new objects have been added to
 		inside a radius around a position
 	*/
-	void getAddedActiveObjects(PlayerSAO *playersao, s16 radius,
-		s16 player_radius,
+	void getAddedActiveObjects(PlayerSAO *playersao, int16_t radius,
+		int16_t player_radius,
 		std::set<u16> &current_objects,
 		std::queue<u16> &added_objects);
 
@@ -282,8 +282,8 @@ public:
 		Find out what new objects have been removed from
 		inside a radius around a position
 	*/
-	void getRemovedActiveObjects(PlayerSAO *playersao, s16 radius,
-		s16 player_radius,
+	void getRemovedActiveObjects(PlayerSAO *playersao, int16_t radius,
+		int16_t player_radius,
 		std::set<u16> &current_objects,
 		std::queue<u16> &removed_objects);
 
@@ -302,7 +302,7 @@ public:
 		Activate objects and dynamically modify for the dtime determined
 		from timestamp and additional_dtime
 	*/
-	void activateBlock(MapBlock *block, u32 additional_dtime=0);
+	void activateBlock(MapBlock *block, uint32_t additional_dtime=0);
 
 	/*
 		{Active,Loading}BlockModifiers
@@ -323,7 +323,7 @@ public:
 	bool swapNode(v3s16 p, const MapNode &n);
 
 	// Find the daylight value at pos with a Depth First Search
-	u8 findSunlight(v3s16 pos) const;
+	uint8_t findSunlight(v3s16 pos) const;
 
 	// Find all active objects inside a radius around a point
 	void getObjectsInsideRadius(std::vector<ServerActiveObject *> &objects, const v3f &pos, float radius,
@@ -343,9 +343,9 @@ public:
 	void clearObjects(ClearObjectsMode mode);
 
 	// This makes stuff happen
-	void step(f32 dtime);
+	void step(float dtime);
 
-	u32 getGameTime() const { return m_game_time; }
+	uint32_t getGameTime() const { return m_game_time; }
 
 	void reportMaxLagEstimate(float f) { m_max_lag_estimate = f; }
 	float getMaxLagEstimate() { return m_max_lag_estimate; }
@@ -360,7 +360,7 @@ public:
 	RemotePlayer *getPlayer(const session_t peer_id);
 	RemotePlayer *getPlayer(const char* name);
 	const std::vector<RemotePlayer *> getPlayers() const { return m_players; }
-	u32 getPlayerCount() const { return m_players.size(); }
+	uint32_t getPlayerCount() const { return m_players.size(); }
 
 	static bool migratePlayersDatabase(const GameParams &game_params,
 			const Settings &cmd_args);
@@ -394,7 +394,7 @@ private:
 		Returns the id of the object.
 		Returns 0 if not added and thus deleted.
 	*/
-	u16 addActiveObjectRaw(ServerActiveObject *object, bool set_changed, u32 dtime_s);
+	uint16_t addActiveObjectRaw(ServerActiveObject *object, bool set_changed, uint32_t dtime_s);
 
 	/*
 		Remove all objects that satisfy (isGone() && m_known_by_count==0)
@@ -404,7 +404,7 @@ private:
 	/*
 		Convert stored objects from block to active
 	*/
-	void activateObjects(MapBlock *block, u32 dtime_s);
+	void activateObjects(MapBlock *block, uint32_t dtime_s);
 
 	/*
 		Convert objects that are not in active blocks to static.
@@ -421,9 +421,9 @@ private:
 		A few helpers used by the three above methods
 	*/
 	void deleteStaticFromBlock(
-			ServerActiveObject *obj, u16 id, u32 mod_reason, bool no_emerge);
-	bool saveStaticToBlock(v3s16 blockpos, u16 store_id,
-			ServerActiveObject *obj, const StaticObject &s_obj, u32 mod_reason);
+			ServerActiveObject *obj, uint16_t id, uint32_t mod_reason, bool no_emerge);
+	bool saveStaticToBlock(v3s16 blockpos, uint16_t store_id,
+			ServerActiveObject *obj, const StaticObject &s_obj, uint32_t mod_reason);
 
 	/*
 		Member variables
@@ -453,12 +453,12 @@ private:
 	bool m_meta_loaded = false;
 	// Time from the beginning of the game in seconds.
 	// Incremented in step().
-	u32 m_game_time = 0;
+	uint32_t m_game_time = 0;
 	// A helper variable for incrementing the latter
 	float m_game_time_fraction_counter = 0.0f;
 	// Time of last clearObjects call (game time).
 	// When a mapblock older than this is loaded, its objects are cleared.
-	u32 m_last_clear_objects_time = 0;
+	uint32_t m_last_clear_objects_time = 0;
 	// Active block modifiers
 	std::vector<ABMWithState> m_abms;
 	LBMManager m_lbm_mgr;

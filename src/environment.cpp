@@ -42,7 +42,7 @@ Environment::Environment(IGameDef *gamedef):
 	m_time_of_day_f = (float)m_time_of_day / 24000.0f;
 }
 
-u32 Environment::getDayNightRatio()
+uint32_t Environment::getDayNightRatio()
 {
 	MutexAutoLock lock(this->m_time_lock);
 	if (m_enable_day_night_ratio_override)
@@ -55,14 +55,14 @@ void Environment::setTimeOfDaySpeed(float speed)
 	m_time_of_day_speed = speed;
 }
 
-void Environment::setDayNightRatioOverride(bool enable, u32 value)
+void Environment::setDayNightRatioOverride(bool enable, uint32_t value)
 {
 	MutexAutoLock lock(this->m_time_lock);
 	m_enable_day_night_ratio_override = enable;
 	m_day_night_ratio_override = value;
 }
 
-void Environment::setTimeOfDay(u32 time)
+void Environment::setTimeOfDay(uint32_t time)
 {
 	MutexAutoLock lock(this->m_time_lock);
 	if (m_time_of_day > time)
@@ -71,7 +71,7 @@ void Environment::setTimeOfDay(u32 time)
 	m_time_of_day_f = (float)time / 24000.0;
 }
 
-u32 Environment::getTimeOfDay()
+uint32_t Environment::getTimeOfDay()
 {
 	MutexAutoLock lock(this->m_time_lock);
 	return m_time_of_day;
@@ -134,7 +134,7 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 
 	// The index of the first pointed thing that was not returned
 	// before. The last index which needs to be tested.
-	s16 lastIndex = state->m_iterator.m_last_index;
+	int16_t lastIndex = state->m_iterator.m_last_index;
 	if (!state->m_found.empty()) {
 		lastIndex = state->m_iterator.getIndex(
 			floatToInt(state->m_found.top().intersection_point, BS));
@@ -170,9 +170,9 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 		}
 
 		// For each untested node
-		for (s16 x = new_nodes.MinEdge.X; x <= new_nodes.MaxEdge.X; x++)
-		for (s16 y = new_nodes.MinEdge.Y; y <= new_nodes.MaxEdge.Y; y++)
-		for (s16 z = new_nodes.MinEdge.Z; z <= new_nodes.MaxEdge.Z; z++) {
+		for (int16_t x = new_nodes.MinEdge.X; x <= new_nodes.MaxEdge.X; x++)
+		for (int16_t y = new_nodes.MinEdge.Y; y <= new_nodes.MaxEdge.Y; y++)
+		for (int16_t z = new_nodes.MinEdge.Z; z <= new_nodes.MaxEdge.Z; z++) {
 			MapNode n;
 			v3s16 np(x, y, z);
 			bool is_valid_position;
@@ -194,7 +194,7 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 			// Minimal distance of all collisions
 			float min_distance_sq = 10000000;
 			// ID of the current box (loop counter)
-			u16 id = 0;
+			uint16_t id = 0;
 
 			v3f npf = intToFloat(np, BS);
 			// This loop translates the boxes to their in-world place.
@@ -211,7 +211,7 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 					continue;
 				}
 
-				f32 distanceSq = (intersection_point
+				float distanceSq = (intersection_point
 					- state->m_shootline.start).getLengthSQ();
 				// If this is the nearest collision, save it
 				if (min_distance_sq > distanceSq) {
@@ -232,7 +232,7 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 			result.node_undersurface = np;
 			result.distanceSq = min_distance_sq;
 			// Set undersurface and abovesurface nodes
-			f32 d = 0.002 * BS;
+			float d = 0.002 * BS;
 			v3f fake_intersection = result.intersection_point;
 			// Move intersection towards its source block.
 			if (fake_intersection.X < found_boxcenter.X) {
@@ -258,7 +258,7 @@ void Environment::continueRaycast(RaycastState *state, PointedThing *result)
 			state->m_found.push(result);
 			// If this is nearer than the old nearest object,
 			// the search can be shorter
-			s16 newIndex = state->m_iterator.getIndex(
+			int16_t newIndex = state->m_iterator.getIndex(
 				result.node_real_undersurface);
 			if (newIndex < lastIndex) {
 				lastIndex = newIndex;
@@ -283,11 +283,11 @@ void Environment::stepTimeOfDay(float dtime)
 
 	// Cached in order to prevent the two reads we do to give
 	// different results (can be written by code not under the lock)
-	f32 cached_time_of_day_speed = m_time_of_day_speed;
+	float cached_time_of_day_speed = m_time_of_day_speed;
 
-	f32 speed = cached_time_of_day_speed * 24000. / (24. * 3600);
+	float speed = cached_time_of_day_speed * 24000. / (24. * 3600);
 	m_time_conversion_skew += dtime;
-	u32 units = (u32)(m_time_conversion_skew * speed);
+	uint32_t units = (uint32_t)(m_time_conversion_skew * speed);
 	bool sync_f = false;
 	if (units > 0) {
 		// Sync at overflow
@@ -311,8 +311,8 @@ void Environment::stepTimeOfDay(float dtime)
 	}
 }
 
-u32 Environment::getDayCount()
+uint32_t Environment::getDayCount()
 {
-	// Atomic<u32> counter
+	// Atomic<uint32_t> counter
 	return m_day_count;
 }

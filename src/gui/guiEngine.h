@@ -105,7 +105,7 @@ public:
 	 * @param name path to the texture
 	 * @param id receives the texture ID, always 0 in this implementation
 	 */
-	video::ITexture *getTexture(const std::string &name, u32 *id = NULL);
+	video::ITexture *getTexture(const std::string &name, uint32_t *id = NULL);
 
 private:
 	/** driver to get textures from */
@@ -277,14 +277,14 @@ private:
 	/** do preprocessing for cloud subsystem */
 	void cloudPreProcess();
 	/** do postprocessing for cloud subsystem */
-	void cloudPostProcess(u32 frametime_min, IrrlichtDevice *device);
+	void cloudPostProcess(uint32_t frametime_min, IrrlichtDevice *device);
 
 	/** internam data required for drawing clouds */
 	struct clouddata {
 		/** delta time since last cloud processing */
-		f32     dtime;
+		float     dtime;
 		/** absolute time of last cloud processing */
-		u32     lasttime;
+		uint32_t     lasttime;
 		/** pointer to cloud class */
 		Clouds *clouds = nullptr;
 		/** camera required for drawing clouds */
@@ -297,9 +297,9 @@ private:
 	clouddata   m_cloud;
 
 	/** start playing a sound and return handle */
-	s32 playSound(const SimpleSoundSpec &spec, bool looped);
+	int32_t playSound(const SimpleSoundSpec &spec, bool looped);
 	/** stop playing a sound started with playSound() */
-	void stopSound(s32 handle);
+	void stopSound(int32_t handle);
 
 
 };

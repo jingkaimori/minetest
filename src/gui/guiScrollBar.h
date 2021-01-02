@@ -20,7 +20,7 @@ using namespace gui;
 class GUIScrollBar : public IGUIElement
 {
 public:
-	GUIScrollBar(IGUIEnvironment *environment, IGUIElement *parent, s32 id,
+	GUIScrollBar(IGUIEnvironment *environment, IGUIElement *parent, int32_t id,
 			core::rect<s32> rectangle, bool horizontal, bool auto_scale);
 
 	enum ArrowVisibility
@@ -34,24 +34,24 @@ public:
 	virtual void updateAbsolutePosition();
 	virtual bool OnEvent(const SEvent &event);
 
-	s32 getMax() const { return max_pos; }
-	s32 getMin() const { return min_pos; }
-	s32 getLargeStep() const { return large_step; }
-	s32 getSmallStep() const { return small_step; }
-	s32 getPos() const;
+	int32_t getMax() const { return max_pos; }
+	int32_t getMin() const { return min_pos; }
+	int32_t getLargeStep() const { return large_step; }
+	int32_t getSmallStep() const { return small_step; }
+	int32_t getPos() const;
 
-	void setMax(const s32 &max);
-	void setMin(const s32 &min);
-	void setSmallStep(const s32 &step);
-	void setLargeStep(const s32 &step);
-	void setPos(const s32 &pos);
-	void setPageSize(const s32 &size);
+	void setMax(const int32_t &max);
+	void setMin(const int32_t &min);
+	void setSmallStep(const int32_t &step);
+	void setLargeStep(const int32_t &step);
+	void setPos(const int32_t &pos);
+	void setPageSize(const int32_t &size);
 	void setArrowsVisible(ArrowVisibility visible);
 
 private:
 	void refreshControls();
-	s32 getPosFromMousePos(const core::position2di &p) const;
-	f32 range() const { return f32(max_pos - min_pos); }
+	int32_t getPosFromMousePos(const core::position2di &p) const;
+	float range() const { return f32(max_pos - min_pos); }
 
 	IGUIButton *up_button;
 	IGUIButton *down_button;
@@ -61,16 +61,16 @@ private:
 	bool is_auto_scaling;
 	bool dragged_by_slider;
 	bool tray_clicked;
-	s32 scroll_pos;
-	s32 draw_center;
-	s32 thumb_size;
-	s32 min_pos;
-	s32 max_pos;
-	s32 small_step;
-	s32 large_step;
-	s32 drag_offset;
-	s32 page_size;
-	s32 border_size;
+	int32_t scroll_pos;
+	int32_t draw_center;
+	int32_t thumb_size;
+	int32_t min_pos;
+	int32_t max_pos;
+	int32_t small_step;
+	int32_t large_step;
+	int32_t drag_offset;
+	int32_t page_size;
+	int32_t border_size;
 
 	core::rect<s32> slider_rect;
 	video::SColor current_icon_color;

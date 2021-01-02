@@ -67,7 +67,7 @@ MenuTextureSource::~MenuTextureSource()
 }
 
 /******************************************************************************/
-video::ITexture *MenuTextureSource::getTexture(const std::string &name, u32 *id)
+video::ITexture *MenuTextureSource::getTexture(const std::string &name, uint32_t *id)
 {
 	if (id)
 		*id = 0;
@@ -239,7 +239,7 @@ void GUIEngine::run()
 
 	unsigned int text_height = g_fontengine->getTextHeight();
 
-	irr::core::dimension2d<u32> previous_screen_size(g_settings->getU16("screen_w"),
+	irr::core::dimension2d<uint32_t> previous_screen_size(g_settings->getU16("screen_w"),
 		g_settings->getU16("screen_h"));
 
 	static const video::SColor sky_color(255, 140, 186, 250);
@@ -248,9 +248,9 @@ void GUIEngine::run()
 	{
 		video::SColor fog_color;
 		video::E_FOG_TYPE fog_type = video::EFT_FOG_LINEAR;
-		f32 fog_start = 0;
-		f32 fog_end = 0;
-		f32 fog_density = 0;
+		float fog_start = 0;
+		float fog_end = 0;
+		float fog_density = 0;
 		bool fog_pixelfog = false;
 		bool fog_rangefog = false;
 		driver->getFog(fog_color, fog_type, fog_start, fog_end, fog_density,
@@ -262,13 +262,13 @@ void GUIEngine::run()
 
 	while (RenderingEngine::run() && (!m_startgame) && (!m_kill)) {
 
-		const irr::core::dimension2d<u32> &current_screen_size =
+		const irr::core::dimension2d<uint32_t> &current_screen_size =
 			RenderingEngine::get_video_driver()->getScreenSize();
 		// Verify if window size has changed and save it if it's the case
 		// Ensure evaluating settings->getBool after verifying screensize
 		// First condition is cheaper
 		if (previous_screen_size != current_screen_size &&
-				current_screen_size != irr::core::dimension2d<u32>(0,0) &&
+				current_screen_size != irr::core::dimension2d<uint32_t>(0,0) &&
 				g_settings->getBool("autosave_screensize")) {
 			g_settings->setU16("screen_w", current_screen_size.Width);
 			g_settings->setU16("screen_h", current_screen_size.Height);
@@ -299,7 +299,7 @@ void GUIEngine::run()
 		driver->endScene();
 
 		IrrlichtDevice *device = RenderingEngine::get_raw_device();
-		u32 frametime_min = 1000 / (device->isWindowFocused()
+		uint32_t frametime_min = 1000 / (device->isWindowFocused()
 			? g_settings->getFloat("fps_max")
 			: g_settings->getFloat("fps_max_unfocused"));
 		if (m_clouds_enabled)
@@ -357,7 +357,7 @@ void GUIEngine::cloudInit()
 /******************************************************************************/
 void GUIEngine::cloudPreProcess()
 {
-	u32 time = RenderingEngine::get_timer_time();
+	uint32_t time = RenderingEngine::get_timer_time();
 
 	if(time > m_cloud.lasttime)
 		m_cloud.dtime = (time - m_cloud.lasttime) / 1000.0;
@@ -372,13 +372,13 @@ void GUIEngine::cloudPreProcess()
 }
 
 /******************************************************************************/
-void GUIEngine::cloudPostProcess(u32 frametime_min, IrrlichtDevice *device)
+void GUIEngine::cloudPostProcess(uint32_t frametime_min, IrrlichtDevice *device)
 {
 	// Time of frame without fps limit
-	u32 busytime_u32;
+	uint32_t busytime_u32;
 
 	// not using getRealTime is necessary for wine
-	u32 time = RenderingEngine::get_timer_time();
+	uint32_t time = RenderingEngine::get_timer_time();
 	if(time > m_cloud.lasttime)
 		busytime_u32 = time - m_cloud.lasttime;
 	else
@@ -386,7 +386,7 @@ void GUIEngine::cloudPostProcess(u32 frametime_min, IrrlichtDevice *device)
 
 	// FPS limit
 	if (busytime_u32 < frametime_min) {
-		u32 sleeptime = frametime_min - busytime_u32;
+		uint32_t sleeptime = frametime_min - busytime_u32;
 		device->sleep(sleeptime);
 	}
 }
@@ -464,7 +464,7 @@ void GUIEngine::drawOverlay(video::IVideoDriver *driver)
 /******************************************************************************/
 void GUIEngine::drawHeader(video::IVideoDriver *driver)
 {
-	core::dimension2d<u32> screensize = driver->getScreenSize();
+	core::dimension2d<uint32_t> screensize = driver->getScreenSize();
 
 	video::ITexture* texture = m_textures[TEX_LAYER_HEADER].texture;
 
@@ -472,14 +472,14 @@ void GUIEngine::drawHeader(video::IVideoDriver *driver)
 	if(!texture)
 		return;
 
-	f32 mult = (((f32)screensize.Width / 2.0)) /
+	float mult = (((f32)screensize.Width / 2.0)) /
 			((f32)texture->getOriginalSize().Width);
 
 	v2s32 splashsize(((f32)texture->getOriginalSize().Width) * mult,
 			((f32)texture->getOriginalSize().Height) * mult);
 
 	// Don't draw the header if there isn't enough room
-	s32 free_space = (((s32)screensize.Height)-320)/2;
+	int32_t free_space = (((s32)screensize.Height)-320)/2;
 
 	if (free_space > splashsize.Y) {
 		core::rect<s32> splashrect(0, 0, splashsize.X, splashsize.Y);
@@ -498,7 +498,7 @@ void GUIEngine::drawHeader(video::IVideoDriver *driver)
 /******************************************************************************/
 void GUIEngine::drawFooter(video::IVideoDriver *driver)
 {
-	core::dimension2d<u32> screensize = driver->getScreenSize();
+	core::dimension2d<uint32_t> screensize = driver->getScreenSize();
 
 	video::ITexture* texture = m_textures[TEX_LAYER_FOOTER].texture;
 
@@ -506,14 +506,14 @@ void GUIEngine::drawFooter(video::IVideoDriver *driver)
 	if(!texture)
 		return;
 
-	f32 mult = (((f32)screensize.Width)) /
+	float mult = (((f32)screensize.Width)) /
 			((f32)texture->getOriginalSize().Width);
 
 	v2s32 footersize(((f32)texture->getOriginalSize().Width) * mult,
 			((f32)texture->getOriginalSize().Height) * mult);
 
 	// Don't draw the footer if there isn't enough room
-	s32 free_space = (((s32)screensize.Height)-320)/2;
+	int32_t free_space = (((s32)screensize.Height)-320)/2;
 
 	if (free_space > footersize.Y) {
 		core::rect<s32> rect(0,0,footersize.X,footersize.Y);
@@ -605,12 +605,12 @@ void GUIEngine::updateTopLeftTextSize()
 /******************************************************************************/
 s32 GUIEngine::playSound(const SimpleSoundSpec &spec, bool looped)
 {
-	s32 handle = m_sound_manager->playSound(spec, looped);
+	int32_t handle = m_sound_manager->playSound(spec, looped);
 	return handle;
 }
 
 /******************************************************************************/
-void GUIEngine::stopSound(s32 handle)
+void GUIEngine::stopSound(int32_t handle)
 {
 	m_sound_manager->stopSound(handle);
 }

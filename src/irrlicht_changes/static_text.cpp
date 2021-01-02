@@ -28,7 +28,7 @@ namespace gui
 //! constructor
 StaticText::StaticText(const EnrichedString &text, bool border,
 			IGUIEnvironment* environment, IGUIElement* parent,
-			s32 id, const core::rect<s32>& rectangle,
+			int32_t id, const core::rect<s32>& rectangle,
 			bool background)
 : IGUIStaticText(environment, parent, id, rectangle),
 	HAlign(EGUIA_UPPERLEFT), VAlign(EGUIA_UPPERLEFT),
@@ -84,8 +84,8 @@ void StaticText::draw()
 			updateText();
 
 		core::rect<s32> r = frameRect;
-		s32 height_line = font->getDimension(L"A").Height + font->getKerningHeight();
-		s32 height_total = height_line * BrokenText.size();
+		int32_t height_line = font->getDimension(L"A").Height + font->getKerningHeight();
+		int32_t height_total = height_line * BrokenText.size();
 		if (VAlign == EGUIA_CENTER && WordWrap)
 		{
 			r.UpperLeftCorner.Y = r.getCenter().Y - (height_total / 2);
@@ -330,9 +330,9 @@ void StaticText::updateText()
 	EnrichedString line;
 	EnrichedString word;
 	EnrichedString whitespace;
-	s32 size = cText.size();
-	s32 length = 0;
-	s32 elWidth = RelativeRect.getWidth();
+	int32_t size = cText.size();
+	int32_t length = 0;
+	int32_t elWidth = RelativeRect.getWidth();
 	if (Border)
 		elWidth -= 2*skin->getSize(EGDS_TEXT_DISTANCE_X);
 	wchar_t c;
@@ -345,7 +345,7 @@ void StaticText::updateText()
 	if (!RightToLeft)
 	{
 		// regular (left-to-right)
-		for (s32 i=0; i<size; ++i)
+		for (int32_t i=0; i<size; ++i)
 		{
 			c = cText.getString()[i];
 			bool lineBreak = false;
@@ -380,9 +380,9 @@ void StaticText::updateText()
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const s32 whitelgth = font->getDimension(whitespace.c_str()).Width;
+					const int32_t whitelgth = font->getDimension(whitespace.c_str()).Width;
 					//const std::wstring sanitized = removeEscapes(word.c_str());
-					const s32 wordlgth = font->getDimension(word.c_str()).Width;
+					const int32_t wordlgth = font->getDimension(word.c_str()).Width;
 
 					if (wordlgth > elWidth)
 					{
@@ -396,7 +396,7 @@ void StaticText::updateText()
 							EnrichedString second = word.substr(where, word.size() - where);
 							first.addCharNoColor(L'-');
 							BrokenText.push_back(line + first);
-							const s32 secondLength = font->getDimension(second.c_str()).Width;
+							const int32_t secondLength = font->getDimension(second.c_str()).Width;
 
 							length = secondLength;
 							line = second;
@@ -456,7 +456,7 @@ void StaticText::updateText()
 	else
 	{
 		// right-to-left
-		for (s32 i=size; i>=0; --i)
+		for (int32_t i=size; i>=0; --i)
 		{
 			c = cText.getString()[i];
 			bool lineBreak = false;
@@ -483,8 +483,8 @@ void StaticText::updateText()
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const s32 whitelgth = font->getDimension(whitespace.c_str()).Width;
-					const s32 wordlgth = font->getDimension(word.c_str()).Width;
+					const int32_t whitelgth = font->getDimension(whitespace.c_str()).Width;
+					const int32_t wordlgth = font->getDimension(word.c_str()).Width;
 
 					if (length && (length + wordlgth + whitelgth > elWidth))
 					{
@@ -564,7 +564,7 @@ s32 StaticText::getTextHeight() const
 		return 0;
 
 	if (WordWrap) {
-		s32 height = font->getDimension(L"A").Height + font->getKerningHeight();
+		int32_t height = font->getDimension(L"A").Height + font->getKerningHeight();
 		return height * BrokenText.size();
 	}
 	// There may be intentional new lines without WordWrap
@@ -578,10 +578,10 @@ s32 StaticText::getTextWidth() const
 	if (!font)
 		return 0;
 
-	s32 widest = 0;
+	int32_t widest = 0;
 
 	for (const EnrichedString &line : BrokenText) {
-		s32 width = font->getDimension(line.c_str()).Width;
+		int32_t width = font->getDimension(line.c_str()).Width;
 
 		if (width > widest)
 			widest = width;

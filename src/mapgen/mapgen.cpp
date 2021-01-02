@@ -209,7 +209,7 @@ MapgenParams *Mapgen::createMapgenParams(MapgenType mgtype)
 
 void Mapgen::getMapgenNames(std::vector<const char *> *mgnames, bool include_hidden)
 {
-	for (u32 i = 0; i != ARRLEN(g_reg_mapgens); i++) {
+	for (uint32_t i = 0; i != ARRLEN(g_reg_mapgens); i++) {
 		if (include_hidden || g_reg_mapgens[i].is_user_visible)
 			mgnames->push_back(g_reg_mapgens[i].name);
 	}
@@ -227,29 +227,29 @@ void Mapgen::setDefaultSettings(Settings *settings)
 	}
 }
 
-u32 Mapgen::getBlockSeed(v3s16 p, s32 seed)
+uint32_t Mapgen::getBlockSeed(v3s16 p, int32_t seed)
 {
-	return (u32)seed   +
+	return (uint32_t)seed   +
 		p.Z * 38134234 +
 		p.Y * 42123    +
 		p.X * 23;
 }
 
 
-u32 Mapgen::getBlockSeed2(v3s16 p, s32 seed)
+uint32_t Mapgen::getBlockSeed2(v3s16 p, int32_t seed)
 {
-	u32 n = 1619 * p.X + 31337 * p.Y + 52591 * p.Z + 1013 * seed;
+	uint32_t n = 1619 * p.X + 31337 * p.Y + 52591 * p.Z + 1013 * seed;
 	n = (n >> 13) ^ n;
 	return (n * (n * n * 60493 + 19990303) + 1376312589);
 }
 
 
 // Returns -MAX_MAP_GENERATION_LIMIT if not found
-s16 Mapgen::findGroundLevel(v2s16 p2d, s16 ymin, s16 ymax)
+s16 Mapgen::findGroundLevel(v2s16 p2d, int16_t ymin, int16_t ymax)
 {
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 i = vm->m_area.index(p2d.X, ymax, p2d.Y);
-	s16 y;
+	uint32_t i = vm->m_area.index(p2d.X, ymax, p2d.Y);
+	int16_t y;
 
 	for (y = ymax; y >= ymin; y--) {
 		MapNode &n = vm->m_data[i];
@@ -263,11 +263,11 @@ s16 Mapgen::findGroundLevel(v2s16 p2d, s16 ymin, s16 ymax)
 
 
 // Returns -MAX_MAP_GENERATION_LIMIT if not found or if ground is found first
-s16 Mapgen::findLiquidSurface(v2s16 p2d, s16 ymin, s16 ymax)
+s16 Mapgen::findLiquidSurface(v2s16 p2d, int16_t ymin, int16_t ymax)
 {
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 i = vm->m_area.index(p2d.X, ymax, p2d.Y);
-	s16 y;
+	uint32_t i = vm->m_area.index(p2d.X, ymax, p2d.Y);
+	int16_t y;
 
 	for (y = ymax; y >= ymin; y--) {
 		MapNode &n = vm->m_data[i];
@@ -290,9 +290,9 @@ void Mapgen::updateHeightmap(v3s16 nmin, v3s16 nmax)
 
 	//TimeTaker t("Mapgen::updateHeightmap", NULL, PRECISION_MICRO);
 	int index = 0;
-	for (s16 z = nmin.Z; z <= nmax.Z; z++) {
-		for (s16 x = nmin.X; x <= nmax.X; x++, index++) {
-			s16 y = findGroundLevel(v2s16(x, z), nmin.Y, nmax.Y);
+	for (int16_t z = nmin.Z; z <= nmax.Z; z++) {
+		for (int16_t x = nmin.X; x <= nmax.X; x++, index++) {
+			int16_t y = findGroundLevel(v2s16(x, z), nmin.Y, nmax.Y);
 
 			heightmap[index] = y;
 		}
@@ -300,18 +300,18 @@ void Mapgen::updateHeightmap(v3s16 nmin, v3s16 nmax)
 }
 
 
-void Mapgen::getSurfaces(v2s16 p2d, s16 ymin, s16 ymax,
+void Mapgen::getSurfaces(v2s16 p2d, int16_t ymin, int16_t ymax,
 	std::vector<s16> &floors, std::vector<s16> &ceilings)
 {
 	const v3s16 &em = vm->m_area.getExtent();
 
 	bool is_walkable = false;
-	u32 vi = vm->m_area.index(p2d.X, ymax, p2d.Y);
+	uint32_t vi = vm->m_area.index(p2d.X, ymax, p2d.Y);
 	MapNode mn_max = vm->m_data[vi];
 	bool walkable_above = ndef->get(mn_max).walkable;
 	VoxelArea::add_y(em, vi, -1);
 
-	for (s16 y = ymax - 1; y >= ymin; y--) {
+	for (int16_t y = ymax - 1; y >= ymin; y--) {
 		MapNode mn = vm->m_data[vi];
 		is_walkable = ndef->get(mn).walkable;
 
@@ -327,30 +327,30 @@ void Mapgen::getSurfaces(v2s16 p2d, s16 ymin, s16 ymax,
 }
 
 
-inline bool Mapgen::isLiquidHorizontallyFlowable(u32 vi, v3s16 em)
+inline bool Mapgen::isLiquidHorizontallyFlowable(uint32_t vi, v3s16 em)
 {
-	u32 vi_neg_x = vi;
+	uint32_t vi_neg_x = vi;
 	VoxelArea::add_x(em, vi_neg_x, -1);
 	if (vm->m_data[vi_neg_x].getContent() != CONTENT_IGNORE) {
 		const ContentFeatures &c_nx = ndef->get(vm->m_data[vi_neg_x]);
 		if (c_nx.floodable && !c_nx.isLiquid())
 			return true;
 	}
-	u32 vi_pos_x = vi;
+	uint32_t vi_pos_x = vi;
 	VoxelArea::add_x(em, vi_pos_x, +1);
 	if (vm->m_data[vi_pos_x].getContent() != CONTENT_IGNORE) {
 		const ContentFeatures &c_px = ndef->get(vm->m_data[vi_pos_x]);
 		if (c_px.floodable && !c_px.isLiquid())
 			return true;
 	}
-	u32 vi_neg_z = vi;
+	uint32_t vi_neg_z = vi;
 	VoxelArea::add_z(em, vi_neg_z, -1);
 	if (vm->m_data[vi_neg_z].getContent() != CONTENT_IGNORE) {
 		const ContentFeatures &c_nz = ndef->get(vm->m_data[vi_neg_z]);
 		if (c_nz.floodable && !c_nz.isLiquid())
 			return true;
 	}
-	u32 vi_pos_z = vi;
+	uint32_t vi_pos_z = vi;
 	VoxelArea::add_z(em, vi_pos_z, +1);
 	if (vm->m_data[vi_pos_z].getContent() != CONTENT_IGNORE) {
 		const ContentFeatures &c_pz = ndef->get(vm->m_data[vi_pos_z]);
@@ -365,15 +365,15 @@ void Mapgen::updateLiquid(UniqueQueue<v3s16> *trans_liquid, v3s16 nmin, v3s16 nm
 	bool isignored, isliquid, wasignored, wasliquid, waschecked, waspushed;
 	const v3s16 &em  = vm->m_area.getExtent();
 
-	for (s16 z = nmin.Z + 1; z <= nmax.Z - 1; z++)
-	for (s16 x = nmin.X + 1; x <= nmax.X - 1; x++) {
+	for (int16_t z = nmin.Z + 1; z <= nmax.Z - 1; z++)
+	for (int16_t x = nmin.X + 1; x <= nmax.X - 1; x++) {
 		wasignored = true;
 		wasliquid = false;
 		waschecked = false;
 		waspushed = false;
 
-		u32 vi = vm->m_area.index(x, nmax.Y, z);
-		for (s16 y = nmax.Y; y >= nmin.Y; y--) {
+		uint32_t vi = vm->m_area.index(x, nmax.Y, z);
+		for (int16_t y = nmax.Y; y >= nmin.Y; y--) {
 			isignored = vm->m_data[vi].getContent() == CONTENT_IGNORE;
 			isliquid = ndef->get(vm->m_data[vi]).isLiquid();
 
@@ -394,7 +394,7 @@ void Mapgen::updateLiquid(UniqueQueue<v3s16> *trans_liquid, v3s16 nmin, v3s16 nm
 				waspushed = ispushed;
 			} else {
 				// This is the topmost node below a liquid column
-				u32 vi_above = vi;
+				uint32_t vi_above = vi;
 				VoxelArea::add_y(em, vi_above, 1);
 				if (!waspushed && (ndef->get(vm->m_data[vi]).floodable ||
 						(!waschecked && isLiquidHorizontallyFlowable(vi_above, em)))) {
@@ -412,14 +412,14 @@ void Mapgen::updateLiquid(UniqueQueue<v3s16> *trans_liquid, v3s16 nmin, v3s16 nm
 }
 
 
-void Mapgen::setLighting(u8 light, v3s16 nmin, v3s16 nmax)
+void Mapgen::setLighting(uint8_t light, v3s16 nmin, v3s16 nmax)
 {
 	ScopeProfiler sp(g_profiler, "EmergeThread: update lighting", SPT_AVG);
 	VoxelArea a(nmin, nmax);
 
 	for (int z = a.MinEdge.Z; z <= a.MaxEdge.Z; z++) {
 		for (int y = a.MinEdge.Y; y <= a.MaxEdge.Y; y++) {
-			u32 i = vm->m_area.index(a.MinEdge.X, y, z);
+			uint32_t i = vm->m_area.index(a.MinEdge.X, y, z);
 			for (int x = a.MinEdge.X; x <= a.MaxEdge.X; x++, i++)
 				vm->m_data[i].param1 = light;
 		}
@@ -427,21 +427,21 @@ void Mapgen::setLighting(u8 light, v3s16 nmin, v3s16 nmax)
 }
 
 
-void Mapgen::lightSpread(VoxelArea &a, std::queue<std::pair<v3s16, u8>> &queue,
-	const v3s16 &p, u8 light)
+void Mapgen::lightSpread(VoxelArea &a, std::queue<std::pair<v3s16, uint8_t>> &queue,
+	const v3s16 &p, uint8_t light)
 {
 	if (light <= 1 || !a.contains(p))
 		return;
 
-	u32 vi = vm->m_area.index(p);
+	uint32_t vi = vm->m_area.index(p);
 	MapNode &n = vm->m_data[vi];
 
 	// Decay light in each of the banks separately
-	u8 light_day = light & 0x0F;
+	uint8_t light_day = light & 0x0F;
 	if (light_day > 0)
 		light_day -= 0x01;
 
-	u8 light_night = light & 0xF0;
+	uint8_t light_night = light & 0xF0;
 	if (light_night > 0)
 		light_night -= 0x10;
 
@@ -491,7 +491,7 @@ void Mapgen::propagateSunlight(v3s16 nmin, v3s16 nmax, bool propagate_shadow)
 	for (int z = a.MinEdge.Z; z <= a.MaxEdge.Z; z++) {
 		for (int x = a.MinEdge.X; x <= a.MaxEdge.X; x++) {
 			// see if we can get a light value from the overtop
-			u32 i = vm->m_area.index(x, a.MaxEdge.Y + 1, z);
+			uint32_t i = vm->m_area.index(x, a.MaxEdge.Y + 1, z);
 			if (vm->m_data[i].getContent() == CONTENT_IGNORE) {
 				if (block_is_underground)
 					continue;
@@ -517,12 +517,12 @@ void Mapgen::propagateSunlight(v3s16 nmin, v3s16 nmax, bool propagate_shadow)
 void Mapgen::spreadLight(const v3s16 &nmin, const v3s16 &nmax)
 {
 	//TimeTaker t("spreadLight");
-	std::queue<std::pair<v3s16, u8>> queue;
+	std::queue<std::pair<v3s16, uint8_t>> queue;
 	VoxelArea a(nmin, nmax);
 
 	for (int z = a.MinEdge.Z; z <= a.MaxEdge.Z; z++) {
 		for (int y = a.MinEdge.Y; y <= a.MaxEdge.Y; y++) {
-			u32 i = vm->m_area.index(a.MinEdge.X, y, z);
+			uint32_t i = vm->m_area.index(a.MinEdge.X, y, z);
 			for (int x = a.MinEdge.X; x <= a.MaxEdge.X; x++, i++) {
 				MapNode &n = vm->m_data[i];
 				if (n.getContent() == CONTENT_IGNORE)
@@ -535,11 +535,11 @@ void Mapgen::spreadLight(const v3s16 &nmin, const v3s16 &nmax)
 				// TODO(hmmmmm): Abstract away direct param1 accesses with a
 				// wrapper, but something lighter than MapNode::get/setLight
 
-				u8 light_produced = cf.light_source;
+				uint8_t light_produced = cf.light_source;
 				if (light_produced)
 					n.param1 = light_produced | (light_produced << 4);
 
-				u8 light = n.param1;
+				uint8_t light = n.param1;
 				if (light) {
 					const v3s16 p(x, y, z);
 					// spread to all 6 neighbor nodes
@@ -635,20 +635,20 @@ void MapgenBasic::generateBiomes()
 	assert(biomemap);
 
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 index = 0;
+	uint32_t index = 0;
 
 	noise_filler_depth->perlinMap2D(node_min.X, node_min.Z);
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++)
-	for (s16 x = node_min.X; x <= node_max.X; x++, index++) {
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++)
+	for (int16_t x = node_min.X; x <= node_max.X; x++, index++) {
 		Biome *biome = NULL;
 		biome_t water_biome_index = 0;
-		u16 depth_top = 0;
-		u16 base_filler = 0;
-		u16 depth_water_top = 0;
-		u16 depth_riverbed = 0;
-		s16 biome_y_min = -MAX_MAP_GENERATION_LIMIT;
-		u32 vi = vm->m_area.index(x, node_max.Y, z);
+		uint16_t depth_top = 0;
+		uint16_t base_filler = 0;
+		uint16_t depth_water_top = 0;
+		uint16_t depth_riverbed = 0;
+		int16_t biome_y_min = -MAX_MAP_GENERATION_LIMIT;
+		uint32_t vi = vm->m_area.index(x, node_max.Y, z);
 
 		// Check node at base of mapchunk above, either a node of a previously
 		// generated mapchunk or if not, a node of overgenerated base terrain.
@@ -661,9 +661,9 @@ void MapgenBasic::generateBiomes()
 
 		// If there is air or water above enable top/filler placement, otherwise force
 		// nplaced to stone level by setting a number exceeding any possible filler depth.
-		u16 nplaced = (air_above || water_above) ? 0 : U16_MAX;
+		uint16_t nplaced = (air_above || water_above) ? 0 : U16_MAX;
 
-		for (s16 y = node_max.Y; y >= node_min.Y; y--) {
+		for (int16_t y = node_max.Y; y >= node_min.Y; y--) {
 			content_t c = vm->m_data[vi].getContent();
 			// Biome is (re)calculated:
 			// 1. At the surface of stone below air or water.
@@ -771,10 +771,10 @@ void MapgenBasic::dustTopNodes()
 		return;
 
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 index = 0;
+	uint32_t index = 0;
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++)
-	for (s16 x = node_min.X; x <= node_max.X; x++, index++) {
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++)
+	for (int16_t x = node_min.X; x <= node_max.X; x++, index++) {
 		Biome *biome = (Biome *)m_bmgr->getRaw(biomemap[index]);
 
 		if (biome->c_dust == CONTENT_IGNORE)
@@ -784,9 +784,9 @@ void MapgenBasic::dustTopNodes()
 		// above current mapchunk top, above decorations that will extend above
 		// the current mapchunk. If the mapchunk above has not generated, it
 		// will provide this required dust when it does.
-		u32 vi = vm->m_area.index(x, full_node_max.Y, z);
+		uint32_t vi = vm->m_area.index(x, full_node_max.Y, z);
 		content_t c_full_max = vm->m_data[vi].getContent();
-		s16 y_start;
+		int16_t y_start;
 
 		if (c_full_max == CONTENT_AIR) {
 			y_start = full_node_max.Y - 1;
@@ -803,7 +803,7 @@ void MapgenBasic::dustTopNodes()
 		}
 
 		vi = vm->m_area.index(x, y_start, z);
-		for (s16 y = y_start; y >= node_min.Y - 1; y--) {
+		for (int16_t y = y_start; y >= node_min.Y - 1; y--) {
 			if (vm->m_data[vi].getContent() != CONTENT_AIR)
 				break;
 
@@ -829,7 +829,7 @@ void MapgenBasic::dustTopNodes()
 }
 
 
-void MapgenBasic::generateCavesNoiseIntersection(s16 max_stone_y)
+void MapgenBasic::generateCavesNoiseIntersection(int16_t max_stone_y)
 {
 	// cave_width >= 10 is used to disable generation and avoid the intensive
 	// 3D noise calculations. Tunnels already have zero width when cave_width > 1.
@@ -843,16 +843,16 @@ void MapgenBasic::generateCavesNoiseIntersection(s16 max_stone_y)
 }
 
 
-void MapgenBasic::generateCavesRandomWalk(s16 max_stone_y, s16 large_cave_ymax)
+void MapgenBasic::generateCavesRandomWalk(int16_t max_stone_y, int16_t large_cave_ymax)
 {
 	if (node_min.Y > max_stone_y)
 		return;
 
 	PseudoRandom ps(blockseed + 21343);
 	// Small randomwalk caves
-	u32 num_small_caves = ps.range(small_cave_num_min, small_cave_num_max);
+	uint32_t num_small_caves = ps.range(small_cave_num_min, small_cave_num_max);
 
-	for (u32 i = 0; i < num_small_caves; i++) {
+	for (uint32_t i = 0; i < num_small_caves; i++) {
 		CavesRandomWalk cave(ndef, &gennotify, seed, water_level,
 			c_water_source, c_lava_source, large_cave_flooded, biomegen);
 		cave.makeCave(vm, node_min, node_max, &ps, false, max_stone_y, heightmap);
@@ -864,9 +864,9 @@ void MapgenBasic::generateCavesRandomWalk(s16 max_stone_y, s16 large_cave_ymax)
 	// Large randomwalk caves below 'large_cave_ymax'.
 	// 'large_cave_ymax' can differ from the 'large_cave_depth' mapgen parameter,
 	// it is set to world base to disable large caves in or near caverns.
-	u32 num_large_caves = ps.range(large_cave_num_min, large_cave_num_max);
+	uint32_t num_large_caves = ps.range(large_cave_num_min, large_cave_num_max);
 
-	for (u32 i = 0; i < num_large_caves; i++) {
+	for (uint32_t i = 0; i < num_large_caves; i++) {
 		CavesRandomWalk cave(ndef, &gennotify, seed, water_level,
 			c_water_source, c_lava_source, large_cave_flooded, biomegen);
 		cave.makeCave(vm, node_min, node_max, &ps, true, max_stone_y, heightmap);
@@ -874,7 +874,7 @@ void MapgenBasic::generateCavesRandomWalk(s16 max_stone_y, s16 large_cave_ymax)
 }
 
 
-bool MapgenBasic::generateCavernsNoise(s16 max_stone_y)
+bool MapgenBasic::generateCavernsNoise(int16_t max_stone_y)
 {
 	if (node_min.Y > max_stone_y || node_min.Y > cavern_limit)
 		return false;
@@ -886,13 +886,13 @@ bool MapgenBasic::generateCavernsNoise(s16 max_stone_y)
 }
 
 
-void MapgenBasic::generateDungeons(s16 max_stone_y)
+void MapgenBasic::generateDungeons(int16_t max_stone_y)
 {
 	if (node_min.Y > max_stone_y || node_min.Y > dungeon_ymax ||
 			node_max.Y < dungeon_ymin)
 		return;
 
-	u16 num_dungeons = std::fmax(std::floor(
+	uint16_t num_dungeons = std::fmax(std::floor(
 		NoisePerlin3D(&np_dungeons, node_min.X, node_min.Y, node_min.Z, seed)), 0.0f);
 	if (num_dungeons == 0)
 		return;
@@ -916,7 +916,7 @@ void MapgenBasic::generateDungeons(s16 max_stone_y)
 	dp.large_room_chance   = (ps.range(1, 4) == 1) ? 8 : 0;
 	dp.diagonal_dirs       = ps.range(1, 8) == 1;
 	// Diagonal corridors must have 'hole' width >=2 to be passable
-	u8 holewidth           = (dp.diagonal_dirs) ? 2 : ps.range(1, 2);
+	uint8_t holewidth           = (dp.diagonal_dirs) ? 2 : ps.range(1, 2);
 	dp.holesize            = v3s16(holewidth, 3, holewidth);
 	dp.corridor_len_min    = 1;
 	dp.corridor_len_max    = 13;
@@ -956,15 +956,15 @@ void MapgenBasic::generateDungeons(s16 max_stone_y)
 //// GenerateNotifier
 ////
 
-GenerateNotifier::GenerateNotifier(u32 notify_on,
-	const std::set<u32> *notify_on_deco_ids)
+GenerateNotifier::GenerateNotifier(uint32_t notify_on,
+	const std::set<uint32_t> *notify_on_deco_ids)
 {
 	m_notify_on = notify_on;
 	m_notify_on_deco_ids = notify_on_deco_ids;
 }
 
 
-bool GenerateNotifier::addEvent(GenNotifyType type, v3s16 pos, u32 id)
+bool GenerateNotifier::addEvent(GenNotifyType type, v3s16 pos, uint32_t id)
 {
 	if (!(m_notify_on & (1 << type)))
 		return false;
@@ -1068,26 +1068,26 @@ void MapgenParams::writeParams(Settings *settings) const
 void MapgenParams::calcMapgenEdges()
 {
 	// Central chunk offset, in blocks
-	s16 ccoff_b = -chunksize / 2;
+	int16_t ccoff_b = -chunksize / 2;
 	// Chunksize, in nodes
-	s32 csize_n = chunksize * MAP_BLOCKSIZE;
+	int32_t csize_n = chunksize * MAP_BLOCKSIZE;
 	// Minp/maxp of central chunk, in nodes
-	s16 ccmin = ccoff_b * MAP_BLOCKSIZE;
-	s16 ccmax = ccmin + csize_n - 1;
+	int16_t ccmin = ccoff_b * MAP_BLOCKSIZE;
+	int16_t ccmax = ccmin + csize_n - 1;
 	// Fullminp/fullmaxp of central chunk, in nodes
-	s16 ccfmin = ccmin - MAP_BLOCKSIZE;
-	s16 ccfmax = ccmax + MAP_BLOCKSIZE;
+	int16_t ccfmin = ccmin - MAP_BLOCKSIZE;
+	int16_t ccfmax = ccmax + MAP_BLOCKSIZE;
 	// Effective mapgen limit, in blocks
 	// Uses same calculation as ServerMap::blockpos_over_mapgen_limit(v3s16 p)
-	s16 mapgen_limit_b = rangelim(mapgen_limit,
+	int16_t mapgen_limit_b = rangelim(mapgen_limit,
 		0, MAX_MAP_GENERATION_LIMIT) / MAP_BLOCKSIZE;
 	// Effective mapgen limits, in nodes
-	s16 mapgen_limit_min = -mapgen_limit_b * MAP_BLOCKSIZE;
-	s16 mapgen_limit_max = (mapgen_limit_b + 1) * MAP_BLOCKSIZE - 1;
+	int16_t mapgen_limit_min = -mapgen_limit_b * MAP_BLOCKSIZE;
+	int16_t mapgen_limit_max = (mapgen_limit_b + 1) * MAP_BLOCKSIZE - 1;
 	// Number of complete chunks from central chunk fullminp/fullmaxp
 	// to effective mapgen limits.
-	s16 numcmin = MYMAX((ccfmin - mapgen_limit_min) / csize_n, 0);
-	s16 numcmax = MYMAX((mapgen_limit_max - ccfmax) / csize_n, 0);
+	int16_t numcmin = MYMAX((ccfmin - mapgen_limit_min) / csize_n, 0);
+	int16_t numcmax = MYMAX((mapgen_limit_max - ccfmax) / csize_n, 0);
 	// Mapgen edges, in nodes
 	mapgen_edge_min = ccmin - numcmin * csize_n;
 	mapgen_edge_max = ccmax + numcmax * csize_n;

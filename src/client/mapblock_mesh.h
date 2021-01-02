@@ -95,14 +95,14 @@ public:
 	//   daynight_ratio: 0 .. 1000
 	//   crack: -1 .. CRACK_ANIMATION_LENGTH-1 (-1 for off)
 	// Returns true if anything has been changed.
-	bool animate(bool faraway, float time, int crack, u32 daynight_ratio);
+	bool animate(bool faraway, float time, int crack, uint32_t daynight_ratio);
 
 	scene::IMesh *getMesh()
 	{
 		return m_mesh[0];
 	}
 
-	scene::IMesh *getMesh(u8 layer)
+	scene::IMesh *getMesh(uint8_t layer)
 	{
 		return m_mesh[layer];
 	}
@@ -155,7 +155,7 @@ private:
 
 	// Animation info: day/night transitions
 	// Last daynight_ratio value passed to animate()
-	u32 m_last_daynight_ratio;
+	uint32_t m_last_daynight_ratio;
 	// For each mesh and mesh buffer, stores pre-baked colors
 	// of sunlit vertices
 	// Keys are pairs of (mesh index, buffer index in the mesh)
@@ -174,10 +174,10 @@ private:
  * \param emissive_light amount of light the surface emits,
  * from 0 to LIGHT_SUN.
  */
-video::SColor encode_light(u16 light, u8 emissive_light);
+video::SColor encode_light(uint16_t light, uint8_t emissive_light);
 
 // Compute light at node
-u16 getInteriorLight(MapNode n, s32 increment, const NodeDefManager *ndef);
+u16 getInteriorLight(MapNode n, int32_t increment, const NodeDefManager *ndef);
 u16 getFaceLight(MapNode n, MapNode n2, const v3s16 &face_dir,
 	const NodeDefManager *ndef);
 u16 getSmoothLightSolid(const v3s16 &p, const v3s16 &face_dir, const v3s16 &corner, MeshMakeData *data);
@@ -187,7 +187,7 @@ u16 getSmoothLightTransparent(const v3s16 &p, const v3s16 &corner, MeshMakeData 
  * Returns the sunlight's color from the current
  * day-night ratio.
  */
-void get_sunlight_color(video::SColorf *sunlight, u32 daynight_ratio);
+void get_sunlight_color(video::SColorf *sunlight, uint32_t daynight_ratio);
 
 /*!
  * Gives the final  SColor shown on screen.
@@ -197,7 +197,7 @@ void get_sunlight_color(video::SColorf *sunlight, u32 daynight_ratio);
  * night light
  */
 void final_color_blend(video::SColor *result,
-		u16 light, u32 daynight_ratio);
+		uint16_t light, uint32_t daynight_ratio);
 
 /*!
  * Gives the final  SColor shown on screen.
@@ -213,5 +213,5 @@ void final_color_blend(video::SColor *result,
 // Adds MATERIAL_FLAG_CRACK if the node is cracked
 // TileSpec should be passed as reference due to the underlying TileFrame and its vector
 // TileFrame vector copy cost very much to client
-void getNodeTileN(MapNode mn, const v3s16 &p, u8 tileindex, MeshMakeData *data, TileSpec &tile);
+void getNodeTileN(MapNode mn, const v3s16 &p, uint8_t tileindex, MeshMakeData *data, TileSpec &tile);
 void getNodeTile(MapNode mn, const v3s16 &p, const v3s16 &dir, MeshMakeData *data, TileSpec &tile);

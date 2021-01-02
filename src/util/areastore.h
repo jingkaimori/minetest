@@ -37,15 +37,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 struct Area {
-	Area(u32 area_id) : id(area_id) {}
+	Area(uint32_t area_id) : id(area_id) {}
 
-	Area(const v3s16 &mine, const v3s16 &maxe, u32 area_id = U32_MAX) :
+	Area(const v3s16 &mine, const v3s16 &maxe, uint32_t area_id = U32_MAX) :
 		id(area_id), minedge(mine), maxedge(maxe)
 	{
 		sortBoxVerticies(minedge, maxedge);
 	}
 
-	u32 id;
+	uint32_t id;
 	v3s16 minedge, maxedge;
 	std::string data;
 };
@@ -71,7 +71,7 @@ public:
 
 	/// Removes an area from the store by ID.
 	/// @return Whether the area was in the store and removed.
-	virtual bool removeArea(u32 id) = 0;
+	virtual bool removeArea(uint32_t id) = 0;
 
 	/// Finds areas that the passed position is contained in.
 	/// Stores output in passed vector.
@@ -84,11 +84,11 @@ public:
 		v3s16 minedge, v3s16 maxedge, bool accept_overlap) = 0;
 
 	/// Sets cache parameters.
-	void setCacheParams(bool enabled, u8 block_radius, size_t limit);
+	void setCacheParams(bool enabled, uint8_t block_radius, size_t limit);
 
 	/// Returns a pointer to the area coresponding to the passed ID,
 	/// or NULL if it doesn't exist.
-	const Area *getArea(u32 id) const;
+	const Area *getArea(uint32_t id) const;
 
 	/// Serializes the store's areas to a binary ostream.
 	void serialize(std::ostream &is) const;
@@ -109,7 +109,7 @@ protected:
 	virtual void getAreasForPosImpl(std::vector<Area *> *result, v3s16 pos) = 0;
 
 	/// Returns the next area ID and increments it.
-	u32 getNextId() const;
+	uint32_t getNextId() const;
 
 	// Note: This can't be an unordered_map, since all
 	// references would be invalidated on rehash.
@@ -123,7 +123,7 @@ private:
 	bool m_cache_enabled = true;
 	/// Range, in nodes, of the getAreasForPos cache.
 	/// If you modify this, call invalidateCache()
-	u8 m_cacheblock_radius = 64;
+	uint8_t m_cacheblock_radius = 64;
 	LRUCache<v3s16, std::vector<Area *> > m_res_cache;
 };
 
@@ -132,7 +132,7 @@ class VectorAreaStore : public AreaStore {
 public:
 	virtual void reserve(size_t count) { m_areas.reserve(count); }
 	virtual bool insertArea(Area *a);
-	virtual bool removeArea(u32 id);
+	virtual bool removeArea(uint32_t id);
 	virtual void getAreasInArea(std::vector<Area *> *result,
 		v3s16 minedge, v3s16 maxedge, bool accept_overlap);
 
@@ -152,7 +152,7 @@ public:
 	virtual ~SpatialAreaStore();
 
 	virtual bool insertArea(Area *a);
-	virtual bool removeArea(u32 id);
+	virtual bool removeArea(uint32_t id);
 	virtual void getAreasInArea(std::vector<Area *> *result,
 		v3s16 minedge, v3s16 maxedge, bool accept_overlap);
 
@@ -175,7 +175,7 @@ private:
 
 		virtual void visitData(const SpatialIndex::IData &in)
 		{
-			u32 id = in.getIdentifier();
+			uint32_t id = in.getIdentifier();
 
 			std::map<u32, Area>::iterator itr = m_store->areas_map.find(id);
 			assert(itr != m_store->areas_map.end());

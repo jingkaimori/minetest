@@ -31,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * transparent.  Should be 127 for 3d where alpha is threshold, but 0 for
  * 2d where alpha is blended.
  */
-void imageCleanTransparent(video::IImage *src, u32 threshold);
+void imageCleanTransparent(video::IImage *src, uint32_t threshold);
 
 /* Scale a region of an image into another image, using nearest-neighbor with
  * anti-aliasing; treat pixels as crisp rectangles, but blend them at boundaries

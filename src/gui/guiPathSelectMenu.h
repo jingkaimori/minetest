@@ -28,7 +28,7 @@
 class GUIFileSelectMenu : public GUIModalMenu
 {
 public:
-	GUIFileSelectMenu(gui::IGUIEnvironment *env, gui::IGUIElement *parent, s32 id,
+	GUIFileSelectMenu(gui::IGUIEnvironment *env, gui::IGUIElement *parent, int32_t id,
 			IMenuManager *menumgr, const std::string &title,
 			const std::string &formid, bool is_file_select);
 	~GUIFileSelectMenu();
@@ -45,8 +45,8 @@ public:
 	void setTextDest(TextDest *dest) { m_text_dst = dest; }
 
 protected:
-	std::wstring getLabelByID(s32 id) { return L""; }
-	std::string getNameByID(s32 id) { return ""; }
+	std::wstring getLabelByID(int32_t id) { return L""; }
+	std::string getNameByID(int32_t id) { return ""; }
 
 private:
 	void acceptInput();

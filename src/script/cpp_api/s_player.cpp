@@ -60,7 +60,7 @@ bool ScriptApiPlayer::on_punchplayer(ServerActiveObject *player,
 		float time_from_last_punch,
 		const ToolCapabilities *toolcap,
 		v3f dir,
-		s16 damage)
+		int16_t damage)
 {
 	SCRIPTAPI_PRECHECKHEADER
 	// Get core.registered_on_punchplayers
@@ -78,7 +78,7 @@ bool ScriptApiPlayer::on_punchplayer(ServerActiveObject *player,
 }
 
 s32 ScriptApiPlayer::on_player_hpchange(ServerActiveObject *player,
-	s32 hp_change, const PlayerHPChangeReason &reason)
+	int32_t hp_change, const PlayerHPChangeReason &reason)
 {
 	SCRIPTAPI_PRECHECKHEADER
 

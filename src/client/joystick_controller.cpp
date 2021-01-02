@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 bool JoystickButtonCmb::isTriggered(const irr::SEvent::SJoystickEvent &ev) const
 {
-	u32 buttons = ev.ButtonStates;
+	uint32_t buttons = ev.ButtonStates;
 
 	buttons &= filter_mask;
 	return buttons == compare_mask;
@@ -35,7 +35,7 @@ bool JoystickButtonCmb::isTriggered(const irr::SEvent::SJoystickEvent &ev) const
 
 bool JoystickAxisCmb::isTriggered(const irr::SEvent::SJoystickEvent &ev) const
 {
-	s16 ax_val = ev.Axis[axis_to_compare];
+	int16_t ax_val = ev.Axis[axis_to_compare];
 
 	return (ax_val * direction < -thresh);
 }
@@ -58,9 +58,9 @@ JoystickLayout create_default_layout()
 	};
 	memcpy(jlo.axes, axes, sizeof(jlo.axes));
 
-	u32 sb = 1 << 7; // START button mask
-	u32 fb = 1 << 3; // FOUR button mask
-	u32 bm = sb | fb; // Mask for Both Modifiers
+	uint32_t sb = 1 << 7; // START button mask
+	uint32_t fb = 1 << 3; // FOUR button mask
+	uint32_t bm = sb | fb; // Mask for Both Modifiers
 
 	// The back button means "ESC".
 	JLO_B_PB(KeyType::ESC,        1 << 6,      1 << 6);
@@ -165,15 +165,15 @@ JoystickController::JoystickController() :
 
 void JoystickController::onJoystickConnect(const std::vector<irr::SJoystickInfo> &joystick_infos)
 {
-	s32         id     = g_settings->getS32("joystick_id");
+	int32_t         id     = g_settings->getS32("joystick_id");
 	std::string layout = g_settings->get("joystick_type");
 
-	if (id < 0 || (u16)id >= joystick_infos.size()) {
+	if (id < 0 || (uint16_t)id >= joystick_infos.size()) {
 		// TODO: auto detection
 		id = 0;
 	}
 
-	if (id >= 0 && (u16)id < joystick_infos.size()) {
+	if (id >= 0 && (uint16_t)id < joystick_infos.size()) {
 		if (layout.empty() || layout == "auto")
 			setLayoutFromControllerName(joystick_infos[id].Name.c_str());
 		else
@@ -253,7 +253,7 @@ void JoystickController::clear()
 
 s16 JoystickController::getAxisWithoutDead(JoystickAxis axis)
 {
-	s16 v = m_axes_vals[axis];
+	int16_t v = m_axes_vals[axis];
 	if (abs(v) < m_layout.axes_deadzone)
 		return 0;
 	return v;

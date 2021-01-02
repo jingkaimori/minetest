@@ -94,18 +94,18 @@ void Server::handleCommand_Init(NetworkPacket* pkt)
 
 	// First byte after command is maximum supported
 	// serialization version
-	u8 client_max;
-	u16 supp_compr_modes;
-	u16 min_net_proto_version = 0;
-	u16 max_net_proto_version;
+	uint8_t client_max;
+	uint16_t supp_compr_modes;
+	uint16_t min_net_proto_version = 0;
+	uint16_t max_net_proto_version;
 	std::string playerName;
 
 	*pkt >> client_max >> supp_compr_modes >> min_net_proto_version
 			>> max_net_proto_version >> playerName;
 
-	u8 our_max = SER_FMT_VER_HIGHEST_READ;
+	uint8_t our_max = SER_FMT_VER_HIGHEST_READ;
 	// Use the highest version supported by both
-	u8 depl_serial_v = std::min(client_max, our_max);
+	uint8_t depl_serial_v = std::min(client_max, our_max);
 	// If it's lower than the lowest supported, give up.
 	if (depl_serial_v < SER_FMT_VER_LOWEST_READ)
 		depl_serial_v = SER_FMT_VER_INVALID;
@@ -123,7 +123,7 @@ void Server::handleCommand_Init(NetworkPacket* pkt)
 		Read and check network protocol version
 	*/
 
-	u16 net_proto_version = 0;
+	uint16_t net_proto_version = 0;
 
 	// Figure out a working version if it is possible at all
 	if (max_net_proto_version >= SERVER_PROTOCOL_VERSION_MIN ||
@@ -217,7 +217,7 @@ void Server::handleCommand_Init(NetworkPacket* pkt)
 	*/
 	std::string encpwd; // encrypted Password field for the user
 	bool has_auth = m_script->getAuth(playername, &encpwd, NULL);
-	u32 auth_mechs = 0;
+	uint32_t auth_mechs = 0;
 
 	client->chosen_mech = AUTH_MECHANISM_NONE;
 
@@ -266,7 +266,7 @@ void Server::handleCommand_Init(NetworkPacket* pkt)
 	NetworkPacket resp_pkt(TOCLIENT_HELLO,
 		1 + 4 + legacyPlayerNameCasing.size(), peer_id);
 
-	u16 depl_compress_mode = NETPROTO_COMPRESSION_NONE;
+	uint16_t depl_compress_mode = NETPROTO_COMPRESSION_NONE;
 	resp_pkt << depl_serial_v << depl_compress_mode << net_proto_version
 		<< auth_mechs << legacyPlayerNameCasing;
 
@@ -284,7 +284,7 @@ void Server::handleCommand_Init2(NetworkPacket* pkt)
 	verbosestream << "Server: Got TOSERVER_INIT2 from " << peer_id << std::endl;
 
 	m_clients.event(peer_id, CSE_GotInit2);
-	u16 protocol_version = m_clients.getProtocolVersion(peer_id);
+	uint16_t protocol_version = m_clients.getProtocolVersion(peer_id);
 
 	std::string lang;
 	if (pkt->getSize() > 0)
@@ -327,7 +327,7 @@ void Server::handleCommand_Init2(NetworkPacket* pkt)
 	SendMovement(peer_id);
 
 	// Send time of day
-	u16 time = m_env->getTimeOfDay();
+	uint16_t time = m_env->getTimeOfDay();
 	float time_speed = g_settings->getFloat("time_speed");
 	SendTimeOfDay(peer_id, time, time_speed);
 
@@ -344,7 +344,7 @@ void Server::handleCommand_Init2(NetworkPacket* pkt)
 void Server::handleCommand_RequestMedia(NetworkPacket* pkt)
 {
 	std::vector<std::string> tosend;
-	u16 numfiles;
+	uint16_t numfiles;
 
 	*pkt >> numfiles;
 
@@ -353,7 +353,7 @@ void Server::handleCommand_RequestMedia(NetworkPacket* pkt)
 		getPlayerName(peer_id) << std::endl;
 	verbosestream << "TOSERVER_REQUEST_MEDIA: " << std::endl;
 
-	for (u16 i = 0; i < numfiles; i++) {
+	for (uint16_t i = 0; i < numfiles; i++) {
 		std::string name;
 
 		*pkt >> name;
@@ -387,7 +387,7 @@ void Server::handleCommand_ClientReady(NetworkPacket* pkt)
 		return;
 	}
 
-	u8 major_ver, minor_ver, patch_ver, reserved;
+	uint8_t major_ver, minor_ver, patch_ver, reserved;
 	std::string full_ver;
 	*pkt >> major_ver >> minor_ver >> patch_ver >> reserved >> full_ver;
 
@@ -399,15 +399,15 @@ void Server::handleCommand_ClientReady(NetworkPacket* pkt)
 
 	const std::vector<std::string> &players = m_clients.getPlayerNames();
 	NetworkPacket list_pkt(TOCLIENT_UPDATE_PLAYER_LIST, 0, peer_id);
-	list_pkt << (u8) PLAYER_LIST_INIT << (u16) players.size();
+	list_pkt << (uint8_t) PLAYER_LIST_INIT << (uint16_t) players.size();
 	for (const std::string &player: players) {
 		list_pkt <<  player;
 	}
 	m_clients.send(peer_id, 0, &list_pkt, true);
 
 	NetworkPacket notice_pkt(TOCLIENT_UPDATE_PLAYER_LIST, 0, PEER_ID_INEXISTENT);
-	// (u16) 1 + std::string represents a pseudo vector serialization representation
-	notice_pkt << (u8) PLAYER_LIST_ADD << (u16) 1 << std::string(playersao->getPlayer()->getName());
+	// (uint16_t) 1 + std::string represents a pseudo vector serialization representation
+	notice_pkt << (uint8_t) PLAYER_LIST_ADD << (uint16_t) 1 << std::string(playersao->getPlayer()->getName());
 	m_clients.sendToAll(&notice_pkt);
 	m_clients.event(peer_id, CSE_SetClientReady);
 
@@ -427,14 +427,14 @@ void Server::handleCommand_GotBlocks(NetworkPacket* pkt)
 		return;
 
 	/*
-		[0] u16 command
-		[2] u8 count
+		[0] uint16_t command
+		[2] uint8_t count
 		[3] v3s16 pos_0
 		[3+6] v3s16 pos_1
 		...
 	*/
 
-	u8 count;
+	uint8_t count;
 	*pkt >> count;
 
 	RemoteClient *client = getClient(pkt->getPeerId());
@@ -444,7 +444,7 @@ void Server::handleCommand_GotBlocks(NetworkPacket* pkt)
 				("GOTBLOCKS length is too short");
 	}
 
-	for (u16 i = 0; i < count; i++) {
+	for (uint16_t i = 0; i < count; i++) {
 		v3s16 p;
 		*pkt >> p;
 		client->GotBlock(p);
@@ -458,21 +458,21 @@ void Server::process_PlayerPos(RemotePlayer *player, PlayerSAO *playersao,
 		return;
 
 	v3s32 ps, ss;
-	s32 f32pitch, f32yaw;
-	u8 f32fov;
+	int32_t f32pitch, f32yaw;
+	uint8_t f32fov;
 
 	*pkt >> ps;
 	*pkt >> ss;
 	*pkt >> f32pitch;
 	*pkt >> f32yaw;
 
-	f32 pitch = (f32)f32pitch / 100.0f;
-	f32 yaw = (f32)f32yaw / 100.0f;
-	u32 keyPressed = 0;
+	float pitch = (f32)f32pitch / 100.0f;
+	float yaw = (f32)f32yaw / 100.0f;
+	uint32_t keyPressed = 0;
 
 	// default behavior (in case an old client doesn't send these)
-	f32 fov = 0;
-	u8 wanted_range = 0;
+	float fov = 0;
+	uint8_t wanted_range = 0;
 
 	*pkt >> keyPressed;
 	*pkt >> f32fov;
@@ -548,14 +548,14 @@ void Server::handleCommand_DeletedBlocks(NetworkPacket* pkt)
 		return;
 
 	/*
-		[0] u16 command
-		[2] u8 count
+		[0] uint16_t command
+		[2] uint8_t count
 		[3] v3s16 pos_0
 		[3+6] v3s16 pos_1
 		...
 	*/
 
-	u8 count;
+	uint8_t count;
 	*pkt >> count;
 
 	RemoteClient *client = getClient(pkt->getPeerId());
@@ -565,7 +565,7 @@ void Server::handleCommand_DeletedBlocks(NetworkPacket* pkt)
 				("DELETEDBLOCKS length is too short");
 	}
 
-	for (u16 i = 0; i < count; i++) {
+	for (uint16_t i = 0; i < count; i++) {
 		v3s16 p;
 		*pkt >> p;
 		client->SetBlockNotSent(p);
@@ -660,7 +660,7 @@ void Server::handleCommand_InventoryAction(NetworkPacket* pkt)
 		if (remote->type == InventoryLocation::NODEMETA) {
 			v3f node_pos   = intToFloat(remote->p, BS);
 			v3f player_pos = player->getPlayerSAO()->getEyePosition();
-			f32 d = player_pos.getDistanceFrom(node_pos);
+			float d = player_pos.getDistanceFrom(node_pos);
 			if (!checkInteractDistance(player, d, "inventory"))
 				return;
 		}
@@ -750,16 +750,16 @@ void Server::handleCommand_InventoryAction(NetworkPacket* pkt)
 void Server::handleCommand_ChatMessage(NetworkPacket* pkt)
 {
 	/*
-		u16 command
-		u16 length
+		uint16_t command
+		uint16_t length
 		wstring message
 	*/
-	u16 len;
+	uint16_t len;
 	*pkt >> len;
 
 	std::wstring message;
-	for (u16 i = 0; i < len; i++) {
-		u16 tmp_wchar;
+	for (uint16_t i = 0; i < len; i++) {
+		uint16_t tmp_wchar;
 		*pkt >> tmp_wchar;
 
 		message += (wchar_t)tmp_wchar;
@@ -789,7 +789,7 @@ void Server::handleCommand_ChatMessage(NetworkPacket* pkt)
 
 void Server::handleCommand_Damage(NetworkPacket* pkt)
 {
-	u16 damage;
+	uint16_t damage;
 
 	*pkt >> damage;
 
@@ -856,7 +856,7 @@ void Server::handleCommand_PlayerItem(NetworkPacket* pkt)
 		return;
 	}
 
-	u16 item;
+	uint16_t item;
 
 	*pkt >> item;
 
@@ -899,11 +899,11 @@ void Server::handleCommand_Respawn(NetworkPacket* pkt)
 	// the previous addition has been successfully removed
 }
 
-bool Server::checkInteractDistance(RemotePlayer *player, const f32 d, const std::string &what)
+bool Server::checkInteractDistance(RemotePlayer *player, const float d, const std::string &what)
 {
 	ItemStack selected_item, hand_item;
 	player->getWieldedItem(&selected_item, &hand_item);
-	f32 max_d = BS * getToolRange(selected_item.getDefinition(m_itemdef),
+	float max_d = BS * getToolRange(selected_item.getDefinition(m_itemdef),
 			hand_item.getDefinition(m_itemdef));
 
 	// Cube diagonal * 1.5 for maximal supported node extents:
@@ -924,18 +924,18 @@ bool Server::checkInteractDistance(RemotePlayer *player, const f32 d, const std:
 void Server::handleCommand_Interact(NetworkPacket *pkt)
 {
 	/*
-		[0] u16 command
-		[2] u8 action
-		[3] u16 item
-		[5] u32 length of the next item (plen)
+		[0] uint16_t command
+		[2] uint8_t action
+		[3] uint16_t item
+		[5] uint32_t length of the next item (plen)
 		[9] serialized PointedThing
 		[9 + plen] player position information
 	*/
 
 	InteractAction action;
-	u16 item_i;
+	uint16_t item_i;
 
-	*pkt >> (u8 &)action;
+	*pkt >> (uint8_t &)action;
 	*pkt >> item_i;
 
 	std::istringstream tmp_is(pkt->readLongString(), std::ios::binary);
@@ -1106,10 +1106,10 @@ void Server::handleCommand_Interact(NetworkPacket *pkt)
 		float time_from_last_punch =
 			playersao->resetTimeFromLastPunch();
 
-		u16 src_original_hp = pointed_object->getHP();
-		u16 dst_origin_hp = playersao->getHP();
+		uint16_t src_original_hp = pointed_object->getHP();
+		uint16_t dst_origin_hp = playersao->getHP();
 
-		u16 wear = pointed_object->punch(dir, &toolcap, playersao,
+		uint16_t wear = pointed_object->punch(dir, &toolcap, playersao,
 				time_from_last_punch);
 
 		// Callback may have changed item, so get it again
@@ -1337,10 +1337,10 @@ void Server::handleCommand_Interact(NetworkPacket *pkt)
 
 void Server::handleCommand_RemovedSounds(NetworkPacket* pkt)
 {
-	u16 num;
+	uint16_t num;
 	*pkt >> num;
-	for (u16 k = 0; k < num; k++) {
-		s32 id;
+	for (uint16_t k = 0; k < num; k++) {
+		int32_t id;
 
 		*pkt >> id;
 
@@ -1360,12 +1360,12 @@ void Server::handleCommand_NodeMetaFields(NetworkPacket* pkt)
 {
 	v3s16 p;
 	std::string formname;
-	u16 num;
+	uint16_t num;
 
 	*pkt >> p >> formname >> num;
 
 	StringMap fields;
-	for (u16 k = 0; k < num; k++) {
+	for (uint16_t k = 0; k < num; k++) {
 		std::string fieldname;
 		*pkt >> fieldname;
 		fields[fieldname] = pkt->readLongString();
@@ -1412,12 +1412,12 @@ void Server::handleCommand_NodeMetaFields(NetworkPacket* pkt)
 void Server::handleCommand_InventoryFields(NetworkPacket* pkt)
 {
 	std::string client_formspec_name;
-	u16 num;
+	uint16_t num;
 
 	*pkt >> client_formspec_name >> num;
 
 	StringMap fields;
-	for (u16 k = 0; k < num; k++) {
+	for (uint16_t k = 0; k < num; k++) {
 		std::string fieldname;
 		*pkt >> fieldname;
 		fields[fieldname] = pkt->readLongString();
@@ -1485,7 +1485,7 @@ void Server::handleCommand_FirstSrp(NetworkPacket* pkt)
 	std::string verification_key;
 
 	std::string addr_s = getPeerAddress(peer_id).serializeString();
-	u8 is_empty;
+	uint8_t is_empty;
 
 	*pkt >> salt >> verification_key >> is_empty;
 
@@ -1571,7 +1571,7 @@ void Server::handleCommand_SrpBytesA(NetworkPacket* pkt)
 	}
 
 	std::string bytes_A;
-	u8 based_on;
+	uint8_t based_on;
 	*pkt >> bytes_A >> based_on;
 
 	infostream << "Server: TOSERVER_SRP_BYTES_A received with "
@@ -1745,12 +1745,12 @@ void Server::handleCommand_ModChannelJoin(NetworkPacket *pkt)
 	// Send signal to client to notify join succeed or not
 	if (g_settings->getBool("enable_mod_channels") &&
 			m_modchannel_mgr->joinChannel(channel_name, peer_id)) {
-		resp_pkt << (u8) MODCHANNEL_SIGNAL_JOIN_OK;
+		resp_pkt << (uint8_t) MODCHANNEL_SIGNAL_JOIN_OK;
 		infostream << "Peer " << peer_id << " joined channel " <<
 			channel_name << std::endl;
 	}
 	else {
-		resp_pkt << (u8)MODCHANNEL_SIGNAL_JOIN_FAILURE;
+		resp_pkt << (uint8_t)MODCHANNEL_SIGNAL_JOIN_FAILURE;
 		infostream << "Peer " << peer_id << " tried to join channel " <<
 			channel_name << ", but was already registered." << std::endl;
 	}
@@ -1770,11 +1770,11 @@ void Server::handleCommand_ModChannelLeave(NetworkPacket *pkt)
 	// Send signal to client to notify join succeed or not
 	if (g_settings->getBool("enable_mod_channels") &&
 			m_modchannel_mgr->leaveChannel(channel_name, peer_id)) {
-		resp_pkt << (u8)MODCHANNEL_SIGNAL_LEAVE_OK;
+		resp_pkt << (uint8_t)MODCHANNEL_SIGNAL_LEAVE_OK;
 		infostream << "Peer " << peer_id << " left channel " << channel_name <<
 			std::endl;
 	} else {
-		resp_pkt << (u8) MODCHANNEL_SIGNAL_LEAVE_FAILURE;
+		resp_pkt << (uint8_t) MODCHANNEL_SIGNAL_LEAVE_FAILURE;
 		infostream << "Peer " << peer_id << " left channel " << channel_name <<
 			", but was not registered." << std::endl;
 	}
@@ -1801,7 +1801,7 @@ void Server::handleCommand_ModChannelMsg(NetworkPacket *pkt)
 	if (!m_modchannel_mgr->channelRegistered(channel_name)) {
 		NetworkPacket resp_pkt(TOCLIENT_MODCHANNEL_SIGNAL,
 			1 + 2 + channel_name.size(), peer_id);
-		resp_pkt << (u8)MODCHANNEL_SIGNAL_CHANNEL_NOT_REGISTERED << channel_name;
+		resp_pkt << (uint8_t)MODCHANNEL_SIGNAL_CHANNEL_NOT_REGISTERED << channel_name;
 		Send(&resp_pkt);
 		return;
 	}

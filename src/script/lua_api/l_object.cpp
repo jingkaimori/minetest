@@ -174,10 +174,10 @@ int ObjectRef::l_punch(lua_State *L)
 	v3f dir = readParam<v3f>(L, 5, sao->getBasePosition() - puncher->getBasePosition());
 
 	dir.normalize();
-	u16 src_original_hp = sao->getHP();
-	u16 dst_origin_hp = puncher->getHP();
+	uint16_t src_original_hp = sao->getHP();
+	uint16_t dst_origin_hp = puncher->getHP();
 
-	u16 wear = sao->punch(dir, &toolcap, puncher, time_from_last_punch);
+	uint16_t wear = sao->punch(dir, &toolcap, puncher, time_from_last_punch);
 	lua_pushnumber(L, wear);
 
 	// If the punched is a player, and its HP changed
@@ -1206,7 +1206,7 @@ int ObjectRef::l_set_breath(lua_State *L)
 	if (playersao == nullptr)
 		return 0;
 
-	u16 breath = luaL_checknumber(L, 2);
+	uint16_t breath = luaL_checknumber(L, 2);
 
 	playersao->setBreath(breath);
 	return 0;
@@ -1221,7 +1221,7 @@ int ObjectRef::l_get_breath(lua_State *L)
 	if (playersao == nullptr)
 		return 0;
 
-	u16 breath = playersao->getBreath();
+	uint16_t breath = playersao->getBreath();
 
 	lua_pushinteger(L, breath);
 	return 1;
@@ -1481,7 +1481,7 @@ int ObjectRef::l_hud_add(lua_State *L)
 	HudElement *elem = new HudElement;
 	read_hud_element(L, elem);
 
-	u32 id = getServer(L)->hudAdd(player, elem);
+	uint32_t id = getServer(L)->hudAdd(player, elem);
 	if (id == U32_MAX) {
 		delete elem;
 		return 0;
@@ -1500,7 +1500,7 @@ int ObjectRef::l_hud_remove(lua_State *L)
 	if (player == nullptr)
 		return 0;
 
-	u32 id = luaL_checkint(L, 2);
+	uint32_t id = luaL_checkint(L, 2);
 
 	if (!getServer(L)->hudRemove(player, id))
 		return 0;
@@ -1518,7 +1518,7 @@ int ObjectRef::l_hud_change(lua_State *L)
 	if (player == nullptr)
 		return 0;
 
-	u32 id = luaL_checkint(L, 2);
+	uint32_t id = luaL_checkint(L, 2);
 
 	HudElement *elem = player->getHud(id);
 	if (elem == nullptr)
@@ -1542,7 +1542,7 @@ int ObjectRef::l_hud_get(lua_State *L)
 	if (player == nullptr)
 		return 0;
 
-	u32 id = luaL_checkint(L, 2);
+	uint32_t id = luaL_checkint(L, 2);
 
 	HudElement *elem = player->getHud(id);
 	if (elem == nullptr)
@@ -1561,8 +1561,8 @@ int ObjectRef::l_hud_set_flags(lua_State *L)
 	if (player == nullptr)
 		return 0;
 
-	u32 flags = 0;
-	u32 mask  = 0;
+	uint32_t flags = 0;
+	uint32_t mask  = 0;
 	bool flag;
 
 	const EnumString *esp = es_HudBuiltinElement;
@@ -1615,7 +1615,7 @@ int ObjectRef::l_hud_set_hotbar_itemcount(lua_State *L)
 	if (player == nullptr)
 		return 0;
 
-	s32 hotbar_itemcount = luaL_checkint(L, 2);
+	int32_t hotbar_itemcount = luaL_checkint(L, 2);
 
 	if (!getServer(L)->hudSetHotbarItemcount(player, hotbar_itemcount))
 		return 0;
@@ -1867,7 +1867,7 @@ int ObjectRef::l_get_sky(lua_State *L)
 	lua_pushlstring(L, skybox_params.type.c_str(), skybox_params.type.size());
 
 	lua_newtable(L);
-	s16 i = 1;
+	int16_t i = 1;
 	for (const std::string &texture : skybox_params.textures) {
 		lua_pushlstring(L, texture.c_str(), texture.size());
 		lua_rawseti(L, -2, i++);
@@ -2199,7 +2199,7 @@ int ObjectRef::l_set_minimap_modes(lua_State *L)
 
 	luaL_checktype(L, 2, LUA_TTABLE);
 	std::vector<MinimapMode> modes;
-	s16 selected_mode = luaL_checkint(L, 3);
+	int16_t selected_mode = luaL_checkint(L, 3);
 
 	lua_pushnil(L);
 	while (lua_next(L, 2) != 0) {

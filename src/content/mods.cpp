@@ -209,8 +209,8 @@ void ModConfiguration::addMods(const std::vector<ModSpec> &new_mods)
 {
 	// Maintain a map of all existing m_unsatisfied_mods.
 	// Keys are mod names and values are indices into m_unsatisfied_mods.
-	std::map<std::string, u32> existing_mods;
-	for (u32 i = 0; i < m_unsatisfied_mods.size(); ++i) {
+	std::map<std::string, uint32_t> existing_mods;
+	for (uint32_t i = 0; i < m_unsatisfied_mods.size(); ++i) {
 		existing_mods[m_unsatisfied_mods[i].name] = i;
 	}
 
@@ -233,7 +233,7 @@ void ModConfiguration::addMods(const std::vector<ModSpec> &new_mods)
 				existing_mods[mod.name] = m_unsatisfied_mods.size() - 1;
 			} else if (seen_this_iteration.count(mod.name) == 0) {
 				// BAD CASE: name conflict in different levels.
-				u32 oldindex = existing_mods[mod.name];
+				uint32_t oldindex = existing_mods[mod.name];
 				const ModSpec &oldmod = m_unsatisfied_mods[oldindex];
 				warningstream << "Mod name conflict detected: \""
 					      << mod.name << "\"" << std::endl
@@ -248,7 +248,7 @@ void ModConfiguration::addMods(const std::vector<ModSpec> &new_mods)
 				m_name_conflicts.erase(mod.name);
 			} else {
 				// VERY BAD CASE: name conflict in the same level.
-				u32 oldindex = existing_mods[mod.name];
+				uint32_t oldindex = existing_mods[mod.name];
 				const ModSpec &oldmod = m_unsatisfied_mods[oldindex];
 				warningstream << "Mod name conflict detected: \""
 					      << mod.name << "\"" << std::endl

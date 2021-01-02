@@ -577,7 +577,7 @@ void Server::AsyncRunStep(bool initial_step)
 	m_time_of_day_send_timer -= dtime;
 	if (m_time_of_day_send_timer < 0.0) {
 		m_time_of_day_send_timer = g_settings->getFloat("time_send_interval");
-		u16 time = m_env->getTimeOfDay();
+		uint16_t time = m_env->getTimeOfDay();
 		float time_speed = g_settings->getFloat("time_speed");
 		SendTimeOfDay(PEER_ID_INEXISTENT, time, time_speed);
 
@@ -738,11 +738,11 @@ void Server::AsyncRunStep(bool initial_step)
 
 		// Key = object id
 		// Value = data sent by object
-		std::unordered_map<u16, std::vector<ActiveObjectMessage>*> buffered_messages;
+		std::unordered_map<uint16_t, std::vector<ActiveObjectMessage>*> buffered_messages;
 
 		// Get active object messages from environment
 		ActiveObjectMessage aom(0);
-		u32 aom_count = 0;
+		uint32_t aom_count = 0;
 		for(;;) {
 			if (!m_env->getActiveObjectMessage(&aom))
 				break;
@@ -773,7 +773,7 @@ void Server::AsyncRunStep(bool initial_step)
 			// Go through all objects in message buffer
 			for (const auto &buffered_message : buffered_messages) {
 				// If object does not exist or is not known by client, skip it
-				u16 id = buffered_message.first;
+				uint16_t id = buffered_message.first;
 				ServerActiveObject *sao = m_env->getActiveObject(id);
 				if (!sao || client->m_known_objects.find(id) == client->m_known_objects.end())
 					continue;
@@ -798,8 +798,8 @@ void Server::AsyncRunStep(bool initial_step)
 					// Add full new data to appropriate buffer
 					std::string &buffer = aom.reliable ? reliable_data : unreliable_data;
 					char idbuf[2];
-					writeU16((u8*) idbuf, aom.id);
-					// u16 id
+					writeU16((uint8_t*) idbuf, aom.id);
+					// uint16_t id
 					// std::string data
 					buffer.append(idbuf, sizeof(idbuf));
 					buffer.append(serializeString16(aom.datastring));
@@ -833,7 +833,7 @@ void Server::AsyncRunStep(bool initial_step)
 		MutexAutoLock lock(m_env_mutex);
 
 		// Don't send too many at a time
-		//u32 count = 0;
+		//uint32_t count = 0;
 
 		// Single change sending is disabled if queue size is not small
 		bool disable_single_change_sending = false;
@@ -854,7 +854,7 @@ void Server::AsyncRunStep(bool initial_step)
 			// Players far away from the change are stored here.
 			// Instead of sending the changes, MapBlocks are set not sent
 			// for them.
-			std::unordered_set<u16> far_players;
+			std::unordered_set<uint16_t> far_players;
 
 			switch (event->type) {
 			case MEET_ADDNODE:
@@ -893,7 +893,7 @@ void Server::AsyncRunStep(bool initial_step)
 			default:
 				prof.add("unknown", 1);
 				warningstream << "Server: Unknown MapEditEvent "
-						<< ((u32)event->type) << std::endl;
+						<< ((uint32_t)event->type) << std::endl;
 				break;
 			}
 
@@ -909,7 +909,7 @@ void Server::AsyncRunStep(bool initial_step)
 				}
 
 				// Set blocks not sent
-				for (const u16 far_player : far_players) {
+				for (const uint16_t far_player : far_players) {
 					if (RemoteClient *client = getClient(far_player))
 						client->SetBlocksNotSent(modified_blocks2);
 				}
@@ -1110,7 +1110,7 @@ void Server::ProcessData(NetworkPacket *pkt)
 	MutexAutoLock envlock(m_env_mutex);
 
 	ScopeProfiler sp(g_profiler, "Server: Process network packet (sum)");
-	u32 peer_id = pkt->getPeerId();
+	uint32_t peer_id = pkt->getPeerId();
 
 	try {
 		Address address = getPeerAddress(peer_id);
@@ -1154,7 +1154,7 @@ void Server::ProcessData(NetworkPacket *pkt)
 			return;
 		}
 
-		u8 peer_ser_ver = getClient(peer_id, CS_InitDone)->serialization_version;
+		uint8_t peer_ser_ver = getClient(peer_id, CS_InitDone)->serialization_version;
 
 		if(peer_ser_ver == SER_FMT_VER_INVALID) {
 			errorstream << "Server::ProcessData(): Cancelling: Peer"
@@ -1190,7 +1190,7 @@ void Server::ProcessData(NetworkPacket *pkt)
 	}
 }
 
-void Server::setTimeOfDay(u32 time)
+void Server::setTimeOfDay(uint32_t time)
 {
 	m_env->setTimeOfDay(time);
 	m_time_of_day_send_timer = 0;
@@ -1242,12 +1242,12 @@ bool Server::getClientConInfo(session_t peer_id, con::rtt_stat_type type, float*
 bool Server::getClientInfo(
 		session_t    peer_id,
 		ClientState* state,
-		u32*         uptime,
-		u8*          ser_vers,
-		u16*         prot_vers,
-		u8*          major,
-		u8*          minor,
-		u8*          patch,
+		uint32_t*         uptime,
+		uint8_t*          ser_vers,
+		uint16_t*         prot_vers,
+		uint8_t*          major,
+		uint8_t*          minor,
+		uint8_t*          patch,
 		std::string* vers_string,
 		std::string* lang_code
 	)
@@ -1363,17 +1363,17 @@ void Server::SendPlayerHPOrDie(PlayerSAO *playersao, const PlayerHPChangeReason 
 		DiePlayer(peer_id, reason);
 }
 
-void Server::SendHP(session_t peer_id, u16 hp)
+void Server::SendHP(session_t peer_id, uint16_t hp)
 {
 	NetworkPacket pkt(TOCLIENT_HP, 1, peer_id);
 	pkt << hp;
 	Send(&pkt);
 }
 
-void Server::SendBreath(session_t peer_id, u16 breath)
+void Server::SendBreath(session_t peer_id, uint16_t breath)
 {
 	NetworkPacket pkt(TOCLIENT_BREATH, 2, peer_id);
-	pkt << (u16) breath;
+	pkt << (uint16_t) breath;
 	Send(&pkt);
 }
 
@@ -1383,12 +1383,12 @@ void Server::SendAccessDenied(session_t peer_id, AccessDeniedCode reason,
 	assert(reason < SERVER_ACCESSDENIED_MAX);
 
 	NetworkPacket pkt(TOCLIENT_ACCESS_DENIED, 1, peer_id);
-	pkt << (u8)reason;
+	pkt << (uint8_t)reason;
 	if (reason == SERVER_ACCESSDENIED_CUSTOM_STRING)
 		pkt << custom_reason;
 	else if (reason == SERVER_ACCESSDENIED_SHUTDOWN ||
 			reason == SERVER_ACCESSDENIED_CRASH)
-		pkt << custom_reason << (u8)reconnect;
+		pkt << custom_reason << (uint8_t)reconnect;
 	Send(&pkt);
 }
 
@@ -1408,13 +1408,13 @@ void Server::SendDeathscreen(session_t peer_id, bool set_camera_point_target,
 }
 
 void Server::SendItemDef(session_t peer_id,
-		IItemDefManager *itemdef, u16 protocol_version)
+		IItemDefManager *itemdef, uint16_t protocol_version)
 {
 	NetworkPacket pkt(TOCLIENT_ITEMDEF, 0, peer_id);
 
 	/*
-		u16 command
-		u32 length of the next item
+		uint16_t command
+		uint32_t length of the next item
 		zlib-compressed serialized ItemDefManager
 	*/
 	std::ostringstream tmp_os(std::ios::binary);
@@ -1431,13 +1431,13 @@ void Server::SendItemDef(session_t peer_id,
 }
 
 void Server::SendNodeDef(session_t peer_id,
-	const NodeDefManager *nodedef, u16 protocol_version)
+	const NodeDefManager *nodedef, uint16_t protocol_version)
 {
 	NetworkPacket pkt(TOCLIENT_NODEDEF, 0, peer_id);
 
 	/*
-		u16 command
-		u32 length of the next item
+		uint16_t command
+		uint32_t length of the next item
 		zlib-compressed serialized NodeDefManager
 	*/
 	std::ostringstream tmp_os(std::ios::binary);
@@ -1486,9 +1486,9 @@ void Server::SendInventory(PlayerSAO *sao, bool incremental)
 void Server::SendChatMessage(session_t peer_id, const ChatMessage &message)
 {
 	NetworkPacket pkt(TOCLIENT_CHAT_MESSAGE, 0, peer_id);
-	u8 version = 1;
-	u8 type = message.type;
-	pkt << version << type << std::wstring(L"") << message.message << (u64)message.timestamp;
+	uint8_t version = 1;
+	uint8_t type = message.type;
+	pkt << version << type << std::wstring(L"") << message.message << (uint64_t)message.timestamp;
 
 	if (peer_id != PEER_ID_INEXISTENT) {
 		RemotePlayer *player = m_env->getPlayer(peer_id);
@@ -1523,7 +1523,7 @@ void Server::SendShowFormspecMessage(session_t peer_id, const std::string &forms
 }
 
 // Spawns a particle on peer with peer_id
-void Server::SendSpawnParticle(session_t peer_id, u16 protocol_version,
+void Server::SendSpawnParticle(session_t peer_id, uint16_t protocol_version,
 	const ParticleParameters &p)
 {
 	static thread_local const float radius =
@@ -1566,8 +1566,8 @@ void Server::SendSpawnParticle(session_t peer_id, u16 protocol_version,
 }
 
 // Adds a ParticleSpawner on peer with peer_id
-void Server::SendAddParticleSpawner(session_t peer_id, u16 protocol_version,
-	const ParticleSpawnerParameters &p, u16 attached_id, u32 id)
+void Server::SendAddParticleSpawner(session_t peer_id, uint16_t protocol_version,
+	const ParticleSpawnerParameters &p, uint16_t attached_id, uint32_t id)
 {
 	static thread_local const float radius =
 			g_settings->getS16("max_block_send_distance") * MAP_BLOCKSIZE * BS;
@@ -1620,7 +1620,7 @@ void Server::SendAddParticleSpawner(session_t peer_id, u16 protocol_version,
 	Send(&pkt);
 }
 
-void Server::SendDeleteParticleSpawner(session_t peer_id, u32 id)
+void Server::SendDeleteParticleSpawner(session_t peer_id, uint32_t id)
 {
 	NetworkPacket pkt(TOCLIENT_DELETE_PARTICLESPAWNER, 4, peer_id);
 
@@ -1633,11 +1633,11 @@ void Server::SendDeleteParticleSpawner(session_t peer_id, u32 id)
 
 }
 
-void Server::SendHUDAdd(session_t peer_id, u32 id, HudElement *form)
+void Server::SendHUDAdd(session_t peer_id, uint32_t id, HudElement *form)
 {
 	NetworkPacket pkt(TOCLIENT_HUDADD, 0 , peer_id);
 
-	pkt << id << (u8) form->type << form->pos << form->name << form->scale
+	pkt << id << (uint8_t) form->type << form->pos << form->name << form->scale
 			<< form->text << form->number << form->item << form->dir
 			<< form->align << form->offset << form->world_pos << form->size
 			<< form->z_index << form->text2;
@@ -1645,17 +1645,17 @@ void Server::SendHUDAdd(session_t peer_id, u32 id, HudElement *form)
 	Send(&pkt);
 }
 
-void Server::SendHUDRemove(session_t peer_id, u32 id)
+void Server::SendHUDRemove(session_t peer_id, uint32_t id)
 {
 	NetworkPacket pkt(TOCLIENT_HUDRM, 4, peer_id);
 	pkt << id;
 	Send(&pkt);
 }
 
-void Server::SendHUDChange(session_t peer_id, u32 id, HudElementStat stat, void *value)
+void Server::SendHUDChange(session_t peer_id, uint32_t id, HudElementStat stat, void *value)
 {
 	NetworkPacket pkt(TOCLIENT_HUDCHANGE, 0, peer_id);
-	pkt << id << (u8) stat;
+	pkt << id << (uint8_t) stat;
 
 	switch (stat) {
 		case HUD_STAT_POS:
@@ -1679,14 +1679,14 @@ void Server::SendHUDChange(session_t peer_id, u32 id, HudElementStat stat, void 
 		case HUD_STAT_ITEM:
 		case HUD_STAT_DIR:
 		default:
-			pkt << *(u32 *) value;
+			pkt << *(uint32_t *) value;
 			break;
 	}
 
 	Send(&pkt);
 }
 
-void Server::SendHUDSetFlags(session_t peer_id, u32 flags, u32 mask)
+void Server::SendHUDSetFlags(session_t peer_id, uint32_t flags, uint32_t mask)
 {
 	NetworkPacket pkt(TOCLIENT_HUD_SET_FLAGS, 4 + 4, peer_id);
 
@@ -1697,7 +1697,7 @@ void Server::SendHUDSetFlags(session_t peer_id, u32 flags, u32 mask)
 	Send(&pkt);
 }
 
-void Server::SendHUDSetParam(session_t peer_id, u16 param, const std::string &value)
+void Server::SendHUDSetParam(session_t peer_id, uint16_t param, const std::string &value)
 {
 	NetworkPacket pkt(TOCLIENT_HUD_SET_PARAM, 0, peer_id);
 	pkt << param << value;
@@ -1710,7 +1710,7 @@ void Server::SendSetSky(session_t peer_id, const SkyboxParams &params)
 
 	// Handle prior clients here
 	if (m_clients.getProtocolVersion(peer_id) < 39) {
-		pkt << params.bgcolor << params.type << (u16) params.textures.size();
+		pkt << params.bgcolor << params.type << (uint16_t) params.textures.size();
 
 		for (const std::string& texture : params.textures)
 			pkt << texture;
@@ -1722,7 +1722,7 @@ void Server::SendSetSky(session_t peer_id, const SkyboxParams &params)
 		<< params.fog_moon_tint << params.fog_tint_type;
 
 		if (params.type == "skybox") {
-			pkt << (u16) params.textures.size();
+			pkt << (uint16_t) params.textures.size();
 			for (const std::string &texture : params.textures)
 				pkt << texture;
 		} else if (params.type == "regular") {
@@ -1778,12 +1778,12 @@ void Server::SendOverrideDayNightRatio(session_t peer_id, bool do_override,
 	NetworkPacket pkt(TOCLIENT_OVERRIDE_DAY_NIGHT_RATIO,
 			1 + 2, peer_id);
 
-	pkt << do_override << (u16) (ratio * 65535);
+	pkt << do_override << (uint16_t) (ratio * 65535);
 
 	Send(&pkt);
 }
 
-void Server::SendTimeOfDay(session_t peer_id, u16 time, f32 time_speed)
+void Server::SendTimeOfDay(session_t peer_id, uint16_t time, float time_speed)
 {
 	NetworkPacket pkt(TOCLIENT_TIME_OF_DAY, 0, peer_id);
 	pkt << time << time_speed;
@@ -1849,7 +1849,7 @@ void Server::SendPlayerFov(session_t peer_id)
 }
 
 void Server::SendLocalPlayerAnimations(session_t peer_id, v2s32 animation_frames[4],
-		f32 animation_speed)
+		float animation_speed)
 {
 	NetworkPacket pkt(TOCLIENT_LOCAL_PLAYER_ANIMATIONS, 0,
 		peer_id);
@@ -1878,7 +1878,7 @@ void Server::SendPlayerPrivileges(session_t peer_id)
 	m_script->getAuth(player->getName(), NULL, &privs);
 
 	NetworkPacket pkt(TOCLIENT_PRIVILEGES, 0, peer_id);
-	pkt << (u16) privs.size();
+	pkt << (uint16_t) privs.size();
 
 	for (const std::string &priv : privs) {
 		pkt << priv;
@@ -1915,7 +1915,7 @@ void Server::SendPlayerFormspecPrepend(session_t peer_id)
 void Server::SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersao)
 {
 	// Radius inside which objects are active
-	static thread_local const s16 radius =
+	static thread_local const int16_t radius =
 		g_settings->getS16("active_object_send_range_blocks") * MAP_BLOCKSIZE;
 
 	// Radius inside which players are active
@@ -1923,17 +1923,17 @@ void Server::SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersa
 		g_settings->exists("unlimited_player_transfer_distance") &&
 		!g_settings->getBool("unlimited_player_transfer_distance");
 
-	static thread_local const s16 player_transfer_dist =
+	static thread_local const int16_t player_transfer_dist =
 		g_settings->getS16("player_transfer_distance") * MAP_BLOCKSIZE;
 
-	s16 player_radius = player_transfer_dist == 0 && is_transfer_limited ?
+	int16_t player_radius = player_transfer_dist == 0 && is_transfer_limited ?
 		radius : player_transfer_dist;
 
-	s16 my_radius = MYMIN(radius, playersao->getWantedRange() * MAP_BLOCKSIZE);
+	int16_t my_radius = MYMIN(radius, playersao->getWantedRange() * MAP_BLOCKSIZE);
 	if (my_radius <= 0)
 		my_radius = radius;
 
-	std::queue<u16> removed_objects, added_objects;
+	std::queue<uint16_t> removed_objects, added_objects;
 	m_env->getRemovedActiveObjects(playersao, my_radius, player_radius,
 		client->m_known_objects, removed_objects);
 	m_env->getAddedActiveObjects(playersao, my_radius, player_radius,
@@ -1949,15 +1949,15 @@ void Server::SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersa
 	std::string data;
 
 	// Handle removed objects
-	writeU16((u8*)buf, removed_objects.size());
+	writeU16((uint8_t*)buf, removed_objects.size());
 	data.append(buf, 2);
 	while (!removed_objects.empty()) {
 		// Get object
-		u16 id = removed_objects.front();
+		uint16_t id = removed_objects.front();
 		ServerActiveObject* obj = m_env->getActiveObject(id);
 
 		// Add to data buffer for sending
-		writeU16((u8*)buf, id);
+		writeU16((uint8_t*)buf, id);
 		data.append(buf, 2);
 
 		// Remove from known objects
@@ -1970,11 +1970,11 @@ void Server::SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersa
 	}
 
 	// Handle added objects
-	writeU16((u8*)buf, added_objects.size());
+	writeU16((uint8_t*)buf, added_objects.size());
 	data.append(buf, 2);
 	while (!added_objects.empty()) {
 		// Get object
-		u16 id = added_objects.front();
+		uint16_t id = added_objects.front();
 		ServerActiveObject *obj = m_env->getActiveObject(id);
 		added_objects.pop();
 
@@ -1985,12 +1985,12 @@ void Server::SendActiveObjectRemoveAdd(RemoteClient *client, PlayerSAO *playersa
 		}
 
 		// Get object type
-		u8 type = obj->getSendType();
+		uint8_t type = obj->getSendType();
 
 		// Add to data buffer for sending
-		writeU16((u8*)buf, id);
+		writeU16((uint8_t*)buf, id);
 		data.append(buf, 2);
-		writeU8((u8*)buf, type);
+		writeU8((uint8_t*)buf, type);
 		data.append(buf, 1);
 
 		data.append(serializeString32(
@@ -2039,9 +2039,9 @@ void Server::SendPlayerSpeed(session_t peer_id, const v3f &added_vel)
 	Send(&pkt);
 }
 
-inline s32 Server::nextSoundId()
+inline int32_t Server::nextSoundId()
 {
-	s32 ret = m_next_sound_id;
+	int32_t ret = m_next_sound_id;
 	if (m_next_sound_id == INT32_MAX)
 		m_next_sound_id = 0; // signed overflow is undefined
 	else
@@ -2102,7 +2102,7 @@ s32 Server::playSound(const SimpleSoundSpec &spec,
 		return -1;
 
 	// Create the sound
-	s32 id;
+	int32_t id;
 	ServerPlayingSound *psound = nullptr;
 	if (ephemeral) {
 		id = -1; // old clients will still use this, so pick a reserved ID
@@ -2118,20 +2118,20 @@ s32 Server::playSound(const SimpleSoundSpec &spec,
 	float gain = params.gain * spec.gain;
 	NetworkPacket pkt(TOCLIENT_PLAY_SOUND, 0);
 	pkt << id << spec.name << gain
-			<< (u8) params.type << pos << params.object
+			<< (uint8_t) params.type << pos << params.object
 			<< params.loop << params.fade << params.pitch
 			<< ephemeral;
 
 	bool as_reliable = !ephemeral;
 
-	for (const u16 dst_client : dst_clients) {
+	for (const uint16_t dst_client : dst_clients) {
 		if (psound)
 			psound->clients.insert(dst_client);
 		m_clients.send(dst_client, 0, &pkt, as_reliable);
 	}
 	return id;
 }
-void Server::stopSound(s32 handle)
+void Server::stopSound(int32_t handle)
 {
 	// Get sound reference
 	std::unordered_map<s32, ServerPlayingSound>::iterator i =
@@ -2152,7 +2152,7 @@ void Server::stopSound(s32 handle)
 	m_playing_sounds.erase(i);
 }
 
-void Server::fadeSound(s32 handle, float step, float gain)
+void Server::fadeSound(int32_t handle, float step, float gain)
 {
 	// Get sound reference
 	std::unordered_map<s32, ServerPlayingSound>::iterator i =
@@ -2174,7 +2174,7 @@ void Server::fadeSound(s32 handle, float step, float gain)
 	NetworkPacket compat_pkt(TOCLIENT_STOP_SOUND, 4);
 	compat_pkt << handle;
 
-	for (std::unordered_set<u16>::iterator it = psound.clients.begin();
+	for (std::unordered_set<uint16_t>::iterator it = psound.clients.begin();
 			it != psound.clients.end();) {
 		if (m_clients.getProtocolVersion(*it) >= 32) {
 			// Send as reliable
@@ -2198,7 +2198,7 @@ void Server::fadeSound(s32 handle, float step, float gain)
 	}
 }
 
-void Server::sendRemoveNode(v3s16 p, std::unordered_set<u16> *far_players,
+void Server::sendRemoveNode(v3s16 p, std::unordered_set<uint16_t> *far_players,
 		float far_d_nodes)
 {
 	float maxd = far_d_nodes * BS;
@@ -2236,7 +2236,7 @@ void Server::sendRemoveNode(v3s16 p, std::unordered_set<u16> *far_players,
 	m_clients.unlock();
 }
 
-void Server::sendAddNode(v3s16 p, MapNode n, std::unordered_set<u16> *far_players,
+void Server::sendAddNode(v3s16 p, MapNode n, std::unordered_set<uint16_t> *far_players,
 		float far_d_nodes, bool remove_metadata)
 {
 	float maxd = far_d_nodes * BS;
@@ -2245,7 +2245,7 @@ void Server::sendAddNode(v3s16 p, MapNode n, std::unordered_set<u16> *far_player
 
 	NetworkPacket pkt(TOCLIENT_ADDNODE, 6 + 2 + 1 + 1 + 1);
 	pkt << p << n.param0 << n.param1 << n.param2
-			<< (u8) (remove_metadata ? 0 : 1);
+			<< (uint8_t) (remove_metadata ? 0 : 1);
 
 	std::vector<session_t> clients = m_clients.getClientIDs();
 	m_clients.lock();
@@ -2326,8 +2326,8 @@ void Server::sendMetadataChanged(const std::list<v3s16> &meta_updates, float far
 	m_clients.unlock();
 }
 
-void Server::SendBlockNoLock(session_t peer_id, MapBlock *block, u8 ver,
-		u16 net_proto_version)
+void Server::SendBlockNoLock(session_t peer_id, MapBlock *block, uint8_t ver,
+		uint16_t net_proto_version)
 {
 	/*
 		Create a packet with the block in the right format
@@ -2352,7 +2352,7 @@ void Server::SendBlocks(float dtime)
 
 	std::vector<PrioritySortedBlockTransfer> queue;
 
-	u32 total_sending = 0;
+	uint32_t total_sending = 0;
 
 	{
 		ScopeProfiler sp2(g_profiler, "Server::SendBlocks(): Collect list");
@@ -2381,7 +2381,7 @@ void Server::SendBlocks(float dtime)
 
 	// Maximal total count calculation
 	// The per-client block sends is halved with the maximal online users
-	u32 max_blocks_to_send = (m_env->getPlayerCount() + g_settings->getU32("max_users")) *
+	uint32_t max_blocks_to_send = (m_env->getPlayerCount() + g_settings->getU32("max_users")) *
 		g_settings->getU32("max_simultaneous_block_sends_per_client") / 4 + 1;
 
 	ScopeProfiler sp(g_profiler, "Server::SendBlocks(): Send to clients");
@@ -2525,7 +2525,7 @@ void Server::sendMediaAnnouncement(session_t peer_id, const std::string &lang_co
 	// Make packet
 	NetworkPacket pkt(TOCLIENT_ANNOUNCE_MEDIA, 0, peer_id);
 
-	u16 media_sent = 0;
+	uint16_t media_sent = 0;
 	std::string lang_suffix;
 	lang_suffix.append(".").append(lang_code).append(".tr");
 	for (const auto &i : m_media) {
@@ -2572,12 +2572,12 @@ void Server::sendRequestedMedia(session_t peer_id,
 	/* Read files */
 
 	// Put 5kB in one bunch (this is not accurate)
-	u32 bytes_per_bunch = 5000;
+	uint32_t bytes_per_bunch = 5000;
 
 	std::vector< std::vector<SendableMedia> > file_bunches;
 	file_bunches.emplace_back();
 
-	u32 file_size_bunch_total = 0;
+	uint32_t file_size_bunch_total = 0;
 
 	for (const std::string &name : tosend) {
 		if (m_media.find(name) == m_media.end()) {
@@ -2631,23 +2631,23 @@ void Server::sendRequestedMedia(session_t peer_id,
 
 	/* Create and send packets */
 
-	u16 num_bunches = file_bunches.size();
-	for (u16 i = 0; i < num_bunches; i++) {
+	uint16_t num_bunches = file_bunches.size();
+	for (uint16_t i = 0; i < num_bunches; i++) {
 		/*
-			u16 command
-			u16 total number of texture bunches
-			u16 index of this bunch
-			u32 number of files in this bunch
+			uint16_t command
+			uint16_t total number of texture bunches
+			uint16_t index of this bunch
+			uint32_t number of files in this bunch
 			for each file {
-				u16 length of name
+				uint16_t length of name
 				string name
-				u32 length of data
+				uint32_t length of data
 				data
 			}
 		*/
 
 		NetworkPacket pkt(TOCLIENT_MEDIA, 4 + 0, peer_id);
-		pkt << num_bunches << i << (u32) file_bunches[i].size();
+		pkt << num_bunches << i << (uint32_t) file_bunches[i].size();
 
 		for (const SendableMedia &j : file_bunches[i]) {
 			pkt << j.name;
@@ -2671,10 +2671,10 @@ void Server::SendMinimapModes(session_t peer_id,
 		return;
 
 	NetworkPacket pkt(TOCLIENT_MINIMAP_MODES, 0, peer_id);
-	pkt << (u16)modes.size() << (u16)wanted_mode;
+	pkt << (uint16_t)modes.size() << (uint16_t)wanted_mode;
 
 	for (auto &mode : modes)
-		pkt << (u16)mode.type << mode.label << mode.size << mode.texture << mode.scale;
+		pkt << (uint16_t)mode.type << mode.label << mode.size << mode.texture << mode.scale;
 
 	Send(&pkt);
 }
@@ -2695,7 +2695,7 @@ void Server::sendDetachedInventory(Inventory *inventory, const std::string &name
 		inventory->setModified(false);
 
 		const std::string &os_str = os.str();
-		pkt << static_cast<u16>(os_str.size()); // HACK: to keep compatibility with 5.0.0 clients
+		pkt << static_cast<uint16_t>(os_str.size()); // HACK: to keep compatibility with 5.0.0 clients
 		pkt.putRawString(os_str);
 	}
 
@@ -2773,7 +2773,7 @@ void Server::DenySudoAccess(session_t peer_id)
 }
 
 
-void Server::DenyAccessVerCompliant(session_t peer_id, u16 proto_ver, AccessDeniedCode reason,
+void Server::DenyAccessVerCompliant(session_t peer_id, uint16_t proto_ver, AccessDeniedCode reason,
 		const std::string &str_reason, bool reconnect)
 {
 	SendAccessDenied(peer_id, reason, str_reason, reconnect);
@@ -2814,10 +2814,10 @@ void Server::acceptAuth(session_t peer_id, bool forSudoMode)
 		NetworkPacket resp_pkt(TOCLIENT_AUTH_ACCEPT, 1 + 6 + 8 + 4, peer_id);
 
 		// Right now, the auth mechs don't change between login and sudo mode.
-		u32 sudo_auth_mechs = client->allowed_auth_mechs;
+		uint32_t sudo_auth_mechs = client->allowed_auth_mechs;
 		client->allowed_sudo_mechs = sudo_auth_mechs;
 
-		resp_pkt << v3f(0,0,0) << (u64) m_env->getServerMap().getSeed()
+		resp_pkt << v3f(0,0,0) << (uint64_t) m_env->getServerMap().getSeed()
 				<< g_settings->getFloat("dedicated_server_step")
 				<< sudo_auth_mechs;
 
@@ -2827,7 +2827,7 @@ void Server::acceptAuth(session_t peer_id, bool forSudoMode)
 		NetworkPacket resp_pkt(TOCLIENT_ACCEPT_SUDO_MODE, 1 + 6 + 8 + 4, peer_id);
 
 		// We only support SRP right now
-		u32 sudo_auth_mechs = AUTH_MECHANISM_FIRST_SRP;
+		uint32_t sudo_auth_mechs = AUTH_MECHANISM_FIRST_SRP;
 
 		resp_pkt << sudo_auth_mechs;
 		Send(&resp_pkt);
@@ -2868,8 +2868,8 @@ void Server::DeleteClient(session_t peer_id, ClientDeletionReason reason)
 			// inform connected clients
 			const std::string &player_name = player->getName();
 			NetworkPacket notice(TOCLIENT_UPDATE_PLAYER_LIST, 0, PEER_ID_INEXISTENT);
-			// (u16) 1 + std::string represents a vector serialization representation
-			notice << (u8) PLAYER_LIST_REMOVE  << (u16) 1 << player_name;
+			// (uint16_t) 1 + std::string represents a vector serialization representation
+			notice << (uint8_t) PLAYER_LIST_REMOVE  << (uint16_t) 1 << player_name;
 			m_clients.sendToAll(&notice);
 			// run scripts
 			m_script->on_leaveplayer(playersao, reason == CDR_TIMEOUT);
@@ -3051,7 +3051,7 @@ std::wstring Server::handleChat(const std::string &name, const std::wstring &wna
 	if (player && player->protocol_version >= 29)
 		peer_id_to_avoid_sending = PEER_ID_INEXISTENT;
 
-	for (u16 cid : clients) {
+	for (uint16_t cid : clients) {
 		if (cid != peer_id_to_avoid_sending)
 			SendChatMessage(cid, ChatMessage(line));
 	}
@@ -3247,19 +3247,19 @@ bool Server::showFormspec(const char *playername, const std::string &formspec,
 	return true;
 }
 
-u32 Server::hudAdd(RemotePlayer *player, HudElement *form)
+uint32_t Server::hudAdd(RemotePlayer *player, HudElement *form)
 {
 	if (!player)
 		return -1;
 
-	u32 id = player->addHud(form);
+	uint32_t id = player->addHud(form);
 
 	SendHUDAdd(player->getPeerId(), id, form);
 
 	return id;
 }
 
-bool Server::hudRemove(RemotePlayer *player, u32 id) {
+bool Server::hudRemove(RemotePlayer *player, uint32_t id) {
 	if (!player)
 		return false;
 
@@ -3274,7 +3274,7 @@ bool Server::hudRemove(RemotePlayer *player, u32 id) {
 	return true;
 }
 
-bool Server::hudChange(RemotePlayer *player, u32 id, HudElementStat stat, void *data)
+bool Server::hudChange(RemotePlayer *player, uint32_t id, HudElementStat stat, void *data)
 {
 	if (!player)
 		return false;
@@ -3283,7 +3283,7 @@ bool Server::hudChange(RemotePlayer *player, u32 id, HudElementStat stat, void *
 	return true;
 }
 
-bool Server::hudSetFlags(RemotePlayer *player, u32 flags, u32 mask)
+bool Server::hudSetFlags(RemotePlayer *player, uint32_t flags, uint32_t mask)
 {
 	if (!player)
 		return false;
@@ -3301,7 +3301,7 @@ bool Server::hudSetFlags(RemotePlayer *player, u32 flags, u32 mask)
 	return true;
 }
 
-bool Server::hudSetHotbarItemcount(RemotePlayer *player, s32 hotbar_itemcount)
+bool Server::hudSetHotbarItemcount(RemotePlayer *player, int32_t hotbar_itemcount)
 {
 	if (!player)
 		return false;
@@ -3340,7 +3340,7 @@ Address Server::getPeerAddress(session_t peer_id)
 }
 
 void Server::setLocalPlayerAnimations(RemotePlayer *player,
-		v2s32 animation_frames[4], f32 frame_speed)
+		v2s32 animation_frames[4], float frame_speed)
 {
 	sanity_check(player);
 	player->setLocalAnimations(animation_frames, frame_speed);
@@ -3411,7 +3411,7 @@ void Server::spawnParticle(const std::string &playername,
 		return;
 
 	session_t peer_id = PEER_ID_INEXISTENT;
-	u16 proto_ver = 0;
+	uint16_t proto_ver = 0;
 	if (!playername.empty()) {
 		RemotePlayer *player = m_env->getPlayer(playername.c_str());
 		if (!player)
@@ -3423,7 +3423,7 @@ void Server::spawnParticle(const std::string &playername,
 	SendSpawnParticle(peer_id, proto_ver, p);
 }
 
-u32 Server::addParticleSpawner(const ParticleSpawnerParameters &p,
+uint32_t Server::addParticleSpawner(const ParticleSpawnerParameters &p,
 	ServerActiveObject *attached, const std::string &playername)
 {
 	// m_env will be NULL if the server is initializing
@@ -3431,7 +3431,7 @@ u32 Server::addParticleSpawner(const ParticleSpawnerParameters &p,
 		return -1;
 
 	session_t peer_id = PEER_ID_INEXISTENT;
-	u16 proto_ver = 0;
+	uint16_t proto_ver = 0;
 	if (!playername.empty()) {
 		RemotePlayer *player = m_env->getPlayer(playername.c_str());
 		if (!player)
@@ -3440,9 +3440,9 @@ u32 Server::addParticleSpawner(const ParticleSpawnerParameters &p,
 		proto_ver = player->protocol_version;
 	}
 
-	u16 attached_id = attached ? attached->getId() : 0;
+	uint16_t attached_id = attached ? attached->getId() : 0;
 
-	u32 id;
+	uint32_t id;
 	if (attached_id == 0)
 		id = m_env->addParticleSpawner(p.time);
 	else
@@ -3452,7 +3452,7 @@ u32 Server::addParticleSpawner(const ParticleSpawnerParameters &p,
 	return id;
 }
 
-void Server::deleteParticleSpawner(const std::string &playername, u32 id)
+void Server::deleteParticleSpawner(const std::string &playername, uint32_t id)
 {
 	// m_env will be NULL if the server is initializing
 	if (!m_env)
@@ -3623,17 +3623,17 @@ v3f Server::findSpawnPos()
 
 	bool is_good = false;
 	// Limit spawn range to mapgen edges (determined by 'mapgen_limit')
-	s32 range_max = map.getMapgenParams()->getSpawnRangeMax();
+	int32_t range_max = map.getMapgenParams()->getSpawnRangeMax();
 
 	// Try to find a good place a few times
-	for (s32 i = 0; i < 4000 && !is_good; i++) {
-		s32 range = MYMIN(1 + i, range_max);
+	for (int32_t i = 0; i < 4000 && !is_good; i++) {
+		int32_t range = MYMIN(1 + i, range_max);
 		// We're going to try to throw the player to this position
 		v2s16 nodepos2d = v2s16(
 			-range + (myrand() % (range * 2)),
 			-range + (myrand() % (range * 2)));
 		// Get spawn level at point
-		s16 spawn_level = m_emerge->getSpawnLevelAtPoint(nodepos2d);
+		int16_t spawn_level = m_emerge->getSpawnLevelAtPoint(nodepos2d);
 		// Continue if MAX_MAP_GENERATION_LIMIT was returned by the mapgen to
 		// signify an unsuitable spawn position, or if outside limits.
 		if (spawn_level >= MAX_MAP_GENERATION_LIMIT ||
@@ -3642,14 +3642,14 @@ v3f Server::findSpawnPos()
 
 		v3s16 nodepos(nodepos2d.X, spawn_level, nodepos2d.Y);
 		// Consecutive empty nodes
-		s32 air_count = 0;
+		int32_t air_count = 0;
 
 		// Search upwards from 'spawn level' for 2 consecutive empty nodes, to
 		// avoid obstructions in already-generated mapblocks.
 		// In ungenerated mapblocks consisting of 'ignore' nodes, there will be
 		// no obstructions, but mapgen decorations are generated after spawn so
 		// the player may end up inside one.
-		for (s32 i = 0; i < 8; i++) {
+		for (int32_t i = 0; i < 8; i++) {
 			v3s16 blockpos = getNodeBlockPos(nodepos);
 			map.emergeBlock(blockpos, true);
 			content_t c = map.getNode(nodepos).getContent();
@@ -3719,7 +3719,7 @@ void Server::requestShutdown(const std::string &msg, bool reconnect, float delay
 	m_shutdown_state.trigger(delay, msg, reconnect);
 }
 
-PlayerSAO* Server::emergePlayer(const char *name, session_t peer_id, u16 proto_version)
+PlayerSAO* Server::emergePlayer(const char *name, session_t peer_id, uint16_t proto_version)
 {
 	/*
 		Try to get an existing player
@@ -3863,7 +3863,7 @@ ModChannel* Server::getModChannel(const std::string &channel)
 void Server::broadcastModChannelMessage(const std::string &channel,
 		const std::string &message, session_t from_peer)
 {
-	const std::vector<u16> &peers = m_modchannel_mgr->getChannelPeers(channel);
+	const std::vector<uint16_t> &peers = m_modchannel_mgr->getChannelPeers(channel);
 	if (peers.empty())
 		return;
 

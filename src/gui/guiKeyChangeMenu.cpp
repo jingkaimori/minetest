@@ -82,7 +82,7 @@ enum
 };
 
 GUIKeyChangeMenu::GUIKeyChangeMenu(gui::IGUIEnvironment* env,
-		gui::IGUIElement* parent, s32 id, IMenuManager *menumgr,
+		gui::IGUIElement* parent, int32_t id, IMenuManager *menumgr,
 		ISimpleTextureSource *tsrc) :
 		GUIModalMenu(env, parent, id, menumgr),
 		m_tsrc(tsrc)
@@ -171,9 +171,9 @@ void GUIKeyChangeMenu::regenerateGui(v2u32 screensize)
 	}
 
 	{
-		s32 option_x = offset.X;
-		s32 option_y = offset.Y + 5 * s;
-		u32 option_w = 180 * s;
+		int32_t option_x = offset.X;
+		int32_t option_y = offset.Y + 5 * s;
+		uint32_t option_w = 180 * s;
 		{
 			core::rect<s32> rect(0, 0, option_w, 30 * s);
 			rect += topleft + v2s32(option_x, option_y);
@@ -186,9 +186,9 @@ void GUIKeyChangeMenu::regenerateGui(v2u32 screensize)
 	}
 
 	{
-		s32 option_x = offset.X;
-		s32 option_y = offset.Y + 5 * s;
-		u32 option_w = 280 * s;
+		int32_t option_x = offset.X;
+		int32_t option_y = offset.Y + 5 * s;
+		uint32_t option_w = 280 * s;
 		{
 			core::rect<s32> rect(0, 0, option_w, 30 * s);
 			rect += topleft + v2s32(option_x, option_y);
@@ -201,9 +201,9 @@ void GUIKeyChangeMenu::regenerateGui(v2u32 screensize)
 	}
 
 	{
-		s32 option_x = offset.X;
-		s32 option_y = offset.Y + 5 * s;
-		u32 option_w = 280;
+		int32_t option_x = offset.X;
+		int32_t option_y = offset.Y + 5 * s;
+		uint32_t option_w = 280;
 		{
 			core::rect<s32> rect(0, 0, option_w, 30 * s);
 			rect += topleft + v2s32(option_x, option_y);

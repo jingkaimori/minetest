@@ -30,9 +30,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #	include <cstdint>
 #endif
 
-#include <irrTypes.h>
-
-using namespace irr;
+//using namespace irr;
 
 namespace irr {
 
@@ -55,7 +53,7 @@ namespace core {
 	inline T roundingError();
 
 	template <>
-	inline s16 roundingError()
+	inline int16_t roundingError()
 	{
 		return 0;
 	}

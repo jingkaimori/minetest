@@ -42,8 +42,8 @@ struct SmoothTranslator
 	T val_old;
 	T val_current;
 	T val_target;
-	f32 anim_time = 0;
-	f32 anim_time_counter = 0;
+	float anim_time = 0;
+	float anim_time_counter = 0;
 	bool aim_is_end = true;
 
 	SmoothTranslator() = default;
@@ -53,17 +53,17 @@ struct SmoothTranslator
 	void update(T new_target, bool is_end_position = false,
 		float update_interval = -1);
 
-	void translate(f32 dtime);
+	void translate(float dtime);
 };
 
 struct SmoothTranslatorWrapped : SmoothTranslator<f32>
 {
-	void translate(f32 dtime);
+	void translate(float dtime);
 };
 
 struct SmoothTranslatorWrappedv3f : SmoothTranslator<v3f>
 {
-	void translate(f32 dtime);
+	void translate(float dtime);
 };
 
 class GenericCAO : public ClientActiveObject
@@ -90,7 +90,7 @@ private:
 	v3f m_velocity;
 	v3f m_acceleration;
 	v3f m_rotation;
-	u16 m_hp = 1;
+	uint16_t m_hp = 1;
 	SmoothTranslator<v3f> pos_translator;
 	SmoothTranslatorWrappedv3f rot_translator;
 	// Spritesheet/animation stuff
@@ -125,9 +125,9 @@ private:
 	std::string m_current_texture_modifier = "";
 	bool m_visuals_expired = false;
 	float m_step_distance_counter = 0.0f;
-	u8 m_last_light = 255;
+	uint8_t m_last_light = 255;
 	bool m_is_visible = false;
-	s8 m_glow = 0;
+	int8_t m_glow = 0;
 	// Material
 	video::E_MATERIAL_TYPE m_material_type;
 	// Settings
@@ -198,7 +198,7 @@ public:
 		return &m_matrixnode->getAbsoluteTransformation();
 	}
 
-	inline f32 getStepHeight() const
+	inline float getStepHeight() const
 	{
 		return m_prop.stepheight;
 	}
@@ -241,14 +241,14 @@ public:
 		m_visuals_expired = true;
 	}
 
-	void updateLight(u32 day_night_ratio);
+	void updateLight(uint32_t day_night_ratio);
 
-	void setNodeLight(u8 light);
+	void setNodeLight(uint8_t light);
 
 	/* Get light position(s).
 	 * returns number of positions written into pos[], which must have space
 	 * for at least 3 vectors. */
-	u16 getLightPosition(v3s16 *pos);
+	uint16_t getLightPosition(v3s16 *pos);
 
 	void updateNametag();
 

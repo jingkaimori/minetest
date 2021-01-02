@@ -33,7 +33,7 @@ class Map;
 	- Content = (content_t) content of a node
 	- Tile = TileSpec at some side of a node of some content type
 */
-typedef u16 content_t;
+typedef uint16_t content_t;
 
 /*
 	The maximum node ID that can be registered by mods. This must
@@ -119,7 +119,7 @@ struct MapNode
 	/*
 		Main content
 	*/
-	u16 param0;
+	uint16_t param0;
 
 	/*
 		Misc parameter. Initialized to 0.
@@ -129,17 +129,17 @@ struct MapNode
 		  - Contains 2 values, day- and night lighting. Each takes 4 bits.
 		- Uhh... well, most blocks have light or nothing in here.
 	*/
-	u8 param1;
+	uint8_t param1;
 
 	/*
 		The second parameter. Initialized to 0.
 		E.g. direction for torches and flowing water.
 	*/
-	u8 param2;
+	uint8_t param2;
 
 	MapNode() = default;
 
-	MapNode(content_t content, u8 a_param1=0, u8 a_param2=0) noexcept
+	MapNode(content_t content, uint8_t a_param1=0, uint8_t a_param2=0) noexcept
 		: param0(content),
 		  param1(a_param1),
 		  param2(a_param2)
@@ -161,19 +161,19 @@ struct MapNode
 	{
 		param0 = c;
 	}
-	u8 getParam1() const noexcept
+	uint8_t getParam1() const noexcept
 	{
 		return param1;
 	}
-	void setParam1(u8 p) noexcept
+	void setParam1(uint8_t p) noexcept
 	{
 		param1 = p;
 	}
-	u8 getParam2() const noexcept
+	uint8_t getParam2() const noexcept
 	{
 		return param2;
 	}
-	void setParam2(u8 p) noexcept
+	void setParam2(uint8_t p) noexcept
 	{
 		param2 = p;
 	}
@@ -186,9 +186,9 @@ struct MapNode
 	 */
 	void getColor(const ContentFeatures &f, video::SColor *color) const;
 
-	void setLight(LightBank bank, u8 a_light, const ContentFeatures &f) noexcept;
+	void setLight(LightBank bank, uint8_t a_light, const ContentFeatures &f) noexcept;
 
-	void setLight(LightBank bank, u8 a_light, const NodeDefManager *nodemgr);
+	void setLight(LightBank bank, uint8_t a_light, const NodeDefManager *nodemgr);
 
 	/**
 	 * Check if the light value for night differs from the light value for day.
@@ -197,14 +197,14 @@ struct MapNode
 	 */
 	bool isLightDayNightEq(const NodeDefManager *nodemgr) const;
 
-	u8 getLight(LightBank bank, const NodeDefManager *nodemgr) const;
+	uint8_t getLight(LightBank bank, const NodeDefManager *nodemgr) const;
 
 	/*!
 	 * Returns the node's light level from param1.
 	 * If the node emits light, it is ignored.
 	 * \param f the ContentFeatures of this node.
 	 */
-	u8 getLightRaw(LightBank bank, const ContentFeatures &f) const noexcept;
+	uint8_t getLightRaw(LightBank bank, const ContentFeatures &f) const noexcept;
 
 	/**
 	 * This function differs from getLight(LightBank bank, NodeDefManager *nodemgr)
@@ -221,23 +221,23 @@ struct MapNode
 	 * @pre f != NULL
 	 * @pre f->param_type == CPT_LIGHT
 	 */
-	u8 getLightNoChecks(LightBank bank, const ContentFeatures *f) const noexcept;
+	uint8_t getLightNoChecks(LightBank bank, const ContentFeatures *f) const noexcept;
 
-	bool getLightBanks(u8 &lightday, u8 &lightnight,
+	bool getLightBanks(uint8_t &lightday, uint8_t &lightnight,
 		const NodeDefManager *nodemgr) const;
 
 	// 0 <= daylight_factor <= 1000
 	// 0 <= return value <= LIGHT_SUN
-	u8 getLightBlend(u32 daylight_factor, const NodeDefManager *nodemgr) const
+	uint8_t getLightBlend(uint32_t daylight_factor, const NodeDefManager *nodemgr) const
 	{
-		u8 lightday = 0;
-		u8 lightnight = 0;
+		uint8_t lightday = 0;
+		uint8_t lightnight = 0;
 		getLightBanks(lightday, lightnight, nodemgr);
 		return blend_light(daylight_factor, lightday, lightnight);
 	}
 
-	u8 getFaceDir(const NodeDefManager *nodemgr, bool allow_wallmounted = false) const;
-	u8 getWallMounted(const NodeDefManager *nodemgr) const;
+	uint8_t getFaceDir(const NodeDefManager *nodemgr, bool allow_wallmounted = false) const;
+	uint8_t getWallMounted(const NodeDefManager *nodemgr) const;
 	v3s16 getWallMountedDir(const NodeDefManager *nodemgr) const;
 
 	void rotateAlongYAxis(const NodeDefManager *nodemgr, Rotation rot);
@@ -247,41 +247,41 @@ struct MapNode
 	 *
 	 * \param p coordinates of the node
 	 */
-	u8 getNeighbors(v3s16 p, Map *map) const;
+	uint8_t getNeighbors(v3s16 p, Map *map) const;
 
 	/*
 		Gets list of node boxes (used for rendering (NDT_NODEBOX))
 	*/
 	void getNodeBoxes(const NodeDefManager *nodemgr, std::vector<aabb3f> *boxes,
-		u8 neighbors = 0) const;
+		uint8_t neighbors = 0) const;
 
 	/*
 		Gets list of selection boxes
 	*/
 	void getSelectionBoxes(const NodeDefManager *nodemg,
-		std::vector<aabb3f> *boxes, u8 neighbors = 0) const;
+		std::vector<aabb3f> *boxes, uint8_t neighbors = 0) const;
 
 	/*
 		Gets list of collision boxes
 	*/
 	void getCollisionBoxes(const NodeDefManager *nodemgr,
-		std::vector<aabb3f> *boxes, u8 neighbors = 0) const;
+		std::vector<aabb3f> *boxes, uint8_t neighbors = 0) const;
 
 	/*
 		Liquid/leveled helpers
 	*/
-	u8 getMaxLevel(const NodeDefManager *nodemgr) const;
-	u8 getLevel(const NodeDefManager *nodemgr) const;
-	s8 setLevel(const NodeDefManager *nodemgr, s16 level = 1);
-	s8 addLevel(const NodeDefManager *nodemgr, s16 add = 1);
+	uint8_t getMaxLevel(const NodeDefManager *nodemgr) const;
+	uint8_t getLevel(const NodeDefManager *nodemgr) const;
+	int8_t setLevel(const NodeDefManager *nodemgr, int16_t level = 1);
+	int8_t addLevel(const NodeDefManager *nodemgr, int16_t add = 1);
 
 	/*
 		Serialization functions
 	*/
 
-	static u32 serializedLength(u8 version);
-	void serialize(u8 *dest, u8 version) const;
-	void deSerialize(u8 *source, u8 version);
+	static uint32_t serializedLength(uint8_t version);
+	void serialize(uint8_t *dest, uint8_t version) const;
+	void deSerialize(uint8_t *source, uint8_t version);
 
 	// Serializes or deserializes a list of nodes in bulk format (first the
 	// content of all nodes, then the param1 of all nodes, then the param2
@@ -291,13 +291,13 @@ struct MapNode
 	//   params_width = the number of bytes of params per node
 	//   compressed = true to zlib-compress output
 	static void serializeBulk(std::ostream &os, int version,
-			const MapNode *nodes, u32 nodecount,
-			u8 content_width, u8 params_width, int compression_level);
+			const MapNode *nodes, uint32_t nodecount,
+			uint8_t content_width, uint8_t params_width, int compression_level);
 	static void deSerializeBulk(std::istream &is, int version,
-			MapNode *nodes, u32 nodecount,
-			u8 content_width, u8 params_width);
+			MapNode *nodes, uint32_t nodecount,
+			uint8_t content_width, uint8_t params_width);
 
 private:
 	// Deprecated serialization methods
-	void deSerialize_pre22(const u8 *source, u8 version);
+	void deSerialize_pre22(const uint8_t *source, uint8_t version);
 };

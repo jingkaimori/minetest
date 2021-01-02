@@ -58,7 +58,29 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
 # This is done here so that relative search paths are more reasonable
-find_package(Irrlicht)
+# Attempt to upgrade to IrrlichtBAW
+option(USE_IRRLICHTBAW "Use IrrlichtBAW" OFF)
+if(USE_IRRLICHTBAW)
+	find_path(IRRLICHT_SOURCE_DIR "" DOC "Path to IrrlichtBAW source")
+	find_path(IRRLICHT_BINARY_DIR "" DOC "Path to IrrlichtBAW binary")
+	find_path(IRRLICHT_INSTALL_DIR "" DOC "Path to IrrlichtBAW install")
+	include(ExternalProject)
+	list(APPEND IRR_CMAKE_ARGS "-DECHO_EXE:STRING='cmd.exe \\c echo'")
+	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_DOCS:BOOL=OFF") # enable only if you have doxygen installed and detectable by cmake
+	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_EXAMPLES:BOOL=OFF")
+	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_TOOLS:BOOL=OFF") # the tools don't work yet (Apr 2020 status, might have changed since then)
+	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_MITSUBA_LOADER:BOOL=OFF") # you probably don't want this extension
+	ExternalProject_Add( IrrlichtBaW
+		DOWNLOAD_COMMAND  ""
+		SOURCE_DIR        "${IRRLICHT_SOURCE_DIR}"
+		BINARY_DIR        "${IRRLICHT_BINARY_DIR}"
+		INSTALL_DIR       "${IRRLICHT_INSTALL_DIR}"
+		CMAKE_ARGS        ${IRR_CMAKE_ARGS}
+		TEST_COMMAND      ""
+	)
+else()
+	find_package(Irrlicht)
+endif()
 
 
 # Installation

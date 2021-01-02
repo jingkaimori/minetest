@@ -36,7 +36,7 @@ class Sky : public scene::ISceneNode
 {
 public:
 	//! constructor
-	Sky(s32 id, ITextureSource *tsrc, IShaderSource *ssrc);
+	Sky(int32_t id, ITextureSource *tsrc, IShaderSource *ssrc);
 
 	virtual void OnRegisterSceneNode();
 
@@ -46,8 +46,8 @@ public:
 	virtual const aabb3f &getBoundingBox() const { return m_box; }
 
 	// Used by Irrlicht for optimizing rendering
-	virtual video::SMaterial &getMaterial(u32 i) { return m_materials[i]; }
-	virtual u32 getMaterialCount() const { return SKY_MATERIAL_COUNT; }
+	virtual video::SMaterial &getMaterial(uint32_t i) { return m_materials[i]; }
+	virtual uint32_t getMaterialCount() const { return SKY_MATERIAL_COUNT; }
 
 	void update(float m_time_of_day, float time_brightness, float direct_brightness,
 			bool sunlight_seen, CameraMode cam_mode, float yaw, float pitch);
@@ -67,19 +67,19 @@ public:
 	void setSunVisible(bool sun_visible) { m_sun_params.visible = sun_visible; }
 	void setSunTexture(std::string sun_texture,
 		std::string sun_tonemap, ITextureSource *tsrc);
-	void setSunScale(f32 sun_scale) { m_sun_params.scale = sun_scale; }
+	void setSunScale(float sun_scale) { m_sun_params.scale = sun_scale; }
 	void setSunriseVisible(bool glow_visible) { m_sun_params.sunrise_visible = glow_visible; }
 	void setSunriseTexture(std::string sunglow_texture, ITextureSource* tsrc);
 
 	void setMoonVisible(bool moon_visible) { m_moon_params.visible = moon_visible; }
 	void setMoonTexture(std::string moon_texture,
 		std::string moon_tonemap, ITextureSource *tsrc);
-	void setMoonScale(f32 moon_scale) { m_moon_params.scale = moon_scale; }
+	void setMoonScale(float moon_scale) { m_moon_params.scale = moon_scale; }
 
 	void setStarsVisible(bool stars_visible) { m_star_params.visible = stars_visible; }
-	void setStarCount(u16 star_count, bool force_update);
+	void setStarCount(uint16_t star_count, bool force_update);
 	void setStarColor(video::SColor star_color) { m_star_params.starcolor = star_color; }
-	void setStarScale(f32 star_scale) { m_star_params.scale = star_scale; updateStars(); }
+	void setStarScale(float star_scale) { m_star_params.scale = star_scale; updateStars(); }
 
 	bool getCloudsVisible() const { return m_clouds_visible && m_clouds_enabled; }
 	const video::SColorf &getCloudColor() const { return m_cloudcolor_f; }
@@ -126,7 +126,7 @@ private:
 	}
 
 	// Mix two colors by a given amount
-	video::SColor m_mix_scolor(video::SColor col1, video::SColor col2, f32 factor)
+	video::SColor m_mix_scolor(video::SColor col1, video::SColor col2, float factor)
 	{
 		video::SColor result = video::SColor(
 				col1.getAlpha() * (1 - factor) + col2.getAlpha() * factor,
@@ -135,7 +135,7 @@ private:
 				col1.getBlue() * (1 - factor) + col2.getBlue() * factor);
 		return result;
 	}
-	video::SColorf m_mix_scolorf(video::SColorf col1, video::SColorf col2, f32 factor)
+	video::SColorf m_mix_scolorf(video::SColorf col1, video::SColorf col2, float factor)
 	{
 		video::SColorf result =
 				video::SColorf(col1.r * (1 - factor) + col2.r * factor,
@@ -183,7 +183,7 @@ private:
 
 	bool m_default_tint = true;
 
-	u64 m_seed = 0;
+	uint64_t m_seed = 0;
 	irr_ptr<scene::SMeshBuffer> m_stars;
 	video::SColorf m_star_color;
 

@@ -48,13 +48,13 @@ public:
 
 	float getValue(const std::string &name) const;
 	int getAvgCount(const std::string &name) const;
-	u64 getElapsedMs() const;
+	uint64_t getElapsedMs() const;
 
 	typedef std::map<std::string, float> GraphValues;
 
 	// Returns the line count
-	int print(std::ostream &o, u32 page = 1, u32 pagecount = 1);
-	void getPage(GraphValues &o, u32 page, u32 pagecount);
+	int print(std::ostream &o, uint32_t page = 1, uint32_t pagecount = 1);
+	void getPage(GraphValues &o, uint32_t page, uint32_t pagecount);
 
 
 	void graphAdd(const std::string &id, float value)
@@ -86,7 +86,7 @@ private:
 	std::map<std::string, float> m_data;
 	std::map<std::string, int> m_avgcounts;
 	std::map<std::string, float> m_graphvalues;
-	u64 m_start_time;
+	uint64_t m_start_time;
 };
 
 enum ScopeProfilerType{

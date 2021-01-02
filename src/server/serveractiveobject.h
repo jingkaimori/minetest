@@ -62,7 +62,7 @@ public:
 	{ return getType(); }
 
 	// Called after id has been set and has been inserted in environment
-	virtual void addedToEnvironment(u32 dtime_s){};
+	virtual void addedToEnvironment(uint32_t dtime_s){};
 	// Called before removing from environment
 	virtual void removingFromEnvironment(){};
 	// Returns true if object's deletion is the job of the
@@ -72,7 +72,7 @@ public:
 
 	// Create a certain type of ServerActiveObject
 	static ServerActiveObject* create(ActiveObjectType type,
-			ServerEnvironment *env, u16 id, v3f pos,
+			ServerEnvironment *env, uint16_t id, v3f pos,
 			const std::string &data);
 
 	/*
@@ -113,7 +113,7 @@ public:
 		The return value of this is passed to the client-side object
 		when it is created
 	*/
-	virtual std::string getClientInitializationData(u16 protocol_version) {return "";}
+	virtual std::string getClientInitializationData(uint16_t protocol_version) {return "";}
 
 	/*
 		The return value of this is passed to the server-side object
@@ -142,16 +142,16 @@ public:
 	{ return true; }
 
 	// Returns tool wear
-	virtual u16 punch(v3f dir,
+	virtual uint16_t punch(v3f dir,
 			const ToolCapabilities *toolcap = nullptr,
 			ServerActiveObject *puncher = nullptr,
 			float time_from_last_punch = 1000000.0f)
 	{ return 0; }
 	virtual void rightClick(ServerActiveObject *clicker)
 	{}
-	virtual void setHP(s32 hp, const PlayerHPChangeReason &reason)
+	virtual void setHP(int32_t hp, const PlayerHPChangeReason &reason)
 	{}
-	virtual u16 getHP() const
+	virtual uint16_t getHP() const
 	{ return 0; }
 
 	virtual void setArmorGroups(const ItemGroupList &armor_groups)
@@ -187,21 +187,21 @@ public:
 	{}
 	virtual std::string getWieldList() const
 	{ return ""; }
-	virtual u16 getWieldIndex() const
+	virtual uint16_t getWieldIndex() const
 	{ return 0; }
 	virtual ItemStack getWieldedItem(ItemStack *selected,
 			ItemStack *hand = nullptr) const;
 	virtual bool setWieldedItem(const ItemStack &item);
-	inline void attachParticleSpawner(u32 id)
+	inline void attachParticleSpawner(uint32_t id)
 	{
 		m_attached_particle_spawners.insert(id);
 	}
-	inline void detachParticleSpawner(u32 id)
+	inline void detachParticleSpawner(uint32_t id)
 	{
 		m_attached_particle_spawners.erase(id);
 	}
 
-	std::string generateUpdateInfantCommand(u16 infant_id, u16 protocol_version);
+	std::string generateUpdateInfantCommand(uint16_t infant_id, uint16_t protocol_version);
 	std::string generateUpdateNametagAttributesCommand(const video::SColor &color) const;
 
 	void dumpAOMessagesToQueue(std::queue<ActiveObjectMessage> &queue);
@@ -211,7 +211,7 @@ public:
 		deleted until this is 0 to keep the id preserved for the right
 		object.
 	*/
-	u16 m_known_by_count = 0;
+	uint16_t m_known_by_count = 0;
 
 	/*
 		- Whether this object is to be removed when nobody knows about

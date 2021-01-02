@@ -279,8 +279,8 @@ void IMoveAction::apply(InventoryManager *mgr, ServerActiveObject *player, IGame
 	}
 
 	if (move_somewhere) {
-		s16 old_to_i = to_i;
-		u16 old_count = count;
+		int16_t old_to_i = to_i;
+		uint16_t old_count = count;
 		caused_by_move_somewhere = true;
 		move_somewhere = false;
 
@@ -295,9 +295,9 @@ void IMoveAction::apply(InventoryManager *mgr, ServerActiveObject *player, IGame
 			<< std::endl;
 
 		// Try to add the item to destination list
-		s16 dest_size = list_to->getSize();
+		int16_t dest_size = list_to->getSize();
 		// First try all the non-empty slots
-		for (s16 dest_i = 0; dest_i < dest_size && count > 0; dest_i++) {
+		for (int16_t dest_i = 0; dest_i < dest_size && count > 0; dest_i++) {
 			if (!list_to->getItem(dest_i).empty()) {
 				to_i = dest_i;
 				apply(mgr, player, gamedef);
@@ -306,7 +306,7 @@ void IMoveAction::apply(InventoryManager *mgr, ServerActiveObject *player, IGame
 		}
 
 		// Then try all the empty ones
-		for (s16 dest_i = 0; dest_i < dest_size && count > 0; dest_i++) {
+		for (int16_t dest_i = 0; dest_i < dest_size && count > 0; dest_i++) {
 			if (list_to->getItem(dest_i).empty()) {
 				to_i = dest_i;
 				apply(mgr, player, gamedef);
@@ -321,7 +321,7 @@ void IMoveAction::apply(InventoryManager *mgr, ServerActiveObject *player, IGame
 		return;
 	}
 
-	if ((u16)to_i > list_to->getSize()) {
+	if ((uint16_t)to_i > list_to->getSize()) {
 		infostream << "IMoveAction::apply(): FAIL: destination index out of bounds: "
 			<< "to_i=" << to_i
 			<< ", size=" << list_to->getSize() << std::endl;
@@ -468,7 +468,7 @@ void IMoveAction::apply(InventoryManager *mgr, ServerActiveObject *player, IGame
 			// destination inventory.
 			// The client-side GUI will try to guess if this happens.
 			if (from_stack_was.name != to_stack_was.name) {
-				for (u32 i = 0; i < list_to->getSize(); i++) {
+				for (uint32_t i = 0; i < list_to->getSize(); i++) {
 					if (list_to->getItem(i).empty()) {
 						list_to->changeItem(i, to_stack_was);
 						break;
@@ -902,7 +902,7 @@ void ICraftAction::apply(InventoryManager *mgr,
 			output_replacement = list_main->addItem(output_replacement);
 		if (output_replacement.empty())
 			continue;
-		u16 count = output_replacement.count;
+		uint16_t count = output_replacement.count;
 		do {
 			PLAYER_TO_SA(player)->item_OnDrop(output_replacement, player,
 				player->getBasePosition());
@@ -944,7 +944,7 @@ bool getCraftingResult(Inventory *inv, ItemStack &result,
 	CraftInput ci;
 	ci.method = CRAFT_METHOD_NORMAL;
 	ci.width = clist->getWidth() ? clist->getWidth() : 3;
-	for (u16 i=0; i < clist->getSize(); i++)
+	for (uint16_t i=0; i < clist->getSize(); i++)
 		ci.items.push_back(clist->getItem(i));
 
 	// Find out what is crafted and add it to result item slot
@@ -956,7 +956,7 @@ bool getCraftingResult(Inventory *inv, ItemStack &result,
 
 	if (found && decrementInput) {
 		// CraftInput has been changed, apply changes in clist
-		for (u16 i=0; i < clist->getSize(); i++) {
+		for (uint16_t i=0; i < clist->getSize(); i++) {
 			clist->changeItem(i, ci.items[i]);
 		}
 	}

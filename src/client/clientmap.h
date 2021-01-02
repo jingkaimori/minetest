@@ -51,7 +51,7 @@ struct MeshBufListList
 	std::vector<MeshBufList> lists[MAX_TILE_LAYERS];
 
 	void clear();
-	void add(scene::IMeshBuffer *buf, v3s16 position, u8 layer);
+	void add(scene::IMeshBuffer *buf, v3s16 position, uint8_t layer);
 };
 
 class Client;
@@ -69,12 +69,12 @@ public:
 	ClientMap(
 			Client *client,
 			MapDrawControl &control,
-			s32 id
+			int32_t id
 	);
 
 	virtual ~ClientMap() = default;
 
-	s32 mapType() const
+	int32_t mapType() const
 	{
 		return MAPTYPE_CLIENT;
 	}
@@ -84,7 +84,7 @@ public:
 		ISceneNode::drop();
 	}
 
-	void updateCamera(const v3f &pos, const v3f &dir, f32 fov, const v3s16 &offset)
+	void updateCamera(const v3f &pos, const v3f &dir, float fov, const v3s16 &offset)
 	{
 		m_camera_position = pos;
 		m_camera_direction = dir;
@@ -120,9 +120,9 @@ public:
 	void getBlocksInViewRange(v3s16 cam_pos_nodes,
 		v3s16 *p_blocks_min, v3s16 *p_blocks_max);
 	void updateDrawList();
-	void renderMap(video::IVideoDriver* driver, s32 pass);
+	void renderMap(video::IVideoDriver* driver, int32_t pass);
 
-	int getBackgroundBrightness(float max_d, u32 daylight_factor,
+	int getBackgroundBrightness(float max_d, uint32_t daylight_factor,
 			int oldvalue, bool *sunlight_seen_result);
 
 	void renderPostFx(CameraMode cam_mode);
@@ -131,7 +131,7 @@ public:
 	virtual void PrintInfo(std::ostream &out);
 
 	const MapDrawControl & getControl() const { return m_control; }
-	f32 getCameraFov() const { return m_camera_fov; }
+	float getCameraFov() const { return m_camera_fov; }
 private:
 	Client *m_client;
 
@@ -142,7 +142,7 @@ private:
 
 	v3f m_camera_position = v3f(0,0,0);
 	v3f m_camera_direction = v3f(0,0,1);
-	f32 m_camera_fov = M_PI;
+	float m_camera_fov = M_PI;
 	v3s16 m_camera_offset;
 
 	std::map<v3s16, MapBlock*> m_drawlist;

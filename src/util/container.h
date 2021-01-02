@@ -65,7 +65,7 @@ public:
 		return m_queue.front();
 	}
 
-	u32 size() const
+	uint32_t size() const
 	{
 		return m_queue.size();
 	}
@@ -146,7 +146,7 @@ public:
 	/* this version of pop_front returns a empty element of T on timeout.
 	* Make sure default constructor of T creates a recognizable "empty" element
 	*/
-	T pop_frontNoEx(u32 wait_time_max_ms)
+	T pop_frontNoEx(uint32_t wait_time_max_ms)
 	{
 		if (m_signal.wait(wait_time_max_ms)) {
 			MutexAutoLock lock(m_mutex);
@@ -159,7 +159,7 @@ public:
 		return T();
 	}
 
-	T pop_front(u32 wait_time_max_ms)
+	T pop_front(uint32_t wait_time_max_ms)
 	{
 		if (m_signal.wait(wait_time_max_ms)) {
 			MutexAutoLock lock(m_mutex);
@@ -183,7 +183,7 @@ public:
 		return t;
 	}
 
-	T pop_back(u32 wait_time_max_ms=0)
+	T pop_back(uint32_t wait_time_max_ms=0)
 	{
 		if (m_signal.wait(wait_time_max_ms)) {
 			MutexAutoLock lock(m_mutex);
@@ -199,7 +199,7 @@ public:
 	/* this version of pop_back returns a empty element of T on timeout.
 	* Make sure default constructor of T creates a recognizable "empty" element
 	*/
-	T pop_backNoEx(u32 wait_time_max_ms)
+	T pop_backNoEx(uint32_t wait_time_max_ms)
 	{
 		if (m_signal.wait(wait_time_max_ms)) {
 			MutexAutoLock lock(m_mutex);

@@ -26,7 +26,7 @@ struct ContentSpec
 {
 	std::string type;
 	std::string author;
-	u32 release = 0;
+	uint32_t release = 0;
 	std::string name;
 	std::string desc;
 	std::string path;

@@ -200,7 +200,7 @@ public:
 			m_setters.push_back(std::unique_ptr<IShaderConstantSetter>(factory->create()));
 	}
 
-	virtual void OnSetConstants(video::IMaterialRendererServices *services, s32 userData) override
+	virtual void OnSetConstants(video::IMaterialRendererServices *services, int32_t userData) override
 	{
 		video::IVideoDriver *driver = services->getVideoDriver();
 		sanity_check(driver != NULL);
@@ -308,7 +308,7 @@ public:
 
 		The id 0 points to a null shader. Its material is EMT_SOLID.
 	*/
-	u32 getShaderIdDirect(const std::string &name,
+	uint32_t getShaderIdDirect(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype) override;
 
 	/*
@@ -320,10 +320,10 @@ public:
 		for processing.
 	*/
 
-	u32 getShader(const std::string &name,
+	uint32_t getShader(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype) override;
 
-	ShaderInfo getShaderInfo(u32 id) override;
+	ShaderInfo getShaderInfo(uint32_t id) override;
 
 	// Processes queued shader requests from other threads.
 	// Shall be called from the main thread.
@@ -359,7 +359,7 @@ private:
 	std::mutex m_shaderinfo_cache_mutex;
 
 	// Queued shader fetches (to be processed by the main thread)
-	RequestQueue<std::string, u32, u8, u8> m_get_shader_queue;
+	RequestQueue<std::string, uint32_t, uint8_t, uint8_t> m_get_shader_queue;
 
 	// Global constant setter factories
 	std::vector<std::unique_ptr<IShaderConstantSetterFactory>> m_setter_factories;
@@ -385,7 +385,7 @@ ShaderSource::ShaderSource()
 	addShaderConstantSetterFactory(new MainShaderConstantSetterFactory());
 }
 
-u32 ShaderSource::getShader(const std::string &name,
+uint32_t ShaderSource::getShader(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype)
 {
 	/*
@@ -400,7 +400,7 @@ u32 ShaderSource::getShader(const std::string &name,
 
 	// We're gonna ask the result to be put into here
 
-	static ResultQueue<std::string, u32, u8, u8> result_queue;
+	static ResultQueue<std::string, uint32_t, uint8_t, uint8_t> result_queue;
 
 	// Throw a request in
 	m_get_shader_queue.add(name, 0, 0, &result_queue);
@@ -409,7 +409,7 @@ u32 ShaderSource::getShader(const std::string &name,
 			<<name<<"\""<<std::endl;*/
 
 	while(true) {
-		GetResult<std::string, u32, u8, u8>
+		GetResult<std::string, uint32_t, uint8_t, uint8_t>
 			result = result_queue.pop_frontNoEx();
 
 		if (result.key == name) {
@@ -427,7 +427,7 @@ u32 ShaderSource::getShader(const std::string &name,
 /*
 	This method generates all the shaders
 */
-u32 ShaderSource::getShaderIdDirect(const std::string &name,
+uint32_t ShaderSource::getShaderIdDirect(const std::string &name,
 		MaterialType material_type, NodeDrawType drawtype)
 {
 	//infostream<<"getShaderIdDirect(): name=\""<<name<<"\""<<std::endl;
@@ -439,7 +439,7 @@ u32 ShaderSource::getShaderIdDirect(const std::string &name,
 	}
 
 	// Check if already have such instance
-	for(u32 i=0; i<m_shaderinfo_cache.size(); i++){
+	for(uint32_t i=0; i<m_shaderinfo_cache.size(); i++){
 		ShaderInfo *info = &m_shaderinfo_cache[i];
 		if(info->name == name && info->material_type == material_type &&
 			info->drawtype == drawtype)
@@ -463,7 +463,7 @@ u32 ShaderSource::getShaderIdDirect(const std::string &name,
 
 	MutexAutoLock lock(m_shaderinfo_cache_mutex);
 
-	u32 id = m_shaderinfo_cache.size();
+	uint32_t id = m_shaderinfo_cache.size();
 	m_shaderinfo_cache.push_back(info);
 
 	infostream<<"getShaderIdDirect(): "
@@ -473,7 +473,7 @@ u32 ShaderSource::getShaderIdDirect(const std::string &name,
 }
 
 
-ShaderInfo ShaderSource::getShaderInfo(u32 id)
+ShaderInfo ShaderSource::getShaderInfo(uint32_t id)
 {
 	MutexAutoLock lock(m_shaderinfo_cache_mutex);
 
@@ -696,7 +696,7 @@ ShaderInfo ShaderSource::generateShader(const std::string &name,
 
 	irr_ptr<ShaderCallback> cb{new ShaderCallback(m_setter_factories)};
 	infostream<<"Compiling high level shaders for "<<name<<std::endl;
-	s32 shadermat = gpu->addHighLevelShaderMaterial(
+	int32_t shadermat = gpu->addHighLevelShaderMaterial(
 		vertex_shader.c_str(), nullptr, video::EVST_VS_1_1,
 		fragment_shader.c_str(), nullptr, video::EPST_PS_1_1,
 		geometry_shader_ptr, nullptr, video::EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLES, 0,
@@ -724,7 +724,7 @@ void dumpShaderProgram(std::ostream &output_stream,
 		"----------------------------------" << std::endl;
 	size_t pos = 0;
 	size_t prev = 0;
-	s16 line = 1;
+	int16_t line = 1;
 	while ((pos = program.find('\n', prev)) != std::string::npos) {
 		output_stream << line++ << ": "<< program.substr(prev, pos - prev) <<
 			std::endl;

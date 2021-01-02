@@ -232,7 +232,7 @@ int ModApiMainMenu::l_get_table_index(lua_State *L)
 
 	std::string tablename(luaL_checkstring(L, 1));
 	GUITable *table = engine->m_menu->getTable(tablename);
-	s32 selection = table ? table->getSelected() : 0;
+	int32_t selection = table ? table->getSelected() : 0;
 
 	if (selection >= 1)
 		lua_pushinteger(L, selection);
@@ -983,7 +983,7 @@ int ModApiMainMenu::l_get_video_drivers(lua_State *L)
 	std::vector<irr::video::E_DRIVER_TYPE> drivers = RenderingEngine::getSupportedVideoDrivers();
 
 	lua_newtable(L);
-	for (u32 i = 0; i != drivers.size(); i++) {
+	for (uint32_t i = 0; i != drivers.size(); i++) {
 		const char *name  = RenderingEngine::getVideoDriverName(drivers[i]);
 		const char *fname = RenderingEngine::getVideoDriverFriendlyName(drivers[i]);
 
@@ -1002,11 +1002,11 @@ int ModApiMainMenu::l_get_video_drivers(lua_State *L)
 /******************************************************************************/
 int ModApiMainMenu::l_get_video_modes(lua_State *L)
 {
-	std::vector<core::vector3d<u32> > videomodes
+	std::vector<core::vector3d<uint32_t> > videomodes
 		= RenderingEngine::getSupportedVideoModes();
 
 	lua_newtable(L);
-	for (u32 i = 0; i != videomodes.size(); i++) {
+	for (uint32_t i = 0; i != videomodes.size(); i++) {
 		lua_newtable(L);
 		lua_pushnumber(L, videomodes[i].X);
 		lua_setfield(L, -2, "w");

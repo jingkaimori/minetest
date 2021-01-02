@@ -128,12 +128,12 @@ int Profiler::getAvgCount(const std::string &name) const
 	return 1;
 }
 
-u64 Profiler::getElapsedMs() const
+uint64_t Profiler::getElapsedMs() const
 {
 	return porting::getTimeMs() - m_start_time;
 }
 
-int Profiler::print(std::ostream &o, u32 page, u32 pagecount)
+int Profiler::print(std::ostream &o, uint32_t page, uint32_t pagecount)
 {
 	GraphValues values;
 	getPage(values, page, pagecount);
@@ -146,8 +146,8 @@ int Profiler::print(std::ostream &o, u32 page, u32 pagecount)
 			continue;
 		}
 
-		s32 space = 44 - i.first.size();
-		for (s32 j = 0; j < space; j++) {
+		int32_t space = 44 - i.first.size();
+		for (int32_t j = 0; j < space; j++) {
 			if ((j & 1) && j < space - 1)
 				o << ".";
 			else
@@ -160,11 +160,11 @@ int Profiler::print(std::ostream &o, u32 page, u32 pagecount)
 	return values.size();
 }
 
-void Profiler::getPage(GraphValues &o, u32 page, u32 pagecount)
+void Profiler::getPage(GraphValues &o, uint32_t page, uint32_t pagecount)
 {
 	MutexAutoLock lock(m_mutex);
 
-	u32 minindex, maxindex;
+	uint32_t minindex, maxindex;
 	paging(m_data.size(), page, pagecount, minindex, maxindex);
 
 	for (const auto &i : m_data) {

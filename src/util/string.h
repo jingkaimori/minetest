@@ -61,7 +61,7 @@ typedef std::unordered_map<std::string, std::string> StringMap;
 
 struct FlagDesc {
 	const char *name;
-	u32 flag;
+	uint32_t flag;
 };
 
 // try not to convert between wide/utf8 encodings; this can result in data loss
@@ -83,12 +83,12 @@ std::string wide_to_narrow(const std::wstring &wcs);
 
 std::string urlencode(const std::string &str);
 std::string urldecode(const std::string &str);
-u32 readFlagString(std::string str, const FlagDesc *flagdesc, u32 *flagmask);
-std::string writeFlagString(u32 flags, const FlagDesc *flagdesc, u32 flagmask);
+uint32_t readFlagString(std::string str, const FlagDesc *flagdesc, uint32_t *flagmask);
+std::string writeFlagString(uint32_t flags, const FlagDesc *flagdesc, uint32_t flagmask);
 size_t mystrlcpy(char *dst, const char *src, size_t size);
 char *mystrtok_r(char *s, const char *sep, char **lasts);
-u64 read_seed(const char *str);
-bool parseColorString(const std::string &value, video::SColor &color, bool quiet,
+uint64_t read_seed(const char *str);
+bool parseColorString(const std::string &value, irr::video::SColor &color, bool quiet,
 		unsigned char default_alpha = 0xff);
 
 
@@ -341,9 +341,9 @@ inline bool is_yes(const std::string &str)
  * @return The value converted to a signed 32-bit integer and constrained
  *	within the range defined by min and max (inclusive)
  */
-inline s32 mystoi(const std::string &str, s32 min, s32 max)
+inline int32_t mystoi(const std::string &str, int32_t min, int32_t max)
 {
-	s32 i = atoi(str.c_str());
+	int32_t i = atoi(str.c_str());
 
 	if (i < min)
 		i = min;
@@ -362,7 +362,7 @@ inline s32 mystoi(const std::string &str, s32 min, s32 max)
  * Returns a 32-bit value reprensented by the string \p str (decimal).
  * @see atoi(3) for further limitations
  */
-inline s32 mystoi(const std::string &str)
+inline int32_t mystoi(const std::string &str)
 {
 	return atoi(str.c_str());
 }
@@ -372,7 +372,7 @@ inline s32 mystoi(const std::string &str)
  * Returns s 32-bit value represented by the wide string \p str (decimal).
  * @see atoi(3) for further limitations
  */
-inline s32 mystoi(const std::wstring &str)
+inline int32_t mystoi(const std::wstring &str)
 {
 	return mystoi(wide_to_narrow(str));
 }
@@ -403,7 +403,7 @@ inline T from_string(const std::string &str)
 }
 
 /// Returns a 64-bit signed value represented by the string \p str (decimal).
-inline s64 stoi64(const std::string &str) { return from_string<s64>(str); }
+inline int64_t stoi64(const std::string &str) { return from_string<int64_t>(str); }
 
 #if __cplusplus < 201103L
 namespace std {
@@ -442,7 +442,7 @@ inline wstring to_wstring(T val)
 #endif
 
 /// Returns a string representing the decimal value of the 32-bit value \p i.
-inline std::string itos(s32 i) { return std::to_string(i); }
+inline std::string itos(int32_t i) { return std::to_string(i); }
 /// Returns a string representing the decimal value of the 64-bit value \p i.
 inline std::string i64tos(s64 i) { return std::to_string(i); }
 

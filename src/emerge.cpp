@@ -149,7 +149,7 @@ EmergeManager::EmergeManager(Server *server)
 
 	enable_mapgen_debug_info = g_settings->getBool("enable_mapgen_debug_info");
 
-	s16 nthreads = 1;
+	int16_t nthreads = 1;
 	g_settings->getS16NoEx("num_emerge_threads", nthreads);
 	// If automatic, leave a proc for the main thread and one for
 	// some other misc thread
@@ -173,7 +173,7 @@ EmergeManager::EmergeManager(Server *server)
 	if (m_qlimit_generate < 1)
 		m_qlimit_generate = 1;
 
-	for (s16 i = 0; i < nthreads; i++)
+	for (int16_t i = 0; i < nthreads; i++)
 		m_threads.push_back(new EmergeThread(server, i));
 
 	infostream << "EmergeManager: using " << nthreads << " threads" << std::endl;
@@ -182,7 +182,7 @@ EmergeManager::EmergeManager(Server *server)
 
 EmergeManager::~EmergeManager()
 {
-	for (u32 i = 0; i != m_threads.size(); i++) {
+	for (uint32_t i = 0; i != m_threads.size(); i++) {
 		EmergeThread *thread = m_threads[i];
 
 		if (m_threads_active) {
@@ -240,7 +240,7 @@ void EmergeManager::initMapgens(MapgenParams *params)
 
 	mgparams = params;
 
-	for (u32 i = 0; i != m_threads.size(); i++) {
+	for (uint32_t i = 0; i != m_threads.size(); i++) {
 		EmergeParams *p = new EmergeParams(
 			this, biomemgr, oremgr, decomgr, schemmgr);
 		infostream << "EmergeManager: Created params " << p
@@ -255,7 +255,7 @@ Mapgen *EmergeManager::getCurrentMapgen()
 	if (!m_threads_active)
 		return nullptr;
 
-	for (u32 i = 0; i != m_threads.size(); i++) {
+	for (uint32_t i = 0; i != m_threads.size(); i++) {
 		EmergeThread *t = m_threads[i];
 		if (t->isRunning() && t->isCurrentThread())
 			return t->m_mapgen;
@@ -270,7 +270,7 @@ void EmergeManager::startThreads()
 	if (m_threads_active)
 		return;
 
-	for (u32 i = 0; i != m_threads.size(); i++)
+	for (uint32_t i = 0; i != m_threads.size(); i++)
 		m_threads[i]->start();
 
 	m_threads_active = true;
@@ -283,13 +283,13 @@ void EmergeManager::stopThreads()
 		return;
 
 	// Request thread stop in parallel
-	for (u32 i = 0; i != m_threads.size(); i++) {
+	for (uint32_t i = 0; i != m_threads.size(); i++) {
 		m_threads[i]->stop();
 		m_threads[i]->signal();
 	}
 
 	// Then do the waiting for each
-	for (u32 i = 0; i != m_threads.size(); i++)
+	for (uint32_t i = 0; i != m_threads.size(); i++)
 		m_threads[i]->wait();
 
 	m_threads_active = false;
@@ -308,7 +308,7 @@ bool EmergeManager::enqueueBlockEmerge(
 	bool allow_generate,
 	bool ignore_queue_limits)
 {
-	u16 flags = 0;
+	uint16_t flags = 0;
 	if (allow_generate)
 		flags |= BLOCK_EMERGE_ALLOW_GEN;
 	if (ignore_queue_limits)
@@ -321,7 +321,7 @@ bool EmergeManager::enqueueBlockEmerge(
 bool EmergeManager::enqueueBlockEmergeEx(
 	v3s16 blockpos,
 	session_t peer_id,
-	u16 flags,
+	uint16_t flags,
 	EmergeCompletionCallback callback,
 	void *callback_param)
 {
@@ -360,9 +360,9 @@ v3s16 EmergeManager::getContainingChunk(v3s16 blockpos)
 }
 
 // TODO(hmmmm): Move this to ServerMap
-v3s16 EmergeManager::getContainingChunk(v3s16 blockpos, s16 chunksize)
+v3s16 EmergeManager::getContainingChunk(v3s16 blockpos, int16_t chunksize)
 {
-	s16 coff = -chunksize / 2;
+	int16_t coff = -chunksize / 2;
 	v3s16 chunk_offset(coff, coff, coff);
 
 	return getContainerPos(blockpos - chunk_offset, chunksize)
@@ -409,20 +409,20 @@ bool EmergeManager::isBlockUnderground(v3s16 blockpos)
 
 bool EmergeManager::pushBlockEmergeData(
 	v3s16 pos,
-	u16 peer_requested,
-	u16 flags,
+	uint16_t peer_requested,
+	uint16_t flags,
 	EmergeCompletionCallback callback,
 	void *callback_param,
 	bool *entry_already_exists)
 {
-	u16 &count_peer = m_peer_queue_count[peer_requested];
+	uint16_t &count_peer = m_peer_queue_count[peer_requested];
 
 	if ((flags & BLOCK_EMERGE_FORCE_QUEUE) == 0) {
 		if (m_blocks_enqueued.size() >= m_qlimit_total)
 			return false;
 
 		if (peer_requested != PEER_ID_INEXISTENT) {
-			u16 qlimit_peer = (flags & BLOCK_EMERGE_ALLOW_GEN) ?
+			uint16_t qlimit_peer = (flags & BLOCK_EMERGE_ALLOW_GEN) ?
 				m_qlimit_generate : m_qlimit_diskonly;
 			if (count_peer >= qlimit_peer)
 				return false;
@@ -458,7 +458,7 @@ bool EmergeManager::pushBlockEmergeData(
 bool EmergeManager::popBlockEmergeData(v3s16 pos, BlockEmergeData *bedata)
 {
 	std::map<v3s16, BlockEmergeData>::iterator it;
-	std::unordered_map<u16, u16>::iterator it2;
+	std::unordered_map<uint16_t, uint16_t>::iterator it2;
 
 	it = m_blocks_enqueued.find(pos);
 	if (it == m_blocks_enqueued.end())
@@ -470,7 +470,7 @@ bool EmergeManager::popBlockEmergeData(v3s16 pos, BlockEmergeData *bedata)
 	if (it2 == m_peer_queue_count.end())
 		return false;
 
-	u16 &count_peer = it2->second;
+	uint16_t &count_peer = it2->second;
 	assert(count_peer != 0);
 	count_peer--;
 

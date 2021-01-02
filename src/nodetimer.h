@@ -38,15 +38,15 @@ public:
 	NodeTimer() = default;
 	NodeTimer(const v3s16 &position_):
 		position(position_) {}
-	NodeTimer(f32 timeout_, f32 elapsed_, v3s16 position_):
+	NodeTimer(float timeout_, float elapsed_, v3s16 position_):
 		timeout(timeout_), elapsed(elapsed_), position(position_) {}
 	~NodeTimer() = default;
 
 	void serialize(std::ostream &os) const;
 	void deSerialize(std::istream &is);
 
-	f32 timeout = 0.0f;
-	f32 elapsed = 0.0f;
+	float timeout = 0.0f;
+	float elapsed = 0.0f;
 	v3s16 position;
 };
 
@@ -60,8 +60,8 @@ public:
 	NodeTimerList() = default;
 	~NodeTimerList() = default;
 
-	void serialize(std::ostream &os, u8 map_format_version) const;
-	void deSerialize(std::istream &is, u8 map_format_version);
+	void serialize(std::ostream &os, uint8_t map_format_version) const;
+	void deSerialize(std::istream &is, uint8_t map_format_version);
 
 	// Get timer
 	NodeTimer get(const v3s16 &p) {

@@ -79,7 +79,7 @@ public:
 	virtual ~ISimpleTextureSource() = default;
 
 	virtual video::ITexture* getTexture(
-			const std::string &name, u32 *id = nullptr) = 0;
+			const std::string &name, uint32_t *id = nullptr) = 0;
 };
 
 class ITextureSource : public ISimpleTextureSource
@@ -89,13 +89,13 @@ public:
 
 	virtual ~ITextureSource() = default;
 
-	virtual u32 getTextureId(const std::string &name)=0;
-	virtual std::string getTextureName(u32 id)=0;
-	virtual video::ITexture* getTexture(u32 id)=0;
+	virtual uint32_t getTextureId(const std::string &name)=0;
+	virtual std::string getTextureName(uint32_t id)=0;
+	virtual video::ITexture* getTexture(uint32_t id)=0;
 	virtual video::ITexture* getTexture(
-			const std::string &name, u32 *id = nullptr)=0;
+			const std::string &name, uint32_t *id = nullptr)=0;
 	virtual video::ITexture* getTextureForMesh(
-			const std::string &name, u32 *id = nullptr) = 0;
+			const std::string &name, uint32_t *id = nullptr) = 0;
 	/*!
 	 * Returns a palette from the given texture name.
 	 * The pointer is valid until the texture source is
@@ -116,11 +116,11 @@ public:
 
 	virtual ~IWritableTextureSource() = default;
 
-	virtual u32 getTextureId(const std::string &name)=0;
-	virtual std::string getTextureName(u32 id)=0;
-	virtual video::ITexture* getTexture(u32 id)=0;
+	virtual uint32_t getTextureId(const std::string &name)=0;
+	virtual std::string getTextureName(uint32_t id)=0;
+	virtual video::ITexture* getTexture(uint32_t id)=0;
 	virtual video::ITexture* getTexture(
-			const std::string &name, u32 *id = nullptr)=0;
+			const std::string &name, uint32_t *id = nullptr)=0;
 	virtual bool isKnownSourceImage(const std::string &name)=0;
 
 	virtual void processQueue()=0;
@@ -174,7 +174,7 @@ struct FrameSpec
 {
 	FrameSpec() = default;
 
-	u32 texture_id = 0;
+	uint32_t texture_id = 0;
 	video::ITexture *texture = nullptr;
 	video::ITexture *normal_texture = nullptr;
 	video::ITexture *flags_texture = nullptr;
@@ -266,15 +266,15 @@ struct TileLayer
 	video::ITexture *normal_texture = nullptr;
 	video::ITexture *flags_texture = nullptr;
 
-	u32 shader_id = 0;
+	uint32_t shader_id = 0;
 
-	u32 texture_id = 0;
+	uint32_t texture_id = 0;
 
-	u16 animation_frame_length_ms = 0;
-	u16 animation_frame_count = 1;
+	uint16_t animation_frame_length_ms = 0;
+	uint16_t animation_frame_count = 1;
 
-	u8 material_type = TILE_MATERIAL_BASIC;
-	u8 material_flags =
+	uint8_t material_type = TILE_MATERIAL_BASIC;
+	uint8_t material_flags =
 		//0 // <- DEBUG, Use the one below
 		MATERIAL_FLAG_BACKFACE_CULLING |
 		MATERIAL_FLAG_TILEABLE_HORIZONTAL|
@@ -291,7 +291,7 @@ struct TileLayer
 	 */
 	video::SColor color;
 
-	u8 scale;
+	uint8_t scale;
 };
 
 /*!
@@ -319,9 +319,9 @@ struct TileSpec
 	//! If true, the tile rotation is ignored.
 	bool world_aligned = false;
 	//! Tile rotation.
-	u8 rotation = 0;
+	uint8_t rotation = 0;
 	//! This much light does the tile emit.
-	u8 emissive_light = 0;
+	uint8_t emissive_light = 0;
 	//! The first is base texture, the second is overlay.
 	TileLayer layers[MAX_TILE_LAYERS];
 };

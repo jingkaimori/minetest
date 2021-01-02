@@ -25,10 +25,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #ifndef SERVER
 
-static u8 light_LUT[LIGHT_SUN + 1];
+static uint8_t light_LUT[LIGHT_SUN + 1];
 
 // The const ref to light_LUT is what is actually used in the code
-const u8 *light_decode_table = light_LUT;
+const uint8_t *light_decode_table = light_LUT;
 
 
 struct LightingParams {
@@ -85,7 +85,7 @@ void set_light_table(float gamma)
 
 		// Ensure light brightens with each level
 		if (i > 0 && light_LUT[i] <= light_LUT[i - 1]) {
-			light_LUT[i] = std::min((u8)254, light_LUT[i - 1]) + 1;
+			light_LUT[i] = std::min((uint8_t)254, light_LUT[i - 1]) + 1;
 		}
 	}
 }

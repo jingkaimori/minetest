@@ -24,13 +24,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 GUIInventoryList::GUIInventoryList(gui::IGUIEnvironment *env,
 	gui::IGUIElement *parent,
-	s32 id,
+	int32_t id,
 	const core::rect<s32> &rectangle,
 	InventoryManager *invmgr,
 	const InventoryLocation &inventoryloc,
 	const std::string &listname,
 	const v2s32 &geom,
-	const s32 start_item_i,
+	const int32_t start_item_i,
 	const v2s32 &slot_size,
 	const v2f32 &slot_spacing,
 	GUIFormSpecMenu *fs_menu,
@@ -88,10 +88,10 @@ void GUIInventoryList::draw()
 	core::rect<s32> imgrect(0, 0, m_slot_size.X, m_slot_size.Y);
 	v2s32 base_pos = AbsoluteRect.UpperLeftCorner;
 
-	const s32 list_size = (s32)ilist->getSize();
+	const int32_t list_size = (s32)ilist->getSize();
 
-	for (s32 i = 0; i < m_geom.X * m_geom.Y; i++) {
-		s32 item_i = i + m_start_item_i;
+	for (int32_t i = 0; i < m_geom.X * m_geom.Y; i++) {
+		int32_t item_i = i + m_start_item_i;
 		if (item_i >= list_size)
 			break;
 
@@ -119,11 +119,11 @@ void GUIInventoryList::draw()
 
 		// Draw inv slot borders
 		if (m_options.slotborder) {
-			s32 x1 = rect.UpperLeftCorner.X;
-			s32 y1 = rect.UpperLeftCorner.Y;
-			s32 x2 = rect.LowerRightCorner.X;
-			s32 y2 = rect.LowerRightCorner.Y;
-			s32 border = 1;
+			int32_t x1 = rect.UpperLeftCorner.X;
+			int32_t y1 = rect.UpperLeftCorner.Y;
+			int32_t x2 = rect.LowerRightCorner.X;
+			int32_t y2 = rect.LowerRightCorner.Y;
+			int32_t border = 1;
 			core::rect<s32> clipping_rect = Parent ? Parent->getAbsoluteClippingRect()
 					: core::rect<s32>();
 			core::rect<s32> *clipping_rect_ptr = Parent ? &clipping_rect : nullptr;
@@ -219,7 +219,7 @@ s32 GUIInventoryList::getItemIndexAtPos(v2s32 p) const
 	v2s32 base_pos = AbsoluteRect.UpperLeftCorner;
 
 	// instead of looping through each slot, we look where p would be in the grid
-	s32 i = (p.X - base_pos.X) / (s32)m_slot_spacing.X
+	int32_t i = (p.X - base_pos.X) / (s32)m_slot_spacing.X
 			+ m_geom.X * ((p.Y - base_pos.Y) / (s32)m_slot_spacing.Y);
 
 	v2s32 p0((i % m_geom.X) * m_slot_spacing.X,

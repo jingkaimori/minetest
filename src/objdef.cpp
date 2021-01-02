@@ -43,7 +43,7 @@ ObjDefHandle ObjDefManager::add(ObjDef *obj)
 	if (obj->name.length() && getByName(obj->name))
 		return OBJDEF_INVALID_HANDLE;
 
-	u32 index = addRaw(obj);
+	uint32_t index = addRaw(obj);
 	if (index == OBJDEF_INVALID_INDEX)
 		return OBJDEF_INVALID_HANDLE;
 
@@ -54,14 +54,14 @@ ObjDefHandle ObjDefManager::add(ObjDef *obj)
 
 ObjDef *ObjDefManager::get(ObjDefHandle handle) const
 {
-	u32 index = validateHandle(handle);
+	uint32_t index = validateHandle(handle);
 	return (index != OBJDEF_INVALID_INDEX) ? getRaw(index) : NULL;
 }
 
 
 ObjDef *ObjDefManager::set(ObjDefHandle handle, ObjDef *obj)
 {
-	u32 index = validateHandle(handle);
+	uint32_t index = validateHandle(handle);
 	if (index == OBJDEF_INVALID_INDEX)
 		return NULL;
 
@@ -75,7 +75,7 @@ ObjDef *ObjDefManager::set(ObjDefHandle handle, ObjDef *obj)
 }
 
 
-u32 ObjDefManager::addRaw(ObjDef *obj)
+uint32_t ObjDefManager::addRaw(ObjDef *obj)
 {
 	size_t nobjects = m_objects.size();
 	if (nobjects >= OBJDEF_MAX_ITEMS)
@@ -101,13 +101,13 @@ u32 ObjDefManager::addRaw(ObjDef *obj)
 }
 
 
-ObjDef *ObjDefManager::getRaw(u32 index) const
+ObjDef *ObjDefManager::getRaw(uint32_t index) const
 {
 	return m_objects[index];
 }
 
 
-ObjDef *ObjDefManager::setRaw(u32 index, ObjDef *obj)
+ObjDef *ObjDefManager::setRaw(uint32_t index, ObjDef *obj)
 {
 	ObjDef *old_obj = m_objects[index];
 	m_objects[index] = obj;
@@ -136,11 +136,11 @@ void ObjDefManager::clear()
 }
 
 
-u32 ObjDefManager::validateHandle(ObjDefHandle handle) const
+uint32_t ObjDefManager::validateHandle(ObjDefHandle handle) const
 {
 	ObjDefType type;
-	u32 index;
-	u32 uid;
+	uint32_t index;
+	uint32_t uid;
 
 	bool is_valid =
 		(handle != OBJDEF_INVALID_HANDLE)         &&
@@ -153,26 +153,26 @@ u32 ObjDefManager::validateHandle(ObjDefHandle handle) const
 }
 
 
-ObjDefHandle ObjDefManager::createHandle(u32 index, ObjDefType type, u32 uid)
+ObjDefHandle ObjDefManager::createHandle(uint32_t index, ObjDefType type, uint32_t uid)
 {
 	ObjDefHandle handle = 0;
 	set_bits(&handle, 0, 18, index);
 	set_bits(&handle, 18, 6, type);
 	set_bits(&handle, 24, 7, uid);
 
-	u32 parity = calc_parity(handle);
+	uint32_t parity = calc_parity(handle);
 	set_bits(&handle, 31, 1, parity);
 
 	return handle ^ OBJDEF_HANDLE_SALT;
 }
 
 
-bool ObjDefManager::decodeHandle(ObjDefHandle handle, u32 *index,
-	ObjDefType *type, u32 *uid)
+bool ObjDefManager::decodeHandle(ObjDefHandle handle, uint32_t *index,
+	ObjDefType *type, uint32_t *uid)
 {
 	handle ^= OBJDEF_HANDLE_SALT;
 
-	u32 parity = get_bits(handle, 31, 1);
+	uint32_t parity = get_bits(handle, 31, 1);
 	set_bits(&handle, 31, 1, 0);
 	if (parity != calc_parity(handle))
 		return false;

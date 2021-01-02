@@ -176,11 +176,11 @@ int MapgenV5::getSpawnLevelAtPoint(v2s16 p)
 	// terrain will be below this.
 	// Raising the maximum spawn level above 'water_level + 16' is necessary
 	// for when noise_height 'offset' is set much higher than water_level.
-	s16 max_spawn_y = MYMAX(noise_height->np.offset, water_level + 16);
+	int16_t max_spawn_y = MYMAX(noise_height->np.offset, water_level + 16);
 
 	// Starting spawn search at max_spawn_y + 128 ensures 128 nodes of open
 	// space above spawn position. Avoids spawning in possibly sealed voids.
-	for (s16 y = max_spawn_y + 128; y >= water_level; y--) {
+	for (int16_t y = max_spawn_y + 128; y >= water_level; y--) {
 		float n_ground = NoisePerlin3D(&noise_ground->np, p.X, y, p.Y, seed);
 
 		if (n_ground * f > y - h) {  // If solid
@@ -218,7 +218,7 @@ void MapgenV5::makeChunk(BlockMakeData *data)
 	blockseed = getBlockSeed2(full_node_min, seed);
 
 	// Generate base terrain
-	s16 stone_surface_max_y = generateBaseTerrain();
+	int16_t stone_surface_max_y = generateBaseTerrain();
 
 	// Create heightmap
 	updateHeightmap(node_min, node_max);
@@ -283,18 +283,18 @@ void MapgenV5::makeChunk(BlockMakeData *data)
 
 int MapgenV5::generateBaseTerrain()
 {
-	u32 index = 0;
-	u32 index2d = 0;
+	uint32_t index = 0;
+	uint32_t index2d = 0;
 	int stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
 
 	noise_factor->perlinMap2D(node_min.X, node_min.Z);
 	noise_height->perlinMap2D(node_min.X, node_min.Z);
 	noise_ground->perlinMap3D(node_min.X, node_min.Y - 1, node_min.Z);
 
-	for (s16 z=node_min.Z; z<=node_max.Z; z++) {
-		for (s16 y=node_min.Y - 1; y<=node_max.Y + 1; y++) {
-			u32 vi = vm->m_area.index(node_min.X, y, z);
-			for (s16 x=node_min.X; x<=node_max.X; x++, vi++, index++, index2d++) {
+	for (int16_t z=node_min.Z; z<=node_max.Z; z++) {
+		for (int16_t y=node_min.Y - 1; y<=node_max.Y + 1; y++) {
+			uint32_t vi = vm->m_area.index(node_min.X, y, z);
+			for (int16_t x=node_min.X; x<=node_max.X; x++, vi++, index++, index2d++) {
 				if (vm->m_data[vi].getContent() != CONTENT_IGNORE)
 					continue;
 

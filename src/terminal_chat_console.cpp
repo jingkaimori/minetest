@@ -393,8 +393,8 @@ void TerminalChatConsole::step(int ch)
 	addstr(" ");
 	addstr(g_version_hash);
 
-	u32 minutes = m_time_of_day % 1000;
-	u32 hours = m_time_of_day / 1000;
+	uint32_t minutes = m_time_of_day % 1000;
+	uint32_t hours = m_time_of_day / 1000;
 	minutes = (float)minutes / 1000 * 60;
 
 	if (m_game_time)
@@ -414,7 +414,7 @@ void TerminalChatConsole::step(int ch)
 		clrtoeol();
 		addstr(prompt_text.c_str());
 		// Draw cursor
-		s32 cursor_pos = prompt.getVisibleCursorPosition();
+		int32_t cursor_pos = prompt.getVisibleCursorPosition();
 		if (cursor_pos >= 0) {
 			move(m_rows - 1, cursor_pos);
 		}
@@ -434,7 +434,7 @@ void TerminalChatConsole::step(int ch)
 void TerminalChatConsole::draw_text()
 {
 	ChatBuffer& buf = m_chat_backend.getConsoleBuffer();
-	for (u32 row = 0; row < buf.getRows(); row++) {
+	for (uint32_t row = 0; row < buf.getRows(); row++) {
 		move_for_backend(row, 0);
 		clrtoeol();
 		const ChatFormattedLine& line = buf.getFormattedLine(row);

@@ -246,7 +246,7 @@ void ClientMediaDownloader::initialStep(Client *client)
 		// requests, so if there are lots of remote servers that are
 		// not responding, those will stall new media file transfers.
 
-		for (u32 i = 0; i < m_remotes.size(); ++i) {
+		for (uint32_t i = 0; i < m_remotes.size(); ++i) {
 			assert(m_httpfetch_next_id == i);
 
 			RemoteServerStatus *remote = m_remotes[i];
@@ -286,7 +286,7 @@ void ClientMediaDownloader::initialStep(Client *client)
 void ClientMediaDownloader::remoteHashSetReceived(
 		const HTTPFetchResult &fetch_result)
 {
-	u32 remote_id = fetch_result.request_id;
+	uint32_t remote_id = fetch_result.request_id;
 	assert(remote_id < m_remotes.size());
 	RemoteServerStatus *remote = m_remotes[remote_id];
 
@@ -376,13 +376,13 @@ s32 ClientMediaDownloader::selectRemoteServer(FileStatus *filestatus)
 	// been unsuccessfully tried before), find the one with the
 	// smallest number of currently active transfers
 
-	s32 best = 0;
-	s32 best_remote_id = filestatus->available_remotes[best];
-	s32 best_active_count = m_remotes[best_remote_id]->active_count;
+	int32_t best = 0;
+	int32_t best_remote_id = filestatus->available_remotes[best];
+	int32_t best_active_count = m_remotes[best_remote_id]->active_count;
 
-	for (u32 i = 1; i < filestatus->available_remotes.size(); ++i) {
-		s32 remote_id = filestatus->available_remotes[i];
-		s32 active_count = m_remotes[remote_id]->active_count;
+	for (uint32_t i = 1; i < filestatus->available_remotes.size(); ++i) {
+		int32_t remote_id = filestatus->available_remotes[i];
+		int32_t active_count = m_remotes[remote_id]->active_count;
 		if (active_count < best_active_count) {
 			best = i;
 			best_remote_id = remote_id;
@@ -415,7 +415,7 @@ void ClientMediaDownloader::startRemoteMediaTransfers()
 		if (!filestatus->received && filestatus->current_remote < 0) {
 			// File has not been received yet and is not currently
 			// being transferred. Choose a server for it.
-			s32 remote_id = selectRemoteServer(filestatus);
+			int32_t remote_id = selectRemoteServer(filestatus);
 			if (remote_id >= 0) {
 				// Found a server, so start fetching
 				RemoteServerStatus *remote =
@@ -573,10 +573,10 @@ bool ClientMediaDownloader::checkAndLoad(
 	Minetest Hashset File Format
 
 	All values are stored in big-endian byte order.
-	[u32] signature: 'MTHS'
-	[u16] version: 1
+	[uint32_t] signature: 'MTHS'
+	[uint16_t] version: 1
 	For each hash in set:
-		[u8*20] SHA1 hash
+		[uint8_t*20] SHA1 hash
 
 	Version changes:
 	1 - Initial version
@@ -612,23 +612,23 @@ void ClientMediaDownloader::deSerializeHashSet(const std::string &data,
 				"invalid hash set file size");
 	}
 
-	const u8 *data_cstr = (const u8*) data.c_str();
+	const uint8_t *data_cstr = (const uint8_t*) data.c_str();
 
-	u32 signature = readU32(&data_cstr[0]);
+	uint32_t signature = readU32(&data_cstr[0]);
 	if (signature != MTHASHSET_FILE_SIGNATURE) {
 		throw SerializationError(
 				"ClientMediaDownloader::deSerializeHashSet: "
 				"invalid hash set file signature");
 	}
 
-	u16 version = readU16(&data_cstr[4]);
+	uint16_t version = readU16(&data_cstr[4]);
 	if (version != 1) {
 		throw SerializationError(
 				"ClientMediaDownloader::deSerializeHashSet: "
 				"unsupported hash set file version");
 	}
 
-	for (u32 pos = 6; pos < data.size(); pos += 20) {
+	for (uint32_t pos = 6; pos < data.size(); pos += 20) {
 		result.insert(data.substr(pos, 20));
 	}
 }

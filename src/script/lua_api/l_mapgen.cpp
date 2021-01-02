@@ -237,13 +237,13 @@ bool read_schematic_def(lua_State *L, int index,
 	lua_getfield(L, index, "data");
 	luaL_checktype(L, -1, LUA_TTABLE);
 
-	u32 numnodes = size.X * size.Y * size.Z;
+	uint32_t numnodes = size.X * size.Y * size.Z;
 	schem->schemdata = new MapNode[numnodes];
 
 	size_t names_base = names->size();
 	std::unordered_map<std::string, content_t> name_id_map;
 
-	u32 i = 0;
+	uint32_t i = 0;
 	for (lua_pushnil(L); lua_next(L, -2); i++, lua_pop(L, 1)) {
 		if (i >= numnodes)
 			continue;
@@ -254,13 +254,13 @@ bool read_schematic_def(lua_State *L, int index,
 			throw LuaError("Schematic data definition with missing name field");
 
 		//// Read param1/prob
-		u8 param1;
+		uint8_t param1;
 		if (!getintfield(L, -1, "param1", param1) &&
 			!getintfield(L, -1, "prob", param1))
 			param1 = MTSCHEM_PROB_ALWAYS_OLD;
 
 		//// Read param2
-		u8 param2 = getintfield_default(L, -1, "param2", 0);
+		uint8_t param2 = getintfield_default(L, -1, "param2", 0);
 
 		//// Find or add new nodename-to-ID mapping
 		std::unordered_map<std::string, content_t>::iterator it = name_id_map.find(name);
@@ -290,14 +290,14 @@ bool read_schematic_def(lua_State *L, int index,
 	}
 
 	//// Get Y-slice probability values (if present)
-	schem->slice_probs = new u8[size.Y];
-	for (i = 0; i != (u32) size.Y; i++)
+	schem->slice_probs = new uint8_t[size.Y];
+	for (i = 0; i != (uint32_t) size.Y; i++)
 		schem->slice_probs[i] = MTSCHEM_PROB_ALWAYS;
 
 	lua_getfield(L, index, "yslice_prob");
 	if (lua_istable(L, -1)) {
 		for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-			u16 ypos;
+			uint16_t ypos;
 			if (!getintfield(L, -1, "ypos", ypos) || (ypos >= size.Y) ||
 				!getintfield(L, -1, "prob", schem->slice_probs[ypos]))
 				continue;
@@ -543,7 +543,7 @@ int ModApiMapgen::l_get_heat(lua_State *L)
 	if (!settingsmgr->getMapSetting("seed", &value))
 		return 0;
 	std::istringstream ss(value);
-	u64 seed;
+	uint64_t seed;
 	ss >> seed;
 
 	const BiomeManager *bmgr = getServer(L)->getEmergeManager()->getBiomeManager();
@@ -582,7 +582,7 @@ int ModApiMapgen::l_get_humidity(lua_State *L)
 	if (!settingsmgr->getMapSetting("seed", &value))
 		return 0;
 	std::istringstream ss(value);
-	u64 seed;
+	uint64_t seed;
 	ss >> seed;
 
 	const BiomeManager *bmgr = getServer(L)->getEmergeManager()->getBiomeManager();
@@ -628,7 +628,7 @@ int ModApiMapgen::l_get_biome_data(lua_State *L)
 	if (!settingsmgr->getMapSetting("seed", &value))
 		return 0;
 	std::istringstream ss(value);
-	u64 seed;
+	uint64_t seed;
 	ss >> seed;
 
 	const BiomeManager *bmgr = getServer(L)->getEmergeManager()->getBiomeManager();
@@ -785,8 +785,8 @@ int ModApiMapgen::l_get_spawn_level(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
 
-	s16 x = luaL_checkinteger(L, 1);
-	s16 z = luaL_checkinteger(L, 2);
+	int16_t x = luaL_checkinteger(L, 1);
+	int16_t z = luaL_checkinteger(L, 2);
 
 	EmergeManager *emerge = getServer(L)->getEmergeManager();
 	int spawn_level = emerge->getSpawnLevelAtPoint(v2s16(x, z));
@@ -821,7 +821,7 @@ int ModApiMapgen::l_get_mapgen_params(lua_State *L)
 
 	settingsmgr->getMapSetting("seed", &value);
 	std::istringstream ss(value);
-	u64 seed;
+	uint64_t seed;
 	ss >> seed;
 	lua_pushinteger(L, seed);
 	lua_setfield(L, -2, "seed");
@@ -1012,7 +1012,7 @@ int ModApiMapgen::l_set_gen_notify(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
 
-	u32 flags = 0, flagmask = 0;
+	uint32_t flags = 0, flagmask = 0;
 	EmergeManager *emerge = getServer(L)->getEmergeManager();
 
 	if (read_flags(L, 1, flagdesc_gennotify, &flags, &flagmask)) {
@@ -1024,7 +1024,7 @@ int ModApiMapgen::l_set_gen_notify(lua_State *L)
 		lua_pushnil(L);
 		while (lua_next(L, 2)) {
 			if (lua_isnumber(L, -1))
-				emerge->gen_notify_on_deco_ids.insert((u32)lua_tonumber(L, -1));
+				emerge->gen_notify_on_deco_ids.insert((uint32_t)lua_tonumber(L, -1));
 			lua_pop(L, 1);
 		}
 	}
@@ -1044,7 +1044,7 @@ int ModApiMapgen::l_get_gen_notify(lua_State *L)
 
 	lua_newtable(L);
 	int i = 1;
-	for (u32 gen_notify_on_deco_id : emerge->gen_notify_on_deco_ids) {
+	for (uint32_t gen_notify_on_deco_id : emerge->gen_notify_on_deco_ids) {
 		lua_pushnumber(L, gen_notify_on_deco_id);
 		lua_rawseti(L, -2, i++);
 	}
@@ -1234,8 +1234,8 @@ bool read_deco_simple(lua_State *L, DecoSimple *deco)
 		return false;
 	}
 
-	deco->deco_param2 = (u8)param2;
-	deco->deco_param2_max = (u8)param2_max;
+	deco->deco_param2 = (uint8_t)param2;
+	deco->deco_param2_max = (uint8_t)param2_max;
 
 	return true;
 }
@@ -1285,7 +1285,7 @@ int ModApiMapgen::l_register_ore(lua_State *L)
 	}
 
 	ore->name           = getstringfield_default(L, index, "name", "");
-	ore->ore_param2     = (u8)getintfield_default(L, index, "ore_param2", 0);
+	ore->ore_param2     = (uint8_t)getintfield_default(L, index, "ore_param2", 0);
 	ore->clust_scarcity = getintfield_default(L, index, "clust_scarcity", 1);
 	ore->clust_num_ores = getintfield_default(L, index, "clust_num_ores", 1);
 	ore->clust_size     = getintfield_default(L, index, "clust_size", 0);
@@ -1510,7 +1510,7 @@ int ModApiMapgen::l_generate_ores(lua_State *L)
 			mg.vm->m_area.MaxEdge - v3s16(1,1,1) * MAP_BLOCKSIZE;
 	sortBoxVerticies(pmin, pmax);
 
-	u32 blockseed = Mapgen::getBlockSeed(pmin, mg.seed);
+	uint32_t blockseed = Mapgen::getBlockSeed(pmin, mg.seed);
 
 	emerge->oremgr->placeAllOres(&mg, blockseed, pmin, pmax);
 
@@ -1536,7 +1536,7 @@ int ModApiMapgen::l_generate_decorations(lua_State *L)
 			mg.vm->m_area.MaxEdge - v3s16(1,1,1) * MAP_BLOCKSIZE;
 	sortBoxVerticies(pmin, pmax);
 
-	u32 blockseed = Mapgen::getBlockSeed(pmin, mg.seed);
+	uint32_t blockseed = Mapgen::getBlockSeed(pmin, mg.seed);
 
 	emerge->decomgr->placeAllDecos(&mg, blockseed, pmin, pmax);
 
@@ -1561,7 +1561,7 @@ int ModApiMapgen::l_create_schematic(lua_State *L)
 	v3s16 p2 = check_v3s16(L, 2);
 	sortBoxVerticies(p1, p2);
 
-	std::vector<std::pair<v3s16, u8> > prob_list;
+	std::vector<std::pair<v3s16, uint8_t> > prob_list;
 	if (lua_istable(L, 3)) {
 		lua_pushnil(L);
 		while (lua_next(L, 3)) {
@@ -1570,7 +1570,7 @@ int ModApiMapgen::l_create_schematic(lua_State *L)
 				v3s16 pos = check_v3s16(L, -1);
 				lua_pop(L, 1);
 
-				u8 prob = getintfield_default(L, -1, "prob", MTSCHEM_PROB_ALWAYS);
+				uint8_t prob = getintfield_default(L, -1, "prob", MTSCHEM_PROB_ALWAYS);
 				prob_list.emplace_back(pos, prob);
 			}
 
@@ -1578,13 +1578,13 @@ int ModApiMapgen::l_create_schematic(lua_State *L)
 		}
 	}
 
-	std::vector<std::pair<s16, u8> > slice_prob_list;
+	std::vector<std::pair<s16, uint8_t> > slice_prob_list;
 	if (lua_istable(L, 5)) {
 		lua_pushnil(L);
 		while (lua_next(L, 5)) {
 			if (lua_istable(L, -1)) {
-				s16 ypos = getintfield_default(L, -1, "ypos", 0);
-				u8 prob  = getintfield_default(L, -1, "prob", MTSCHEM_PROB_ALWAYS);
+				int16_t ypos = getintfield_default(L, -1, "ypos", 0);
+				uint8_t prob  = getintfield_default(L, -1, "prob", MTSCHEM_PROB_ALWAYS);
 				slice_prob_list.emplace_back(ypos, prob);
 			}
 
@@ -1647,7 +1647,7 @@ int ModApiMapgen::l_place_schematic(lua_State *L)
 	}
 
 	//// Read flags
-	u32 flags = 0;
+	uint32_t flags = 0;
 	read_flags(L, 6, flagdesc_deco, &flags, NULL);
 
 	schem->placeOnMap(map, p, flags, (Rotation)rot, force_placement);
@@ -1695,7 +1695,7 @@ int ModApiMapgen::l_place_schematic_on_vmanip(lua_State *L)
 	}
 
 	//// Read flags
-	u32 flags = 0;
+	uint32_t flags = 0;
 	read_flags(L, 7, flagdesc_deco, &flags, NULL);
 
 	bool schematic_did_fit = schem->placeOnVManip(
@@ -1715,7 +1715,7 @@ int ModApiMapgen::l_serialize_schematic(lua_State *L)
 
 	//// Read options
 	bool use_comments = getboolfield_default(L, 3, "lua_use_comments", false);
-	u32 indent_spaces = getintfield_default(L, 3, "lua_num_indent_spaces", 0);
+	uint32_t indent_spaces = getintfield_default(L, 3, "lua_num_indent_spaces", 0);
 
 	//// Get schematic
 	bool was_loaded = false;
@@ -1782,7 +1782,7 @@ int ModApiMapgen::l_read_schematic(lua_State *L)
 	lua_pop(L, 2);
 
 	//// Create the Lua table
-	u32 numnodes = schem->size.X * schem->size.Y * schem->size.Z;
+	uint32_t numnodes = schem->size.X * schem->size.Y * schem->size.Z;
 	const std::vector<std::string> &names = schem->m_nodenames;
 
 	lua_createtable(L, 0, (write_yslice == "none") ? 2 : 3);
@@ -1794,8 +1794,8 @@ int ModApiMapgen::l_read_schematic(lua_State *L)
 	// Create the yslice_prob field
 	if (write_yslice != "none") {
 		lua_createtable(L, schem->size.Y, 0);
-		for (u16 y = 0; y != schem->size.Y; ++y) {
-			u8 probability = schem->slice_probs[y] & MTSCHEM_PROB_MASK;
+		for (uint16_t y = 0; y != schem->size.Y; ++y) {
+			uint8_t probability = schem->slice_probs[y] & MTSCHEM_PROB_MASK;
 			if (probability < MTSCHEM_PROB_ALWAYS || write_yslice != "low") {
 				lua_createtable(L, 0, 2);
 				lua_pushinteger(L, y);
@@ -1810,9 +1810,9 @@ int ModApiMapgen::l_read_schematic(lua_State *L)
 
 	// Create the data field
 	lua_createtable(L, numnodes, 0); // data table
-	for (u32 i = 0; i < numnodes; ++i) {
+	for (uint32_t i = 0; i < numnodes; ++i) {
 		MapNode node = schem->schemdata[i];
-		u8 probability   = node.param1 & MTSCHEM_PROB_MASK;
+		uint8_t probability   = node.param1 & MTSCHEM_PROB_MASK;
 		bool force_place = node.param1 & MTSCHEM_FORCE_PLACE;
 		lua_createtable(L, 0, force_place ? 4 : 3);
 		lua_pushstring(L, names[schem->schemdata[i].getContent()].c_str());

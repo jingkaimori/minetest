@@ -37,7 +37,7 @@ struct SimpleSoundSpec
 
 	// Take cf_version from ContentFeatures::serialize to
 	// keep in sync with item definitions
-	void serialize(std::ostream &os, u8 cf_version) const
+	void serialize(std::ostream &os, uint8_t cf_version) const
 	{
 		os << serializeString16(name);
 		writeF32(os, gain);
@@ -47,7 +47,7 @@ struct SimpleSoundSpec
 		//     return;
 	}
 
-	void deSerialize(std::istream &is, u8 cf_version)
+	void deSerialize(std::istream &is, uint8_t cf_version)
 	{
 		name = deSerializeString16(is);
 		gain = readF32(is);

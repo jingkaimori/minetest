@@ -52,7 +52,7 @@ public:
 private:
 	void runTimeouts(float dtime);
 	void rawSend(const BufferedPacket &packet);
-	bool rawSendAsPacket(session_t peer_id, u8 channelnum,
+	bool rawSendAsPacket(session_t peer_id, uint8_t channelnum,
 			const SharedBuffer<u8> &data, bool reliable);
 
 	void processReliableCommand(ConnectionCommand &c);
@@ -61,14 +61,14 @@ private:
 	void connect(Address address);
 	void disconnect();
 	void disconnect_peer(session_t peer_id);
-	void send(session_t peer_id, u8 channelnum, const SharedBuffer<u8> &data);
+	void send(session_t peer_id, uint8_t channelnum, const SharedBuffer<u8> &data);
 	void sendReliable(ConnectionCommand &c);
-	void sendToAll(u8 channelnum, const SharedBuffer<u8> &data);
+	void sendToAll(uint8_t channelnum, const SharedBuffer<u8> &data);
 	void sendToAllReliable(ConnectionCommand &c);
 
 	void sendPackets(float dtime);
 
-	void sendAsPacket(session_t peer_id, u8 channelnum, const SharedBuffer<u8> &data,
+	void sendAsPacket(session_t peer_id, uint8_t channelnum, const SharedBuffer<u8> &data,
 			bool ack = false);
 
 	void sendAsPacketReliable(BufferedPacket &p, Channel *channel);
@@ -121,25 +121,25 @@ private:
 	*/
 	SharedBuffer<u8> processPacket(Channel *channel,
 			const SharedBuffer<u8> &packetdata, session_t peer_id,
-			u8 channelnum, bool reliable);
+			uint8_t channelnum, bool reliable);
 
 	SharedBuffer<u8> handlePacketType_Control(Channel *channel,
-			const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum,
+			const SharedBuffer<u8> &packetdata, Peer *peer, uint8_t channelnum,
 			bool reliable);
 	SharedBuffer<u8> handlePacketType_Original(Channel *channel,
-			const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum,
+			const SharedBuffer<u8> &packetdata, Peer *peer, uint8_t channelnum,
 			bool reliable);
 	SharedBuffer<u8> handlePacketType_Split(Channel *channel,
-			const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum,
+			const SharedBuffer<u8> &packetdata, Peer *peer, uint8_t channelnum,
 			bool reliable);
 	SharedBuffer<u8> handlePacketType_Reliable(Channel *channel,
-			const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum,
+			const SharedBuffer<u8> &packetdata, Peer *peer, uint8_t channelnum,
 			bool reliable);
 
 	struct PacketTypeHandler
 	{
 		SharedBuffer<u8> (ConnectionReceiveThread::*handler)(Channel *channel,
-				const SharedBuffer<u8> &packet, Peer *peer, u8 channelnum,
+				const SharedBuffer<u8> &packet, Peer *peer, uint8_t channelnum,
 				bool reliable);
 	};
 

@@ -47,7 +47,7 @@ FontEngine::FontEngine(Settings* main_settings, gui::IGUIEnvironment* env) :
 	m_env(env)
 {
 
-	for (u32 &i : m_default_size) {
+	for (uint32_t &i : m_default_size) {
 		i = (FontMode) FONT_SIZE_UNSPECIFIED;
 	}
 
@@ -253,7 +253,7 @@ void FontEngine::updateSkin()
 	font = m_env->getSkin()->getFont();
 	FATAL_ERROR_IF(font == NULL, "Could not create/get font");
 
-	u32 text_height = font->getDimension(L"Hello, world!").Height;
+	uint32_t text_height = font->getDimension(L"Hello, world!").Height;
 	infostream << "FontEngine: measured text_height=" << text_height << std::endl;
 }
 
@@ -291,7 +291,7 @@ gui::IGUIFont *FontEngine::initFont(const FontSpec &spec)
 	if (spec.italic)
 		setting_suffix.append("_italic");
 
-	u32 size = std::floor(RenderingEngine::getDisplayDensity() *
+	uint32_t size = std::floor(RenderingEngine::getDisplayDensity() *
 			m_settings->getFloat("gui_scaling") * spec.size);
 
 	if (size == 0) {
@@ -300,8 +300,8 @@ gui::IGUIFont *FontEngine::initFont(const FontSpec &spec)
 		abort();
 	}
 
-	u16 font_shadow       = 0;
-	u16 font_shadow_alpha = 0;
+	uint16_t font_shadow       = 0;
+	uint16_t font_shadow_alpha = 0;
 	g_settings->getU16NoEx(setting_prefix + "font_shadow", font_shadow);
 	g_settings->getU16NoEx(setting_prefix + "font_shadow_alpha",
 			font_shadow_alpha);
@@ -362,7 +362,7 @@ gui::IGUIFont *FontEngine::initSimpleFont(const FontSpec &spec)
 	if (ending == ".xml" || ending == ".png")
 		basename = font_path.substr(0, pos_dot);
 
-	u32 size = std::floor(
+	uint32_t size = std::floor(
 			RenderingEngine::getDisplayDensity() *
 			m_settings->getFloat("gui_scaling") *
 			spec.size);
@@ -372,12 +372,12 @@ gui::IGUIFont *FontEngine::initSimpleFont(const FontSpec &spec)
 
 	// Find nearest matching font scale
 	// Does a "zig-zag motion" (positibe/negative), from 0 to MAX_FONT_SIZE_OFFSET
-	for (s32 zoffset = 0; zoffset < MAX_FONT_SIZE_OFFSET * 2; zoffset++) {
+	for (int32_t zoffset = 0; zoffset < MAX_FONT_SIZE_OFFSET * 2; zoffset++) {
 		std::stringstream path;
 
 		// LSB to sign
-		s32 sign = (zoffset & 1) ? -1 : 1;
-		s32 offset = zoffset >> 1;
+		int32_t sign = (zoffset & 1) ? -1 : 1;
+		int32_t offset = zoffset >> 1;
 
 		for (const std::string &ext : font_extensions) {
 			path.str(""); // Clear

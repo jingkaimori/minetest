@@ -38,7 +38,7 @@ public:
 	void testZlibCompression();
 	void testZlibLargeData();
 	void testZlibLimit();
-	void _testZlibLimit(u32 size, u32 limit);
+	void _testZlibLimit(uint32_t size, uint32_t limit);
 };
 
 static TestCompression g_test_instance;
@@ -55,7 +55,7 @@ void TestCompression::runTests(IGameDef *gamedef)
 
 void TestCompression::testRLECompression()
 {
-	SharedBuffer<u8> fromdata(4);
+	SharedBuffer<uint8_t> fromdata(4);
 	fromdata[0]=1;
 	fromdata[1]=5;
 	fromdata[2]=5;
@@ -69,7 +69,7 @@ void TestCompression::testRLECompression()
 	infostream << "str_out.size()="<<str_out.size()<<std::endl;
 	infostream << "TestCompress: 1,5,5,1 -> ";
 	for (char i : str_out)
-		infostream << (u32) i << ",";
+		infostream << (uint32_t) i << ",";
 	infostream << std::endl;
 
 	UASSERT(str_out.size() == 10);
@@ -93,18 +93,18 @@ void TestCompression::testRLECompression()
 
 	infostream << "decompress: ";
 	for (char i : str_out2)
-		infostream << (u32) i << ",";
+		infostream << (uint32_t) i << ",";
 	infostream << std::endl;
 
 	UASSERTEQ(size_t, str_out2.size(), fromdata.getSize());
 
-	for (u32 i = 0; i < str_out2.size(); i++)
+	for (uint32_t i = 0; i < str_out2.size(); i++)
 		UASSERT(str_out2[i] == fromdata[i]);
 }
 
 void TestCompression::testZlibCompression()
 {
-	SharedBuffer<u8> fromdata(4);
+	SharedBuffer<uint8_t> fromdata(4);
 	fromdata[0]=1;
 	fromdata[1]=5;
 	fromdata[2]=5;
@@ -118,7 +118,7 @@ void TestCompression::testZlibCompression()
 	infostream << "str_out.size()=" << str_out.size() <<std::endl;
 	infostream << "TestCompress: 1,5,5,1 -> ";
 	for (char i : str_out)
-		infostream << (u32) i << ",";
+		infostream << (uint32_t) i << ",";
 	infostream << std::endl;
 
 	std::istringstream is(str_out, std::ios_base::binary);
@@ -129,12 +129,12 @@ void TestCompression::testZlibCompression()
 
 	infostream << "decompress: ";
 	for (char i : str_out2)
-		infostream << (u32) i << ",";
+		infostream << (uint32_t) i << ",";
 	infostream << std::endl;
 
 	UASSERTEQ(size_t, str_out2.size(), fromdata.getSize());
 
-	for (u32 i = 0; i < str_out2.size(); i++)
+	for (uint32_t i = 0; i < str_out2.size(); i++)
 		UASSERT(str_out2[i] == fromdata[i]);
 }
 
@@ -143,14 +143,14 @@ void TestCompression::testZlibLargeData()
 	infostream << "Test: Testing zlib wrappers with a large amount "
 		"of pseudorandom data" << std::endl;
 
-	u32 size = 50000;
+	uint32_t size = 50000;
 	infostream << "Test: Input size of large compressZlib is "
 		<< size << std::endl;
 
 	std::string data_in;
 	data_in.resize(size);
 	PseudoRandom pseudorandom(9420);
-	for (u32 i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; i++)
 		data_in[i] = pseudorandom.range(0, 255);
 
 	std::ostringstream os_compressed(std::ios::binary);
@@ -167,7 +167,7 @@ void TestCompression::testZlibLargeData()
 	std::string str_decompressed = os_decompressed.str();
 	UASSERTEQ(size_t, str_decompressed.size(), data_in.size());
 
-	for (u32 i = 0; i < size && i < str_decompressed.size(); i++) {
+	for (uint32_t i = 0; i < size && i < str_decompressed.size(); i++) {
 		UTEST(str_decompressed[i] == data_in[i],
 				"index out[%i]=%i differs from in[%i]=%i",
 				i, str_decompressed[i], i, data_in[i]);
@@ -182,7 +182,7 @@ void TestCompression::testZlibLimit()
 	_testZlibLimit(1024, 1025);
 
 	// test around buffer borders
-	u32 bufsize = 16384; // as in implementation
+	uint32_t bufsize = 16384; // as in implementation
 	for (int s = -1; s <= 1; s++)
 	{
 		for (int l = -1; l <= 1; l++)
@@ -195,7 +195,7 @@ void TestCompression::testZlibLimit()
 	_testZlibLimit(22000, 35000);
 }
 
-void TestCompression::_testZlibLimit(u32 size, u32 limit)
+void TestCompression::_testZlibLimit(uint32_t size, uint32_t limit)
 {
 	infostream << "Test: Testing zlib wrappers with a decompression "
 		"memory limit of " << limit << std::endl;
@@ -204,13 +204,13 @@ void TestCompression::_testZlibLimit(u32 size, u32 limit)
 		<< size << std::endl;
 
 	// how much data we expect to get
-	u32 expected = size < limit ? size : limit;
+	uint32_t expected = size < limit ? size : limit;
 
 	// create recognizable data
 	std::string data_in;
 	data_in.resize(size);
-	for (u32 i = 0; i < size; i++)
-		data_in[i] = (u8)(i % 256);
+	for (uint32_t i = 0; i < size; i++)
+		data_in[i] = (uint8_t)(i % 256);
 
 	std::ostringstream os_compressed(std::ios::binary);
 	compressZlib(data_in, os_compressed);
@@ -226,7 +226,7 @@ void TestCompression::_testZlibLimit(u32 size, u32 limit)
 	std::string str_decompressed = os_decompressed.str();
 	UASSERTEQ(size_t, str_decompressed.size(), expected);
 
-	for (u32 i = 0; i < size && i < str_decompressed.size(); i++) {
+	for (uint32_t i = 0; i < size && i < str_decompressed.size(); i++) {
 		UTEST(str_decompressed[i] == data_in[i],
 				"index out[%i]=%i differs from in[%i]=%i",
 				i, str_decompressed[i], i, data_in[i]);

@@ -80,7 +80,7 @@ class PacketCounter
 public:
 	PacketCounter() = default;
 
-	void add(u16 command)
+	void add(uint16_t command)
 	{
 		auto n = m_packets.find(command);
 		if (n == m_packets.end())
@@ -94,7 +94,7 @@ public:
 		m_packets.clear();
 	}
 
-	u32 sum() const;
+	uint32_t sum() const;
 	void print(std::ostream &o) const;
 
 private:
@@ -240,7 +240,7 @@ public:
 	void clearOutChatQueue();
 	void sendChangePassword(const std::string &oldpassword,
 		const std::string &newpassword);
-	void sendDamage(u16 damage);
+	void sendDamage(uint16_t damage);
 	void sendRespawn();
 	void sendReady();
 
@@ -274,7 +274,7 @@ public:
 	void inventoryAction(InventoryAction *a) override;
 
 	// Send the item number 'item' as player item to the server
-	void setPlayerItem(u16 item);
+	void setPlayerItem(uint16_t item);
 
 	const std::list<std::string> &getConnectedPlayerNames()
 	{
@@ -287,7 +287,7 @@ public:
 	v3s16 getCrackPos();
 	void setCrack(int level, v3s16 pos);
 
-	u16 getHP();
+	uint16_t getHP();
 
 	bool checkPrivilege(const std::string &priv) const
 	{ return (m_privileges.count(priv) != 0); }
@@ -298,7 +298,7 @@ public:
 	bool getChatMessage(std::wstring &message);
 	void typeChatMessage(const std::wstring& message);
 
-	u64 getMapSeed(){ return m_map_seed; }
+	uint64_t getMapSeed(){ return m_map_seed; }
 
 	void addUpdateMeshTask(v3s16 blockpos, bool ack_to_server=false, bool urgent=false);
 	// Including blocks at appropriate edges
@@ -335,7 +335,7 @@ public:
 	const bool activeObjectsReceived() const
 	{ return m_activeobjects_received; }
 
-	u16 getProtoVersion()
+	uint16_t getProtoVersion()
 	{ return m_proto_ver; }
 
 	void confirmRegistration();
@@ -362,7 +362,7 @@ public:
 	ICraftDefManager* getCraftDefManager() override;
 	ITextureSource* getTextureSource();
 	virtual IWritableShaderSource* getShaderSource();
-	u16 allocateUnknownNodeId(const std::string &name) override;
+	uint16_t allocateUnknownNodeId(const std::string &name) override;
 	virtual ISoundManager* getSoundManager();
 	MtEventManager* getEventManager();
 	virtual ParticleManager* getParticleManager();
@@ -405,7 +405,7 @@ public:
 		return m_address_name;
 	}
 
-	inline u64 getCSMRestrictionFlags() const
+	inline uint64_t getCSMRestrictionFlags() const
 	{
 		return m_csm_restriction_flags;
 	}
@@ -415,7 +415,7 @@ public:
 		return m_csm_restriction_flags & flag;
 	}
 
-	u32 getCSMNodeRangeLimit() const
+	uint32_t getCSMNodeRangeLimit() const
 	{
 		return m_csm_restriction_noderange;
 	}
@@ -453,7 +453,7 @@ private:
 
 	void deleteAuthData();
 	// helper method shared with clientpackethandler
-	static AuthMechanism choseAuthMech(const u32 mechs);
+	static AuthMechanism choseAuthMech(const uint32_t mechs);
 
 	void sendInit(const std::string &playerName);
 	void promptConfirmRegistration(AuthMechanism chosen_auth_mechanism);
@@ -492,14 +492,14 @@ private:
 	bool m_minimap_disabled_by_server = false;
 
 	// Server serialization version
-	u8 m_server_ser_ver;
+	uint8_t m_server_ser_ver;
 
 	// Used version of the protocol with server
 	// Values smaller than 25 only mean they are smaller than 25,
 	// and aren't accurate. We simply just don't know, because
 	// the server didn't send the version back then.
 	// If 0, server init hasn't been received yet.
-	u16 m_proto_ver = 0;
+	uint16_t m_proto_ver = 0;
 
 	bool m_update_wielded_item = false;
 	Inventory *m_inventory_from_server = nullptr;
@@ -510,18 +510,18 @@ private:
 	int m_crack_level = -1;
 	v3s16 m_crack_pos;
 	// 0 <= m_daynight_i < DAYNIGHT_CACHE_COUNT
-	//s32 m_daynight_i;
-	//u32 m_daynight_ratio;
+	//int32_t m_daynight_i;
+	//uint32_t m_daynight_ratio;
 	std::queue<std::wstring> m_out_chat_queue;
-	u32 m_last_chat_message_sent;
+	uint32_t m_last_chat_message_sent;
 	float m_chat_message_allowance = 5.0f;
 	std::queue<ChatMessage *> m_chat_queue;
 
 	// The authentication methods we can use to enter sudo mode (=change password)
-	u32 m_sudo_auth_methods;
+	uint32_t m_sudo_auth_methods;
 
 	// The seed returned by the server in TOCLIENT_INIT is stored here
-	u64 m_map_seed = 0;
+	uint64_t m_map_seed = 0;
 
 	// Auth data
 	std::string m_playername;
@@ -583,7 +583,7 @@ private:
 	// Used for saving server map to disk client-side
 	MapDatabase *m_localdb = nullptr;
 	IntervalLimiter m_localdb_save_interval;
-	u16 m_cache_save_interval;
+	uint16_t m_cache_save_interval;
 
 	// Client modding
 	ClientScripting *m_script = nullptr;
@@ -596,8 +596,8 @@ private:
 	bool m_shutdown = false;
 
 	// CSM restrictions byteflag
-	u64 m_csm_restriction_flags = CSMRestrictionFlags::CSM_RF_NONE;
-	u32 m_csm_restriction_noderange = 8;
+	uint64_t m_csm_restriction_flags = CSMRestrictionFlags::CSM_RF_NONE;
+	uint32_t m_csm_restriction_noderange = 8;
 
 	std::unique_ptr<ModChannelMgr> m_modchannel_mgr;
 };

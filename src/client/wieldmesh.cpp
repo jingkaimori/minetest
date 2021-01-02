@@ -42,7 +42,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 static scene::IMesh *createExtrusionMesh(int resolution_x, int resolution_y)
 {
-	const f32 r = 0.5;
+	const float r = 0.5;
 
 	scene::IMeshBuffer *buf = new scene::SMeshBuffer();
 	video::SColor c(255,255,255,255);
@@ -62,19 +62,19 @@ static scene::IMesh *createExtrusionMesh(int resolution_x, int resolution_y)
 			video::S3DVertex(+r,-r,+r, 0,0,+1, c, 1,1),
 			video::S3DVertex(+r,+r,+r, 0,0,+1, c, 1,0),
 		};
-		u16 indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
+		uint16_t indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
 		buf->append(vertices, 8, indices, 12);
 	}
 
-	f32 pixelsize_x = 1 / (f32) resolution_x;
-	f32 pixelsize_y = 1 / (f32) resolution_y;
+	float pixelsize_x = 1 / (f32) resolution_x;
+	float pixelsize_y = 1 / (f32) resolution_y;
 
 	for (int i = 0; i < resolution_x; ++i) {
-		f32 pixelpos_x = i * pixelsize_x - 0.5;
-		f32 x0 = pixelpos_x;
-		f32 x1 = pixelpos_x + pixelsize_x;
-		f32 tex0 = (i + 0.1) * pixelsize_x;
-		f32 tex1 = (i + 0.9) * pixelsize_x;
+		float pixelpos_x = i * pixelsize_x - 0.5;
+		float x0 = pixelpos_x;
+		float x1 = pixelpos_x + pixelsize_x;
+		float tex0 = (i + 0.1) * pixelsize_x;
+		float tex1 = (i + 0.9) * pixelsize_x;
 		video::S3DVertex vertices[8] = {
 			// x-
 			video::S3DVertex(x0,-r,-r, -1,0,0, c, tex0,1),
@@ -87,15 +87,15 @@ static scene::IMesh *createExtrusionMesh(int resolution_x, int resolution_y)
 			video::S3DVertex(x1,+r,+r, +1,0,0, c, tex1,0),
 			video::S3DVertex(x1,-r,+r, +1,0,0, c, tex1,1),
 		};
-		u16 indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
+		uint16_t indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
 		buf->append(vertices, 8, indices, 12);
 	}
 	for (int i = 0; i < resolution_y; ++i) {
-		f32 pixelpos_y = i * pixelsize_y - 0.5;
-		f32 y0 = -pixelpos_y - pixelsize_y;
-		f32 y1 = -pixelpos_y;
-		f32 tex0 = (i + 0.1) * pixelsize_y;
-		f32 tex1 = (i + 0.9) * pixelsize_y;
+		float pixelpos_y = i * pixelsize_y - 0.5;
+		float y0 = -pixelpos_y - pixelsize_y;
+		float y1 = -pixelpos_y;
+		float tex0 = (i + 0.1) * pixelsize_y;
+		float tex1 = (i + 0.9) * pixelsize_y;
 		video::S3DVertex vertices[8] = {
 			// y-
 			video::S3DVertex(-r,y0,-r, 0,-1,0, c, 0,tex0),
@@ -108,7 +108,7 @@ static scene::IMesh *createExtrusionMesh(int resolution_x, int resolution_y)
 			video::S3DVertex(+r,y1,+r, 0,+1,0, c, 1,tex1),
 			video::S3DVertex(+r,y1,-r, 0,+1,0, c, 1,tex0),
 		};
-		u16 indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
+		uint16_t indices[12] = {0,1,2,2,3,0,4,5,6,6,7,4};
 		buf->append(vertices, 8, indices, 12);
 	}
 
@@ -155,7 +155,7 @@ public:
 	}
 	// Get closest extrusion mesh for given image dimensions
 	// Caller must drop the returned pointer
-	scene::IMesh* create(core::dimension2d<u32> dim)
+	scene::IMesh* create(core::dimension2d<uint32_t> dim)
 	{
 		// handle non-power of two textures inefficiently without cache
 		if (!is_power_of_two(dim.Width) || !is_power_of_two(dim.Height)) {
@@ -193,7 +193,7 @@ private:
 ExtrusionMeshCache *g_extrusion_mesh_cache = NULL;
 
 
-WieldMeshSceneNode::WieldMeshSceneNode(scene::ISceneManager *mgr, s32 id, bool lighting):
+WieldMeshSceneNode::WieldMeshSceneNode(scene::ISceneManager *mgr, int32_t id, bool lighting):
 	scene::ISceneNode(mgr->getRootSceneNode(), mgr, id),
 	m_material_type(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF),
 	m_lighting(lighting)
@@ -243,7 +243,7 @@ void WieldMeshSceneNode::setCube(const ContentFeatures &f,
 
 void WieldMeshSceneNode::setExtruded(const std::string &imagename,
 	const std::string &overlay_name, v3f wield_scale, ITextureSource *tsrc,
-	u8 num_frames)
+	uint8_t num_frames)
 {
 	video::ITexture *texture = tsrc->getTexture(imagename);
 	if (!texture) {
@@ -253,11 +253,11 @@ void WieldMeshSceneNode::setExtruded(const std::string &imagename,
 	video::ITexture *overlay_texture =
 		overlay_name.empty() ? NULL : tsrc->getTexture(overlay_name);
 
-	core::dimension2d<u32> dim = texture->getSize();
+	core::dimension2d<uint32_t> dim = texture->getSize();
 	// Detect animation texture and pull off top frame instead of using entire thing
 	if (num_frames > 1) {
-		u32 frame_height = dim.Height / num_frames;
-		dim = core::dimension2d<u32>(dim.Width, frame_height);
+		uint32_t frame_height = dim.Height / num_frames;
+		dim = core::dimension2d<uint32_t>(dim.Width, frame_height);
 	}
 	scene::IMesh *original = g_extrusion_mesh_cache->create(dim);
 	scene::SMesh *mesh = cloneMesh(original);
@@ -277,7 +277,7 @@ void WieldMeshSceneNode::setExtruded(const std::string &imagename,
 	m_meshnode->setScale(wield_scale * WIELD_SCALE_FACTOR_EXTRUDED);
 
 	// Customize materials
-	for (u32 layer = 0; layer < m_meshnode->getMaterialCount(); layer++) {
+	for (uint32_t layer = 0; layer < m_meshnode->getMaterialCount(); layer++) {
 		video::SMaterial &material = m_meshnode->getMaterial(layer);
 		material.TextureLayer[0].TextureWrapU = video::ETC_CLAMP_TO_EDGE;
 		material.TextureLayer[0].TextureWrapV = video::ETC_CLAMP_TO_EDGE;
@@ -309,7 +309,7 @@ scene::SMesh *createSpecialNodeMesh(Client *client, content_t id, std::vector<It
 	MeshCollector collector;
 	mesh_make_data.setSmoothLighting(false);
 	MapblockMeshGenerator gen(&mesh_make_data, &collector);
-	u8 param2 = 0;
+	uint8_t param2 = 0;
 	if (f.param_type_2 == CPT2_WALLMOUNTED ||
 			f.param_type_2 == CPT2_COLORED_WALLMOUNTED) {
 		if (f.drawtype == NDT_TORCHLIKE)
@@ -359,7 +359,7 @@ void WieldMeshSceneNode::setItem(const ItemStack &item, Client *client, bool che
 	scene::SMesh *mesh = nullptr;
 
 	if (m_enable_shaders) {
-		u32 shader_id = shdrsrc->getShader("object_shader", TILE_MATERIAL_BASIC, NDT_NORMAL);
+		uint32_t shader_id = shdrsrc->getShader("object_shader", TILE_MATERIAL_BASIC, NDT_NORMAL);
 		m_material_type = shdrsrc->getShaderInfo(shader_id).material;
 	}
 
@@ -424,8 +424,8 @@ void WieldMeshSceneNode::setItem(const ItemStack &item, Client *client, bool che
 			break;
 		}
 
-		u32 material_count = m_meshnode->getMaterialCount();
-		for (u32 i = 0; i < material_count; ++i) {
+		uint32_t material_count = m_meshnode->getMaterialCount();
+		for (uint32_t i = 0; i < material_count; ++i) {
 			video::SMaterial &material = m_meshnode->getMaterial(i);
 			material.MaterialType = m_material_type;
 			material.MaterialTypeParam = 0.5f;
@@ -454,11 +454,11 @@ void WieldMeshSceneNode::setColor(video::SColor c)
 	if (!mesh)
 		return;
 
-	u8 red = c.getRed();
-	u8 green = c.getGreen();
-	u8 blue = c.getBlue();
-	u32 mc = mesh->getMeshBufferCount();
-	for (u32 j = 0; j < mc; j++) {
+	uint8_t red = c.getRed();
+	uint8_t green = c.getGreen();
+	uint8_t blue = c.getBlue();
+	uint32_t mc = mesh->getMeshBufferCount();
+	for (uint32_t j = 0; j < mc; j++) {
 		video::SColor bc(m_base_color);
 		if ((m_colors.size() > j) && (m_colors[j].override_base))
 			bc = m_colors[j].color;
@@ -481,7 +481,7 @@ void WieldMeshSceneNode::setNodeLightColor(video::SColor color)
 		return;
 
 	if (m_enable_shaders) {
-		for (u32 i = 0; i < m_meshnode->getMaterialCount(); ++i) {
+		for (uint32_t i = 0; i < m_meshnode->getMaterialCount(); ++i) {
 			video::SMaterial &material = m_meshnode->getMaterial(i);
 			material.EmissiveColor = color;
 		}
@@ -592,8 +592,8 @@ void getItemMesh(Client *client, const ItemStack &item, ItemMesh *result)
 			break;
 		}
 
-		u32 mc = mesh->getMeshBufferCount();
-		for (u32 i = 0; i < mc; ++i) {
+		uint32_t mc = mesh->getMeshBufferCount();
+		for (uint32_t i = 0; i < mc; ++i) {
 			scene::IMeshBuffer *buf = mesh->getMeshBuffer(i);
 			video::SMaterial &material = buf->getMaterial();
 			material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
@@ -624,7 +624,7 @@ scene::SMesh *getExtrudedMesh(ITextureSource *tsrc,
 		(overlay_name.empty()) ? NULL : tsrc->getTexture(overlay_name);
 
 	// get mesh
-	core::dimension2d<u32> dim = texture->getSize();
+	core::dimension2d<uint32_t> dim = texture->getSize();
 	scene::IMesh *original = g_extrusion_mesh_cache->create(dim);
 	scene::SMesh *mesh = cloneMesh(original);
 	original->drop();
@@ -639,7 +639,7 @@ scene::SMesh *getExtrudedMesh(ITextureSource *tsrc,
 		copy->drop();
 	}
 	// Customize materials
-	for (u32 layer = 0; layer < mesh->getMeshBufferCount(); layer++) {
+	for (uint32_t layer = 0; layer < mesh->getMeshBufferCount(); layer++) {
 		video::SMaterial &material = mesh->getMeshBuffer(layer)->getMaterial();
 		material.TextureLayer[0].TextureWrapU = video::ETC_CLAMP_TO_EDGE;
 		material.TextureLayer[0].TextureWrapV = video::ETC_CLAMP_TO_EDGE;
@@ -659,13 +659,13 @@ void postProcessNodeMesh(scene::SMesh *mesh, const ContentFeatures &f,
 	bool use_shaders, bool set_material, const video::E_MATERIAL_TYPE *mattype,
 	std::vector<ItemPartColor> *colors, bool apply_scale)
 {
-	u32 mc = mesh->getMeshBufferCount();
+	uint32_t mc = mesh->getMeshBufferCount();
 	// Allocate colors for existing buffers
 	colors->clear();
-	for (u32 i = 0; i < mc; ++i)
+	for (uint32_t i = 0; i < mc; ++i)
 		colors->push_back(ItemPartColor());
 
-	for (u32 i = 0; i < mc; ++i) {
+	for (uint32_t i = 0; i < mc; ++i) {
 		const TileSpec *tile = &(f.tiles[i]);
 		scene::IMeshBuffer *buf = mesh->getMeshBuffer(i);
 		for (int layernum = 0; layernum < MAX_TILE_LAYERS; layernum++) {
@@ -706,8 +706,8 @@ void postProcessNodeMesh(scene::SMesh *mesh, const ContentFeatures &f,
 				material.setTexture(2, layer->flags_texture);
 			}
 			if (apply_scale && tile->world_aligned) {
-				u32 n = buf->getVertexCount();
-				for (u32 k = 0; k != n; ++k)
+				uint32_t n = buf->getVertexCount();
+				for (uint32_t k = 0; k != n; ++k)
 					buf->getTCoords(k) /= layer->scale;
 			}
 		}

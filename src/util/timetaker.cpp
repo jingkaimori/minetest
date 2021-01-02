@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "log.h"
 #include <ostream>
 
-TimeTaker::TimeTaker(const std::string &name, u64 *result, TimePrecision prec)
+TimeTaker::TimeTaker(const std::string &name, uint64_t *result, TimePrecision prec)
 {
 	m_name = name;
 	m_result = result;
@@ -31,10 +31,10 @@ TimeTaker::TimeTaker(const std::string &name, u64 *result, TimePrecision prec)
 	m_time1 = porting::getTime(prec);
 }
 
-u64 TimeTaker::stop(bool quiet)
+uint64_t TimeTaker::stop(bool quiet)
 {
 	if (m_running) {
-		u64 dtime = porting::getTime(m_precision) - m_time1;
+		uint64_t dtime = porting::getTime(m_precision) - m_time1;
 		if (m_result != nullptr) {
 			(*m_result) += dtime;
 		} else {
@@ -56,7 +56,7 @@ u64 TimeTaker::stop(bool quiet)
 	return 0;
 }
 
-u64 TimeTaker::getTimerTime()
+uint64_t TimeTaker::getTimerTime()
 {
 	return porting::getTime(m_precision) - m_time1;
 }

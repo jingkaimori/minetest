@@ -58,7 +58,7 @@ public:
 
 	scene::IAnimatedMesh *getMesh(const std::string &filename) { return NULL; }
 	bool checkLocalPrivilege(const std::string &priv) { return false; }
-	u16 allocateUnknownNodeId(const std::string &name) { return 0; }
+	uint16_t allocateUnknownNodeId(const std::string &name) { return 0; }
 
 	void defineSomeNodes();
 
@@ -257,14 +257,14 @@ bool TestGameDef::sendModChannelMessage(const std::string &channel,
 
 bool run_tests()
 {
-	u64 t1 = porting::getTimeMs();
+	uint64_t t1 = porting::getTimeMs();
 	TestGameDef gamedef;
 
 	g_logger.setLevelSilenced(LL_ERROR, true);
 
-	u32 num_modules_failed     = 0;
-	u32 num_total_tests_failed = 0;
-	u32 num_total_tests_run    = 0;
+	uint32_t num_modules_failed     = 0;
+	uint32_t num_total_tests_failed = 0;
+	uint32_t num_total_tests_run    = 0;
 	std::vector<TestBase *> &testmods = TestManager::getTestModules();
 	for (size_t i = 0; i != testmods.size(); i++) {
 		if (!testmods[i]->testModule(&gamedef))
@@ -274,7 +274,7 @@ bool run_tests()
 		num_total_tests_run += testmods[i]->num_tests_run;
 	}
 
-	u64 tdiff = porting::getTimeMs() - t1;
+	uint64_t tdiff = porting::getTimeMs() - t1;
 
 	g_logger.setLevelSilenced(LL_ERROR, false);
 
@@ -301,12 +301,12 @@ bool run_tests()
 bool TestBase::testModule(IGameDef *gamedef)
 {
 	rawstream << "======== Testing module " << getName() << std::endl;
-	u64 t1 = porting::getTimeMs();
+	uint64_t t1 = porting::getTimeMs();
 
 
 	runTests(gamedef);
 
-	u64 tdiff = porting::getTimeMs() - t1;
+	uint64_t tdiff = porting::getTimeMs() - t1;
 	rawstream << "======== Module " << getName() << " "
 		<< (num_tests_failed ? "failed" : "passed") << " (" << num_tests_failed
 		<< " failures / " << num_tests_run << " tests) - " << tdiff
@@ -392,7 +392,7 @@ struct TestMapBlock: public TestBase
 				throw InvalidPositionException();
 		};
 
-		virtual u16 nodeContainerId() const
+		virtual uint16_t nodeContainerId() const
 		{
 			return 666;
 		}
@@ -435,9 +435,9 @@ struct TestMapBlock: public TestBase
 
 		// All nodes should have been set to
 		// .d=CONTENT_IGNORE and .getLight() = 0
-		for(u16 z=0; z<MAP_BLOCKSIZE; z++)
-		for(u16 y=0; y<MAP_BLOCKSIZE; y++)
-		for(u16 x=0; x<MAP_BLOCKSIZE; x++)
+		for(uint16_t z=0; z<MAP_BLOCKSIZE; z++)
+		for(uint16_t y=0; y<MAP_BLOCKSIZE; y++)
+		for(uint16_t x=0; x<MAP_BLOCKSIZE; x++)
 		{
 			//UASSERT(b.getNode(v3s16(x,y,z)).getContent() == CONTENT_AIR);
 			UASSERT(b.getNode(v3s16(x,y,z)).getContent() == CONTENT_IGNORE);
@@ -447,9 +447,9 @@ struct TestMapBlock: public TestBase
 
 		{
 			MapNode n(CONTENT_AIR);
-			for(u16 z=0; z<MAP_BLOCKSIZE; z++)
-			for(u16 y=0; y<MAP_BLOCKSIZE; y++)
-			for(u16 x=0; x<MAP_BLOCKSIZE; x++)
+			for(uint16_t z=0; z<MAP_BLOCKSIZE; z++)
+			for(uint16_t y=0; y<MAP_BLOCKSIZE; y++)
+			for(uint16_t x=0; x<MAP_BLOCKSIZE; x++)
 			{
 				b.setNode(v3s16(x,y,z), n);
 			}
@@ -510,9 +510,9 @@ struct TestMapBlock: public TestBase
 			propagateSunlight()
 		*/
 		// Set lighting of all nodes to 0
-		for(u16 z=0; z<MAP_BLOCKSIZE; z++){
-			for(u16 y=0; y<MAP_BLOCKSIZE; y++){
-				for(u16 x=0; x<MAP_BLOCKSIZE; x++){
+		for(uint16_t z=0; z<MAP_BLOCKSIZE; z++){
+			for(uint16_t y=0; y<MAP_BLOCKSIZE; y++){
+				for(uint16_t x=0; x<MAP_BLOCKSIZE; x++){
 					MapNode n = b.getNode(v3s16(x,y,z));
 					n.setLight(LIGHTBANK_DAY, 0);
 					n.setLight(LIGHTBANK_NIGHT, 0);
@@ -577,9 +577,9 @@ struct TestMapBlock: public TestBase
 		{
 			b.setIsUnderground(false);
 			// Clear block
-			for(u16 z=0; z<MAP_BLOCKSIZE; z++){
-				for(u16 y=0; y<MAP_BLOCKSIZE; y++){
-					for(u16 x=0; x<MAP_BLOCKSIZE; x++){
+			for(uint16_t z=0; z<MAP_BLOCKSIZE; z++){
+				for(uint16_t y=0; y<MAP_BLOCKSIZE; y++){
+					for(uint16_t x=0; x<MAP_BLOCKSIZE; x++){
 						MapNode n;
 						n.setContent(CONTENT_AIR);
 						n.setLight(LIGHTBANK_DAY, 0);
@@ -590,8 +590,8 @@ struct TestMapBlock: public TestBase
 			// Make neighbours invalid
 			parent.position_valid = false;
 			// Add exceptions to the top of the bottom block
-			for(u16 x=0; x<MAP_BLOCKSIZE; x++)
-			for(u16 z=0; z<MAP_BLOCKSIZE; z++)
+			for(uint16_t x=0; x<MAP_BLOCKSIZE; x++)
+			for(uint16_t z=0; z<MAP_BLOCKSIZE; z++)
 			{
 				parent.validity_exceptions.push_back(v3s16(MAP_BLOCKSIZE+x, MAP_BLOCKSIZE-1, MAP_BLOCKSIZE+z));
 			}
@@ -636,7 +636,7 @@ struct TestMapSector: public TestBase
 				throw InvalidPositionException();
 		};
 
-		virtual u16 nodeContainerId() const
+		virtual uint16_t nodeContainerId() const
 		{
 			return 666;
 		}

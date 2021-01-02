@@ -49,7 +49,7 @@ bool ActiveObjectMgr::registerObject(ClientActiveObject *obj)
 {
 	assert(obj); // Pre-condition
 	if (obj->getId() == 0) {
-		u16 new_id = getFreeId();
+		uint16_t new_id = getFreeId();
 		if (new_id == 0) {
 			infostream << "Client::ActiveObjectMgr::registerObject(): "
 					<< "no free id available" << std::endl;
@@ -72,7 +72,7 @@ bool ActiveObjectMgr::registerObject(ClientActiveObject *obj)
 	return true;
 }
 
-void ActiveObjectMgr::removeObject(u16 id)
+void ActiveObjectMgr::removeObject(uint16_t id)
 {
 	verbosestream << "Client::ActiveObjectMgr::removeObject(): "
 			<< "id=" << id << std::endl;
@@ -90,14 +90,14 @@ void ActiveObjectMgr::removeObject(u16 id)
 }
 
 // clang-format on
-void ActiveObjectMgr::getActiveObjects(const v3f &origin, f32 max_d,
+void ActiveObjectMgr::getActiveObjects(const v3f &origin, float max_d,
 		std::vector<DistanceSortedActiveObject> &dest)
 {
-	f32 max_d2 = max_d * max_d;
+	float max_d2 = max_d * max_d;
 	for (auto &ao_it : m_active_objects) {
 		ClientActiveObject *obj = ao_it.second;
 
-		f32 d2 = (obj->getPosition() - origin).getLengthSQ();
+		float d2 = (obj->getPosition() - origin).getLengthSQ();
 
 		if (d2 > max_d2)
 			continue;

@@ -142,8 +142,8 @@ void ObjectProperties::deSerialize(std::istream &is)
 	visual = deSerializeString16(is);
 	visual_size = readV3F32(is);
 	textures.clear();
-	u32 texture_count = readU16(is);
-	for (u32 i = 0; i < texture_count; i++){
+	uint32_t texture_count = readU16(is);
+	for (uint32_t i = 0; i < texture_count; i++){
 		textures.push_back(deSerializeString16(is));
 	}
 	spritediv = readV2S16(is);
@@ -153,8 +153,8 @@ void ObjectProperties::deSerialize(std::istream &is)
 	automatic_rotate = readF32(is);
 	mesh = deSerializeString16(is);
 	colors.clear();
-	u32 color_count = readU16(is);
-	for (u32 i = 0; i < color_count; i++){
+	uint32_t color_count = readU16(is);
+	for (uint32_t i = 0; i < color_count; i++){
 		colors.push_back(readARGB8(is));
 	}
 	collideWithObjects = readU8(is);
@@ -174,7 +174,7 @@ void ObjectProperties::deSerialize(std::istream &is)
 	use_texture_alpha = readU8(is);
 	try {
 		damage_texture_modifier = deSerializeString16(is);
-		u8 tmp = readU8(is);
+		uint8_t tmp = readU8(is);
 		if (is.eof())
 			return;
 		shaded = tmp;

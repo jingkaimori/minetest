@@ -25,9 +25,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace server
 {
 
-void ActiveObjectMgr::clear(const std::function<bool(ServerActiveObject *, u16)> &cb)
+void ActiveObjectMgr::clear(const std::function<bool(ServerActiveObject *, uint16_t)> &cb)
 {
-	std::vector<u16> objects_to_remove;
+	std::vector<uint16_t> objects_to_remove;
 	for (auto &it : m_active_objects) {
 		if (cb(it.second, it.first)) {
 			// Id to be removed from m_active_objects
@@ -36,7 +36,7 @@ void ActiveObjectMgr::clear(const std::function<bool(ServerActiveObject *, u16)>
 	}
 
 	// Remove references from m_active_objects
-	for (u16 i : objects_to_remove) {
+	for (uint16_t i : objects_to_remove) {
 		m_active_objects.erase(i);
 	}
 }
@@ -55,7 +55,7 @@ bool ActiveObjectMgr::registerObject(ServerActiveObject *obj)
 {
 	assert(obj); // Pre-condition
 	if (obj->getId() == 0) {
-		u16 new_id = getFreeId();
+		uint16_t new_id = getFreeId();
 		if (new_id == 0) {
 			errorstream << "Server::ActiveObjectMgr::addActiveObjectRaw(): "
 					<< "no free id available" << std::endl;
@@ -95,7 +95,7 @@ bool ActiveObjectMgr::registerObject(ServerActiveObject *obj)
 	return true;
 }
 
-void ActiveObjectMgr::removeObject(u16 id)
+void ActiveObjectMgr::removeObject(uint16_t id)
 {
 	verbosestream << "Server::ActiveObjectMgr::removeObject(): "
 			<< "id=" << id << std::endl;
@@ -142,9 +142,9 @@ void ActiveObjectMgr::getObjectsInArea(const aabb3f &box,
 	}
 }
 
-void ActiveObjectMgr::getAddedActiveObjectsAroundPos(const v3f &player_pos, f32 radius,
-		f32 player_radius, std::set<u16> &current_objects,
-		std::queue<u16> &added_objects)
+void ActiveObjectMgr::getAddedActiveObjectsAroundPos(const v3f &player_pos, float radius,
+		float player_radius, std::set<uint16_t> &current_objects,
+		std::queue<uint16_t> &added_objects)
 {
 	/*
 		Go through the object list,
@@ -154,7 +154,7 @@ void ActiveObjectMgr::getAddedActiveObjectsAroundPos(const v3f &player_pos, f32 
 		- add remaining objects to added_objects
 	*/
 	for (auto &ao_it : m_active_objects) {
-		u16 id = ao_it.first;
+		uint16_t id = ao_it.first;
 
 		// Get object
 		ServerActiveObject *object = ao_it.second;
@@ -164,7 +164,7 @@ void ActiveObjectMgr::getAddedActiveObjectsAroundPos(const v3f &player_pos, f32 
 		if (object->isGone())
 			continue;
 
-		f32 distance_f = object->getBasePosition().getDistanceFrom(player_pos);
+		float distance_f = object->getBasePosition().getDistanceFrom(player_pos);
 		if (object->getType() == ACTIVEOBJECT_TYPE_PLAYER) {
 			// Discard if too far
 			if (distance_f > player_radius && player_radius != 0)

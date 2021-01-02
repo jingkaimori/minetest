@@ -30,7 +30,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // clang-format off
 GUIModalMenu::GUIModalMenu(gui::IGUIEnvironment* env, gui::IGUIElement* parent,
-	s32 id, IMenuManager *menumgr, bool remap_dbl_click) :
+	int32_t id, IMenuManager *menumgr, bool remap_dbl_click) :
 		IGUIElement(gui::EGUIET_ELEMENT, env, parent, id,
 				core::rect<s32>(0, 0, 100, 100)),
 #ifdef __ANDROID__
@@ -143,7 +143,7 @@ bool GUIModalMenu::DoubleClickDetection(const SEvent &event)
 		m_doubleclickdetect[1].pos = m_pointer;
 		m_doubleclickdetect[1].time = porting::getTimeMs();
 	} else if (event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
-		u64 delta = porting::getDeltaMs(
+		uint64_t delta = porting::getDeltaMs(
 			m_doubleclickdetect[0].time, porting::getTimeMs());
 		if (delta > 400)
 			return false;
@@ -318,8 +318,8 @@ bool GUIModalMenu::preprocessEvent(const SEvent &event)
 #endif
 
 	if (event.EventType == EET_MOUSE_INPUT_EVENT) {
-		s32 x = event.MouseInput.X;
-		s32 y = event.MouseInput.Y;
+		int32_t x = event.MouseInput.X;
+		int32_t y = event.MouseInput.Y;
 		gui::IGUIElement *hovered =
 				Environment->getRootGUIElement()->getElementFromPoint(
 						core::position2d<s32>(x, y));

@@ -83,7 +83,7 @@ std::string PlayerSAO::getDescription()
 }
 
 // Called after id has been set and has been inserted in environment
-void PlayerSAO::addedToEnvironment(u32 dtime_s)
+void PlayerSAO::addedToEnvironment(uint32_t dtime_s)
 {
 	ServerActiveObject::addedToEnvironment(dtime_s);
 	ServerActiveObject::setBasePosition(m_base_position);
@@ -98,13 +98,13 @@ void PlayerSAO::removingFromEnvironment()
 	ServerActiveObject::removingFromEnvironment();
 	if (m_player->getPlayerSAO() == this) {
 		unlinkPlayerSessionAndSave();
-		for (u32 attached_particle_spawner : m_attached_particle_spawners) {
+		for (uint32_t attached_particle_spawner : m_attached_particle_spawners) {
 			m_env->deleteParticleSpawner(attached_particle_spawner, false);
 		}
 	}
 }
 
-std::string PlayerSAO::getClientInitializationData(u16 protocol_version)
+std::string PlayerSAO::getClientInitializationData(uint16_t protocol_version)
 {
 	std::ostringstream os(std::ios::binary);
 
@@ -184,7 +184,7 @@ void PlayerSAO::step(float dtime, bool send_recommended)
 	}
 
 	if (!isImmortal() && m_node_hurt_interval.step(dtime, 1.0f)) {
-		u32 damage_per_second = 0;
+		uint32_t damage_per_second = 0;
 		std::string nodename;
 		// Lowest and highest damage points are 0.1 within collisionbox
 		float dam_top = m_prop.collisionbox.MaxEdge.Y - 0.1f;
@@ -213,7 +213,7 @@ void PlayerSAO::step(float dtime, bool send_recommended)
 		}
 
 		if (damage_per_second != 0 && m_hp > 0) {
-			s32 newhp = (s32)m_hp - (s32)damage_per_second;
+			int32_t newhp = (s32)m_hp - (s32)damage_per_second;
 			PlayerHPChangeReason reason(PlayerHPChangeReason::NODE_DAMAGE, nodename);
 			setHP(newhp, reason);
 			m_env->getGameDef()->SendPlayerHPOrDie(this, reason);
@@ -380,7 +380,7 @@ void PlayerSAO::setFov(const float fov)
 	m_fov = fov;
 }
 
-void PlayerSAO::setWantedRange(const s16 range)
+void PlayerSAO::setWantedRange(const int16_t range)
 {
 	if (m_player && range != m_wanted_range)
 		m_player->setDirty(true);
@@ -427,7 +427,7 @@ u16 PlayerSAO::punch(v3f dir,
 		}
 	}
 
-	s32 old_hp = getHP();
+	int32_t old_hp = getHP();
 	HitParams hitparams = getHitParams(m_armor_groups, toolcap,
 			time_from_last_punch);
 
@@ -456,7 +456,7 @@ u16 PlayerSAO::punch(v3f dir,
 	return hitparams.wear;
 }
 
-void PlayerSAO::setHP(s32 hp, const PlayerHPChangeReason &reason)
+void PlayerSAO::setHP(int32_t hp, const PlayerHPChangeReason &reason)
 {
 	if (hp == (s32)m_hp)
 		return; // Nothing to do
@@ -465,14 +465,14 @@ void PlayerSAO::setHP(s32 hp, const PlayerHPChangeReason &reason)
 		return; // Cannot take more damage
 
 	{
-		s32 hp_change = m_env->getScriptIface()->on_player_hpchange(this, hp - m_hp, reason);
+		int32_t hp_change = m_env->getScriptIface()->on_player_hpchange(this, hp - m_hp, reason);
 		if (hp_change == 0)
 			return;
 
 		hp = m_hp + hp_change;
 	}
 
-	s32 oldhp = m_hp;
+	int32_t oldhp = m_hp;
 	hp = rangelim(hp, 0, m_prop.hp_max);
 
 	if (hp < oldhp && isImmortal())
@@ -485,7 +485,7 @@ void PlayerSAO::setHP(s32 hp, const PlayerHPChangeReason &reason)
 		m_properties_sent = false;
 }
 
-void PlayerSAO::setBreath(const u16 breath, bool send)
+void PlayerSAO::setBreath(const uint16_t breath, bool send)
 {
 	if (m_player && breath != m_breath)
 		m_player->setDirty(true);
@@ -580,8 +580,8 @@ bool PlayerSAO::checkMovementCheat()
 		}
 
 		v3f parent_pos = parent->getBasePosition();
-		f32 diff = m_base_position.getDistanceFromSQ(parent_pos) - attachment_pos.getLengthSQ();
-		const f32 maxdiff = 4.0f * BS; // fair trade-off value for various latencies
+		float diff = m_base_position.getDistanceFromSQ(parent_pos) - attachment_pos.getLengthSQ();
+		const float maxdiff = 4.0f * BS; // fair trade-off value for various latencies
 
 		if (diff > maxdiff * maxdiff) {
 			setBasePosition(parent_pos);

@@ -44,7 +44,7 @@ std::string serializeString16(const std::string &plain)
 		throw SerializationError("String too long for serializeString16");
 	s.reserve(2 + plain.size());
 
-	writeU16((u8 *)&buf[0], plain.size());
+	writeU16((uint8_t *)&buf[0], plain.size());
 	s.append(buf, 2);
 
 	s.append(plain);
@@ -60,7 +60,7 @@ std::string deSerializeString16(std::istream &is)
 	if (is.gcount() != 2)
 		throw SerializationError("deSerializeString16: size not read");
 
-	u16 s_size = readU16((u8 *)buf);
+	uint16_t s_size = readU16((uint8_t *)buf);
 	if (s_size == 0)
 		return s;
 
@@ -86,7 +86,7 @@ std::string serializeString32(const std::string &plain)
 		throw SerializationError("String too long for serializeLongString");
 	s.reserve(4 + plain.size());
 
-	writeU32((u8*)&buf[0], plain.size());
+	writeU32((uint8_t*)&buf[0], plain.size());
 	s.append(buf, 4);
 	s.append(plain);
 	return s;
@@ -101,7 +101,7 @@ std::string deSerializeString32(std::istream &is)
 	if (is.gcount() != 4)
 		throw SerializationError("deSerializeLongString: size not read");
 
-	u32 s_size = readU32((u8 *)buf);
+	uint32_t s_size = readU32((uint8_t *)buf);
 	if (s_size == 0)
 		return s;
 
@@ -113,7 +113,7 @@ std::string deSerializeString32(std::istream &is)
 
 	s.resize(s_size);
 	is.read(&s[0], s_size);
-	if ((u32)is.gcount() != s_size)
+	if ((uint32_t)is.gcount() != s_size)
 		throw SerializationError("deSerializeLongString: couldn't read all chars");
 
 	return s;
@@ -158,7 +158,7 @@ std::string serializeJsonString(const std::string &plain)
 				if (c >= 32 && c <= 126) {
 					os << c;
 				} else {
-					u32 cnum = (u8)c;
+					uint32_t cnum = (uint8_t)c;
 					os << "\\u" << std::hex << std::setw(4)
 						<< std::setfill('0') << cnum;
 				}

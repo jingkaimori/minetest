@@ -53,7 +53,7 @@ struct ClientEnvEvent
 		//struct{
 		//} none;
 		struct{
-			u16 amount;
+			uint16_t amount;
 			bool send_to_server;
 		} player_damage;
 	};
@@ -72,7 +72,7 @@ public:
 	Client *getGameDef() { return m_client; }
 	void setScript(ClientScripting *script) { m_script = script; }
 
-	void step(f32 dtime);
+	void step(float dtime);
 
 	virtual void setLocalPlayer(LocalPlayer *player);
 	LocalPlayer *getLocalPlayer() const { return m_local_player; }
@@ -87,8 +87,8 @@ public:
 		ActiveObjects
 	*/
 
-	GenericCAO* getGenericCAO(u16 id);
-	ClientActiveObject* getActiveObject(u16 id)
+	GenericCAO* getGenericCAO(uint16_t id);
+	ClientActiveObject* getActiveObject(uint16_t id)
 	{
 		return m_ao_manager.getActiveObject(id);
 	}
@@ -101,25 +101,25 @@ public:
 		Returns the id of the object.
 		Returns 0 if not added and thus deleted.
 	*/
-	u16 addActiveObject(ClientActiveObject *object);
+	uint16_t addActiveObject(ClientActiveObject *object);
 
-	void addActiveObject(u16 id, u8 type, const std::string &init_data);
-	void removeActiveObject(u16 id);
+	void addActiveObject(uint16_t id, uint8_t type, const std::string &init_data);
+	void removeActiveObject(uint16_t id);
 
-	void processActiveObjectMessage(u16 id, const std::string &data);
+	void processActiveObjectMessage(uint16_t id, const std::string &data);
 
 	/*
 		Callbacks for activeobjects
 	*/
 
-	void damageLocalPlayer(u16 damage, bool handle_hp=true);
+	void damageLocalPlayer(uint16_t damage, bool handle_hp=true);
 
 	/*
 		Client likes to call these
 	*/
 
 	// Get all nearby objects
-	void getActiveObjects(const v3f &origin, f32 max_d,
+	void getActiveObjects(const v3f &origin, float max_d,
 		std::vector<DistanceSortedActiveObject> &dest)
 	{
 		return m_ao_manager.getActiveObjects(origin, max_d, dest);

@@ -71,7 +71,7 @@ namespace gui
 		//! However, it simply defines the SGUITTGlyph's properties and will only create the page
 		//! textures if necessary.  The actual creation of the textures should only occur right
 		//! before the batch draw call.
-		void preload(u32 char_index, FT_Face face, video::IVideoDriver* driver, u32 font_size, const FT_Int32 loadFlags);
+		void preload(uint32_t char_index, FT_Face face, video::IVideoDriver* driver, uint32_t font_size, const FT_Int32 loadFlags);
 
 		//! Unloads the glyph.
 		void unload();
@@ -83,7 +83,7 @@ namespace gui
 		bool isLoaded;
 
 		//! The page the glyph is on.
-		u32 glyph_page;
+		uint32_t glyph_page;
 
 		//! The source rectangle for the glyph.
 		core::recti source_rect;
@@ -167,7 +167,7 @@ namespace gui
 				core::dimension2du size = texture->getOriginalSize();
 				video::IImage* pageholder = driver->createImageFromData(format, size, ptr, true, false);
 
-				for (u32 i = 0; i < glyph_to_be_paged.size(); ++i)
+				for (uint32_t i = 0; i < glyph_to_be_paged.size(); ++i)
 				{
 					const SGUITTGlyph* glyph = glyph_to_be_paged[i];
 					if (glyph && glyph->isLoaded)
@@ -193,8 +193,8 @@ namespace gui
 			}
 
 			video::ITexture* texture;
-			u32 available_slots;
-			u32 used_slots;
+			uint32_t available_slots;
+			uint32_t used_slots;
 			bool dirty;
 
 			core::array<core::vector2di> render_positions;
@@ -217,22 +217,22 @@ namespace gui
 			//! \param antialias set the use_monochrome (opposite to antialias) flag
 			//! \param transparency set the use_transparency flag
 			//! \return Returns a pointer to a CGUITTFont.  Will return 0 if the font failed to load.
-			static CGUITTFont* createTTFont(IGUIEnvironment *env, const io::path& filename, const u32 size, const bool antialias = true, const bool transparency = true, const u32 shadow = 0, const u32 shadow_alpha = 255);
-			static CGUITTFont* createTTFont(IrrlichtDevice *device, const io::path& filename, const u32 size, const bool antialias = true, const bool transparency = true);
-			static CGUITTFont* create(IGUIEnvironment *env, const io::path& filename, const u32 size, const bool antialias = true, const bool transparency = true);
-			static CGUITTFont* create(IrrlichtDevice *device, const io::path& filename, const u32 size, const bool antialias = true, const bool transparency = true);
+			static CGUITTFont* createTTFont(IGUIEnvironment *env, const io::path& filename, const uint32_t size, const bool antialias = true, const bool transparency = true, const uint32_t shadow = 0, const uint32_t shadow_alpha = 255);
+			static CGUITTFont* createTTFont(IrrlichtDevice *device, const io::path& filename, const uint32_t size, const bool antialias = true, const bool transparency = true);
+			static CGUITTFont* create(IGUIEnvironment *env, const io::path& filename, const uint32_t size, const bool antialias = true, const bool transparency = true);
+			static CGUITTFont* create(IrrlichtDevice *device, const io::path& filename, const uint32_t size, const bool antialias = true, const bool transparency = true);
 
 			//! Destructor
 			virtual ~CGUITTFont();
 
 			//! Sets the amount of glyphs to batch load.
-			virtual void setBatchLoadSize(u32 batch_size) { batch_load_size = batch_size; }
+			virtual void setBatchLoadSize(uint32_t batch_size) { batch_load_size = batch_size; }
 
 			//! Sets the maximum texture size for a page of glyphs.
 			virtual void setMaxPageTextureSize(const core::dimension2du& texture_size) { max_page_texture_size = texture_size; }
 
 			//! Get the font size.
-			virtual u32 getFontSize() const { return size; }
+			virtual uint32_t getFontSize() const { return size; }
 
 			//! Check the font's transparency.
 			virtual bool isTransparent() const { return use_transparency; }
@@ -281,21 +281,21 @@ namespace gui
 			virtual core::dimension2d<u32> getDimension(const core::ustring& text) const;
 
 			//! Calculates the index of the character in the text which is on a specific position.
-			virtual s32 getCharacterFromPos(const wchar_t* text, s32 pixel_x) const;
-			virtual s32 getCharacterFromPos(const core::ustring& text, s32 pixel_x) const;
+			virtual int32_t getCharacterFromPos(const wchar_t* text, int32_t pixel_x) const;
+			virtual int32_t getCharacterFromPos(const core::ustring& text, int32_t pixel_x) const;
 
 			//! Sets global kerning width for the font.
-			virtual void setKerningWidth(s32 kerning);
+			virtual void setKerningWidth(int32_t kerning);
 
 			//! Sets global kerning height for the font.
-			virtual void setKerningHeight(s32 kerning);
+			virtual void setKerningHeight(int32_t kerning);
 
 			//! Gets kerning values (distance between letters) for the font. If no parameters are provided,
-			virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const;
-			virtual s32 getKerningWidth(const uchar32_t thisLetter=0, const uchar32_t previousLetter=0) const;
+			virtual int32_t getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const;
+			virtual int32_t getKerningWidth(const uchar32_t thisLetter=0, const uchar32_t previousLetter=0) const;
 
 			//! Returns the distance between letters
-			virtual s32 getKerningHeight() const;
+			virtual int32_t getKerningHeight() const;
 
 			//! Define which characters should not be drawn by the font.
 			virtual void setInvisibleCharacters(const wchar_t *s);
@@ -311,7 +311,7 @@ namespace gui
 			CGUITTGlyphPage* createGlyphPage(const u8& pixel_mode);
 
 			//! Get the last glyph page's index.
-			u32 getLastGlyphPageIndex() const { return Glyph_Pages.size() - 1; }
+			uint32_t getLastGlyphPageIndex() const { return Glyph_Pages.size() - 1; }
 
 			//! Create corresponding character's software image copy from the font,
 			//! so you can use this data just like any ordinary video::IImage.
@@ -327,15 +327,15 @@ namespace gui
 				(const wchar_t* text, scene::ISceneManager* smgr, scene::ISceneNode* parent = 0,
 				 const video::SColor& color = video::SColor(255, 0, 0, 0), bool center = false );
 
-			inline s32 getAscender() const { return font_metrics.ascender; }
+			inline int32_t getAscender() const { return font_metrics.ascender; }
 
 		protected:
 			bool use_monochrome;
 			bool use_transparency;
 			bool use_hinting;
 			bool use_auto_hinting;
-			u32 size;
-			u32 batch_load_size;
+			uint32_t size;
+			uint32_t batch_load_size;
 			core::dimension2du max_page_texture_size;
 
 		private:
@@ -347,7 +347,7 @@ namespace gui
 			static scene::SMesh  shared_plane_;
 
 			CGUITTFont(IGUIEnvironment *env);
-			bool load(const io::path& filename, const u32 size, const bool antialias, const bool transparency);
+			bool load(const io::path& filename, const uint32_t size, const bool antialias, const bool transparency);
 			void reset_images();
 			void update_glyph_pages() const;
 			void update_load_flags()
@@ -359,12 +359,12 @@ namespace gui
 				if (useMonochrome()) load_flags |= FT_LOAD_MONOCHROME | FT_LOAD_TARGET_MONO;
 				else load_flags |= FT_LOAD_TARGET_NORMAL;
 			}
-			u32 getWidthFromCharacter(wchar_t c) const;
-			u32 getWidthFromCharacter(uchar32_t c) const;
-			u32 getHeightFromCharacter(wchar_t c) const;
-			u32 getHeightFromCharacter(uchar32_t c) const;
-			u32 getGlyphIndexByChar(wchar_t c) const;
-			u32 getGlyphIndexByChar(uchar32_t c) const;
+			uint32_t getWidthFromCharacter(wchar_t c) const;
+			uint32_t getWidthFromCharacter(uchar32_t c) const;
+			uint32_t getHeightFromCharacter(wchar_t c) const;
+			uint32_t getHeightFromCharacter(uchar32_t c) const;
+			uint32_t getGlyphIndexByChar(wchar_t c) const;
+			uint32_t getGlyphIndexByChar(uchar32_t c) const;
 			core::vector2di getKerning(const wchar_t thisLetter, const wchar_t previousLetter) const;
 			core::vector2di getKerning(const uchar32_t thisLetter, const uchar32_t previousLetter) const;
 			core::dimension2d<u32> getDimensionUntilEndOfLine(const wchar_t* p) const;
@@ -382,11 +382,11 @@ namespace gui
 			mutable core::array<CGUITTGlyphPage*> Glyph_Pages;
 			mutable core::array<SGUITTGlyph> Glyphs;
 
-			s32 GlobalKerningWidth;
-			s32 GlobalKerningHeight;
+			int32_t GlobalKerningWidth;
+			int32_t GlobalKerningHeight;
 			core::ustring Invisible;
-			u32 shadow_offset;
-			u32 shadow_alpha;
+			uint32_t shadow_offset;
+			uint32_t shadow_alpha;
 	};
 
 } // end namespace gui

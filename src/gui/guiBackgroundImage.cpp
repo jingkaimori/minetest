@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "log.h"
 
 GUIBackgroundImage::GUIBackgroundImage(gui::IGUIEnvironment *env,
-	gui::IGUIElement *parent, s32 id, const core::rect<s32> &rectangle,
+	gui::IGUIElement *parent, int32_t id, const core::rect<s32> &rectangle,
 	const std::string &name, const core::rect<s32> &middle,
 	ISimpleTextureSource *tsrc, bool autoclip) :
 	gui::IGUIElement(gui::EGUIET_ELEMENT, env, parent, id, rectangle),

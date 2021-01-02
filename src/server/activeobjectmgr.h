@@ -33,7 +33,7 @@ public:
 	void step(float dtime,
 			const std::function<void(ServerActiveObject *)> &f) override;
 	bool registerObject(ServerActiveObject *obj) override;
-	void removeObject(u16 id) override;
+	void removeObject(uint16_t id) override;
 
 	void getObjectsInsideRadius(const v3f &pos, float radius,
 			std::vector<ServerActiveObject *> &result,
@@ -42,8 +42,8 @@ public:
 			std::vector<ServerActiveObject *> &result,
 			std::function<bool(ServerActiveObject *obj)> include_obj_cb);
 
-	void getAddedActiveObjectsAroundPos(const v3f &player_pos, f32 radius,
-			f32 player_radius, std::set<u16> &current_objects,
+	void getAddedActiveObjectsAroundPos(const v3f &player_pos, float radius,
+			float player_radius, std::set<u16> &current_objects,
 			std::queue<u16> &added_objects);
 };
 } // namespace server

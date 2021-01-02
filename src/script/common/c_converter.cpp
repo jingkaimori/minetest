@@ -357,7 +357,7 @@ bool is_color_table(lua_State *L, int index)
 	return is_color_table;
 }
 
-aabb3f read_aabb3f(lua_State *L, int index, f32 scale)
+aabb3f read_aabb3f(lua_State *L, int index, float scale)
 {
 	aabb3f box;
 	if(lua_istable(L, index)){
@@ -401,7 +401,7 @@ void push_aabb3f(lua_State *L, aabb3f box)
 	lua_rawseti(L, -2, 6);
 }
 
-std::vector<aabb3f> read_aabb3f_vector(lua_State *L, int index, f32 scale)
+std::vector<aabb3f> read_aabb3f_vector(lua_State *L, int index, float scale)
 {
 	std::vector<aabb3f> boxes;
 	if(lua_istable(L, index)){
@@ -460,13 +460,13 @@ size_t read_stringlist(lua_State *L, int index, std::vector<std::string> *result
 #if defined(__MINGW32__) && !defined(__MINGW64__)
 /* MinGW 32-bit somehow crashes in the std::set destructor when this
  * variable is thread-local, so just don't do that. */
-static std::set<u64> warned_msgs;
+static std::set<uint64_t> warned_msgs;
 #endif
 
 bool check_field_or_nil(lua_State *L, int index, int type, const char *fieldname)
 {
 #if !defined(__MINGW32__) || defined(__MINGW64__)
-	thread_local std::set<u64> warned_msgs;
+	thread_local std::set<uint64_t> warned_msgs;
 #endif
 
 	int t = lua_type(L, index);
@@ -490,7 +490,7 @@ bool check_field_or_nil(lua_State *L, int index, int type, const char *fieldname
 		" (expected " + lua_typename(L, type) +
 		" got " + lua_typename(L, t) + ").\n" + script_get_backtrace(L);
 
-	u64 hash = murmur_hash_64_ua(backtrace.data(), backtrace.length(), 0xBADBABE);
+	uint64_t hash = murmur_hash_64_ua(backtrace.data(), backtrace.length(), 0xBADBABE);
 	if (warned_msgs.find(hash) == warned_msgs.end()) {
 		errorstream << backtrace << std::endl;
 		warned_msgs.insert(hash);
@@ -664,14 +664,14 @@ size_t write_array_slice_float(
 		pmax.Z = MYMIN(slice_offset.Z + slice_size.Z, data_size.Z);
 	}
 
-	const u32 ystride = data_size.X;
-	const u32 zstride = data_size.X * data_size.Y;
+	const uint32_t ystride = data_size.X;
+	const uint32_t zstride = data_size.X * data_size.Y;
 
-	u32 elem_index = 1;
-	for (u32 z = pmin.Z; z != pmax.Z; z++)
-	for (u32 y = pmin.Y; y != pmax.Y; y++)
-	for (u32 x = pmin.X; x != pmax.X; x++) {
-		u32 i = z * zstride + y * ystride + x;
+	uint32_t elem_index = 1;
+	for (uint32_t z = pmin.Z; z != pmax.Z; z++)
+	for (uint32_t y = pmin.Y; y != pmax.Y; y++)
+	for (uint32_t x = pmin.X; x != pmax.X; x++) {
+		uint32_t i = z * zstride + y * ystride + x;
 		lua_pushnumber(L, data[i]);
 		lua_rawseti(L, table_index, elem_index);
 		elem_index++;

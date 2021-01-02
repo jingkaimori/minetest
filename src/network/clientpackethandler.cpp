@@ -56,10 +56,10 @@ void Client::handleCommand_Hello(NetworkPacket* pkt)
 	if (pkt->getSize() < 1)
 		return;
 
-	u8 serialization_ver;
-	u16 proto_ver;
-	u16 compression_mode;
-	u32 auth_mechs;
+	uint8_t serialization_ver;
+	uint16_t proto_ver;
+	uint16_t compression_mode;
+	uint32_t auth_mechs;
 	std::string username_legacy; // for case insensitivity
 	*pkt >> serialization_ver >> compression_mode >> proto_ver
 		>> auth_mechs >> username_legacy;
@@ -68,7 +68,7 @@ void Client::handleCommand_Hello(NetworkPacket* pkt)
 	AuthMechanism chosen_auth_mechanism = choseAuthMech(auth_mechs);
 
 	infostream << "Client: TOCLIENT_HELLO received with "
-			<< "serialization_ver=" << (u32)serialization_ver
+			<< "serialization_ver=" << (uint32_t)serialization_ver
 			<< ", auth_mechs=" << auth_mechs
 			<< ", proto_ver=" << proto_ver
 			<< ", compression_mode=" << compression_mode
@@ -144,7 +144,7 @@ void Client::handleCommand_AuthAccept(NetworkPacket* pkt)
 	if (lang == "LANG_CODE")
 		lang = "";
 
-	NetworkPacket resp_pkt(TOSERVER_INIT2, sizeof(u16) + lang.size());
+	NetworkPacket resp_pkt(TOSERVER_INIT2, sizeof(uint16_t) + lang.size());
 	resp_pkt << lang;
 	Send(&resp_pkt);
 
@@ -195,7 +195,7 @@ void Client::handleCommand_AccessDenied(NetworkPacket* pkt)
 	if (pkt->getSize() < 1)
 		return;
 
-	u8 denyCode = SERVER_ACCESSDENIED_UNEXPECTED_DATA;
+	uint8_t denyCode = SERVER_ACCESSDENIED_UNEXPECTED_DATA;
 	*pkt >> denyCode;
 	if (denyCode == SERVER_ACCESSDENIED_SHUTDOWN ||
 			denyCode == SERVER_ACCESSDENIED_CRASH) {
@@ -203,7 +203,7 @@ void Client::handleCommand_AccessDenied(NetworkPacket* pkt)
 		if (m_access_denied_reason.empty()) {
 			m_access_denied_reason = accessDeniedStrings[denyCode];
 		}
-		u8 reconnect;
+		uint8_t reconnect;
 		*pkt >> reconnect;
 		m_access_denied_reconnect = reconnect & 1;
 	} else if (denyCode == SERVER_ACCESSDENIED_CUSTOM_STRING) {
@@ -247,7 +247,7 @@ void Client::handleCommand_AddNode(NetworkPacket* pkt)
 	n.deSerialize(pkt->getU8Ptr(6), m_server_ser_ver);
 
 	bool remove_metadata = true;
-	u32 index = 6 + MapNode::serializedLength(m_server_ser_ver);
+	uint32_t index = 6 + MapNode::serializedLength(m_server_ser_ver);
 	if ((pkt->getSize() >= index + 1) && pkt->getU8(index)) {
 		remove_metadata = false;
 	}
@@ -354,7 +354,7 @@ void Client::handleCommand_TimeOfDay(NetworkPacket* pkt)
 	if (pkt->getSize() < 2)
 		return;
 
-	u16 time_of_day;
+	uint16_t time_of_day;
 
 	*pkt >> time_of_day;
 
@@ -391,7 +391,7 @@ void Client::handleCommand_TimeOfDay(NetworkPacket* pkt)
 	m_env.setTimeOfDaySpeed(time_speed);
 	m_time_of_day_set = true;
 
-	//u32 dr = m_env.getDayNightRatio();
+	//uint32_t dr = m_env.getDayNightRatio();
 	//infostream << "Client: time_of_day=" << time_of_day
 	//		<< " time_speed=" << time_speed
 	//		<< " dr=" << dr << std::endl;
@@ -400,16 +400,16 @@ void Client::handleCommand_TimeOfDay(NetworkPacket* pkt)
 void Client::handleCommand_ChatMessage(NetworkPacket *pkt)
 {
 	/*
-		u8 version
-		u8 message_type
-		u16 sendername length
+		uint8_t version
+		uint8_t message_type
+		uint16_t sendername length
 		wstring sendername
-		u16 length
+		uint16_t length
 		wstring message
 	 */
 
 	ChatMessage *chatMessage = new ChatMessage();
-	u8 version, message_type;
+	uint8_t version, message_type;
 	*pkt >> version >> message_type;
 
 	if (version != 1 || message_type >= CHATMESSAGE_TYPE_MAX) {
@@ -417,7 +417,7 @@ void Client::handleCommand_ChatMessage(NetworkPacket *pkt)
 		return;
 	}
 
-	u64 timestamp;
+	uint64_t timestamp;
 	*pkt >> chatMessage->sender >> chatMessage->message >> timestamp;
 	chatMessage->timestamp = static_cast<std::time_t>(timestamp);
 
@@ -436,27 +436,27 @@ void Client::handleCommand_ChatMessage(NetworkPacket *pkt)
 void Client::handleCommand_ActiveObjectRemoveAdd(NetworkPacket* pkt)
 {
 	/*
-		u16 count of removed objects
+		uint16_t count of removed objects
 		for all removed objects {
-			u16 id
+			uint16_t id
 		}
-		u16 count of added objects
+		uint16_t count of added objects
 		for all added objects {
-			u16 id
-			u8 type
-			u32 initialization data length
+			uint16_t id
+			uint8_t type
+			uint32_t initialization data length
 			string initialization data
 		}
 	*/
 
 	try {
-		u8 type;
-		u16 removed_count, added_count, id;
+		uint8_t type;
+		uint16_t removed_count, added_count, id;
 
 		// Read removed objects
 		*pkt >> removed_count;
 
-		for (u16 i = 0; i < removed_count; i++) {
+		for (uint16_t i = 0; i < removed_count; i++) {
 			*pkt >> id;
 			m_env.removeActiveObject(id);
 		}
@@ -464,7 +464,7 @@ void Client::handleCommand_ActiveObjectRemoveAdd(NetworkPacket* pkt)
 		// Read added objects
 		*pkt >> added_count;
 
-		for (u16 i = 0; i < added_count; i++) {
+		for (uint16_t i = 0; i < added_count; i++) {
 			*pkt >> id >> type;
 			m_env.addActiveObject(id, type, pkt->readLongString());
 		}
@@ -483,8 +483,8 @@ void Client::handleCommand_ActiveObjectMessages(NetworkPacket* pkt)
 	/*
 		for all objects
 		{
-			u16 id
-			u16 message length
+			uint16_t id
+			uint16_t message length
 			string message
 		}
 	*/
@@ -493,7 +493,7 @@ void Client::handleCommand_ActiveObjectMessages(NetworkPacket* pkt)
 
 	try {
 		while (is.good()) {
-			u16 id = readU16(is);
+			uint16_t id = readU16(is);
 			if (!is.good())
 				break;
 
@@ -534,9 +534,9 @@ void Client::handleCommand_Movement(NetworkPacket* pkt)
 
 void Client::handleCommand_Fov(NetworkPacket *pkt)
 {
-	f32 fov;
+	float fov;
 	bool is_multiplier = false;
-	f32 transition_time = 0.0f;
+	float transition_time = 0.0f;
 
 	*pkt >> fov >> is_multiplier;
 
@@ -557,9 +557,9 @@ void Client::handleCommand_HP(NetworkPacket *pkt)
 	LocalPlayer *player = m_env.getLocalPlayer();
 	assert(player != NULL);
 
-	u16 oldhp = player->hp;
+	uint16_t oldhp = player->hp;
 
-	u16 hp;
+	uint16_t hp;
 	*pkt >> hp;
 
 	player->hp = hp;
@@ -581,7 +581,7 @@ void Client::handleCommand_Breath(NetworkPacket* pkt)
 	LocalPlayer *player = m_env.getLocalPlayer();
 	assert(player != NULL);
 
-	u16 breath;
+	uint16_t breath;
 
 	*pkt >> breath;
 
@@ -594,7 +594,7 @@ void Client::handleCommand_MovePlayer(NetworkPacket* pkt)
 	assert(player != NULL);
 
 	v3f pos;
-	f32 pitch, yaw;
+	float pitch, yaw;
 
 	*pkt >> pos >> pitch >> yaw;
 
@@ -638,7 +638,7 @@ void Client::handleCommand_DeathScreen(NetworkPacket* pkt)
 
 void Client::handleCommand_AnnounceMedia(NetworkPacket* pkt)
 {
-	u16 num_files;
+	uint16_t num_files;
 
 	*pkt >> num_files;
 
@@ -661,7 +661,7 @@ void Client::handleCommand_AnnounceMedia(NetworkPacket* pkt)
 	// updating content definitions
 	sanity_check(!m_mesh_update_thread.isRunning());
 
-	for (u16 i = 0; i < num_files; i++) {
+	for (uint16_t i = 0; i < num_files; i++) {
 		std::string name, sha1_base64;
 
 		*pkt >> name >> sha1_base64;
@@ -692,20 +692,20 @@ void Client::handleCommand_AnnounceMedia(NetworkPacket* pkt)
 void Client::handleCommand_Media(NetworkPacket* pkt)
 {
 	/*
-		u16 command
-		u16 total number of file bunches
-		u16 index of this bunch
-		u32 number of files in this bunch
+		uint16_t command
+		uint16_t total number of file bunches
+		uint16_t index of this bunch
+		uint32_t number of files in this bunch
 		for each file {
-			u16 length of name
+			uint16_t length of name
 			string name
-			u32 length of data
+			uint32_t length of data
 			data
 		}
 	*/
-	u16 num_bunches;
-	u16 bunch_i;
-	u32 num_files;
+	uint16_t num_bunches;
+	uint16_t bunch_i;
+	uint32_t num_files;
 
 	*pkt >> num_bunches >> bunch_i >> num_files;
 
@@ -732,7 +732,7 @@ void Client::handleCommand_Media(NetworkPacket* pkt)
 	// updating content definitions
 	sanity_check(!m_mesh_update_thread.isRunning());
 
-	for (u32 i=0; i < num_files; i++) {
+	for (uint32_t i=0; i < num_files; i++) {
 		std::string name;
 
 		*pkt >> name;
@@ -787,26 +787,26 @@ void Client::handleCommand_ItemDef(NetworkPacket* pkt)
 void Client::handleCommand_PlaySound(NetworkPacket* pkt)
 {
 	/*
-		[0] u32 server_id
-		[4] u16 name length
+		[0] uint32_t server_id
+		[4] uint16_t name length
 		[6] char name[len]
-		[ 6 + len] f32 gain
-		[10 + len] u8 type
-		[11 + len] (f32 * 3) pos
-		[23 + len] u16 object_id
+		[ 6 + len] float gain
+		[10 + len] uint8_t type
+		[11 + len] (float * 3) pos
+		[23 + len] uint16_t object_id
 		[25 + len] bool loop
-		[26 + len] f32 fade
-		[30 + len] f32 pitch
+		[26 + len] float fade
+		[30 + len] float pitch
 		[34 + len] bool ephemeral
 	*/
 
-	s32 server_id;
+	int32_t server_id;
 	std::string name;
 
 	float gain;
-	u8 type; // 0=local, 1=positional, 2=object
+	uint8_t type; // 0=local, 1=positional, 2=object
 	v3f pos;
-	u16 object_id;
+	uint16_t object_id;
 	bool loop;
 	float fade = 0.0f;
 	float pitch = 1.0f;
@@ -854,7 +854,7 @@ void Client::handleCommand_PlaySound(NetworkPacket* pkt)
 
 void Client::handleCommand_StopSound(NetworkPacket* pkt)
 {
-	s32 server_id;
+	int32_t server_id;
 
 	*pkt >> server_id;
 
@@ -867,7 +867,7 @@ void Client::handleCommand_StopSound(NetworkPacket* pkt)
 
 void Client::handleCommand_FadeSound(NetworkPacket *pkt)
 {
-	s32 sound_id;
+	int32_t sound_id;
 	float step;
 	float gain;
 
@@ -884,11 +884,11 @@ void Client::handleCommand_Privileges(NetworkPacket* pkt)
 {
 	m_privileges.clear();
 	infostream << "Client: Privileges updated: ";
-	u16 num_privileges;
+	uint16_t num_privileges;
 
 	*pkt >> num_privileges;
 
-	for (u16 i = 0; i < num_privileges; i++) {
+	for (uint16_t i = 0; i < num_privileges; i++) {
 		std::string priv;
 
 		*pkt >> priv;
@@ -933,7 +933,7 @@ void Client::handleCommand_DetachedInventory(NetworkPacket* pkt)
 		inv = inv_it->second;
 	}
 
-	u16 ignore;
+	uint16_t ignore;
 	*pkt >> ignore; // this used to be the length of the following string, ignore it
 
 	std::string contents(pkt->getRemainingString(), pkt->getRemainingBytes());
@@ -978,8 +978,8 @@ void Client::handleCommand_AddParticleSpawner(NetworkPacket* pkt)
 	std::istringstream is(datastring, std::ios_base::binary);
 
 	ParticleSpawnerParameters p;
-	u32 server_id;
-	u16 attached_id = 0;
+	uint32_t server_id;
+	uint16_t attached_id = 0;
 
 	p.amount             = readU16(is);
 	p.time               = readF32(is);
@@ -1009,7 +1009,7 @@ void Client::handleCommand_AddParticleSpawner(NetworkPacket* pkt)
 
 	// This is kinda awful
 	do {
-		u16 tmp_param0 = readU16(is);
+		uint16_t tmp_param0 = readU16(is);
 		if (is.eof())
 			break;
 		p.node.param0 = tmp_param0;
@@ -1029,7 +1029,7 @@ void Client::handleCommand_AddParticleSpawner(NetworkPacket* pkt)
 
 void Client::handleCommand_DeleteParticleSpawner(NetworkPacket* pkt)
 {
-	u32 server_id;
+	uint32_t server_id;
 	*pkt >> server_id;
 
 	ClientEvent *event = new ClientEvent();
@@ -1044,20 +1044,20 @@ void Client::handleCommand_HudAdd(NetworkPacket* pkt)
 	std::string datastring(pkt->getString(0), pkt->getSize());
 	std::istringstream is(datastring, std::ios_base::binary);
 
-	u32 server_id;
-	u8 type;
+	uint32_t server_id;
+	uint8_t type;
 	v2f pos;
 	std::string name;
 	v2f scale;
 	std::string text;
-	u32 number;
-	u32 item;
-	u32 dir;
+	uint32_t number;
+	uint32_t item;
+	uint32_t dir;
 	v2f align;
 	v2f offset;
 	v3f world_pos;
 	v2s32 size;
-	s16 z_index = 0;
+	int16_t z_index = 0;
 	std::string text2;
 
 	*pkt >> server_id >> type >> pos >> name >> scale >> text >> number >> item
@@ -1091,7 +1091,7 @@ void Client::handleCommand_HudAdd(NetworkPacket* pkt)
 
 void Client::handleCommand_HudRemove(NetworkPacket* pkt)
 {
-	u32 server_id;
+	uint32_t server_id;
 
 	*pkt >> server_id;
 
@@ -1112,10 +1112,10 @@ void Client::handleCommand_HudChange(NetworkPacket* pkt)
 	std::string sdata;
 	v2f v2fdata;
 	v3f v3fdata;
-	u32 intdata = 0;
+	uint32_t intdata = 0;
 	v2s32 v2s32data;
-	u32 server_id;
-	u8 stat;
+	uint32_t server_id;
+	uint8_t stat;
 
 	*pkt >> server_id >> stat;
 
@@ -1131,7 +1131,7 @@ void Client::handleCommand_HudChange(NetworkPacket* pkt)
 	else
 		*pkt >> intdata;
 
-	std::unordered_map<u32, u32>::const_iterator i = m_hud_server_to_client.find(server_id);
+	std::unordered_map<uint32_t, uint32_t>::const_iterator i = m_hud_server_to_client.find(server_id);
 	if (i != m_hud_server_to_client.end()) {
 		ClientEvent *event = new ClientEvent();
 		event->type              = CE_HUDCHANGE;
@@ -1148,7 +1148,7 @@ void Client::handleCommand_HudChange(NetworkPacket* pkt)
 
 void Client::handleCommand_HudSetFlags(NetworkPacket* pkt)
 {
-	u32 flags, mask;
+	uint32_t flags, mask;
 
 	*pkt >> flags >> mask;
 
@@ -1186,7 +1186,7 @@ void Client::handleCommand_HudSetFlags(NetworkPacket* pkt)
 
 void Client::handleCommand_HudSetParam(NetworkPacket* pkt)
 {
-	u16 param; std::string value;
+	uint16_t param; std::string value;
 
 	*pkt >> param >> value;
 
@@ -1194,7 +1194,7 @@ void Client::handleCommand_HudSetParam(NetworkPacket* pkt)
 	assert(player != NULL);
 
 	if (param == HUD_PARAM_HOTBAR_ITEMCOUNT && value.size() == 4) {
-		s32 hotbar_itemcount = readS32((u8*) value.c_str());
+		int32_t hotbar_itemcount = readS32((uint8_t*) value.c_str());
 		if (hotbar_itemcount > 0 && hotbar_itemcount <= HUD_HOTBAR_ITEMCOUNT_MAX)
 			player->hud_hotbar_itemcount = hotbar_itemcount;
 	}
@@ -1217,7 +1217,7 @@ void Client::handleCommand_HudSetSky(NetworkPacket* pkt)
 		SkyboxParams skybox;
 		skybox.bgcolor = video::SColor(readARGB8(is));
 		skybox.type = std::string(deSerializeString16(is));
-		u16 count = readU16(is);
+		uint16_t count = readU16(is);
 
 		for (size_t i = 0; i < count; i++)
 			skybox.textures.emplace_back(deSerializeString16(is));
@@ -1269,7 +1269,7 @@ void Client::handleCommand_HudSetSky(NetworkPacket* pkt)
 		m_client_event_queue.push(star_event);
 	} else {
 		SkyboxParams skybox;
-		u16 texture_count;
+		uint16_t texture_count;
 		std::string texture;
 
 		*pkt >> skybox.bgcolor >> skybox.type >> skybox.clouds >>
@@ -1338,11 +1338,11 @@ void Client::handleCommand_HudSetStars(NetworkPacket *pkt)
 
 void Client::handleCommand_CloudParams(NetworkPacket* pkt)
 {
-	f32 density;
+	float density;
 	video::SColor color_bright;
 	video::SColor color_ambient;
-	f32 height;
-	f32 thickness;
+	float height;
+	float thickness;
 	v2f speed;
 
 	*pkt >> density >> color_bright >> color_ambient
@@ -1351,7 +1351,7 @@ void Client::handleCommand_CloudParams(NetworkPacket* pkt)
 	ClientEvent *event = new ClientEvent();
 	event->type                       = CE_CLOUD_PARAMS;
 	event->cloud_params.density       = density;
-	// use the underlying u32 representation, because we can't
+	// use the underlying uint32_t representation, because we can't
 	// use struct members with constructors here, and this way
 	// we avoid using new() and delete() for no good reason
 	event->cloud_params.color_bright  = color_bright.color;
@@ -1367,7 +1367,7 @@ void Client::handleCommand_CloudParams(NetworkPacket* pkt)
 void Client::handleCommand_OverrideDayNightRatio(NetworkPacket* pkt)
 {
 	bool do_override;
-	u16 day_night_ratio_u;
+	uint16_t day_night_ratio_u;
 
 	*pkt >> do_override >> day_night_ratio_u;
 
@@ -1402,12 +1402,12 @@ void Client::handleCommand_EyeOffset(NetworkPacket* pkt)
 
 void Client::handleCommand_UpdatePlayerList(NetworkPacket* pkt)
 {
-	u8 type;
-	u16 num_players;
+	uint8_t type;
+	uint16_t num_players;
 	*pkt >> type >> num_players;
 	PlayerListModifer notice_type = (PlayerListModifer) type;
 
-	for (u16 i = 0; i < num_players; i++) {
+	for (uint16_t i = 0; i < num_players; i++) {
 		std::string name;
 		*pkt >> name;
 		switch (notice_type) {
@@ -1553,7 +1553,7 @@ void Client::handleCommand_ModChannelMsg(NetworkPacket *pkt)
 
 void Client::handleCommand_ModChannelSignal(NetworkPacket *pkt)
 {
-	u8 signal_tmp;
+	uint8_t signal_tmp;
 	ModChannelSignal signal;
 	std::string channel;
 
@@ -1593,7 +1593,7 @@ void Client::handleCommand_ModChannelSignal(NetworkPacket *pkt)
 #endif
 			break;
 		case MODCHANNEL_SIGNAL_SET_STATE: {
-			u8 state;
+			uint8_t state;
 			*pkt >> state;
 
 			if (state == MODCHANNEL_STATE_INIT || state >= MODCHANNEL_STATE_MAX) {
@@ -1623,8 +1623,8 @@ void Client::handleCommand_ModChannelSignal(NetworkPacket *pkt)
 
 void Client::handleCommand_MinimapModes(NetworkPacket *pkt)
 {
-	u16 count; // modes
-	u16 mode;  // wanted current mode index after change
+	uint16_t count; // modes
+	uint16_t mode;  // wanted current mode index after change
 
 	*pkt >> count >> mode;
 
@@ -1632,11 +1632,11 @@ void Client::handleCommand_MinimapModes(NetworkPacket *pkt)
 		m_minimap->clearModes();
 
 	for (size_t index = 0; index < count; index++) {
-		u16 type;
+		uint16_t type;
 		std::string label;
-		u16 size;
+		uint16_t size;
 		std::string texture;
-		u16 scale;
+		uint16_t scale;
 
 		*pkt >> type >> label >> size >> texture >> scale;
 

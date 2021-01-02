@@ -81,7 +81,7 @@ inline void checkFontBitmapSize(const FT_Bitmap &bits)
 
 video::IImage* SGUITTGlyph::createGlyphImage(const FT_Bitmap& bits, video::IVideoDriver* driver) const
 {
-	// Make sure our casts to s32 in the loops below will not cause problems
+	// Make sure our casts to int32_t in the loops below will not cause problems
 	checkFontBitmapSize(bits);
 
 	// Determine what our texture size should be.
@@ -102,14 +102,14 @@ video::IImage* SGUITTGlyph::createGlyphImage(const FT_Bitmap& bits, video::IVide
 			image->fill(video::SColor(0, 255, 255, 255));
 
 			// Load the monochrome data in.
-			const u32 image_pitch = image->getPitch() / sizeof(u16);
-			u16* image_data = (u16*)image->lock();
-			u8* glyph_data = bits.buffer;
+			const uint32_t image_pitch = image->getPitch() / sizeof(uint16_t);
+			uint16_t* image_data = (uint16_t*)image->lock();
+			uint8_t* glyph_data = bits.buffer;
 
-			for (s32 y = 0; y < (s32)bits.rows; ++y)
+			for (int32_t y = 0; y < (s32)bits.rows; ++y)
 			{
-				u16* row = image_data;
-				for (s32 x = 0; x < (s32)bits.width; ++x)
+				uint16_t* row = image_data;
+				for (int32_t x = 0; x < (s32)bits.width; ++x)
 				{
 					// Monochrome bitmaps store 8 pixels per byte.  The left-most pixel is the bit 0x80.
 					// So, we go through the data each bit at a time.
@@ -132,16 +132,16 @@ video::IImage* SGUITTGlyph::createGlyphImage(const FT_Bitmap& bits, video::IVide
 
 			// Load the grayscale data in.
 			const float gray_count = static_cast<float>(bits.num_grays);
-			const u32 image_pitch = image->getPitch() / sizeof(u32);
-			u32* image_data = (u32*)image->lock();
-			u8* glyph_data = bits.buffer;
-			for (s32 y = 0; y < (s32)bits.rows; ++y)
+			const uint32_t image_pitch = image->getPitch() / sizeof(uint32_t);
+			uint32_t* image_data = (uint32_t*)image->lock();
+			uint8_t* glyph_data = bits.buffer;
+			for (int32_t y = 0; y < (s32)bits.rows; ++y)
 			{
-				u8* row = glyph_data;
-				for (s32 x = 0; x < (s32)bits.width; ++x)
+				uint8_t* row = glyph_data;
+				for (int32_t x = 0; x < (s32)bits.width; ++x)
 				{
-					image_data[y * image_pitch + x] |= static_cast<u32>(255.0f * (static_cast<float>(*row++) / gray_count)) << 24;
-					//data[y * image_pitch + x] |= ((u32)(*bitsdata++) << 24);
+					image_data[y * image_pitch + x] |= static_cast<uint32_t>(255.0f * (static_cast<float>(*row++) / gray_count)) << 24;
+					//data[y * image_pitch + x] |= ((uint32_t)(*bitsdata++) << 24);
 				}
 				glyph_data += bits.pitch;
 			}
@@ -155,7 +155,7 @@ video::IImage* SGUITTGlyph::createGlyphImage(const FT_Bitmap& bits, video::IVide
 	return image;
 }
 
-void SGUITTGlyph::preload(u32 char_index, FT_Face face, video::IVideoDriver* driver, u32 font_size, const FT_Int32 loadFlags)
+void SGUITTGlyph::preload(uint32_t char_index, FT_Face face, video::IVideoDriver* driver, uint32_t font_size, const FT_Int32 loadFlags)
 {
 	if (isLoaded) return;
 
@@ -187,7 +187,7 @@ void SGUITTGlyph::preload(u32 char_index, FT_Face face, video::IVideoDriver* dri
 	}
 
 	glyph_page = parent->getLastGlyphPageIndex();
-	u32 texture_side_length = page->texture->getOriginalSize().Width;
+	uint32_t texture_side_length = page->texture->getOriginalSize().Width;
 	core::vector2di page_position(
 		(page->used_slots % (texture_side_length / font_size)) * font_size,
 		(page->used_slots / (texture_side_length / font_size)) * font_size
@@ -218,7 +218,7 @@ void SGUITTGlyph::unload()
 
 //////////////////////
 
-CGUITTFont* CGUITTFont::createTTFont(IGUIEnvironment *env, const io::path& filename, const u32 size, const bool antialias, const bool transparency, const u32 shadow, const u32 shadow_alpha)
+CGUITTFont* CGUITTFont::createTTFont(IGUIEnvironment *env, const io::path& filename, const uint32_t size, const bool antialias, const bool transparency, const uint32_t shadow, const uint32_t shadow_alpha)
 {
 	if (!c_libraryLoaded)
 	{
@@ -241,7 +241,7 @@ CGUITTFont* CGUITTFont::createTTFont(IGUIEnvironment *env, const io::path& filen
 	return font;
 }
 
-CGUITTFont* CGUITTFont::createTTFont(IrrlichtDevice *device, const io::path& filename, const u32 size, const bool antialias, const bool transparency)
+CGUITTFont* CGUITTFont::createTTFont(IrrlichtDevice *device, const io::path& filename, const uint32_t size, const bool antialias, const bool transparency)
 {
 	if (!c_libraryLoaded)
 	{
@@ -262,12 +262,12 @@ CGUITTFont* CGUITTFont::createTTFont(IrrlichtDevice *device, const io::path& fil
 	return font;
 }
 
-CGUITTFont* CGUITTFont::create(IGUIEnvironment *env, const io::path& filename, const u32 size, const bool antialias, const bool transparency)
+CGUITTFont* CGUITTFont::create(IGUIEnvironment *env, const io::path& filename, const uint32_t size, const bool antialias, const bool transparency)
 {
 	return CGUITTFont::createTTFont(env, filename, size, antialias, transparency);
 }
 
-CGUITTFont* CGUITTFont::create(IrrlichtDevice *device, const io::path& filename, const u32 size, const bool antialias, const bool transparency)
+CGUITTFont* CGUITTFont::create(IrrlichtDevice *device, const io::path& filename, const uint32_t size, const bool antialias, const bool transparency)
 {
 	return CGUITTFont::createTTFont(device, filename, size, antialias, transparency);
 }
@@ -298,7 +298,7 @@ batch_load_size(1), Device(0), Environment(env), Driver(0), GlobalKerningWidth(0
 	Glyphs.set_free_when_destroyed(false);
 }
 
-bool CGUITTFont::load(const io::path& filename, const u32 size, const bool antialias, const bool transparency)
+bool CGUITTFont::load(const io::path& filename, const uint32_t size, const bool antialias, const bool transparency)
 {
 	// Some sanity checks.
 	if (Environment == 0 || Driver == 0) return false;
@@ -400,7 +400,7 @@ bool CGUITTFont::load(const io::path& filename, const u32 size, const bool antia
 	}
 
 	// Cache the first 127 ascii characters.
-	u32 old_size = batch_load_size;
+	uint32_t old_size = batch_load_size;
 	batch_load_size = 127;
 	getGlyphIndexByChar((uchar32_t)0);
 	batch_load_size = old_size;
@@ -441,11 +441,11 @@ CGUITTFont::~CGUITTFont()
 void CGUITTFont::reset_images()
 {
 	// Delete the glyphs.
-	for (u32 i = 0; i != Glyphs.size(); ++i)
+	for (uint32_t i = 0; i != Glyphs.size(); ++i)
 		Glyphs[i].unload();
 
 	// Unload the glyph pages from video memory.
-	for (u32 i = 0; i != Glyph_Pages.size(); ++i)
+	for (uint32_t i = 0; i != Glyph_Pages.size(); ++i)
 		delete Glyph_Pages[i];
 	Glyph_Pages.clear();
 
@@ -455,7 +455,7 @@ void CGUITTFont::reset_images()
 
 void CGUITTFont::update_glyph_pages() const
 {
-	for (u32 i = 0; i != Glyph_Pages.size(); ++i)
+	for (uint32_t i = 0; i != Glyph_Pages.size(); ++i)
 	{
 		if (Glyph_Pages[i]->dirty)
 			Glyph_Pages[i]->updateTexture();
@@ -476,7 +476,7 @@ CGUITTGlyphPage* CGUITTFont::getLastGlyphPage() const
 	return page;
 }
 
-CGUITTGlyphPage* CGUITTFont::createGlyphPage(const u8& pixel_mode)
+CGUITTGlyphPage* CGUITTFont::createGlyphPage(const uint8_t& pixel_mode)
 {
 	CGUITTGlyphPage* page = 0;
 	
@@ -559,7 +559,7 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 		return;
 
 	// Clear the glyph pages of their render information.
-	for (u32 i = 0; i < Glyph_Pages.size(); ++i)
+	for (uint32_t i = 0; i < Glyph_Pages.size(); ++i)
 	{
 		Glyph_Pages[i]->render_positions.clear();
 		Glyph_Pages[i]->render_source_rects.clear();
@@ -585,10 +585,10 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 	core::ustring utext = text.getString();
 
 	// Set up our render map.
-	core::map<u32, CGUITTGlyphPage*> Render_Map;
+	core::map<uint32_t, CGUITTGlyphPage*> Render_Map;
 
 	// Start parsing characters.
-	u32 n;
+	uint32_t n;
 	uchar32_t previousChar = 0;
 	core::ustring::const_iterator iter(utext);
 	std::vector<video::SColor> applied_colors;
@@ -624,8 +624,8 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 		if (n > 0 && visible)
 		{
 			// Calculate the glyph offset.
-			s32 offx = Glyphs[n-1].offset.X;
-			s32 offy = (font_metrics.ascender / 64) - Glyphs[n-1].offset.Y;
+			int32_t offx = Glyphs[n-1].offset.X;
+			int32_t offy = (font_metrics.ascender / 64) - Glyphs[n-1].offset.Y;
 
 			// Apply kerning.
 			core::vector2di k = getKerning(currentChar, previousChar);
@@ -638,7 +638,7 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 			page->render_positions.push_back(core::position2di(offset.X + offx, offset.Y + offy));
 			page->render_source_rects.push_back(glyph.source_rect);
 			Render_Map.set(glyph.glyph_page, page);
-			u32 current_color = iter.getPos();
+			uint32_t current_color = iter.getPos();
 			if (current_color < colors.size())
 				applied_colors.push_back(colors[current_color]);
 		}
@@ -650,10 +650,10 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 
 	// Draw now.
 	update_glyph_pages();
-	core::map<u32, CGUITTGlyphPage*>::Iterator j = Render_Map.getIterator();
+	core::map<uint32_t, CGUITTGlyphPage*>::Iterator j = Render_Map.getIterator();
 	while (!j.atEnd())
 	{
-		core::map<u32, CGUITTGlyphPage*>::Node* n = j.getNode();
+		core::map<uint32_t, CGUITTGlyphPage*>::Node* n = j.getNode();
 		j++;
 		if (n == 0) continue;
 
@@ -680,17 +680,17 @@ void CGUITTFont::draw(const EnrichedString &text, const core::rect<s32>& positio
 	}
 }
 
-core::dimension2d<u32> CGUITTFont::getCharDimension(const wchar_t ch) const
+core::dimension2d<uint32_t> CGUITTFont::getCharDimension(const wchar_t ch) const
 {
-	return core::dimension2d<u32>(getWidthFromCharacter(ch), getHeightFromCharacter(ch));
+	return core::dimension2d<uint32_t>(getWidthFromCharacter(ch), getHeightFromCharacter(ch));
 }
 
-core::dimension2d<u32> CGUITTFont::getDimension(const wchar_t* text) const
+core::dimension2d<uint32_t> CGUITTFont::getDimension(const wchar_t* text) const
 {
 	return getDimension(core::ustring(text));
 }
 
-core::dimension2d<u32> CGUITTFont::getDimension(const core::ustring& text) const
+core::dimension2d<uint32_t> CGUITTFont::getDimension(const core::ustring& text) const
 {
 	// Get the maximum font height.  Unfortunately, we have to do this hack as
 	// Irrlicht will draw things wrong.  In FreeType, the font size is the
@@ -699,13 +699,13 @@ core::dimension2d<u32> CGUITTFont::getDimension(const core::ustring& text) const
 	// Irrlicht does not understand this concept when drawing fonts.  Also, I
 	// add +1 to give it a 1 pixel blank border.  This makes things like
 	// tooltips look nicer.
-	s32 test1 = getHeightFromCharacter((uchar32_t)'g') + 1;
-	s32 test2 = getHeightFromCharacter((uchar32_t)'j') + 1;
-	s32 test3 = getHeightFromCharacter((uchar32_t)'_') + 1;
-	s32 max_font_height = core::max_(test1, core::max_(test2, test3));
+	int32_t test1 = getHeightFromCharacter((uchar32_t)'g') + 1;
+	int32_t test2 = getHeightFromCharacter((uchar32_t)'j') + 1;
+	int32_t test3 = getHeightFromCharacter((uchar32_t)'_') + 1;
+	int32_t max_font_height = core::max_(test1, core::max_(test2, test3));
 
-	core::dimension2d<u32> text_dimension(0, max_font_height);
-	core::dimension2d<u32> line(0, max_font_height);
+	core::dimension2d<uint32_t> text_dimension(0, max_font_height);
+	core::dimension2d<uint32_t> line(0, max_font_height);
 
 	uchar32_t previousChar = 0;
 	core::ustring::const_iterator iter = text.begin();
@@ -751,18 +751,18 @@ core::dimension2d<u32> CGUITTFont::getDimension(const core::ustring& text) const
 	return text_dimension;
 }
 
-inline u32 CGUITTFont::getWidthFromCharacter(wchar_t c) const
+inline uint32_t CGUITTFont::getWidthFromCharacter(wchar_t c) const
 {
 	return getWidthFromCharacter((uchar32_t)c);
 }
 
-inline u32 CGUITTFont::getWidthFromCharacter(uchar32_t c) const
+inline uint32_t CGUITTFont::getWidthFromCharacter(uchar32_t c) const
 {
 	// Set the size of the face.
 	// This is because we cache faces and the face may have been set to a different size.
 	//FT_Set_Pixel_Sizes(tt_face, 0, size);
 
-	u32 n = getGlyphIndexByChar(c);
+	uint32_t n = getGlyphIndexByChar(c);
 	if (n > 0)
 	{
 		int w = Glyphs[n-1].advance.x / 64;
@@ -773,22 +773,22 @@ inline u32 CGUITTFont::getWidthFromCharacter(uchar32_t c) const
 	else return (font_metrics.ascender / 64) / 2;
 }
 
-inline u32 CGUITTFont::getHeightFromCharacter(wchar_t c) const
+inline uint32_t CGUITTFont::getHeightFromCharacter(wchar_t c) const
 {
 	return getHeightFromCharacter((uchar32_t)c);
 }
 
-inline u32 CGUITTFont::getHeightFromCharacter(uchar32_t c) const
+inline uint32_t CGUITTFont::getHeightFromCharacter(uchar32_t c) const
 {
 	// Set the size of the face.
 	// This is because we cache faces and the face may have been set to a different size.
 	//FT_Set_Pixel_Sizes(tt_face, 0, size);
 
-	u32 n = getGlyphIndexByChar(c);
+	uint32_t n = getGlyphIndexByChar(c);
 	if (n > 0)
 	{
 		// Grab the true height of the character, taking into account underhanging glyphs.
-		s32 height = (font_metrics.ascender / 64) - Glyphs[n-1].offset.Y + Glyphs[n-1].source_rect.getHeight();
+		int32_t height = (font_metrics.ascender / 64) - Glyphs[n-1].offset.Y + Glyphs[n-1].source_rect.getHeight();
 		return height;
 	}
 	if (c >= 0x2000)
@@ -796,15 +796,15 @@ inline u32 CGUITTFont::getHeightFromCharacter(uchar32_t c) const
 	else return (font_metrics.ascender / 64) / 2;
 }
 
-u32 CGUITTFont::getGlyphIndexByChar(wchar_t c) const
+uint32_t CGUITTFont::getGlyphIndexByChar(wchar_t c) const
 {
 	return getGlyphIndexByChar((uchar32_t)c);
 }
 
-u32 CGUITTFont::getGlyphIndexByChar(uchar32_t c) const
+uint32_t CGUITTFont::getGlyphIndexByChar(uchar32_t c) const
 {
 	// Get the glyph.
-	u32 glyph = FT_Get_Char_Index(tt_face, c);
+	uint32_t glyph = FT_Get_Char_Index(tt_face, c);
 
 	// Check for a valid glyph.  If it is invalid, attempt to use the replacement character.
 	if (glyph == 0)
@@ -815,16 +815,16 @@ u32 CGUITTFont::getGlyphIndexByChar(uchar32_t c) const
 		return glyph;
 
 	// Determine our batch loading positions.
-	u32 half_size = (batch_load_size / 2);
-	u32 start_pos = 0;
+	uint32_t half_size = (batch_load_size / 2);
+	uint32_t start_pos = 0;
 	if (c > half_size) start_pos = c - half_size;
-	u32 end_pos = start_pos + batch_load_size;
+	uint32_t end_pos = start_pos + batch_load_size;
 
 	// Load all our characters.
 	do
 	{
 		// Get the character we are going to load.
-		u32 char_index = FT_Get_Char_Index(tt_face, start_pos);
+		uint32_t char_index = FT_Get_Char_Index(tt_face, start_pos);
 
 		// If the glyph hasn't been loaded yet, do it now.
 		if (char_index)
@@ -843,17 +843,17 @@ u32 CGUITTFont::getGlyphIndexByChar(uchar32_t c) const
 	return glyph;
 }
 
-s32 CGUITTFont::getCharacterFromPos(const wchar_t* text, s32 pixel_x) const
+s32 CGUITTFont::getCharacterFromPos(const wchar_t* text, int32_t pixel_x) const
 {
 	return getCharacterFromPos(core::ustring(text), pixel_x);
 }
 
-s32 CGUITTFont::getCharacterFromPos(const core::ustring& text, s32 pixel_x) const
+s32 CGUITTFont::getCharacterFromPos(const core::ustring& text, int32_t pixel_x) const
 {
-	s32 x = 0;
-	//s32 idx = 0;
+	int32_t x = 0;
+	//int32_t idx = 0;
 
-	u32 character = 0;
+	uint32_t character = 0;
 	uchar32_t previousChar = 0;
 	core::ustring::const_iterator iter = text.begin();
 	while (!iter.atEnd())
@@ -876,12 +876,12 @@ s32 CGUITTFont::getCharacterFromPos(const core::ustring& text, s32 pixel_x) cons
 	return -1;
 }
 
-void CGUITTFont::setKerningWidth(s32 kerning)
+void CGUITTFont::setKerningWidth(int32_t kerning)
 {
 	GlobalKerningWidth = kerning;
 }
 
-void CGUITTFont::setKerningHeight(s32 kerning)
+void CGUITTFont::setKerningHeight(int32_t kerning)
 {
 	GlobalKerningHeight = kerning;
 }
@@ -961,7 +961,7 @@ void CGUITTFont::setInvisibleCharacters(const core::ustring& s)
 
 video::IImage* CGUITTFont::createTextureFromChar(const uchar32_t& ch)
 {
-	u32 n = getGlyphIndexByChar(ch);
+	uint32_t n = getGlyphIndexByChar(ch);
 	const SGUITTGlyph& glyph = Glyphs[n-1];
 	CGUITTGlyphPage* page = Glyph_Pages[glyph.glyph_page];
 
@@ -990,7 +990,7 @@ video::IImage* CGUITTFont::createTextureFromChar(const uchar32_t& ch)
 	return image;
 }
 
-video::ITexture* CGUITTFont::getPageTextureByIndex(const u32& page_index) const
+video::ITexture* CGUITTFont::getPageTextureByIndex(const uint32_t& page_index) const
 {
 	if (page_index < Glyph_Pages.size())
 		return Glyph_Pages[page_index]->texture;
@@ -1012,7 +1012,7 @@ void CGUITTFont::createSharedPlane()
 	using namespace video;
 	using namespace scene;
 	S3DVertex vertices[4];
-	u16 indices[6] = {0,2,3,3,1,0};
+	uint16_t indices[6] = {0,2,3,3,1,0};
 	vertices[0] = S3DVertex(vector3df(0,-1,0), vector3df(0,0,-1), SColor(255,255,255,255), vector2df(0,1));
 	vertices[1] = S3DVertex(vector3df(1,-1,0), vector3df(0,0,-1), SColor(255,255,255,255), vector2df(1,1));
 	vertices[2] = S3DVertex(vector3df(0, 0,0), vector3df(0,0,-1), SColor(255,255,255,255), vector2df(0,0));
@@ -1027,7 +1027,7 @@ void CGUITTFont::createSharedPlane()
 	buf->drop(); //the addMeshBuffer method will grab it, so we can drop this ptr.
 }
 
-core::dimension2d<u32> CGUITTFont::getDimensionUntilEndOfLine(const wchar_t* p) const
+core::dimension2d<uint32_t> CGUITTFont::getDimensionUntilEndOfLine(const wchar_t* p) const
 {
 	core::stringw s;
 	for (const wchar_t* temp = p; temp && *temp != '\0' && *temp != L'\r' && *temp != L'\n'; ++temp )
@@ -1079,9 +1079,9 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 	mat.DiffuseColor = color;
 
 	wchar_t current_char = 0, previous_char = 0;
-	u32 n = 0;
+	uint32_t n = 0;
 
-	array<u32> glyph_indices;
+	array<uint32_t> glyph_indices;
 
 	while (*text)
 	{
@@ -1116,10 +1116,10 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 
 				// Store glyph size and offset informations.
 				SGUITTGlyph const& glyph = Glyphs[n-1];
-				u32 texw = glyph.source_rect.getWidth();
-				u32 texh = glyph.source_rect.getHeight();
-				s32 offx = glyph.offset.X;
-				s32 offy = (font_metrics.ascender / 64) - glyph.offset.Y;
+				uint32_t texw = glyph.source_rect.getWidth();
+				uint32_t texh = glyph.source_rect.getHeight();
+				int32_t offx = glyph.offset.X;
+				int32_t offy = (font_metrics.ascender / 64) - glyph.offset.Y;
 
 				// Apply kerning.
 				vector2di k = getKerning(current_char, previous_char);
@@ -1127,7 +1127,7 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 				offset.Y += k.Y;
 
 				vector3df current_pos(offset.X + offx, offset.Y - offy, 0);
-				dimension2d<u32> letter_size = dimension2d<u32>(texw, texh);
+				dimension2d<uint32_t> letter_size = dimension2d<uint32_t>(texw, texh);
 
 				// Now we copy planes corresponding to the letter size.
 				IMeshManipulator* mani = smgr->getMeshManipulator();
@@ -1157,12 +1157,12 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 	update_glyph_pages();
 	//only after we update the textures can we use the glyph page textures.
 
-	for (u32 i = 0; i < glyph_indices.size(); ++i)
+	for (uint32_t i = 0; i < glyph_indices.size(); ++i)
 	{
-		u32 n = glyph_indices[i];
+		uint32_t n = glyph_indices[i];
 		SGUITTGlyph const& glyph = Glyphs[n-1];
 		ITexture* current_tex = Glyph_Pages[glyph.glyph_page]->texture;
-		f32 page_texture_size = (f32)current_tex->getSize().Width;
+		float page_texture_size = (f32)current_tex->getSize().Width;
 		//Now we calculate the UV position according to the texture size and the source rect.
 		//
 		//  2___3
@@ -1171,10 +1171,10 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 		//  |/  |	<-- the texture coords of point 2 is (0,0, point 0 is (0, 1)
 		//  0---1
 		//
-		f32 u1 = glyph.source_rect.UpperLeftCorner.X / page_texture_size;
-		f32 u2 = u1 + (glyph.source_rect.getWidth() / page_texture_size);
-		f32 v1 = glyph.source_rect.UpperLeftCorner.Y / page_texture_size;
-		f32 v2 = v1 + (glyph.source_rect.getHeight() / page_texture_size);
+		float uint1_t = glyph.source_rect.UpperLeftCorner.X / page_texture_size;
+		float uint2_t = uint1_t + (glyph.source_rect.getWidth() / page_texture_size);
+		float v1 = glyph.source_rect.UpperLeftCorner.Y / page_texture_size;
+		float v2 = v1 + (glyph.source_rect.getHeight() / page_texture_size);
 
 		//we can be quite sure that this is IMeshSceneNode, because we just added them in the above loop.
 		IMeshSceneNode* node = static_cast<IMeshSceneNode*>(container[i]);
@@ -1182,10 +1182,10 @@ core::array<scene::ISceneNode*> CGUITTFont::addTextSceneNode(const wchar_t* text
 		S3DVertex* pv = static_cast<S3DVertex*>(node->getMesh()->getMeshBuffer(0)->getVertices());
 		//pv[0].TCoords.Y = pv[1].TCoords.Y = (letter_size.Height - 1) / static_cast<f32>(letter_size.Height);
 		//pv[1].TCoords.X = pv[3].TCoords.X = (letter_size.Width - 1)  / static_cast<f32>(letter_size.Width);
-		pv[0].TCoords = vector2df(u1, v2);
-		pv[1].TCoords = vector2df(u2, v2);
-		pv[2].TCoords = vector2df(u1, v1);
-		pv[3].TCoords = vector2df(u2, v1);
+		pv[0].TCoords = vector2df(uint1_t, v2);
+		pv[1].TCoords = vector2df(uint2_t, v2);
+		pv[2].TCoords = vector2df(uint1_t, v1);
+		pv[3].TCoords = vector2df(uint2_t, v1);
 
 		container[i]->getMaterial(0).setTexture(0, current_tex);
 	}

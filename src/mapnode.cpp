@@ -35,7 +35,7 @@ static const Rotation wallmounted_to_rot[] = {
 	ROTATE_0, ROTATE_180, ROTATE_90, ROTATE_270
 };
 
-static const u8 rot_to_wallmounted[] = {
+static const uint8_t rot_to_wallmounted[] = {
 	2, 4, 3, 5
 };
 
@@ -53,7 +53,7 @@ void MapNode::getColor(const ContentFeatures &f, video::SColor *color) const
 	*color = f.color;
 }
 
-void MapNode::setLight(LightBank bank, u8 a_light, const ContentFeatures &f) noexcept
+void MapNode::setLight(LightBank bank, uint8_t a_light, const ContentFeatures &f) noexcept
 {
 	// If node doesn't contain light data, ignore this
 	if(f.param_type != CPT_LIGHT)
@@ -72,7 +72,7 @@ void MapNode::setLight(LightBank bank, u8 a_light, const ContentFeatures &f) noe
 		assert("Invalid light bank" == NULL);
 }
 
-void MapNode::setLight(LightBank bank, u8 a_light, const NodeDefManager *nodemgr)
+void MapNode::setLight(LightBank bank, uint8_t a_light, const NodeDefManager *nodemgr)
 {
 	setLight(bank, a_light, nodemgr->get(*this));
 }
@@ -83,8 +83,8 @@ bool MapNode::isLightDayNightEq(const NodeDefManager *nodemgr) const
 	bool isEqual;
 
 	if (f.param_type == CPT_LIGHT) {
-		u8 day   = MYMAX(f.light_source, param1 & 0x0f);
-		u8 night = MYMAX(f.light_source, (param1 >> 4) & 0x0f);
+		uint8_t day   = MYMAX(f.light_source, param1 & 0x0f);
+		uint8_t night = MYMAX(f.light_source, (param1 >> 4) & 0x0f);
 		isEqual = day == night;
 	} else {
 		isEqual = true;
@@ -93,12 +93,12 @@ bool MapNode::isLightDayNightEq(const NodeDefManager *nodemgr) const
 	return isEqual;
 }
 
-u8 MapNode::getLight(LightBank bank, const NodeDefManager *nodemgr) const
+uint8_t MapNode::getLight(LightBank bank, const NodeDefManager *nodemgr) const
 {
 	// Select the brightest of [light source, propagated light]
 	const ContentFeatures &f = nodemgr->get(*this);
 
-	u8 light;
+	uint8_t light;
 	if(f.param_type == CPT_LIGHT)
 		light = bank == LIGHTBANK_DAY ? param1 & 0x0f : (param1 >> 4) & 0x0f;
 	else
@@ -107,20 +107,20 @@ u8 MapNode::getLight(LightBank bank, const NodeDefManager *nodemgr) const
 	return MYMAX(f.light_source, light);
 }
 
-u8 MapNode::getLightRaw(LightBank bank, const ContentFeatures &f) const noexcept
+uint8_t MapNode::getLightRaw(LightBank bank, const ContentFeatures &f) const noexcept
 {
 	if(f.param_type == CPT_LIGHT)
 		return bank == LIGHTBANK_DAY ? param1 & 0x0f : (param1 >> 4) & 0x0f;
 	return 0;
 }
 
-u8 MapNode::getLightNoChecks(LightBank bank, const ContentFeatures *f) const noexcept
+uint8_t MapNode::getLightNoChecks(LightBank bank, const ContentFeatures *f) const noexcept
 {
 	return MYMAX(f->light_source,
 	             bank == LIGHTBANK_DAY ? param1 & 0x0f : (param1 >> 4) & 0x0f);
 }
 
-bool MapNode::getLightBanks(u8 &lightday, u8 &lightnight,
+bool MapNode::getLightBanks(uint8_t &lightday, uint8_t &lightnight,
 	const NodeDefManager *nodemgr) const
 {
 	// Select the brightest of [light source, propagated light]
@@ -142,7 +142,7 @@ bool MapNode::getLightBanks(u8 &lightday, u8 &lightnight,
 	return f.param_type == CPT_LIGHT || f.light_source != 0;
 }
 
-u8 MapNode::getFaceDir(const NodeDefManager *nodemgr,
+uint8_t MapNode::getFaceDir(const NodeDefManager *nodemgr,
 	bool allow_wallmounted) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
@@ -155,7 +155,7 @@ u8 MapNode::getFaceDir(const NodeDefManager *nodemgr,
 	return 0;
 }
 
-u8 MapNode::getWallMounted(const NodeDefManager *nodemgr) const
+uint8_t MapNode::getWallMounted(const NodeDefManager *nodemgr) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	if (f.param_type_2 == CPT2_WALLMOUNTED ||
@@ -182,7 +182,7 @@ void MapNode::rotateAlongYAxis(const NodeDefManager *nodemgr, Rotation rot)
 	ContentParamType2 cpt2 = nodemgr->get(*this).param_type_2;
 
 	if (cpt2 == CPT2_FACEDIR || cpt2 == CPT2_COLORED_FACEDIR) {
-		static const u8 rotate_facedir[24 * 4] = {
+		static const uint8_t rotate_facedir[24 * 4] = {
 			// Table value = rotated facedir
 			// Columns: 0, 90, 180, 270 degrees rotation around vertical axis
 			// Rotation is anticlockwise as seen from above (+Y)
@@ -217,13 +217,13 @@ void MapNode::rotateAlongYAxis(const NodeDefManager *nodemgr, Rotation rot)
 			22, 21, 20, 23,
 			23, 22, 21, 20
 		};
-		u8 facedir = (param2 & 31) % 24;
-		u8 index = facedir * 4 + rot;
+		uint8_t facedir = (param2 & 31) % 24;
+		uint8_t index = facedir * 4 + rot;
 		param2 &= ~31;
 		param2 |= rotate_facedir[index];
 	} else if (cpt2 == CPT2_WALLMOUNTED ||
 			cpt2 == CPT2_COLORED_WALLMOUNTED) {
-		u8 wmountface = (param2 & 7);
+		uint8_t wmountface = (param2 & 7);
 		if (wmountface <= 1)
 			return;
 
@@ -235,14 +235,14 @@ void MapNode::rotateAlongYAxis(const NodeDefManager *nodemgr, Rotation rot)
 
 void transformNodeBox(const MapNode &n, const NodeBox &nodebox,
 	const NodeDefManager *nodemgr, std::vector<aabb3f> *p_boxes,
-	u8 neighbors = 0)
+	uint8_t neighbors = 0)
 {
 	std::vector<aabb3f> &boxes = *p_boxes;
 
 	if (nodebox.type == NODEBOX_FIXED || nodebox.type == NODEBOX_LEVELED) {
 		const std::vector<aabb3f> &fixed = nodebox.fixed;
 		int facedir = n.getFaceDir(nodemgr, true);
-		u8 axisdir = facedir>>2;
+		uint8_t axisdir = facedir>>2;
 		facedir&=0x03;
 		for (aabb3f box : fixed) {
 			if (nodebox.type == NODEBOX_LEVELED)
@@ -510,17 +510,17 @@ void transformNodeBox(const MapNode &n, const NodeBox &nodebox,
 
 static inline void getNeighborConnectingFace(
 	const v3s16 &p, const NodeDefManager *nodedef,
-	Map *map, MapNode n, u8 bitmask, u8 *neighbors)
+	Map *map, MapNode n, uint8_t bitmask, uint8_t *neighbors)
 {
 	MapNode n2 = map->getNode(p);
 	if (nodedef->nodeboxConnects(n, n2, bitmask))
 		*neighbors |= bitmask;
 }
 
-u8 MapNode::getNeighbors(v3s16 p, Map *map) const
+uint8_t MapNode::getNeighbors(v3s16 p, Map *map) const
 {
 	const NodeDefManager *nodedef = map->getNodeDefManager();
-	u8 neighbors = 0;
+	uint8_t neighbors = 0;
 	const ContentFeatures &f = nodedef->get(*this);
 	// locate possible neighboring nodes to connect to
 	if (f.drawtype == NDT_NODEBOX && f.node_box.type == NODEBOX_CONNECTED) {
@@ -554,14 +554,14 @@ u8 MapNode::getNeighbors(v3s16 p, Map *map) const
 }
 
 void MapNode::getNodeBoxes(const NodeDefManager *nodemgr,
-	std::vector<aabb3f> *boxes, u8 neighbors) const
+	std::vector<aabb3f> *boxes, uint8_t neighbors) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	transformNodeBox(*this, f.node_box, nodemgr, boxes, neighbors);
 }
 
 void MapNode::getCollisionBoxes(const NodeDefManager *nodemgr,
-	std::vector<aabb3f> *boxes, u8 neighbors) const
+	std::vector<aabb3f> *boxes, uint8_t neighbors) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	if (f.collision_box.fixed.empty())
@@ -571,13 +571,13 @@ void MapNode::getCollisionBoxes(const NodeDefManager *nodemgr,
 }
 
 void MapNode::getSelectionBoxes(const NodeDefManager *nodemgr,
-	std::vector<aabb3f> *boxes, u8 neighbors) const
+	std::vector<aabb3f> *boxes, uint8_t neighbors) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	transformNodeBox(*this, f.selection_box, nodemgr, boxes, neighbors);
 }
 
-u8 MapNode::getMaxLevel(const NodeDefManager *nodemgr) const
+uint8_t MapNode::getMaxLevel(const NodeDefManager *nodemgr) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	// todo: after update in all games leave only if (f.param_type_2 ==
@@ -588,7 +588,7 @@ u8 MapNode::getMaxLevel(const NodeDefManager *nodemgr) const
 	return 0;
 }
 
-u8 MapNode::getLevel(const NodeDefManager *nodemgr) const
+uint8_t MapNode::getLevel(const NodeDefManager *nodemgr) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	// todo: after update in all games leave only if (f.param_type_2 ==
@@ -599,7 +599,7 @@ u8 MapNode::getLevel(const NodeDefManager *nodemgr) const
 	if(f.liquid_type == LIQUID_FLOWING) // can remove if all param_type_2 setted
 		return getParam2() & LIQUID_LEVEL_MASK;
 	if (f.param_type_2 == CPT2_LEVELED) {
-		u8 level = getParam2() & LEVELED_MASK;
+		uint8_t level = getParam2() & LEVELED_MASK;
 		if (level)
 			return level;
 	}
@@ -609,9 +609,9 @@ u8 MapNode::getLevel(const NodeDefManager *nodemgr) const
 	return f.leveled;
 }
 
-s8 MapNode::setLevel(const NodeDefManager *nodemgr, s16 level)
+s8 MapNode::setLevel(const NodeDefManager *nodemgr, int16_t level)
 {
-	s8 rest = 0;
+	int8_t rest = 0;
 	const ContentFeatures &f = nodemgr->get(*this);
 	if (f.param_type_2 == CPT2_FLOWINGLIQUID
 			|| f.liquid_type == LIQUID_FLOWING
@@ -641,14 +641,14 @@ s8 MapNode::setLevel(const NodeDefManager *nodemgr, s16 level)
 	return rest;
 }
 
-s8 MapNode::addLevel(const NodeDefManager *nodemgr, s16 add)
+s8 MapNode::addLevel(const NodeDefManager *nodemgr, int16_t add)
 {
-	s16 level = getLevel(nodemgr);
+	int16_t level = getLevel(nodemgr);
 	level += add;
 	return setLevel(nodemgr, level);
 }
 
-u32 MapNode::serializedLength(u8 version)
+uint32_t MapNode::serializedLength(uint8_t version)
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapNode format not supported");
@@ -664,7 +664,7 @@ u32 MapNode::serializedLength(u8 version)
 
 	return 4;
 }
-void MapNode::serialize(u8 *dest, u8 version) const
+void MapNode::serialize(uint8_t *dest, uint8_t version) const
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapNode format not supported");
@@ -679,7 +679,7 @@ void MapNode::serialize(u8 *dest, u8 version) const
 	writeU8(dest+2, param1);
 	writeU8(dest+3, param2);
 }
-void MapNode::deSerialize(u8 *source, u8 version)
+void MapNode::deSerialize(uint8_t *source, uint8_t version)
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapNode format not supported");
@@ -705,8 +705,8 @@ void MapNode::deSerialize(u8 *source, u8 version)
 	}
 }
 void MapNode::serializeBulk(std::ostream &os, int version,
-		const MapNode *nodes, u32 nodecount,
-		u8 content_width, u8 params_width, int compression_level)
+		const MapNode *nodes, uint32_t nodecount,
+		uint8_t content_width, uint8_t params_width, int compression_level)
 {
 	if (!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapNode format not supported");
@@ -721,13 +721,13 @@ void MapNode::serializeBulk(std::ostream &os, int version,
 				"version < 24 not possible");
 
 	size_t databuf_size = nodecount * (content_width + params_width);
-	u8 *databuf = new u8[databuf_size];
+	uint8_t *databuf = new uint8_t[databuf_size];
 
-	u32 start1 = content_width * nodecount;
-	u32 start2 = (content_width + 1) * nodecount;
+	uint32_t start1 = content_width * nodecount;
+	uint32_t start2 = (content_width + 1) * nodecount;
 
 	// Serialize content
-	for (u32 i = 0; i < nodecount; i++) {
+	for (uint32_t i = 0; i < nodecount; i++) {
 		writeU16(&databuf[i * 2], nodes[i].param0);
 		writeU8(&databuf[start1 + i], nodes[i].param1);
 		writeU8(&databuf[start2 + i], nodes[i].param2);
@@ -744,8 +744,8 @@ void MapNode::serializeBulk(std::ostream &os, int version,
 
 // Deserialize bulk node data
 void MapNode::deSerializeBulk(std::istream &is, int version,
-		MapNode *nodes, u32 nodecount,
-		u8 content_width, u8 params_width)
+		MapNode *nodes, uint32_t nodecount,
+		uint8_t content_width, uint8_t params_width)
 {
 	if(!ser_ver_supported(version))
 		throw VersionMismatchException("ERROR: MapNode format not supported");
@@ -756,37 +756,37 @@ void MapNode::deSerializeBulk(std::istream &is, int version,
 		FATAL_ERROR("Deserialize bulk node data error");
 
 	// Uncompress or read data
-	u32 len = nodecount * (content_width + params_width);
+	uint32_t len = nodecount * (content_width + params_width);
 	std::ostringstream os(std::ios_base::binary);
 	decompressZlib(is, os);
 	std::string s = os.str();
 	if(s.size() != len)
 		throw SerializationError("deSerializeBulkNodes: "
 				"decompress resulted in invalid size");
-	const u8 *databuf = reinterpret_cast<const u8*>(s.c_str());
+	const uint8_t *databuf = reinterpret_cast<const uint8_t*>(s.c_str());
 
 	// Deserialize content
 	if(content_width == 1)
 	{
-		for(u32 i=0; i<nodecount; i++)
+		for(uint32_t i=0; i<nodecount; i++)
 			nodes[i].param0 = readU8(&databuf[i]);
 	}
 	else if(content_width == 2)
 	{
-		for(u32 i=0; i<nodecount; i++)
+		for(uint32_t i=0; i<nodecount; i++)
 			nodes[i].param0 = readU16(&databuf[i*2]);
 	}
 
 	// Deserialize param1
-	u32 start1 = content_width * nodecount;
-	for(u32 i=0; i<nodecount; i++)
+	uint32_t start1 = content_width * nodecount;
+	for(uint32_t i=0; i<nodecount; i++)
 		nodes[i].param1 = readU8(&databuf[start1 + i]);
 
 	// Deserialize param2
-	u32 start2 = (content_width + 1) * nodecount;
+	uint32_t start2 = (content_width + 1) * nodecount;
 	if(content_width == 1)
 	{
-		for(u32 i=0; i<nodecount; i++) {
+		for(uint32_t i=0; i<nodecount; i++) {
 			nodes[i].param2 = readU8(&databuf[start2 + i]);
 			if(nodes[i].param0 > 0x7F){
 				nodes[i].param0 <<= 4;
@@ -797,7 +797,7 @@ void MapNode::deSerializeBulk(std::istream &is, int version,
 	}
 	else if(content_width == 2)
 	{
-		for(u32 i=0; i<nodecount; i++)
+		for(uint32_t i=0; i<nodecount; i++)
 			nodes[i].param2 = readU8(&databuf[start2 + i]);
 	}
 }
@@ -805,7 +805,7 @@ void MapNode::deSerializeBulk(std::istream &is, int version,
 /*
 	Legacy serialization
 */
-void MapNode::deSerialize_pre22(const u8 *source, u8 version)
+void MapNode::deSerialize_pre22(const uint8_t *source, uint8_t version)
 {
 	if(version <= 1)
 	{

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define VMANIP_FLAG_CAVE VOXELFLAG_CHECKED1
 
-typedef u16 biome_t;  // copy from mg_biome.h to avoid an unnecessary include
+typedef uint16_t biome_t;  // copy from mg_biome.h to avoid an unnecessary include
 
 class GenerateNotifier;
 
@@ -43,7 +43,7 @@ class CavesNoiseIntersection
 public:
 	CavesNoiseIntersection(const NodeDefManager *nodedef,
 		BiomeManager *biomemgr, v3s16 chunksize, NoiseParams *np_cave1,
-		NoiseParams *np_cave2, s32 seed, float cave_width);
+		NoiseParams *np_cave2, int32_t seed, float cave_width);
 	~CavesNoiseIntersection();
 
 	void generateCaves(MMVManip *vm, v3s16 nmin, v3s16 nmax, biome_t *biomemap);
@@ -57,8 +57,8 @@ private:
 	float m_cave_width;
 
 	// intermediate state variables
-	u16 m_ystride;
-	u16 m_zstride_1d;
+	uint16_t m_ystride;
+	uint16_t m_zstride_1d;
 
 	Noise *noise_cave1;
 	Noise *noise_cave2;
@@ -71,7 +71,7 @@ class CavernsNoise
 {
 public:
 	CavernsNoise(const NodeDefManager *nodedef, v3s16 chunksize,
-		NoiseParams *np_cavern, s32 seed, float cavern_limit,
+		NoiseParams *np_cavern, int32_t seed, float cavern_limit,
 		float cavern_taper, float cavern_threshold);
 	~CavernsNoise();
 
@@ -87,8 +87,8 @@ private:
 	float m_cavern_threshold;
 
 	// intermediate state variables
-	u16 m_ystride;
-	u16 m_zstride_1d;
+	uint16_t m_ystride;
+	uint16_t m_zstride_1d;
 
 	Noise *noise_cavern;
 
@@ -115,21 +115,21 @@ public:
 	MMVManip *vm;
 	const NodeDefManager *ndef;
 	GenerateNotifier *gennotify;
-	s16 *heightmap;
+	int16_t *heightmap;
 	BiomeGen *bmgn;
 
-	s32 seed;
+	int32_t seed;
 	int water_level;
 	float large_cave_flooded;
 	// TODO 'np_caveliquids' is deprecated and should eventually be removed.
 	// Cave liquids are now defined and located using biome definitions.
 	NoiseParams *np_caveliquids;
 
-	u16 ystride;
+	uint16_t ystride;
 
-	s16 min_tunnel_diameter;
-	s16 max_tunnel_diameter;
-	u16 tunnel_routepoints;
+	int16_t min_tunnel_diameter;
+	int16_t max_tunnel_diameter;
+	uint16_t tunnel_routepoints;
 	int part_max_length_rs;
 
 	bool large_cave;
@@ -143,11 +143,11 @@ public:
 	v3f orp;  // starting point, relative to caved space
 	v3s16 of; // absolute coordinates of caved space
 	v3s16 ar; // allowed route area
-	s16 rs;   // tunnel radius size
+	int16_t rs;   // tunnel radius size
 	v3f main_direction;
 
-	s16 route_y_min;
-	s16 route_y_max;
+	int16_t route_y_min;
+	int16_t route_y_max;
 
 	PseudoRandom *ps;
 
@@ -159,7 +159,7 @@ public:
 	// If gennotify is NULL, generation events are not logged.
 	// If biomegen is NULL, cave liquids have classic behaviour.
 	CavesRandomWalk(const NodeDefManager *ndef, GenerateNotifier *gennotify =
-		NULL, s32 seed = 0, int water_level = 1, content_t water_source =
+		NULL, int32_t seed = 0, int water_level = 1, content_t water_source =
 		CONTENT_IGNORE, content_t lava_source = CONTENT_IGNORE,
 		float large_cave_flooded = 0.5f, BiomeGen *biomegen = NULL);
 
@@ -167,7 +167,7 @@ public:
 	// If heightmap is NULL, the surface level at all points is assumed to
 	// be water_level.
 	void makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax, PseudoRandom *ps,
-			bool is_large_cave, int max_stone_height, s16 *heightmap);
+			bool is_large_cave, int max_stone_height, int16_t *heightmap);
 
 private:
 	void makeTunnel(bool dirswitch);
@@ -199,17 +199,17 @@ public:
 	PseudoRandom *ps2;
 
 	// configurable parameters
-	s16 *heightmap;
+	int16_t *heightmap;
 	content_t c_water_source;
 	content_t c_lava_source;
 	int water_level;
 
 	// intermediate state variables
-	u16 ystride;
+	uint16_t ystride;
 
-	s16 min_tunnel_diameter;
-	s16 max_tunnel_diameter;
-	u16 tunnel_routepoints;
+	int16_t min_tunnel_diameter;
+	int16_t max_tunnel_diameter;
+	uint16_t tunnel_routepoints;
 	int part_max_length_rs;
 
 	bool large_cave;
@@ -221,11 +221,11 @@ public:
 	v3f orp;  // starting point, relative to caved space
 	v3s16 of; // absolute coordinates of caved space
 	v3s16 ar; // allowed route area
-	s16 rs;   // tunnel radius size
+	int16_t rs;   // tunnel radius size
 	v3f main_direction;
 
-	s16 route_y_min;
-	s16 route_y_max;
+	int16_t route_y_min;
+	int16_t route_y_max;
 
 	// ndef is a mandatory parameter.
 	// If gennotify is NULL, generation events are not logged.
@@ -238,11 +238,11 @@ public:
 	// be water_level.
 	void makeCave(MMVManip *vm, v3s16 nmin, v3s16 nmax, PseudoRandom *ps,
 			PseudoRandom *ps2, bool is_large_cave, int max_stone_height,
-			s16 *heightmap = NULL);
+			int16_t *heightmap = NULL);
 
 private:
 	void makeTunnel(bool dirswitch);
 	void carveRoute(v3f vec, float f, bool randomize_xz, bool tunnel_above_ground);
 
-	inline s16 getSurfaceFromHeightmap(v3s16 p);
+	inline int16_t getSurfaceFromHeightmap(v3s16 p);
 };

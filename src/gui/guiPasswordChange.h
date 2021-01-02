@@ -28,7 +28,7 @@ class ISimpleTextureSource;
 class GUIPasswordChange : public GUIModalMenu
 {
 public:
-	GUIPasswordChange(gui::IGUIEnvironment *env, gui::IGUIElement *parent, s32 id,
+	GUIPasswordChange(gui::IGUIEnvironment *env, gui::IGUIElement *parent, int32_t id,
 			IMenuManager *menumgr, Client *client,
 			ISimpleTextureSource *tsrc);
 	~GUIPasswordChange();
@@ -51,8 +51,8 @@ public:
 #endif
 
 protected:
-	std::wstring getLabelByID(s32 id) { return L""; }
-	std::string getNameByID(s32 id);
+	std::wstring getLabelByID(int32_t id) { return L""; }
+	std::string getNameByID(int32_t id);
 
 private:
 	Client *m_client;

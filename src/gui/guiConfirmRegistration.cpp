@@ -38,7 +38,7 @@ const int ID_cancel = 265;
 const int ID_message = 266;
 
 GUIConfirmRegistration::GUIConfirmRegistration(gui::IGUIEnvironment *env,
-		gui::IGUIElement *parent, s32 id, IMenuManager *menumgr, Client *client,
+		gui::IGUIElement *parent, int32_t id, IMenuManager *menumgr, Client *client,
 		const std::string &playername, const std::string &password,
 		bool *aborted, ISimpleTextureSource *tsrc) :
 		GUIModalMenu(env, parent, id, menumgr),
@@ -94,7 +94,7 @@ void GUIConfirmRegistration::regenerateGui(v2u32 screensize)
 	/*
 		Add stuff
 	*/
-	s32 ypos = 30 * s;
+	int32_t ypos = 30 * s;
 	{
 		core::rect<s32> rect2(0, 0, 540 * s, 180 * s);
 		rect2 += topleft_client + v2s32(30 * s, ypos);

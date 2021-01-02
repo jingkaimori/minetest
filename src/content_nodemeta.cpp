@@ -36,7 +36,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Returns true if node timer must be set
 static bool content_nodemeta_deserialize_legacy_body(
-		std::istream &is, s16 id, NodeMetadata *meta)
+		std::istream &is, int16_t id, NodeMetadata *meta)
 {
 	meta->clear();
 
@@ -135,7 +135,7 @@ static bool content_nodemeta_deserialize_legacy_meta(
 		std::istream &is, NodeMetadata *meta)
 {
 	// Read id
-	s16 id = readS16(is);
+	int16_t id = readS16(is);
 
 	// Read data
 	std::string data = deSerializeString16(is);
@@ -150,7 +150,7 @@ void content_nodemeta_deserialize_legacy(std::istream &is,
 	meta->clear();
 	timers->clear();
 
-	u16 version = readU16(is);
+	uint16_t version = readU16(is);
 
 	if(version > 1)
 	{
@@ -159,11 +159,11 @@ void content_nodemeta_deserialize_legacy(std::istream &is,
 		throw SerializationError(FUNCTION_NAME);
 	}
 
-	u16 count = readU16(is);
+	uint16_t count = readU16(is);
 
-	for(u16 i=0; i<count; i++)
+	for(uint16_t i=0; i<count; i++)
 	{
-		u16 p16 = readU16(is);
+		uint16_t p16 = readU16(is);
 
 		v3s16 p(0,0,0);
 		p.Z += p16 / MAP_BLOCKSIZE / MAP_BLOCKSIZE;

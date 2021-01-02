@@ -116,7 +116,7 @@ public:
 	virtual void inventoryAction(InventoryAction *a){}
 };
 
-enum class IAction : u16 {
+enum class IAction : uint16_t {
 	Move,
 	Drop,
 	Craft
@@ -138,22 +138,22 @@ struct MoveAction
 {
 	InventoryLocation from_inv;
 	std::string from_list;
-	s16 from_i = -1;
+	int16_t from_i = -1;
 	InventoryLocation to_inv;
 	std::string to_list;
-	s16 to_i = -1;
+	int16_t to_i = -1;
 };
 
 struct IMoveAction : public InventoryAction, public MoveAction
 {
 	// count=0 means "everything"
-	u16 count = 0;
+	uint16_t count = 0;
 	bool move_somewhere = false;
 
 	// treat these as private
 	// related to movement to somewhere
 	bool caused_by_move_somewhere = false;
-	u32 move_count = 0;
+	uint32_t move_count = 0;
 
 	IMoveAction() = default;
 
@@ -200,7 +200,7 @@ struct IMoveAction : public InventoryAction, public MoveAction
 struct IDropAction : public InventoryAction, public MoveAction
 {
 	// count=0 means "everything"
-	u16 count = 0;
+	uint16_t count = 0;
 
 	IDropAction() = default;
 
@@ -228,7 +228,7 @@ struct IDropAction : public InventoryAction, public MoveAction
 struct ICraftAction : public InventoryAction
 {
 	// count=0 means "everything"
-	u16 count = 0;
+	uint16_t count = 0;
 	InventoryLocation craft_inv;
 
 	ICraftAction() = default;

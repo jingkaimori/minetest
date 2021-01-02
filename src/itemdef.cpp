@@ -124,10 +124,10 @@ void ItemDefinition::reset()
 	node_placement_prediction = "";
 }
 
-void ItemDefinition::serialize(std::ostream &os, u16 protocol_version) const
+void ItemDefinition::serialize(std::ostream &os, uint16_t protocol_version) const
 {
 	// protocol_version >= 37
-	u8 version = 6;
+	uint8_t version = 6;
 	writeU8(os, version);
 	writeU8(os, type);
 	os << serializeString16(name);
@@ -196,8 +196,8 @@ void ItemDefinition::deSerialize(std::istream &is)
 	}
 
 	groups.clear();
-	u32 groups_size = readU16(is);
-	for(u32 i=0; i<groups_size; i++){
+	uint32_t groups_size = readU16(is);
+	for(uint32_t i=0; i<groups_size; i++){
 		std::string name = deSerializeString16(is);
 		int value = readS16(is);
 		groups[name] = value;
@@ -359,14 +359,14 @@ public:
 		}
 
 		// We're gonna ask the result to be put into here
-		static ResultQueue<std::string, ClientCached*, u8, u8> result_queue;
+		static ResultQueue<std::string, ClientCached*, uint8_t, uint8_t> result_queue;
 
 		// Throw a request in
 		m_get_clientcached_queue.add(name, 0, 0, &result_queue);
 		try {
 			while(true) {
 				// Wait result for a second
-				GetResult<std::string, ClientCached*, u8, u8>
+				GetResult<std::string, ClientCached*, uint8_t, uint8_t>
 					result = result_queue.pop_front(1000);
 
 				if (result.key == name) {
@@ -515,10 +515,10 @@ public:
 			m_aliases[name] = convert_to;
 		}
 	}
-	void serialize(std::ostream &os, u16 protocol_version)
+	void serialize(std::ostream &os, uint16_t protocol_version)
 	{
 		writeU8(os, 0); // version
-		u16 count = m_item_definitions.size();
+		uint16_t count = m_item_definitions.size();
 		writeU16(os, count);
 
 		for (const auto &it : m_item_definitions) {
@@ -544,8 +544,8 @@ public:
 		int version = readU8(is);
 		if(version != 0)
 			throw SerializationError("unsupported ItemDefManager version");
-		u16 count = readU16(is);
-		for(u16 i=0; i<count; i++)
+		uint16_t count = readU16(is);
+		for(uint16_t i=0; i<count; i++)
 		{
 			// Deserialize a string and grab an ItemDefinition from it
 			std::istringstream tmp_is(deSerializeString16(is), std::ios::binary);
@@ -554,8 +554,8 @@ public:
 			// Register
 			registerItem(def);
 		}
-		u16 num_aliases = readU16(is);
-		for(u16 i=0; i<num_aliases; i++)
+		uint16_t num_aliases = readU16(is);
+		for(uint16_t i=0; i<num_aliases; i++)
 		{
 			std::string name = deSerializeString16(is);
 			std::string convert_to = deSerializeString16(is);
@@ -568,7 +568,7 @@ public:
 		//NOTE this is only thread safe for ONE consumer thread!
 		while(!m_get_clientcached_queue.empty())
 		{
-			GetRequest<std::string, ClientCached*, u8, u8>
+			GetRequest<std::string, ClientCached*, uint8_t, uint8_t>
 					request = m_get_clientcached_queue.pop();
 
 			m_get_clientcached_queue.pushResult(request,
@@ -589,7 +589,7 @@ private:
 	// Cached textures and meshes
 	mutable MutexedMap<std::string, ClientCached*> m_clientcached;
 	// Queued clientcached fetches (to be processed by the main thread)
-	mutable RequestQueue<std::string, ClientCached*, u8, u8> m_get_clientcached_queue;
+	mutable RequestQueue<std::string, ClientCached*, uint8_t, uint8_t> m_get_clientcached_queue;
 #endif
 };
 

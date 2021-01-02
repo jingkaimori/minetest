@@ -59,7 +59,7 @@ public:
 		return def;
 	};
 
-	u32 testvalue;
+	uint32_t testvalue;
 };
 
 class MyObjDefManager : public ObjDefManager
@@ -79,8 +79,8 @@ protected:
 
 void TestObjDef::testHandles()
 {
-	u32 uid = 0;
-	u32 index = 0;
+	uint32_t uid = 0;
+	uint32_t index = 0;
 	ObjDefType type = OBJDEF_GENERIC;
 
 	ObjDefHandle handle = ObjDefManager::createHandle(9530, OBJDEF_ORE, 47);
@@ -89,8 +89,8 @@ void TestObjDef::testHandles()
 
 	UASSERT(ObjDefManager::decodeHandle(handle, &index, &type, &uid));
 
-	UASSERTEQ(u32, 9530, index);
-	UASSERTEQ(u32, 47, uid);
+	UASSERTEQ(uint32_t, 9530, index);
+	UASSERTEQ(uint32_t, 47, uid);
 	UASSERTEQ(ObjDefHandle, OBJDEF_ORE, type);
 }
 
@@ -106,19 +106,19 @@ void TestObjDef::testAddGetSetClear()
 	obj0->name = "foobar";
 	hObj0 = testmgr.add(obj0);
 	UASSERT(hObj0 != OBJDEF_INVALID_HANDLE);
-	UASSERTEQ(u32, obj0->index, 0);
+	UASSERTEQ(uint32_t, obj0->index, 0);
 
 	obj1 = new MyObjDef;
 	obj1->name = "FooBaz";
 	hObj1 = testmgr.add(obj1);
 	UASSERT(hObj1 != OBJDEF_INVALID_HANDLE);
-	UASSERTEQ(u32, obj1->index, 1);
+	UASSERTEQ(uint32_t, obj1->index, 1);
 
 	obj2 = new MyObjDef;
 	obj2->name = "asdf";
 	hObj2 = testmgr.add(obj2);
 	UASSERT(hObj2 != OBJDEF_INVALID_HANDLE);
-	UASSERTEQ(u32, obj2->index, 2);
+	UASSERTEQ(uint32_t, obj2->index, 2);
 
 	obj3 = new MyObjDef;
 	obj3->name = "foobaz";
@@ -164,7 +164,7 @@ void TestObjDef::testClone()
 	temp2 = dynamic_cast<MyObjDef *>(temp1);
 	UASSERT(temp2);
 	// 3) check that it was correctly copied
-	UASSERTEQ(u32, obj->testvalue, temp2->testvalue);
+	UASSERTEQ(uint32_t, obj->testvalue, temp2->testvalue);
 	// 4) check that it was copied AT ALL (not the same)
 	UASSERT(obj != temp2);
 

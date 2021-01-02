@@ -69,7 +69,7 @@ struct RollbackAction
 
 	std::string inventory_location;
 	std::string inventory_list;
-	u32 inventory_index;
+	uint32_t inventory_index;
 	bool inventory_add;
 	ItemStack inventory_stack;
 
@@ -85,7 +85,7 @@ struct RollbackAction
 	}
 
 	void setModifyInventoryStack(const std::string &inventory_location_,
-			const std::string &inventory_list_, u32 index_,
+			const std::string &inventory_list_, uint32_t index_,
 			bool add_, const ItemStack &inventory_stack_)
 	{
 		type = TYPE_MODIFY_INVENTORY_STACK;

@@ -55,7 +55,7 @@ template <> bool LuaHelper::readParam(lua_State *L, int index)
 	return lua_toboolean(L, index) != 0;
 }
 
-template <> s16 LuaHelper::readParam(lua_State *L, int index)
+template <> int16_t LuaHelper::readParam(lua_State *L, int index)
 {
 	return lua_tonumber(L, index);
 }

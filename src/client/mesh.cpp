@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <IAnimatedMeshSceneNode.h>
 
 // In Irrlicht 1.8 the signature of ITexture::lock was changed from
-// (bool, u32) to (E_TEXTURE_LOCK_MODE, u32).
+// (bool, uint32_t) to (E_TEXTURE_LOCK_MODE, uint32_t).
 #if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR <= 7
 #define MY_ETLM_READ_ONLY true
 #else
@@ -99,10 +99,10 @@ scene::IAnimatedMesh* createCubeMesh(v3f scale)
 		video::S3DVertex(+0.5,-0.5,-0.5, 0,0,-1, c, 1,1),
 	};
 
-	u16 indices[6] = {0,1,2,2,3,0};
+	uint16_t indices[6] = {0,1,2,2,3,0};
 
 	scene::SMesh *mesh = new scene::SMesh();
-	for (u32 i=0; i<6; ++i)
+	for (uint32_t i=0; i<6; ++i)
 	{
 		scene::IMeshBuffer *buf = new scene::SMeshBuffer();
 		buf->append(vertices + 4 * i, 4, indices, 6);
@@ -129,13 +129,13 @@ void scaleMesh(scene::IMesh *mesh, v3f scale)
 	aabb3f bbox;
 	bbox.reset(0, 0, 0);
 
-	u32 mc = mesh->getMeshBufferCount();
-	for (u32 j = 0; j < mc; j++) {
+	uint32_t mc = mesh->getMeshBufferCount();
+	for (uint32_t j = 0; j < mc; j++) {
 		scene::IMeshBuffer *buf = mesh->getMeshBuffer(j);
-		const u32 stride = getVertexPitchFromType(buf->getVertexType());
-		u32 vertex_count = buf->getVertexCount();
-		u8 *vertices = (u8 *)buf->getVertices();
-		for (u32 i = 0; i < vertex_count; i++)
+		const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
+		uint32_t vertex_count = buf->getVertexCount();
+		uint8_t *vertices = (uint8_t *)buf->getVertices();
+		for (uint32_t i = 0; i < vertex_count; i++)
 			((video::S3DVertex *)(vertices + i * stride))->Pos *= scale;
 
 		buf->recalculateBoundingBox();
@@ -157,13 +157,13 @@ void translateMesh(scene::IMesh *mesh, v3f vec)
 	aabb3f bbox;
 	bbox.reset(0, 0, 0);
 
-	u32 mc = mesh->getMeshBufferCount();
-	for (u32 j = 0; j < mc; j++) {
+	uint32_t mc = mesh->getMeshBufferCount();
+	for (uint32_t j = 0; j < mc; j++) {
 		scene::IMeshBuffer *buf = mesh->getMeshBuffer(j);
-		const u32 stride = getVertexPitchFromType(buf->getVertexType());
-		u32 vertex_count = buf->getVertexCount();
-		u8 *vertices = (u8 *)buf->getVertices();
-		for (u32 i = 0; i < vertex_count; i++)
+		const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
+		uint32_t vertex_count = buf->getVertexCount();
+		uint8_t *vertices = (uint8_t *)buf->getVertices();
+		for (uint32_t i = 0; i < vertex_count; i++)
 			((video::S3DVertex *)(vertices + i * stride))->Pos += vec;
 
 		buf->recalculateBoundingBox();
@@ -179,16 +179,16 @@ void translateMesh(scene::IMesh *mesh, v3f vec)
 
 void setMeshBufferColor(scene::IMeshBuffer *buf, const video::SColor &color)
 {
-	const u32 stride = getVertexPitchFromType(buf->getVertexType());
-	u32 vertex_count = buf->getVertexCount();
-	u8 *vertices = (u8 *) buf->getVertices();
-	for (u32 i = 0; i < vertex_count; i++)
+	const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
+	uint32_t vertex_count = buf->getVertexCount();
+	uint8_t *vertices = (uint8_t *) buf->getVertices();
+	for (uint32_t i = 0; i < vertex_count; i++)
 		((video::S3DVertex *) (vertices + i * stride))->Color = color;
 }
 
 void setAnimatedMeshColor(scene::IAnimatedMeshSceneNode *node, const video::SColor &color)
 {
-	for (u32 i = 0; i < node->getMaterialCount(); ++i) {
+	for (uint32_t i = 0; i < node->getMaterialCount(); ++i) {
 		node->getMaterial(i).EmissiveColor = color;
 	}
 }
@@ -198,40 +198,40 @@ void setMeshColor(scene::IMesh *mesh, const video::SColor &color)
 	if (mesh == NULL)
 		return;
 
-	u32 mc = mesh->getMeshBufferCount();
-	for (u32 j = 0; j < mc; j++)
+	uint32_t mc = mesh->getMeshBufferCount();
+	for (uint32_t j = 0; j < mc; j++)
 		setMeshBufferColor(mesh->getMeshBuffer(j), color);
 }
 
-void setMeshBufferTextureCoords(scene::IMeshBuffer *buf, const v2f *uv, u32 count)
+void setMeshBufferTextureCoords(scene::IMeshBuffer *buf, const v2f *uv, uint32_t count)
 {
-	const u32 stride = getVertexPitchFromType(buf->getVertexType());
+	const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
 	assert(buf->getVertexCount() >= count);
-	u8 *vertices = (u8 *) buf->getVertices();
-	for (u32 i = 0; i < count; i++)
+	uint8_t *vertices = (uint8_t *) buf->getVertices();
+	for (uint32_t i = 0; i < count; i++)
 		((video::S3DVertex*) (vertices + i * stride))->TCoords = uv[i];
 }
 
 template <typename F>
 static void applyToMesh(scene::IMesh *mesh, const F &fn)
 {
-	u16 mc = mesh->getMeshBufferCount();
-	for (u16 j = 0; j < mc; j++) {
+	uint16_t mc = mesh->getMeshBufferCount();
+	for (uint16_t j = 0; j < mc; j++) {
 		scene::IMeshBuffer *buf = mesh->getMeshBuffer(j);
-		const u32 stride = getVertexPitchFromType(buf->getVertexType());
-		u32 vertex_count = buf->getVertexCount();
+		const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
+		uint32_t vertex_count = buf->getVertexCount();
 		char *vertices = reinterpret_cast<char *>(buf->getVertices());
-		for (u32 i = 0; i < vertex_count; i++)
+		for (uint32_t i = 0; i < vertex_count; i++)
 			fn(reinterpret_cast<video::S3DVertex *>(vertices + i * stride));
 	}
 }
 
 void colorizeMeshBuffer(scene::IMeshBuffer *buf, const video::SColor *buffercolor)
 {
-	const u32 stride = getVertexPitchFromType(buf->getVertexType());
-	u32 vertex_count = buf->getVertexCount();
-	u8 *vertices = (u8 *) buf->getVertices();
-	for (u32 i = 0; i < vertex_count; i++) {
+	const uint32_t stride = getVertexPitchFromType(buf->getVertexType());
+	uint32_t vertex_count = buf->getVertexCount();
+	uint8_t *vertices = (uint8_t *) buf->getVertices();
+	for (uint32_t i = 0; i < vertex_count; i++) {
 		video::S3DVertex *vertex = (video::S3DVertex *) (vertices + i * stride);
 		video::SColor *vc = &(vertex->Color);
 		// Reset color
@@ -249,9 +249,9 @@ void setMeshColorByNormalXYZ(scene::IMesh *mesh,
 	if (!mesh)
 		return;
 	auto colorizator = [=] (video::S3DVertex *vertex) {
-		f32 x = fabs(vertex->Normal.X);
-		f32 y = fabs(vertex->Normal.Y);
-		f32 z = fabs(vertex->Normal.Z);
+		float x = fabs(vertex->Normal.X);
+		float y = fabs(vertex->Normal.Y);
+		float z = fabs(vertex->Normal.Z);
 		if (x >= y && x >= z)
 			vertex->Color = colorX;
 		else if (y >= z)
@@ -326,7 +326,7 @@ void recalculateBoundingBox(scene::IMesh *src_mesh)
 {
 	aabb3f bbox;
 	bbox.reset(0,0,0);
-	for (u16 j = 0; j < src_mesh->getMeshBufferCount(); j++) {
+	for (uint16_t j = 0; j < src_mesh->getMeshBufferCount(); j++) {
 		scene::IMeshBuffer *buf = src_mesh->getMeshBuffer(j);
 		buf->recalculateBoundingBox();
 		if (j == 0)
@@ -339,16 +339,16 @@ void recalculateBoundingBox(scene::IMesh *src_mesh)
 
 bool checkMeshNormals(scene::IMesh *mesh)
 {
-	u32 buffer_count = mesh->getMeshBufferCount();
+	uint32_t buffer_count = mesh->getMeshBufferCount();
 
-	for (u32 i = 0; i < buffer_count; i++) {
+	for (uint32_t i = 0; i < buffer_count; i++) {
 		scene::IMeshBuffer *buffer = mesh->getMeshBuffer(i);
 
 		// Here we intentionally check only first normal, assuming that if buffer
 		// has it valid, then most likely all other ones are fine too. We can
 		// check all of the normals to have length, but it seems like an overkill
 		// hurting the performance and covering only really weird broken models.
-		f32 length = buffer->getNormal(0).getLength();
+		float length = buffer->getNormal(0).getLength();
 
 		if (!std::isfinite(length) || length < 1e-10f)
 			return false;
@@ -362,7 +362,7 @@ scene::IMeshBuffer* cloneMeshBuffer(scene::IMeshBuffer *mesh_buffer)
 	switch (mesh_buffer->getVertexType()) {
 	case video::EVT_STANDARD: {
 		video::S3DVertex *v = (video::S3DVertex *) mesh_buffer->getVertices();
-		u16 *indices = mesh_buffer->getIndices();
+		uint16_t *indices = mesh_buffer->getIndices();
 		scene::SMeshBuffer *cloned_buffer = new scene::SMeshBuffer();
 		cloned_buffer->append(v, mesh_buffer->getVertexCount(), indices,
 			mesh_buffer->getIndexCount());
@@ -371,7 +371,7 @@ scene::IMeshBuffer* cloneMeshBuffer(scene::IMeshBuffer *mesh_buffer)
 	case video::EVT_2TCOORDS: {
 		video::S3DVertex2TCoords *v =
 			(video::S3DVertex2TCoords *) mesh_buffer->getVertices();
-		u16 *indices = mesh_buffer->getIndices();
+		uint16_t *indices = mesh_buffer->getIndices();
 		scene::SMeshBufferLightMap *cloned_buffer =
 			new scene::SMeshBufferLightMap();
 		cloned_buffer->append(v, mesh_buffer->getVertexCount(), indices,
@@ -381,7 +381,7 @@ scene::IMeshBuffer* cloneMeshBuffer(scene::IMeshBuffer *mesh_buffer)
 	case video::EVT_TANGENTS: {
 		video::S3DVertexTangents *v =
 			(video::S3DVertexTangents *) mesh_buffer->getVertices();
-		u16 *indices = mesh_buffer->getIndices();
+		uint16_t *indices = mesh_buffer->getIndices();
 		scene::SMeshBufferTangents *cloned_buffer =
 			new scene::SMeshBufferTangents();
 		cloned_buffer->append(v, mesh_buffer->getVertexCount(), indices,
@@ -397,7 +397,7 @@ scene::IMeshBuffer* cloneMeshBuffer(scene::IMeshBuffer *mesh_buffer)
 scene::SMesh* cloneMesh(scene::IMesh *src_mesh)
 {
 	scene::SMesh* dst_mesh = new scene::SMesh();
-	for (u16 j = 0; j < src_mesh->getMeshBufferCount(); j++) {
+	for (uint16_t j = 0; j < src_mesh->getMeshBufferCount(); j++) {
 		scene::IMeshBuffer *temp_buf = cloneMeshBuffer(
 			src_mesh->getMeshBuffer(j));
 		dst_mesh->addMeshBuffer(temp_buf);
@@ -408,11 +408,11 @@ scene::SMesh* cloneMesh(scene::IMesh *src_mesh)
 }
 
 scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
-		const f32 *uv_coords, float expand)
+		const float *uv_coords, float expand)
 {
 	scene::SMesh* dst_mesh = new scene::SMesh();
 
-	for (u16 j = 0; j < 6; j++)
+	for (uint16_t j = 0; j < 6; j++)
 	{
 		scene::IMeshBuffer *buf = new scene::SMeshBuffer();
 		buf->getMaterial().setFlag(video::EMF_LIGHTING, false);
@@ -434,14 +434,14 @@ scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
 		box.MaxEdge.Z += expand;
 
 		// Compute texture UV coords
-		f32 tx1 = (box.MinEdge.X / BS) + 0.5;
-		f32 ty1 = (box.MinEdge.Y / BS) + 0.5;
-		f32 tz1 = (box.MinEdge.Z / BS) + 0.5;
-		f32 tx2 = (box.MaxEdge.X / BS) + 0.5;
-		f32 ty2 = (box.MaxEdge.Y / BS) + 0.5;
-		f32 tz2 = (box.MaxEdge.Z / BS) + 0.5;
+		float tx1 = (box.MinEdge.X / BS) + 0.5;
+		float ty1 = (box.MinEdge.Y / BS) + 0.5;
+		float tz1 = (box.MinEdge.Z / BS) + 0.5;
+		float tx2 = (box.MaxEdge.X / BS) + 0.5;
+		float ty2 = (box.MaxEdge.Y / BS) + 0.5;
+		float tz2 = (box.MaxEdge.Z / BS) + 0.5;
 
-		f32 txc_default[24] = {
+		float txc_default[24] = {
 			// up
 			tx1, 1 - tz2, tx2, 1 - tz1,
 			// down
@@ -457,7 +457,7 @@ scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
 		};
 
 		// use default texture UV mapping if not provided
-		const f32 *txc = uv_coords ? uv_coords : txc_default;
+		const float *txc = uv_coords ? uv_coords : txc_default;
 
 		v3f min = box.MinEdge;
 		v3f max = box.MaxEdge;
@@ -496,9 +496,9 @@ scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
 			video::S3DVertex(min.X,min.Y,min.Z, 0,0,-1, c, txc[20],txc[23]),
 		};
 
-		u16 indices[] = {0,1,2,2,3,0};
+		uint16_t indices[] = {0,1,2,2,3,0};
 
-		for(u16 j = 0; j < 24; j += 4)
+		for(uint16_t j = 0; j < 24; j += 4)
 		{
 			scene::IMeshBuffer *buf = dst_mesh->getMeshBuffer(j / 4);
 			buf->append(vertices + j, 4, indices, 6);
@@ -509,20 +509,20 @@ scene::IMesh* convertNodeboxesToMesh(const std::vector<aabb3f> &boxes,
 
 struct vcache
 {
-	core::array<u32> tris;
+	core::array<uint32_t> tris;
 	float score;
-	s16 cachepos;
-	u16 NumActiveTris;
+	int16_t cachepos;
+	uint16_t NumActiveTris;
 };
 
 struct tcache
 {
-	u16 ind[3];
+	uint16_t ind[3];
 	float score;
 	bool drawn;
 };
 
-const u16 cachesize = 32;
+const uint16_t cachesize = 32;
 
 float FindVertexScore(vcache *v)
 {
@@ -586,17 +586,17 @@ public:
 	}
 
 	// Adds this vertex index and returns the highest-scoring triangle index
-	u32 add(u16 vert, bool updatetris = false)
+	uint32_t add(uint16_t vert, bool updatetris = false)
 	{
 		bool found = false;
 
 		// Mark existing pos as empty
-		for (u16 i = 0; i < cachesize; i++)
+		for (uint16_t i = 0; i < cachesize; i++)
 		{
 			if (cache[i] == vert)
 			{
 				// Move everything down
-				for (u16 j = i; j; j--)
+				for (uint16_t j = i; j; j--)
 				{
 					cache[j] = cache[j - 1];
 				}
@@ -612,7 +612,7 @@ public:
 				vc[cache[cachesize-1]].cachepos = -1;
 
 			// Move everything down
-			for (u16 i = cachesize - 1; i; i--)
+			for (uint16_t i = cachesize - 1; i; i--)
 			{
 				cache[i] = cache[i - 1];
 			}
@@ -620,13 +620,13 @@ public:
 
 		cache[0] = vert;
 
-		u32 highest = 0;
+		uint32_t highest = 0;
 		float hiscore = 0;
 
 		if (updatetris)
 		{
 			// Update cache positions
-			for (u16 i = 0; i < cachesize; i++)
+			for (uint16_t i = 0; i < cachesize; i++)
 			{
 				if (cache[i] == -1)
 					break;
@@ -640,8 +640,8 @@ public:
 				if (i == -1)
 					break;
 
-				const u16 trisize = vc[i].tris.size();
-				for (u16 t = 0; t < trisize; t++)
+				const uint16_t trisize = vc[i].tris.size();
+				for (uint16_t t = 0; t < trisize; t++)
 				{
 					tcache *tri = &tc[vc[i].tris[t]];
 
@@ -663,7 +663,7 @@ public:
 	}
 
 private:
-	s32 cache[cachesize];
+	int32_t cache[cachesize];
 	vcache *vc;
 	tcache *tc;
 };
@@ -683,9 +683,9 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 	scene::SMesh *newmesh = new scene::SMesh();
 	newmesh->BoundingBox = mesh->getBoundingBox();
 
-	const u32 mbcount = mesh->getMeshBufferCount();
+	const uint32_t mbcount = mesh->getMeshBufferCount();
 
-	for (u32 b = 0; b < mbcount; ++b)
+	for (uint32_t b = 0; b < mbcount; ++b)
 	{
 		const scene::IMeshBuffer *mb = mesh->getMeshBuffer(b);
 
@@ -696,10 +696,10 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 			return 0;
 		}
 
-		const u32 icount = mb->getIndexCount();
-		const u32 tcount = icount / 3;
-		const u32 vcount = mb->getVertexCount();
-		const u16 *ind = mb->getIndices();
+		const uint32_t icount = mb->getIndexCount();
+		const uint32_t tcount = icount / 3;
+		const uint32_t vcount = mb->getVertexCount();
+		const uint16_t *ind = mb->getIndices();
 
 		vcache *vc = new vcache[vcount];
 		tcache *tc = new tcache[tcount];
@@ -707,7 +707,7 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 		f_lru lru(vc, tc);
 
 		// init
-		for (u16 i = 0; i < vcount; i++)
+		for (uint16_t i = 0; i < vcount; i++)
 		{
 			vc[i].score = 0;
 			vc[i].cachepos = -1;
@@ -715,20 +715,20 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 		}
 
 		// First pass: count how many times a vert is used
-		for (u32 i = 0; i < icount; i += 3)
+		for (uint32_t i = 0; i < icount; i += 3)
 		{
 			vc[ind[i]].NumActiveTris++;
 			vc[ind[i + 1]].NumActiveTris++;
 			vc[ind[i + 2]].NumActiveTris++;
 
-			const u32 tri_ind = i/3;
+			const uint32_t tri_ind = i/3;
 			tc[tri_ind].ind[0] = ind[i];
 			tc[tri_ind].ind[1] = ind[i + 1];
 			tc[tri_ind].ind[2] = ind[i + 2];
 		}
 
 		// Second pass: list of each triangle
-		for (u32 i = 0; i < tcount; i++)
+		for (uint32_t i = 0; i < tcount; i++)
 		{
 			vc[tc[i].ind[0]].tris.push_back(i);
 			vc[tc[i].ind[1]].tris.push_back(i);
@@ -738,11 +738,11 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 		}
 
 		// Give initial scores
-		for (u16 i = 0; i < vcount; i++)
+		for (uint16_t i = 0; i < vcount; i++)
 		{
 			vc[i].score = FindVertexScore(&vc[i]);
 		}
-		for (u32 i = 0; i < tcount; i++)
+		for (uint32_t i = 0; i < tcount; i++)
 		{
 			tc[i].score =
 					vc[tc[i].ind[0]].score +
@@ -762,19 +762,19 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 				buf->Vertices.reallocate(vcount);
 				buf->Indices.reallocate(icount);
 
-				core::map<const video::S3DVertex, const u16> sind; // search index for fast operation
-				typedef core::map<const video::S3DVertex, const u16>::Node snode;
+				core::map<const video::S3DVertex, const uint16_t> sind; // search index for fast operation
+				typedef core::map<const video::S3DVertex, const uint16_t>::Node snode;
 
 				// Main algorithm
-				u32 highest = 0;
-				u32 drawcalls = 0;
+				uint32_t highest = 0;
+				uint32_t drawcalls = 0;
 				for (;;)
 				{
 					if (tc[highest].drawn)
 					{
 						bool found = false;
 						float hiscore = 0;
-						for (u32 t = 0; t < tcount; t++)
+						for (uint32_t t = 0; t < tcount; t++)
 						{
 							if (!tc[t].drawn)
 							{
@@ -791,7 +791,7 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 					}
 
 					// Output the best triangle
-					u16 newind = buf->Vertices.size();
+					uint16_t newind = buf->Vertices.size();
 
 					snode *s = sind.find(v[tc[highest].ind[0]]);
 
@@ -840,9 +840,9 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 
 					tc[highest].drawn = true;
 
-					for (u16 j : tc[highest].ind) {
+					for (uint16_t j : tc[highest].ind) {
 						vcache *vert = &vc[j];
-						for (u16 t = 0; t < vert->tris.size(); t++)
+						for (uint16_t t = 0; t < vert->tris.size(); t++)
 						{
 							if (highest == vert->tris[t])
 							{
@@ -873,19 +873,19 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 				buf->Vertices.reallocate(vcount);
 				buf->Indices.reallocate(icount);
 
-				core::map<const video::S3DVertex2TCoords, const u16> sind; // search index for fast operation
-				typedef core::map<const video::S3DVertex2TCoords, const u16>::Node snode;
+				core::map<const video::S3DVertex2TCoords, const uint16_t> sind; // search index for fast operation
+				typedef core::map<const video::S3DVertex2TCoords, const uint16_t>::Node snode;
 
 				// Main algorithm
-				u32 highest = 0;
-				u32 drawcalls = 0;
+				uint32_t highest = 0;
+				uint32_t drawcalls = 0;
 				for (;;)
 				{
 					if (tc[highest].drawn)
 					{
 						bool found = false;
 						float hiscore = 0;
-						for (u32 t = 0; t < tcount; t++)
+						for (uint32_t t = 0; t < tcount; t++)
 						{
 							if (!tc[t].drawn)
 							{
@@ -902,7 +902,7 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 					}
 
 					// Output the best triangle
-					u16 newind = buf->Vertices.size();
+					uint16_t newind = buf->Vertices.size();
 
 					snode *s = sind.find(v[tc[highest].ind[0]]);
 
@@ -951,9 +951,9 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 
 					tc[highest].drawn = true;
 
-					for (u16 j : tc[highest].ind) {
+					for (uint16_t j : tc[highest].ind) {
 						vcache *vert = &vc[j];
-						for (u16 t = 0; t < vert->tris.size(); t++)
+						for (uint16_t t = 0; t < vert->tris.size(); t++)
 						{
 							if (highest == vert->tris[t])
 							{
@@ -985,19 +985,19 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 				buf->Vertices.reallocate(vcount);
 				buf->Indices.reallocate(icount);
 
-				core::map<const video::S3DVertexTangents, const u16> sind; // search index for fast operation
-				typedef core::map<const video::S3DVertexTangents, const u16>::Node snode;
+				core::map<const video::S3DVertexTangents, const uint16_t> sind; // search index for fast operation
+				typedef core::map<const video::S3DVertexTangents, const uint16_t>::Node snode;
 
 				// Main algorithm
-				u32 highest = 0;
-				u32 drawcalls = 0;
+				uint32_t highest = 0;
+				uint32_t drawcalls = 0;
 				for (;;)
 				{
 					if (tc[highest].drawn)
 					{
 						bool found = false;
 						float hiscore = 0;
-						for (u32 t = 0; t < tcount; t++)
+						for (uint32_t t = 0; t < tcount; t++)
 						{
 							if (!tc[t].drawn)
 							{
@@ -1014,7 +1014,7 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 					}
 
 					// Output the best triangle
-					u16 newind = buf->Vertices.size();
+					uint16_t newind = buf->Vertices.size();
 
 					snode *s = sind.find(v[tc[highest].ind[0]]);
 
@@ -1063,9 +1063,9 @@ scene::IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh)
 
 					tc[highest].drawn = true;
 
-					for (u16 j : tc[highest].ind) {
+					for (uint16_t j : tc[highest].ind) {
 						vcache *vert = &vc[j];
-						for (u16 t = 0; t < vert->tris.size(); t++)
+						for (uint16_t t = 0; t < vert->tris.size(); t++)
 						{
 							if (highest == vert->tris[t])
 							{

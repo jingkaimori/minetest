@@ -343,32 +343,32 @@ void TestVoxelArea::test_index_v3s16_all_neg()
 void TestVoxelArea::test_add_x()
 {
 	v3s16 extent;
-	u32 i = 4;
+	uint32_t i = 4;
 	VoxelArea::add_x(extent, i, 8);
-	UASSERTEQ(u32, i, 12)
+	UASSERTEQ(uint32_t, i, 12)
 }
 
 void TestVoxelArea::test_add_y()
 {
 	v3s16 extent(740, 16, 87);
-	u32 i = 8;
+	uint32_t i = 8;
 	VoxelArea::add_y(extent, i, 88);
-	UASSERTEQ(u32, i, 65128)
+	UASSERTEQ(uint32_t, i, 65128)
 }
 
 void TestVoxelArea::test_add_z()
 {
 	v3s16 extent(114, 80, 256);
-	u32 i = 4;
+	uint32_t i = 4;
 	VoxelArea::add_z(extent, i, 8);
-	UASSERTEQ(u32, i, 72964)
+	UASSERTEQ(uint32_t, i, 72964)
 }
 
 void TestVoxelArea::test_add_p()
 {
 	v3s16 extent(33, 14, 742);
 	v3s16 a(15, 12, 369);
-	u32 i = 4;
+	uint32_t i = 4;
 	VoxelArea::add_p(extent, i, a);
-	UASSERTEQ(u32, i, 170893)
+	UASSERTEQ(uint32_t, i, 170893)
 }

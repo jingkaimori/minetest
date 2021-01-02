@@ -141,7 +141,7 @@ luaL_Reg LuaPerlinNoise::methods[] = {
   LuaPerlinNoiseMap
 */
 
-LuaPerlinNoiseMap::LuaPerlinNoiseMap(NoiseParams *params, s32 seed, v3s16 size)
+LuaPerlinNoiseMap::LuaPerlinNoiseMap(NoiseParams *params, int32_t seed, v3s16 size)
 {
 	m_is3d = size.Z > 1;
 	np = *params;
@@ -171,9 +171,9 @@ int LuaPerlinNoiseMap::l_get_2d_map(lua_State *L)
 	n->perlinMap2D(p.X, p.Y);
 
 	lua_createtable(L, n->sy, 0);
-	for (u32 y = 0; y != n->sy; y++) {
+	for (uint32_t y = 0; y != n->sy; y++) {
 		lua_createtable(L, n->sx, 0);
-		for (u32 x = 0; x != n->sx; x++) {
+		for (uint32_t x = 0; x != n->sx; x++) {
 			lua_pushnumber(L, n->result[i++]);
 			lua_rawseti(L, -2, x + 1);
 		}
@@ -224,11 +224,11 @@ int LuaPerlinNoiseMap::l_get_3d_map(lua_State *L)
 	n->perlinMap3D(p.X, p.Y, p.Z);
 
 	lua_createtable(L, n->sz, 0);
-	for (u32 z = 0; z != n->sz; z++) {
+	for (uint32_t z = 0; z != n->sz; z++) {
 		lua_createtable(L, n->sy, 0);
-		for (u32 y = 0; y != n->sy; y++) {
+		for (uint32_t y = 0; y != n->sy; y++) {
 			lua_createtable(L, n->sx, 0);
-			for (u32 x = 0; x != n->sx; x++) {
+			for (uint32_t x = 0; x != n->sx; x++) {
 				lua_pushnumber(L, n->result[i++]);
 				lua_rawseti(L, -2, x + 1);
 			}
@@ -437,7 +437,7 @@ int LuaPseudoRandom::create_object(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
 
-	u64 seed = luaL_checknumber(L, 1);
+	uint64_t seed = luaL_checknumber(L, 1);
 	LuaPseudoRandom *o = new LuaPseudoRandom(seed);
 	*(void **)(lua_newuserdata(L, sizeof(void *))) = o;
 	luaL_getmetatable(L, className);
@@ -508,8 +508,8 @@ int LuaPcgRandom::l_next(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 
 	LuaPcgRandom *o = checkobject(L, 1);
-	u32 min = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : o->m_rnd.RANDOM_MIN;
-	u32 max = lua_isnumber(L, 3) ? lua_tointeger(L, 3) : o->m_rnd.RANDOM_MAX;
+	uint32_t min = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : o->m_rnd.RANDOM_MIN;
+	uint32_t max = lua_isnumber(L, 3) ? lua_tointeger(L, 3) : o->m_rnd.RANDOM_MAX;
 
 	lua_pushinteger(L, o->m_rnd.range(min, max));
 	return 1;
@@ -521,8 +521,8 @@ int LuaPcgRandom::l_rand_normal_dist(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 
 	LuaPcgRandom *o = checkobject(L, 1);
-	u32 min = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : o->m_rnd.RANDOM_MIN;
-	u32 max = lua_isnumber(L, 3) ? lua_tointeger(L, 3) : o->m_rnd.RANDOM_MAX;
+	uint32_t min = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : o->m_rnd.RANDOM_MIN;
+	uint32_t max = lua_isnumber(L, 3) ? lua_tointeger(L, 3) : o->m_rnd.RANDOM_MAX;
 	int num_trials = lua_isnumber(L, 4) ? lua_tointeger(L, 4) : 6;
 
 	lua_pushinteger(L, o->m_rnd.randNormalDist(min, max, num_trials));
@@ -534,7 +534,7 @@ int LuaPcgRandom::create_object(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
 
-	u64 seed = luaL_checknumber(L, 1);
+	uint64_t seed = luaL_checknumber(L, 1);
 	LuaPcgRandom *o = lua_isnumber(L, 2) ?
 		new LuaPcgRandom(seed, lua_tointeger(L, 2)) :
 		new LuaPcgRandom(seed);
@@ -613,7 +613,7 @@ int LuaSecureRandom::l_next_bytes(lua_State *L)
 	NO_MAP_LOCK_REQUIRED;
 
 	LuaSecureRandom *o = checkobject(L, 1);
-	u32 count = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : 1;
+	uint32_t count = lua_isnumber(L, 2) ? lua_tointeger(L, 2) : 1;
 
 	// Limit count
 	count = MYMIN(RAND_BUF_SIZE, count);

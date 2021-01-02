@@ -50,7 +50,7 @@ DecorationManager::DecorationManager(IGameDef *gamedef) :
 }
 
 
-size_t DecorationManager::placeAllDecos(Mapgen *mg, u32 blockseed,
+size_t DecorationManager::placeAllDecos(Mapgen *mg, uint32_t blockseed,
 	v3s16 nmin, v3s16 nmax)
 {
 	size_t nplaced = 0;
@@ -88,7 +88,7 @@ void Decoration::resolveNodeNames()
 bool Decoration::canPlaceDecoration(MMVManip *vm, v3s16 p)
 {
 	// Check if the decoration can be placed on this node
-	u32 vi = vm->m_area.index(p);
+	uint32_t vi = vm->m_area.index(p);
 	if (!CONTAINS(c_place_on, vm->m_data[vi].getContent()))
 		return false;
 
@@ -119,7 +119,7 @@ bool Decoration::canPlaceDecoration(MMVManip *vm, v3s16 p)
 
 	// Check these 16 neighbouring nodes for enough spawnby nodes
 	for (size_t i = 0; i != ARRLEN(dirs); i++) {
-		u32 index = vm->m_area.index(p + dirs[i]);
+		uint32_t index = vm->m_area.index(p + dirs[i]);
 		if (!vm->m_area.contains(index))
 			continue;
 
@@ -134,7 +134,7 @@ bool Decoration::canPlaceDecoration(MMVManip *vm, v3s16 p)
 }
 
 
-size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
+size_t Decoration::placeDeco(Mapgen *mg, uint32_t blockseed, v3s16 nmin, v3s16 nmax)
 {
 	PcgRandom ps(blockseed + 53);
 	int carea_size = nmax.X - nmin.X + 1;
@@ -144,11 +144,11 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 	if (carea_size % sidelen)
 		sidelen = carea_size;
 
-	s16 divlen = carea_size / sidelen;
+	int16_t divlen = carea_size / sidelen;
 	int area = sidelen * sidelen;
 
-	for (s16 z0 = 0; z0 < divlen; z0++)
-	for (s16 x0 = 0; x0 < divlen; x0++) {
+	for (int16_t z0 = 0; z0 < divlen; z0++)
+	for (int16_t x0 = 0; x0 < divlen; x0++) {
 		v2s16 p2d_center( // Center position of part of division
 			nmin.X + sidelen / 2 + sidelen * x0,
 			nmin.Z + sidelen / 2 + sidelen * z0
@@ -167,7 +167,7 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 		float nval = (flags & DECO_USE_NOISE) ?
 			NoisePerlin2D(&np, p2d_center.X, p2d_center.Y, mapseed) :
 			fill_ratio;
-		u32 deco_count = 0;
+		uint32_t deco_count = 0;
 
 		if (nval >= 10.0f) {
 			// Complete coverage. Disable random placement to avoid
@@ -185,10 +185,10 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 			}
 		}
 
-		s16 x = p2d_min.X - 1;
-		s16 z = p2d_min.Y;
+		int16_t x = p2d_min.X - 1;
+		int16_t z = p2d_min.Y;
 
-		for (u32 i = 0; i < deco_count; i++) {
+		for (uint32_t i = 0; i < deco_count; i++) {
 			if (!cover) {
 				x = ps.range(p2d_min.X, p2d_max.X);
 				z = ps.range(p2d_min.Y, p2d_max.Y);
@@ -212,7 +212,7 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 				}
 
 				// Get all floors and ceilings in node column
-				u16 size = (nmax.Y - nmin.Y + 1) / 2;
+				uint16_t size = (nmax.Y - nmin.Y + 1) / 2;
 				std::vector<s16> floors;
 				std::vector<s16> ceilings;
 				floors.reserve(size);
@@ -222,7 +222,7 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 
 				if (flags & DECO_ALL_FLOORS) {
 					// Floor decorations
-					for (const s16 y : floors) {
+					for (const int16_t y : floors) {
 						if (y < y_min || y > y_max)
 							continue;
 
@@ -235,7 +235,7 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 
 				if (flags & DECO_ALL_CEILINGS) {
 					// Ceiling decorations
-					for (const s16 y : ceilings) {
+					for (const int16_t y : ceilings) {
 						if (y < y_min || y > y_max)
 							continue;
 
@@ -246,7 +246,7 @@ size_t Decoration::placeDeco(Mapgen *mg, u32 blockseed, v3s16 nmin, v3s16 nmax)
 					}
 				}
 			} else { // Heightmap decorations
-				s16 y = -MAX_MAP_GENERATION_LIMIT;
+				int16_t y = -MAX_MAP_GENERATION_LIMIT;
 				if (flags & DECO_LIQUID_SURFACE)
 					y = mg->findLiquidSurface(v2s16(x, z), nmin.Y, nmax.Y);
 				else if (mg->heightmap)
@@ -347,14 +347,14 @@ size_t DecoSimple::generate(MMVManip *vm, PcgRandom *pr, v3s16 p, bool ceiling)
 	}
 
 	content_t c_place = c_decos[pr->range(0, c_decos.size() - 1)];
-	s16 height = (deco_height_max > 0) ?
+	int16_t height = (deco_height_max > 0) ?
 		pr->range(deco_height, deco_height_max) : deco_height;
-	u8 param2 = (deco_param2_max > 0) ?
+	uint8_t param2 = (deco_param2_max > 0) ?
 		pr->range(deco_param2, deco_param2_max) : deco_param2;
 	bool force_placement = (flags & DECO_FORCE_PLACEMENT);
 
 	const v3s16 &em = vm->m_area.getExtent();
-	u32 vi = vm->m_area.index(p);
+	uint32_t vi = vm->m_area.index(p);
 
 	if (ceiling) {
 		// Ceiling decorations

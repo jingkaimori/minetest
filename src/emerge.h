@@ -49,7 +49,7 @@ class ModApiMapgen;
 // Structure containing inputs/outputs for chunk generation
 struct BlockMakeData {
 	MMVManip *vmanip = nullptr;
-	u64 seed = 0;
+	uint64_t seed = 0;
 	v3s16 blockpos_min;
 	v3s16 blockpos_max;
 	UniqueQueue<v3s16> transforming_liquid;
@@ -81,8 +81,8 @@ typedef std::vector<
 > EmergeCallbackList;
 
 struct BlockEmergeData {
-	u16 peer_requested;
-	u16 flags;
+	uint16_t peer_requested;
+	uint16_t flags;
 	EmergeCallbackList callbacks;
 };
 
@@ -96,7 +96,7 @@ public:
 	const NodeDefManager *ndef; // shared
 	bool enable_mapgen_debug_info;
 
-	u32 gen_notify_on;
+	uint32_t gen_notify_on;
 	const std::set<u32> *gen_notify_on_deco_ids; // shared
 
 	BiomeManager *biomemgr;
@@ -121,7 +121,7 @@ public:
 	bool enable_mapgen_debug_info;
 
 	// Generation Notify
-	u32 gen_notify_on = 0;
+	uint32_t gen_notify_on = 0;
 	std::set<u32> gen_notify_on_deco_ids;
 
 	// Parameters passed to mapgens owned by ServerMap
@@ -166,7 +166,7 @@ public:
 	bool enqueueBlockEmergeEx(
 		v3s16 blockpos,
 		session_t peer_id,
-		u16 flags,
+		uint16_t flags,
 		EmergeCompletionCallback callback,
 		void *callback_param);
 
@@ -179,7 +179,7 @@ public:
 	int getGroundLevelAtPoint(v2s16 p);
 	bool isBlockUnderground(v3s16 blockpos);
 
-	static v3s16 getContainingChunk(v3s16 blockpos, s16 chunksize);
+	static v3s16 getContainingChunk(v3s16 blockpos, int16_t chunksize);
 
 private:
 	std::vector<Mapgen *> m_mapgens;
@@ -190,9 +190,9 @@ private:
 	std::map<v3s16, BlockEmergeData> m_blocks_enqueued;
 	std::unordered_map<u16, u16> m_peer_queue_count;
 
-	u16 m_qlimit_total;
-	u16 m_qlimit_diskonly;
-	u16 m_qlimit_generate;
+	uint16_t m_qlimit_total;
+	uint16_t m_qlimit_diskonly;
+	uint16_t m_qlimit_generate;
 
 	// Managers of various map generation-related components
 	// Note that each Mapgen gets a copy(!) of these to work with
@@ -206,8 +206,8 @@ private:
 
 	bool pushBlockEmergeData(
 		v3s16 pos,
-		u16 peer_requested,
-		u16 flags,
+		uint16_t peer_requested,
+		uint16_t flags,
 		EmergeCompletionCallback callback,
 		void *callback_param,
 		bool *entry_already_exists);

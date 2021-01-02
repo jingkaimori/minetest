@@ -72,7 +72,7 @@ struct ItemDefinition
 	/*
 		Item stack and interaction properties
 	*/
-	u16 stack_max;
+	uint16_t stack_max;
 	bool usable;
 	bool liquids_pointable;
 	// May be NULL. If non-NULL, deleted by destructor
@@ -80,7 +80,7 @@ struct ItemDefinition
 	ItemGroupList groups;
 	SimpleSoundSpec sound_place;
 	SimpleSoundSpec sound_place_failed;
-	f32 range;
+	float range;
 
 	// Client shall immediately place this node when player places the item.
 	// Server will update the precise end result a moment later.
@@ -95,7 +95,7 @@ struct ItemDefinition
 	ItemDefinition& operator=(const ItemDefinition &def);
 	~ItemDefinition();
 	void reset();
-	void serialize(std::ostream &os, u16 protocol_version) const;
+	void serialize(std::ostream &os, uint16_t protocol_version) const;
 	void deSerialize(std::istream &is);
 private:
 	void resetInitial();
@@ -132,7 +132,7 @@ public:
 		Client *client) const = 0;
 #endif
 
-	virtual void serialize(std::ostream &os, u16 protocol_version)=0;
+	virtual void serialize(std::ostream &os, uint16_t protocol_version)=0;
 };
 
 class IWritableItemDefManager : public IItemDefManager
@@ -175,7 +175,7 @@ public:
 	virtual void registerAlias(const std::string &name,
 			const std::string &convert_to)=0;
 
-	virtual void serialize(std::ostream &os, u16 protocol_version)=0;
+	virtual void serialize(std::ostream &os, uint16_t protocol_version)=0;
 	virtual void deSerialize(std::istream &is)=0;
 
 	// Do stuff asked by threads that can only be done in the main thread

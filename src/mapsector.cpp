@@ -48,7 +48,7 @@ void MapSector::deleteBlocks()
 	m_blocks.clear();
 }
 
-MapBlock * MapSector::getBlockBuffered(s16 y)
+MapBlock * MapSector::getBlockBuffered(int16_t y)
 {
 	MapBlock *block;
 
@@ -67,12 +67,12 @@ MapBlock * MapSector::getBlockBuffered(s16 y)
 	return block;
 }
 
-MapBlock * MapSector::getBlockNoCreateNoEx(s16 y)
+MapBlock * MapSector::getBlockNoCreateNoEx(int16_t y)
 {
 	return getBlockBuffered(y);
 }
 
-MapBlock * MapSector::createBlankBlockNoInsert(s16 y)
+MapBlock * MapSector::createBlankBlockNoInsert(int16_t y)
 {
 	assert(getBlockBuffered(y) == NULL);	// Pre-condition
 
@@ -83,7 +83,7 @@ MapBlock * MapSector::createBlankBlockNoInsert(s16 y)
 	return block;
 }
 
-MapBlock * MapSector::createBlankBlock(s16 y)
+MapBlock * MapSector::createBlankBlock(int16_t y)
 {
 	MapBlock *block = createBlankBlockNoInsert(y);
 
@@ -94,7 +94,7 @@ MapBlock * MapSector::createBlankBlock(s16 y)
 
 void MapSector::insertBlock(MapBlock *block)
 {
-	s16 block_y = block->getPos().Y;
+	int16_t block_y = block->getPos().Y;
 
 	MapBlock *block2 = getBlockBuffered(block_y);
 	if (block2) {
@@ -110,7 +110,7 @@ void MapSector::insertBlock(MapBlock *block)
 
 void MapSector::deleteBlock(MapBlock *block)
 {
-	s16 block_y = block->getPos().Y;
+	int16_t block_y = block->getPos().Y;
 
 	// Clear from cache
 	m_block_cache = nullptr;

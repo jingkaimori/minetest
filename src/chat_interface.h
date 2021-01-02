@@ -40,15 +40,15 @@ public:
 
 struct ChatEventTimeInfo : public ChatEvent {
 	ChatEventTimeInfo(
-		u64 a_game_time,
-		u32 a_time) :
+		uint64_t a_game_time,
+		uint32_t a_time) :
 	ChatEvent(CET_TIME_INFO),
 	game_time(a_game_time),
 	time(a_time)
 	{}
 
-	u64 game_time;
-	u32 time;
+	uint64_t game_time;
+	uint32_t time;
 };
 
 struct ChatEventNick : public ChatEvent {

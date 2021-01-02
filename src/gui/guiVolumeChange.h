@@ -29,7 +29,7 @@ class GUIVolumeChange : public GUIModalMenu
 {
 public:
 	GUIVolumeChange(gui::IGUIEnvironment* env,
-			gui::IGUIElement* parent, s32 id,
+			gui::IGUIElement* parent, int32_t id,
 			IMenuManager *menumgr, ISimpleTextureSource *tsrc);
 	~GUIVolumeChange();
 
@@ -46,8 +46,8 @@ public:
 	bool pausesGame() { return true; }
 
 protected:
-	std::wstring getLabelByID(s32 id) { return L""; }
-	std::string getNameByID(s32 id) { return ""; }
+	std::wstring getLabelByID(int32_t id) { return L""; }
+	std::string getNameByID(int32_t id) { return ""; }
 
 private:
 	ISimpleTextureSource *m_tsrc;

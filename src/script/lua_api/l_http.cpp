@@ -152,7 +152,7 @@ int ModApiHttp::l_http_fetch_async_get(lua_State *L)
 	std::string handle_str = luaL_checkstring(L, 1);
 
 	// Convert hex string back to 64-bit handle
-	u64 handle;
+	uint64_t handle;
 	std::stringstream handle_conversion_stream;
 	handle_conversion_stream << std::hex << handle_str;
 	handle_conversion_stream >> handle;

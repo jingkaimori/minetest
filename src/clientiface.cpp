@@ -138,7 +138,7 @@ void RemoteClient::GetNextBlocks (
 	camera_dir.rotateYZBy(sao->getLookPitch());
 	camera_dir.rotateXZBy(sao->getRotation().Y);
 
-	u16 max_simul_sends_usually = m_max_simul_sends;
+	uint16_t max_simul_sends_usually = m_max_simul_sends;
 
 	/*
 		Check the time from last addNode/removeNode.
@@ -154,7 +154,7 @@ void RemoteClient::GetNextBlocks (
 	/*
 		Number of blocks sending + number of blocks selected for sending
 	*/
-	u32 num_blocks_selected = m_blocks_sending.size();
+	uint32_t num_blocks_selected = m_blocks_sending.size();
 
 	/*
 		next time d will be continued from the d from which the nearest
@@ -163,10 +163,10 @@ void RemoteClient::GetNextBlocks (
 		This is because not necessarily any of the blocks found this
 		time are actually sent.
 	*/
-	s32 new_nearest_unsent_d = -1;
+	int32_t new_nearest_unsent_d = -1;
 
 	// Get view range and camera fov (radians) from the client
-	s16 wanted_range = sao->getWantedRange() + 1;
+	int16_t wanted_range = sao->getWantedRange() + 1;
 	float camera_fov = sao->getFov();
 
 	/*
@@ -190,7 +190,7 @@ void RemoteClient::GetNextBlocks (
 	}
 	m_blocks_modified.clear();
 
-	s16 d_start = m_nearest_unsent_d;
+	int16_t d_start = m_nearest_unsent_d;
 
 	// Distrust client-sent FOV and get server-set player object property
 	// zoom FOV (degrees) as a check to avoid hacked clients using FOV to load
@@ -200,38 +200,38 @@ void RemoteClient::GetNextBlocks (
 		0.0f :
 		std::max(camera_fov, sao->getZoomFOV() * core::DEGTORAD);
 
-	const s16 full_d_max = std::min(adjustDist(m_max_send_distance, prop_zoom_fov),
+	const int16_t full_d_max = std::min(adjustDist(m_max_send_distance, prop_zoom_fov),
 		wanted_range);
-	const s16 d_opt = std::min(adjustDist(m_block_optimize_distance, prop_zoom_fov),
+	const int16_t d_opt = std::min(adjustDist(m_block_optimize_distance, prop_zoom_fov),
 		wanted_range);
-	const s16 d_blocks_in_sight = full_d_max * BS * MAP_BLOCKSIZE;
+	const int16_t d_blocks_in_sight = full_d_max * BS * MAP_BLOCKSIZE;
 
-	s16 d_max_gen = std::min(adjustDist(m_max_gen_distance, prop_zoom_fov),
+	int16_t d_max_gen = std::min(adjustDist(m_max_gen_distance, prop_zoom_fov),
 		wanted_range);
 
-	s16 d_max = full_d_max;
+	int16_t d_max = full_d_max;
 
 	// Don't loop very much at a time
-	s16 max_d_increment_at_time = 2;
+	int16_t max_d_increment_at_time = 2;
 	if (d_max > d_start + max_d_increment_at_time)
 		d_max = d_start + max_d_increment_at_time;
 
 	// cos(angle between velocity and camera) * |velocity|
 	// Limit to 0.0f in case player moves backwards.
-	f32 dot = rangelim(camera_dir.dotProduct(playerspeed), 0.0f, 300.0f);
+	float dot = rangelim(camera_dir.dotProduct(playerspeed), 0.0f, 300.0f);
 
 	// Reduce the field of view when a player moves and looks forward.
 	// limit max fov effect to 50%, 60% at 20n/s fly speed
 	camera_fov = camera_fov / (1 + dot / 300.0f);
 
-	s32 nearest_emerged_d = -1;
-	s32 nearest_emergefull_d = -1;
-	s32 nearest_sent_d = -1;
+	int32_t nearest_emerged_d = -1;
+	int32_t nearest_emergefull_d = -1;
+	int32_t nearest_sent_d = -1;
 	//bool queue_is_full = false;
 
 	const v3s16 cam_pos_nodes = floatToInt(camera_pos, BS);
 
-	s16 d;
+	int16_t d;
 	for (d = d_start; d <= d_max; d++) {
 		/*
 			Get the border/face dot coordinates of a "d-radiused"
@@ -252,7 +252,7 @@ void RemoteClient::GetNextBlocks (
 			*/
 
 			// Start with the usual maximum
-			u16 max_simul_dynamic = max_simul_sends_usually;
+			uint16_t max_simul_dynamic = max_simul_sends_usually;
 
 			// If block is very close, allow full maximum
 			if (d <= BLOCK_SEND_DISABLE_LIMITS_MAX_D)
@@ -285,7 +285,7 @@ void RemoteClient::GetNextBlocks (
 				movement.
 				(0.1 is about 4 degrees)
 			*/
-			f32 dist;
+			float dist;
 			if (!(isBlockInSight(p, camera_pos, camera_dir, camera_fov,
 						d_blocks_in_sight, &dist) ||
 					(playerspeed.getLength() > 1.0f * BS &&
@@ -599,7 +599,7 @@ void RemoteClient::notifyEvent(ClientStateEvent event)
 	}
 }
 
-u64 RemoteClient::uptime() const
+uint64_t RemoteClient::uptime() const
 {
 	return porting::getTimeS() - m_connection_time;
 }
@@ -698,7 +698,7 @@ void ClientInterface::UpdatePlayerList()
 	}
 }
 
-void ClientInterface::send(session_t peer_id, u8 channelnum,
+void ClientInterface::send(session_t peer_id, uint8_t channelnum,
 		NetworkPacket *pkt, bool reliable)
 {
 	m_con->Send(peer_id, channelnum, pkt, reliable);
@@ -719,7 +719,7 @@ void ClientInterface::sendToAll(NetworkPacket *pkt)
 }
 
 void ClientInterface::sendToAllCompat(NetworkPacket *pkt, NetworkPacket *legacypkt,
-		u16 min_proto_ver)
+		uint16_t min_proto_ver)
 {
 	RecursiveMutexAutoLock clientslock(m_clients_mutex);
 	for (auto &client_it : m_clients) {
@@ -811,7 +811,7 @@ void ClientInterface::DeleteClient(session_t peer_id)
 	//TODO this should be done by client destructor!!!
 	RemoteClient *client = n->second;
 	// Handle objects
-	for (u16 id : client->m_known_objects) {
+	for (uint16_t id : client->m_known_objects) {
 		// Get object
 		ServerActiveObject* obj = m_env->getActiveObject(id);
 
@@ -875,7 +875,7 @@ u16 ClientInterface::getProtocolVersion(session_t peer_id)
 	return n->second->net_proto_version;
 }
 
-void ClientInterface::setClientVersion(session_t peer_id, u8 major, u8 minor, u8 patch,
+void ClientInterface::setClientVersion(session_t peer_id, uint8_t major, uint8_t minor, uint8_t patch,
 		const std::string &full)
 {
 	RecursiveMutexAutoLock conlock(m_clients_mutex);

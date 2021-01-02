@@ -266,7 +266,7 @@ int UDPSocket::Receive(Address &sender, void *data, int size)
 		if (received < 0)
 			return -1;
 
-		u16 address_port = ntohs(address.sin6_port);
+		uint16_t address_port = ntohs(address.sin6_port);
 		IPv6AddressBytes bytes;
 		memcpy(bytes.bytes, address.sin6_addr.s6_addr, 16);
 		sender = Address(&bytes, address_port);
@@ -282,8 +282,8 @@ int UDPSocket::Receive(Address &sender, void *data, int size)
 		if (received < 0)
 			return -1;
 
-		u32 address_ip = ntohl(address.sin_addr.s_addr);
-		u16 address_port = ntohs(address.sin_port);
+		uint32_t address_ip = ntohl(address.sin_addr.s_addr);
+		uint16_t address_port = ntohs(address.sin_port);
 
 		sender = Address(address_ip, address_port);
 	}

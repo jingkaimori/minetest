@@ -31,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 PcgRandom g_pcgrand;
 
-u32 myrand()
+uint32_t myrand()
 {
 	return g_pcgrand.next();
 }
@@ -55,19 +55,19 @@ int myrand_range(int min, int max)
 /*
 	64-bit unaligned version of MurmurHash
 */
-u64 murmur_hash_64_ua(const void *key, int len, unsigned int seed)
+uint64_t murmur_hash_64_ua(const void *key, int len, unsigned int seed)
 {
-	const u64 m = 0xc6a4a7935bd1e995ULL;
+	const uint64_t m = 0xc6a4a7935bd1e995ULL;
 	const int r = 47;
-	u64 h = seed ^ (len * m);
+	uint64_t h = seed ^ (len * m);
 
-	const u8 *data = (const u8 *)key;
-	const u8 *end = data + (len / 8) * 8;
+	const uint8_t *data = (const uint8_t *)key;
+	const uint8_t *end = data + (len / 8) * 8;
 
 	while (data != end) {
-		u64 k;
-		memcpy(&k, data, sizeof(u64));
-		data += sizeof(u64);
+		uint64_t k;
+		memcpy(&k, data, sizeof(uint64_t));
+		data += sizeof(uint64_t);
 
 		k *= m;
 		k ^= k >> r;
@@ -79,13 +79,13 @@ u64 murmur_hash_64_ua(const void *key, int len, unsigned int seed)
 
 	const unsigned char *data2 = (const unsigned char *)data;
 	switch (len & 7) {
-		case 7: h ^= (u64)data2[6] << 48;
-		case 6: h ^= (u64)data2[5] << 40;
-		case 5: h ^= (u64)data2[4] << 32;
-		case 4: h ^= (u64)data2[3] << 24;
-		case 3: h ^= (u64)data2[2] << 16;
-		case 2: h ^= (u64)data2[1] << 8;
-		case 1: h ^= (u64)data2[0];
+		case 7: h ^= (uint64_t)data2[6] << 48;
+		case 6: h ^= (uint64_t)data2[5] << 40;
+		case 5: h ^= (uint64_t)data2[4] << 32;
+		case 4: h ^= (uint64_t)data2[3] << 24;
+		case 3: h ^= (uint64_t)data2[2] << 16;
+		case 2: h ^= (uint64_t)data2[1] << 8;
+		case 1: h ^= (uint64_t)data2[0];
 				h *= m;
 	}
 
@@ -104,11 +104,11 @@ u64 murmur_hash_64_ua(const void *key, int len, unsigned int seed)
 	distance_ptr: return location for distance from the camera
 */
 bool isBlockInSight(v3s16 blockpos_b, v3f camera_pos, v3f camera_dir,
-		f32 camera_fov, f32 range, f32 *distance_ptr)
+		float camera_fov, float range, float *distance_ptr)
 {
 	// Maximum radius of a block.  The magic number is
 	// sqrt(3.0) / 2.0 in literal form.
-	static constexpr const f32 block_max_radius = 0.866025403784f * MAP_BLOCKSIZE * BS;
+	static constexpr const float block_max_radius = 0.866025403784f * MAP_BLOCKSIZE * BS;
 
 	v3s16 blockpos_nodes = blockpos_b * MAP_BLOCKSIZE;
 
@@ -123,7 +123,7 @@ bool isBlockInSight(v3s16 blockpos_b, v3f camera_pos, v3f camera_dir,
 	v3f blockpos_relative = blockpos - camera_pos;
 
 	// Total distance
-	f32 d = MYMAX(0, blockpos_relative.getLength() - block_max_radius);
+	float d = MYMAX(0, blockpos_relative.getLength() - block_max_radius);
 
 	if (distance_ptr)
 		*distance_ptr = d;
@@ -141,17 +141,17 @@ bool isBlockInSight(v3s16 blockpos_b, v3f camera_pos, v3f camera_dir,
 	// such that a block that has any portion visible with the
 	// current camera position will have the center visible at the
 	// adjusted postion
-	f32 adjdist = block_max_radius / cos((M_PI - camera_fov) / 2);
+	float adjdist = block_max_radius / cos((M_PI - camera_fov) / 2);
 
 	// Block position relative to adjusted camera
 	v3f blockpos_adj = blockpos - (camera_pos - camera_dir * adjdist);
 
 	// Distance in camera direction (+=front, -=back)
-	f32 dforward = blockpos_adj.dotProduct(camera_dir);
+	float dforward = blockpos_adj.dotProduct(camera_dir);
 
 	// Cosine of the angle between the camera direction
 	// and the block direction (camera_dir is an unit vector)
-	f32 cosangle = dforward / blockpos_adj.getLength();
+	float cosangle = dforward / blockpos_adj.getLength();
 
 	// If block is not in the field of view, skip it
 	// HOTFIX: use sligthly increased angle (+10%) to fix too agressive
@@ -163,7 +163,7 @@ bool isBlockInSight(v3s16 blockpos_b, v3f camera_pos, v3f camera_dir,
 	return true;
 }
 
-s16 adjustDist(s16 dist, float zoom_fov)
+s16 adjustDist(int16_t dist, float zoom_fov)
 {
 	// 1.775 ~= 72 * PI / 180 * 1.4, the default FOV on the client.
 	// The heuristic threshold for zooming is half of that.
@@ -181,7 +181,7 @@ void setPitchYawRollRad(core::matrix4 &m, const v3f &rot)
 	f64 c1 = cos(a1), s1 = sin(a1);
 	f64 c2 = cos(a2), s2 = sin(a2);
 	f64 c3 = cos(a3), s3 = sin(a3);
-	f32 *M = m.pointer();
+	float *M = m.pointer();
 
 	M[0] = s1 * s2 * s3 + c1 * c3;
 	M[1] = s1 * c2;
@@ -198,14 +198,14 @@ void setPitchYawRollRad(core::matrix4 &m, const v3f &rot)
 
 v3f getPitchYawRollRad(const core::matrix4 &m)
 {
-	const f32 *M = m.pointer();
+	const float *M = m.pointer();
 
 	f64 a1 = atan2(M[1], M[5]);
-	f32 c2 = std::sqrt((f64)M[10]*M[10] + (f64)M[8]*M[8]);
-	f32 a2 = atan2f(-M[9], c2);
+	float c2 = std::sqrt((f64)M[10]*M[10] + (f64)M[8]*M[8]);
+	float a2 = atan2f(-M[9], c2);
 	f64 c1 = cos(a1);
 	f64 s1 = sin(a1);
-	f32 a3 = atan2f(s1*M[6] - c1*M[2], c1*M[0] - s1*M[4]);
+	float a3 = atan2f(s1*M[6] - c1*M[2], c1*M[0] - s1*M[4]);
 
 	return v3f(a2, a3, a1);
 }

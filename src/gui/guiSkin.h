@@ -37,10 +37,10 @@ namespace gui
 		virtual void setColor(EGUI_DEFAULT_COLOR which, video::SColor newColor);
 
 		//! returns size for the given size type
-		virtual s32 getSize(EGUI_DEFAULT_SIZE size) const;
+		virtual int32_t getSize(EGUI_DEFAULT_SIZE size) const;
 
 		//! sets a default size
-		virtual void setSize(EGUI_DEFAULT_SIZE which, s32 size);
+		virtual void setSize(EGUI_DEFAULT_SIZE which, int32_t size);
 
 		//! returns the default font
 		virtual IGUIFont* getFont(EGUI_DEFAULT_FONT which=EGDF_DEFAULT) const;
@@ -56,14 +56,14 @@ namespace gui
 
 		//! Returns a default icon
 		/** Returns the sprite index within the sprite bank */
-		virtual u32 getIcon(EGUI_DEFAULT_ICON icon) const;
+		virtual uint32_t getIcon(EGUI_DEFAULT_ICON icon) const;
 
 		//! Sets a default icon
 		/** Sets the sprite index used for drawing icons like arrows,
 		close buttons and ticks in checkboxes
 		\param icon: Enum specifying which icon to change
 		\param index: The sprite index used to draw this icon */
-		virtual void setIcon(EGUI_DEFAULT_ICON icon, u32 index);
+		virtual void setIcon(EGUI_DEFAULT_ICON icon, uint32_t index);
 
 		//! Returns a default text.
 		/** For example for Message box button captions:
@@ -241,13 +241,13 @@ namespace gui
 		\param rect: Defining area where to draw.
 		\param clip: Clip area.	*/
 		virtual void draw3DTabBody(IGUIElement* element, bool border, bool background,
-			const core::rect<s32>& rect, const core::rect<s32>* clip=0, s32 tabHeight=-1, EGUI_ALIGNMENT alignment=EGUIA_UPPERLEFT)
+			const core::rect<s32>& rect, const core::rect<s32>* clip=0, int32_t tabHeight=-1, EGUI_ALIGNMENT alignment=EGUIA_UPPERLEFT)
 		{
 			drawColored3DTabBody(element, border, background, rect, clip, tabHeight, alignment);
 		}
 
 		virtual void drawColored3DTabBody(IGUIElement* element, bool border, bool background,
-			const core::rect<s32>& rect, const core::rect<s32>* clip=0, s32 tabHeight=-1, EGUI_ALIGNMENT alignment=EGUIA_UPPERLEFT,
+			const core::rect<s32>& rect, const core::rect<s32>* clip=0, int32_t tabHeight=-1, EGUI_ALIGNMENT alignment=EGUIA_UPPERLEFT,
 			const video::SColor* colors=0);
 
 		//! draws an icon, usually from the skin's sprite bank
@@ -262,7 +262,7 @@ namespace gui
 		\param clip: Clip area.	*/
 		virtual void drawIcon(IGUIElement* element, EGUI_DEFAULT_ICON icon,
 				const core::position2di position,
-				u32 starttime=0, u32 currenttime=0,
+				uint32_t starttime=0, uint32_t currenttime=0,
 				bool loop=false, const core::rect<s32>* clip=0)
 		{
 			drawColoredIcon(element, icon, position, starttime, currenttime, loop, clip);
@@ -270,7 +270,7 @@ namespace gui
 
 		virtual void drawColoredIcon(IGUIElement* element, EGUI_DEFAULT_ICON icon,
 				const core::position2di position,
-				u32 starttime=0, u32 currenttime=0,
+				uint32_t starttime=0, uint32_t currenttime=0,
 				bool loop=false, const core::rect<s32>* clip=0,
 				const video::SColor* colors=0);
 
@@ -306,8 +306,8 @@ namespace gui
 	private:
 
 		video::SColor Colors[EGDC_COUNT];
-		s32 Sizes[EGDS_COUNT];
-		u32 Icons[EGDI_COUNT];
+		int32_t Sizes[EGDS_COUNT];
+		uint32_t Icons[EGDI_COUNT];
 		IGUIFont* Fonts[EGDF_COUNT];
 		IGUISpriteBank* SpriteBank;
 		core::stringw Texts[EGDT_COUNT];
@@ -351,7 +351,7 @@ namespace gui
 		}
 } // end namespace gui
 //! Sets the shading
-inline void setShading(video::SColor &color,f32 s) // :PATCH:
+inline void setShading(video::SColor &color,float s) // :PATCH:
 {
 	if (s < 1.0f)
 	{

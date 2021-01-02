@@ -100,7 +100,7 @@ private:
 	int m_log_level = LL_ACTION;
 	std::string m_nick;
 
-	u8 m_utf8_bytes_to_wait = 0;
+	uint8_t m_utf8_bytes_to_wait = 0;
 	std::string m_pending_utf8_bytes;
 
 	std::list<std::string> m_nicks;
@@ -117,8 +117,8 @@ private:
 
 	bool m_esc_mode = false;
 
-	u64 m_game_time = 0;
-	u32 m_time_of_day = 0;
+	uint64_t m_game_time = 0;
+	uint32_t m_time_of_day = 0;
 };
 
 extern TerminalChatConsole g_term_console;

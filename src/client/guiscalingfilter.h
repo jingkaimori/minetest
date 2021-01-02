@@ -39,7 +39,7 @@ video::ITexture *guiScalingResizeCached(video::IVideoDriver *driver, video::ITex
  * are available at GUI imagebutton creation time.
  */
 video::ITexture *guiScalingImageButton(video::IVideoDriver *driver, video::ITexture *src,
-		s32 width, s32 height);
+		int32_t width, int32_t height);
 
 /* Replacement for driver->draw2DImage() that uses the high-quality pre-scaled
  * texture, if configured.

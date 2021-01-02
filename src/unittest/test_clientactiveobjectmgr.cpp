@@ -58,16 +58,16 @@ void TestClientActiveObjectMgr::runTests(IGameDef *gamedef)
 void TestClientActiveObjectMgr::testFreeID()
 {
 	client::ActiveObjectMgr caomgr;
-	std::vector<u16> aoids;
+	std::vector<uint16_t> aoids;
 
-	u16 aoid = caomgr.getFreeId();
+	uint16_t aoid = caomgr.getFreeId();
 	// Ensure it's not the same id
 	UASSERT(caomgr.getFreeId() != aoid);
 
 	aoids.push_back(aoid);
 
 	// Register basic objects, ensure we never found
-	for (u8 i = 0; i < UINT8_MAX; i++) {
+	for (uint8_t i = 0; i < UINT8_MAX; i++) {
 		// Register an object
 		auto tcao = new TestClientActiveObject();
 		caomgr.registerObject(tcao);
@@ -87,7 +87,7 @@ void TestClientActiveObjectMgr::testRegisterObject()
 	auto tcao = new TestClientActiveObject();
 	UASSERT(caomgr.registerObject(tcao));
 
-	u16 id = tcao->getId();
+	uint16_t id = tcao->getId();
 
 	auto tcaoToCompare = caomgr.getActiveObject(id);
 	UASSERT(tcaoToCompare->getId() == id);
@@ -107,7 +107,7 @@ void TestClientActiveObjectMgr::testRemoveObject()
 	auto tcao = new TestClientActiveObject();
 	UASSERT(caomgr.registerObject(tcao));
 
-	u16 id = tcao->getId();
+	uint16_t id = tcao->getId();
 	UASSERT(caomgr.getActiveObject(id) != nullptr)
 
 	caomgr.removeObject(tcao->getId());

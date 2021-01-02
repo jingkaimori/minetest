@@ -90,7 +90,7 @@ Player::~Player()
 	clearHud();
 }
 
-void Player::setWieldIndex(u16 index)
+void Player::setWieldIndex(uint16_t index)
 {
 	const InventoryList *mlist = inventory.getList("main");
 	m_wield_index = MYMIN(index, mlist ? mlist->getSize() : 0);
@@ -113,11 +113,11 @@ ItemStack &Player::getWieldedItem(ItemStack *selected, ItemStack *hand) const
 	return (hand && selected->name.empty()) ? *hand : *selected;
 }
 
-u32 Player::addHud(HudElement *toadd)
+uint32_t Player::addHud(HudElement *toadd)
 {
 	MutexAutoLock lock(m_mutex);
 
-	u32 id = getFreeHudID();
+	uint32_t id = getFreeHudID();
 
 	if (id < hud.size())
 		hud[id] = toadd;
@@ -127,7 +127,7 @@ u32 Player::addHud(HudElement *toadd)
 	return id;
 }
 
-HudElement* Player::getHud(u32 id)
+HudElement* Player::getHud(uint32_t id)
 {
 	MutexAutoLock lock(m_mutex);
 
@@ -137,7 +137,7 @@ HudElement* Player::getHud(u32 id)
 	return NULL;
 }
 
-HudElement* Player::removeHud(u32 id)
+HudElement* Player::removeHud(uint32_t id)
 {
 	MutexAutoLock lock(m_mutex);
 

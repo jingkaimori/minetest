@@ -971,7 +971,7 @@ static bool migrate_map_database(const GameParams &game_params, const Settings &
 	MapDatabase *old_db = ServerMap::createDatabase(backend, game_params.world_path, world_mt),
 		*new_db = ServerMap::createDatabase(migrate_to, game_params.world_path, world_mt);
 
-	u32 count = 0;
+	uint32_t count = 0;
 	time_t last_update_time = 0;
 	bool &kill = *porting::signal_handler_killstatus();
 

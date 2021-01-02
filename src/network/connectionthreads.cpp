@@ -53,11 +53,11 @@ std::mutex log_conthread_mutex;
 
 #define WINDOW_SIZE 5
 
-static session_t readPeerId(u8 *packetdata)
+static session_t readPeerId(uint8_t *packetdata)
 {
 	return readU16(&packetdata[4]);
 }
-static u8 readChannel(u8 *packetdata)
+static uint8_t readChannel(uint8_t *packetdata)
 {
 	return readU8(&packetdata[6]);
 }
@@ -83,8 +83,8 @@ void *ConnectionSendThread::run()
 	LOG(dout_con << m_connection->getDesc()
 		<< "ConnectionSend thread started" << std::endl);
 
-	u64 curtime = porting::getTimeMs();
-	u64 lasttime = curtime;
+	uint64_t curtime = porting::getTimeMs();
+	uint64_t lasttime = curtime;
 
 	PROFILE(std::stringstream ThreadIdentifier);
 	PROFILE(ThreadIdentifier << "ConnectionSend: [" << m_connection->getDesc() << "]");
@@ -190,7 +190,7 @@ void ConnectionSendThread::runTimeouts(float dtime)
 		PROFILE(ScopeProfiler
 		peerprofiler(g_profiler, peerIdentifier.str(), SPT_AVG));
 
-		SharedBuffer<u8> data(2); // data for sending ping, required here because of goto
+		SharedBuffer<uint8_t> data(2); // data for sending ping, required here because of goto
 
 		/*
 			Check peer timeout
@@ -234,8 +234,8 @@ void ConnectionSendThread::runTimeouts(float dtime)
 			for (std::list<BufferedPacket>::iterator k = timed_outs.begin();
 				k != timed_outs.end(); ++k) {
 				session_t peer_id = readPeerId(*(k->data));
-				u8 channelnum = readChannel(*(k->data));
-				u16 seqnum = readU16(&(k->data[BASE_HEADER_SIZE + 1]));
+				uint8_t channelnum = readChannel(*(k->data));
+				uint16_t seqnum = readU16(&(k->data[BASE_HEADER_SIZE + 1]));
 
 				channel.UpdateBytesLost(k->data.getSize());
 				k->resend_count++;
@@ -290,7 +290,7 @@ void ConnectionSendThread::runTimeouts(float dtime)
 	}
 
 	// Remove timed out peers
-	for (u16 timeouted_peer : timeouted_peers) {
+	for (uint16_t timeouted_peer : timeouted_peers) {
 		LOG(dout_con << m_connection->getDesc()
 			<< "RunTimeouts(): Removing peer " << timeouted_peer << std::endl);
 		m_connection->deletePeer(timeouted_peer, true);
@@ -331,8 +331,8 @@ void ConnectionSendThread::sendAsPacketReliable(BufferedPacket &p, Channel *chan
 	rawSend(p);
 }
 
-bool ConnectionSendThread::rawSendAsPacket(session_t peer_id, u8 channelnum,
-	const SharedBuffer<u8> &data, bool reliable)
+bool ConnectionSendThread::rawSendAsPacket(session_t peer_id, uint8_t channelnum,
+	const SharedBuffer<uint8_t> &data, bool reliable)
 {
 	PeerHelper peer = m_connection->getPeerNoEx(peer_id);
 	if (!peer) {
@@ -345,13 +345,13 @@ bool ConnectionSendThread::rawSendAsPacket(session_t peer_id, u8 channelnum,
 
 	if (reliable) {
 		bool have_sequence_number_for_raw_packet = true;
-		u16 seqnum =
+		uint16_t seqnum =
 			channel->getOutgoingSequenceNumber(have_sequence_number_for_raw_packet);
 
 		if (!have_sequence_number_for_raw_packet)
 			return false;
 
-		SharedBuffer<u8> reliable = makeReliablePacket(data, seqnum);
+		SharedBuffer<uint8_t> reliable = makeReliablePacket(data, seqnum);
 		Address peer_address;
 		peer->getAddress(MTP_MINETEST_RELIABLE_UDP, peer_address);
 
@@ -365,7 +365,7 @@ bool ConnectionSendThread::rawSendAsPacket(session_t peer_id, u8 channelnum,
 			< channel->getWindowSize()) {
 			LOG(dout_con << m_connection->getDesc()
 				<< " INFO: sending a reliable packet to peer_id " << peer_id
-				<< " channel: " << (u32)channelnum
+				<< " channel: " << (uint32_t)channelnum
 				<< " seqnum: " << seqnum << std::endl);
 			sendAsPacketReliable(p, channel);
 			return true;
@@ -373,7 +373,7 @@ bool ConnectionSendThread::rawSendAsPacket(session_t peer_id, u8 channelnum,
 
 		LOG(dout_con << m_connection->getDesc()
 			<< " INFO: queueing reliable packet for peer_id: " << peer_id
-			<< " channel: " << (u32)channelnum
+			<< " channel: " << (uint32_t)channelnum
 			<< " seqnum: " << seqnum << std::endl);
 		channel->queued_reliables.push(p);
 		return false;
@@ -542,7 +542,7 @@ void ConnectionSendThread::disconnect()
 	LOG(dout_con << m_connection->getDesc() << " disconnecting" << std::endl);
 
 	// Create and send DISCO packet
-	SharedBuffer<u8> data(2);
+	SharedBuffer<uint8_t> data(2);
 	writeU8(&data[0], PACKET_TYPE_CONTROL);
 	writeU8(&data[1], CONTROLTYPE_DISCO);
 
@@ -560,7 +560,7 @@ void ConnectionSendThread::disconnect_peer(session_t peer_id)
 	LOG(dout_con << m_connection->getDesc() << " disconnecting peer" << std::endl);
 
 	// Create and send DISCO packet
-	SharedBuffer<u8> data(2);
+	SharedBuffer<uint8_t> data(2);
 	writeU8(&data[0], PACKET_TYPE_CONTROL);
 	writeU8(&data[1], CONTROLTYPE_DISCO);
 	sendAsPacket(peer_id, 0, data, false);
@@ -577,8 +577,8 @@ void ConnectionSendThread::disconnect_peer(session_t peer_id)
 	dynamic_cast<UDPPeer *>(&peer)->m_pending_disconnect = true;
 }
 
-void ConnectionSendThread::send(session_t peer_id, u8 channelnum,
-	const SharedBuffer<u8> &data)
+void ConnectionSendThread::send(session_t peer_id, uint8_t channelnum,
+	const SharedBuffer<uint8_t> &data)
 {
 	assert(channelnum < CHANNEL_COUNT); // Pre-condition
 
@@ -595,16 +595,16 @@ void ConnectionSendThread::send(session_t peer_id, u8 channelnum,
 		<< ", channel " << (channelnum % 0xFF)
 		<< ", size: " << data.getSize() << std::endl);
 
-	u16 split_sequence_number = peer->getNextSplitSequenceNumber(channelnum);
+	uint16_t split_sequence_number = peer->getNextSplitSequenceNumber(channelnum);
 
-	u32 chunksize_max = m_max_packet_size - BASE_HEADER_SIZE;
-	std::list<SharedBuffer<u8>> originals;
+	uint32_t chunksize_max = m_max_packet_size - BASE_HEADER_SIZE;
+	std::list<SharedBuffer<uint8_t>> originals;
 
 	makeAutoSplitPacket(data, chunksize_max, split_sequence_number, &originals);
 
 	peer->setNextSplitSequenceNumber(channelnum, split_sequence_number);
 
-	for (const SharedBuffer<u8> &original : originals) {
+	for (const SharedBuffer<uint8_t> &original : originals) {
 		sendAsPacket(peer_id, channelnum, original);
 	}
 }
@@ -618,7 +618,7 @@ void ConnectionSendThread::sendReliable(ConnectionCommand &c)
 	peer->PutReliableSendCommand(c, m_max_packet_size);
 }
 
-void ConnectionSendThread::sendToAll(u8 channelnum, const SharedBuffer<u8> &data)
+void ConnectionSendThread::sendToAll(uint8_t channelnum, const SharedBuffer<uint8_t> &data)
 {
 	std::vector<session_t> peerids = m_connection->getPeerIDs();
 
@@ -686,10 +686,10 @@ void ConnectionSendThread::sendPackets(float dtime)
 		// first send queued reliable packets for all peers (if possible)
 		for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
 			Channel &channel = udpPeer->channels[i];
-			u16 next_to_ack = 0;
+			uint16_t next_to_ack = 0;
 
 			channel.outgoing_reliables_sent.getFirstSeqnum(next_to_ack);
-			u16 next_to_receive = 0;
+			uint16_t next_to_receive = 0;
 			channel.incoming_reliables.getFirstSeqnum(next_to_receive);
 
 			LOG(dout_con << m_connection->getDesc() << "\t channel: "
@@ -787,8 +787,8 @@ void ConnectionSendThread::sendPackets(float dtime)
 	}
 }
 
-void ConnectionSendThread::sendAsPacket(session_t peer_id, u8 channelnum,
-	const SharedBuffer<u8> &data, bool ack)
+void ConnectionSendThread::sendAsPacket(session_t peer_id, uint8_t channelnum,
+	const SharedBuffer<uint8_t> &data, bool ack)
 {
 	OutgoingPacket packet(peer_id, channelnum, data, false, ack);
 	m_outgoing_queue.push(packet);
@@ -814,13 +814,13 @@ void *ConnectionReceiveThread::run()
 	// theoretical reliable upper boundary of a udp packet for all IPv6 enabled
 	// infrastructure
 	const unsigned int packet_maxsize = 1500;
-	SharedBuffer<u8> packetdata(packet_maxsize);
+	SharedBuffer<uint8_t> packetdata(packet_maxsize);
 
 	bool packet_queued = true;
 
 #ifdef DEBUG_CONNECTION_KBPS
-	u64 curtime = porting::getTimeMs();
-	u64 lasttime = curtime;
+	uint64_t curtime = porting::getTimeMs();
+	uint64_t lasttime = curtime;
 	float debug_print_timer = 0.0;
 #endif
 
@@ -856,7 +856,7 @@ void *ConnectionReceiveThread::run()
 				float avg_rate = 0.0;
 				float avg_loss = 0.0;
 
-				for(u16 j=0; j<CHANNEL_COUNT; j++)
+				for(uint16_t j=0; j<CHANNEL_COUNT; j++)
 				{
 					peer_current +=peer->channels[j].getCurrentDownloadRateKB();
 					peer_loss += peer->channels[j].getCurrentLossRateKB();
@@ -870,7 +870,7 @@ void *ConnectionReceiveThread::run()
 				output << "\tcurrent (sum): " << peer_current << "kb/s "<< peer_loss << "kb/s" << std::endl;
 				output << "\taverage (sum): " << avg_rate << "kb/s "<< avg_loss << "kb/s" << std::endl;
 				output << std::setfill(' ');
-				for(u16 j=0; j<CHANNEL_COUNT; j++)
+				for(uint16_t j=0; j<CHANNEL_COUNT; j++)
 				{
 					output << "\tcha " << j << ":"
 						<< " CUR: " << std::setw(6) << peer->channels[j].getCurrentDownloadRateKB() <<"kb/s"
@@ -896,7 +896,7 @@ void *ConnectionReceiveThread::run()
 }
 
 // Receive packets from the network and buffers and create ConnectionEvents
-void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
+void ConnectionReceiveThread::receive(SharedBuffer<uint8_t> &packetdata,
 		bool &packet_queued)
 {
 	try {
@@ -904,7 +904,7 @@ void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
 		if (packet_queued) {
 			bool data_left = true;
 			session_t peer_id;
-			SharedBuffer<u8> resultdata;
+			SharedBuffer<uint8_t> resultdata;
 			while (data_left) {
 				try {
 					data_left = getFromBuffers(peer_id, resultdata);
@@ -923,7 +923,7 @@ void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
 
 		// Call Receive() to wait for incoming data
 		Address sender;
-		s32 received_size = m_connection->m_udpSocket.Receive(sender,
+		int32_t received_size = m_connection->m_udpSocket.Receive(sender,
 			*packetdata, packetdata.getSize());
 		if (received_size < 0)
 			return;
@@ -940,11 +940,11 @@ void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
 		}
 
 		session_t peer_id = readPeerId(*packetdata);
-		u8 channelnum = readChannel(*packetdata);
+		uint8_t channelnum = readChannel(*packetdata);
 
 		if (channelnum > CHANNEL_COUNT - 1) {
 			LOG(derr_con << m_connection->getDesc()
-				<< "Receive(): Invalid channel " << (u32)channelnum << std::endl);
+				<< "Receive(): Invalid channel " << (uint32_t)channelnum << std::endl);
 			return;
 		}
 
@@ -1006,18 +1006,18 @@ void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
 		// Throw the received packet to channel->processPacket()
 
 		// Make a new SharedBuffer from the data without the base headers
-		SharedBuffer<u8> strippeddata(received_size - BASE_HEADER_SIZE);
+		SharedBuffer<uint8_t> strippeddata(received_size - BASE_HEADER_SIZE);
 		memcpy(*strippeddata, &packetdata[BASE_HEADER_SIZE],
 			strippeddata.getSize());
 
 		try {
 			// Process it (the result is some data with no headers made by us)
-			SharedBuffer<u8> resultdata = processPacket
+			SharedBuffer<uint8_t> resultdata = processPacket
 				(channel, strippeddata, peer_id, channelnum, false);
 
 			LOG(dout_con << m_connection->getDesc()
 				<< " ProcessPacket from peer_id: " << peer_id
-				<< ", channel: " << (u32)channelnum << ", returned "
+				<< ", channel: " << (uint32_t)channelnum << ", returned "
 				<< resultdata.getSize() << " bytes" << std::endl);
 
 			ConnectionEvent e;
@@ -1038,7 +1038,7 @@ void ConnectionReceiveThread::receive(SharedBuffer<u8> &packetdata,
 	}
 }
 
-bool ConnectionReceiveThread::getFromBuffers(session_t &peer_id, SharedBuffer<u8> &dst)
+bool ConnectionReceiveThread::getFromBuffers(session_t &peer_id, SharedBuffer<uint8_t> &dst)
 {
 	std::vector<session_t> peerids = m_connection->getPeerIDs();
 
@@ -1060,15 +1060,15 @@ bool ConnectionReceiveThread::getFromBuffers(session_t &peer_id, SharedBuffer<u8
 }
 
 bool ConnectionReceiveThread::checkIncomingBuffers(Channel *channel,
-	session_t &peer_id, SharedBuffer<u8> &dst)
+	session_t &peer_id, SharedBuffer<uint8_t> &dst)
 {
-	u16 firstseqnum = 0;
+	uint16_t firstseqnum = 0;
 	if (channel->incoming_reliables.getFirstSeqnum(firstseqnum)) {
 		if (firstseqnum == channel->readNextIncomingSeqNum()) {
 			BufferedPacket p = channel->incoming_reliables.popFirst();
 			peer_id = readPeerId(*p.data);
-			u8 channelnum = readChannel(*p.data);
-			u16 seqnum = readU16(&p.data[BASE_HEADER_SIZE + 1]);
+			uint8_t channelnum = readChannel(*p.data);
+			uint16_t seqnum = readU16(&p.data[BASE_HEADER_SIZE + 1]);
 
 			LOG(dout_con << m_connection->getDesc()
 				<< "UNBUFFERING TYPE_RELIABLE"
@@ -1079,9 +1079,9 @@ bool ConnectionReceiveThread::checkIncomingBuffers(Channel *channel,
 
 			channel->incNextIncomingSeqNum();
 
-			u32 headers_size = BASE_HEADER_SIZE + RELIABLE_HEADER_SIZE;
+			uint32_t headers_size = BASE_HEADER_SIZE + RELIABLE_HEADER_SIZE;
 			// Get out the inside packet and re-process it
-			SharedBuffer<u8> payload(p.data.getSize() - headers_size);
+			SharedBuffer<uint8_t> payload(p.data.getSize() - headers_size);
 			memcpy(*payload, &p.data[headers_size], payload.getSize());
 
 			dst = processPacket(channel, payload, peer_id, channelnum, true);
@@ -1091,8 +1091,8 @@ bool ConnectionReceiveThread::checkIncomingBuffers(Channel *channel,
 	return false;
 }
 
-SharedBuffer<u8> ConnectionReceiveThread::processPacket(Channel *channel,
-	const SharedBuffer<u8> &packetdata, session_t peer_id, u8 channelnum, bool reliable)
+SharedBuffer<uint8_t> ConnectionReceiveThread::processPacket(Channel *channel,
+	const SharedBuffer<uint8_t> &packetdata, session_t peer_id, uint8_t channelnum, bool reliable)
 {
 	PeerHelper peer = m_connection->getPeerNoEx(peer_id);
 
@@ -1104,7 +1104,7 @@ SharedBuffer<u8> ConnectionReceiveThread::processPacket(Channel *channel,
 	if (packetdata.getSize() < 1)
 		throw InvalidIncomingDataException("packetdata.getSize() < 1");
 
-	u8 type = readU8(&(packetdata[0]));
+	uint8_t type = readU8(&(packetdata[0]));
 
 	if (MAX_UDP_PEERS <= 65535 && peer_id >= MAX_UDP_PEERS) {
 		std::string errmsg = "Invalid peer_id=" + itos(peer_id);
@@ -1130,13 +1130,13 @@ const ConnectionReceiveThread::PacketTypeHandler
 	{&ConnectionReceiveThread::handlePacketType_Reliable},
 };
 
-SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Control(Channel *channel,
-	const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum, bool reliable)
+SharedBuffer<uint8_t> ConnectionReceiveThread::handlePacketType_Control(Channel *channel,
+	const SharedBuffer<uint8_t> &packetdata, Peer *peer, uint8_t channelnum, bool reliable)
 {
 	if (packetdata.getSize() < 2)
 		throw InvalidIncomingDataException("packetdata.getSize() < 2");
 
-	u8 controltype = readU8(&(packetdata[1]));
+	uint8_t controltype = readU8(&(packetdata[1]));
 
 	if (controltype == CONTROLTYPE_ACK) {
 		assert(channel != NULL);
@@ -1146,7 +1146,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Control(Channel *chan
 				"packetdata.getSize() < 4 (ACK header size)");
 		}
 
-		u16 seqnum = readU16(&packetdata[2]);
+		uint16_t seqnum = readU16(&packetdata[2]);
 		LOG(dout_con << m_connection->getDesc() << " [ CONTROLTYPE_ACK: channelnum="
 			<< ((int) channelnum & 0xff) << ", peer_id=" << peer->id << ", seqnum="
 			<< seqnum << " ]" << std::endl);
@@ -1157,7 +1157,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Control(Channel *chan
 			// only calculate rtt from straight sent packets
 			if (p.resend_count == 0) {
 				// Get round trip time
-				u64 current_time = porting::getTimeMs();
+				uint64_t current_time = porting::getTimeMs();
 
 				// a overflow is quite unlikely but as it'd result in major
 				// rtt miscalculation we handle it here
@@ -1230,8 +1230,8 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Control(Channel *chan
 	}
 }
 
-SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Original(Channel *channel,
-	const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum, bool reliable)
+SharedBuffer<uint8_t> ConnectionReceiveThread::handlePacketType_Original(Channel *channel,
+	const SharedBuffer<uint8_t> &packetdata, Peer *peer, uint8_t channelnum, bool reliable)
 {
 	if (packetdata.getSize() <= ORIGINAL_HEADER_SIZE)
 		throw InvalidIncomingDataException
@@ -1239,13 +1239,13 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Original(Channel *cha
 	LOG(dout_con << m_connection->getDesc() << "RETURNING TYPE_ORIGINAL to user"
 		<< std::endl);
 	// Get the inside packet out and return it
-	SharedBuffer<u8> payload(packetdata.getSize() - ORIGINAL_HEADER_SIZE);
+	SharedBuffer<uint8_t> payload(packetdata.getSize() - ORIGINAL_HEADER_SIZE);
 	memcpy(*payload, &(packetdata[ORIGINAL_HEADER_SIZE]), payload.getSize());
 	return payload;
 }
 
-SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Split(Channel *channel,
-	const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum, bool reliable)
+SharedBuffer<uint8_t> ConnectionReceiveThread::handlePacketType_Split(Channel *channel,
+	const SharedBuffer<uint8_t> &packetdata, Peer *peer, uint8_t channelnum, bool reliable)
 {
 	Address peer_address;
 
@@ -1259,7 +1259,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Split(Channel *channe
 			channelnum);
 
 		// Buffer the packet
-		SharedBuffer<u8> data = peer->addSplitPacket(channelnum, packet, reliable);
+		SharedBuffer<uint8_t> data = peer->addSplitPacket(channelnum, packet, reliable);
 
 		if (data.getSize() != 0) {
 			LOG(dout_con << m_connection->getDesc()
@@ -1275,8 +1275,8 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Split(Channel *channe
 	FATAL_ERROR("Invalid execution point");
 }
 
-SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Reliable(Channel *channel,
-	const SharedBuffer<u8> &packetdata, Peer *peer, u8 channelnum, bool reliable)
+SharedBuffer<uint8_t> ConnectionReceiveThread::handlePacketType_Reliable(Channel *channel,
+	const SharedBuffer<uint8_t> &packetdata, Peer *peer, uint8_t channelnum, bool reliable)
 {
 	assert(channel != NULL);
 
@@ -1287,7 +1287,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Reliable(Channel *cha
 	if (packetdata.getSize() < RELIABLE_HEADER_SIZE)
 		throw InvalidIncomingDataException("packetdata.getSize() < RELIABLE_HEADER_SIZE");
 
-	u16 seqnum = readU16(&packetdata[1]);
+	uint16_t seqnum = readU16(&packetdata[1]);
 	bool is_future_packet = false;
 	bool is_old_packet = false;
 
@@ -1368,7 +1368,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Reliable(Channel *cha
 
 
 	/* check for resend case */
-	u16 queued_seqnum = 0;
+	uint16_t queued_seqnum = 0;
 	if (channel->incoming_reliables.getFirstSeqnum(queued_seqnum)) {
 		if (queued_seqnum == seqnum) {
 			BufferedPacket queued_packet = channel->incoming_reliables.popFirst();
@@ -1379,7 +1379,7 @@ SharedBuffer<u8> ConnectionReceiveThread::handlePacketType_Reliable(Channel *cha
 	channel->incNextIncomingSeqNum();
 
 	// Get out the inside packet and re-process it
-	SharedBuffer<u8> payload(packetdata.getSize() - RELIABLE_HEADER_SIZE);
+	SharedBuffer<uint8_t> payload(packetdata.getSize() - RELIABLE_HEADER_SIZE);
 	memcpy(*payload, &packetdata[RELIABLE_HEADER_SIZE], payload.getSize());
 
 	return processPacket(channel, payload, peer->id, channelnum, true);

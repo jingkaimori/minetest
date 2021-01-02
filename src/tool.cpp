@@ -54,7 +54,7 @@ void ToolGroupCap::fromJson(const Json::Value &json)
 	}
 }
 
-void ToolCapabilities::serialize(std::ostream &os, u16 protocol_version) const
+void ToolCapabilities::serialize(std::ostream &os, uint16_t protocol_version) const
 {
 	if (protocol_version >= 38)
 		writeU8(os, 5);
@@ -96,14 +96,14 @@ void ToolCapabilities::deSerialize(std::istream &is)
 	full_punch_interval = readF32(is);
 	max_drop_level = readS16(is);
 	groupcaps.clear();
-	u32 groupcaps_size = readU32(is);
-	for (u32 i = 0; i < groupcaps_size; i++) {
+	uint32_t groupcaps_size = readU32(is);
+	for (uint32_t i = 0; i < groupcaps_size; i++) {
 		std::string name = deSerializeString16(is);
 		ToolGroupCap cap;
 		cap.uses = readS16(is);
 		cap.maxlevel = readS16(is);
-		u32 times_size = readU32(is);
-		for(u32 i = 0; i < times_size; i++) {
+		uint32_t times_size = readU32(is);
+		for(uint32_t i = 0; i < times_size; i++) {
 			int level = readS16(is);
 			float time = readF32(is);
 			cap.times[level] = time;
@@ -111,10 +111,10 @@ void ToolCapabilities::deSerialize(std::istream &is)
 		groupcaps[name] = cap;
 	}
 
-	u32 damage_groups_size = readU32(is);
-	for (u32 i = 0; i < damage_groups_size; i++) {
+	uint32_t damage_groups_size = readU32(is);
+	for (uint32_t i = 0; i < damage_groups_size; i++) {
 		std::string name = deSerializeString16(is);
-		s16 rating = readS16(is);
+		int16_t rating = readS16(is);
 		damageGroups[name] = rating;
 	}
 
@@ -231,27 +231,27 @@ DigParams getDigParams(const ItemGroupList &groups,
 		}
 	}
 
-	u16 wear_i = U16_MAX * result_wear;
+	uint16_t wear_i = U16_MAX * result_wear;
 	return DigParams(result_diggable, result_time, wear_i, result_main_group);
 }
 
 HitParams getHitParams(const ItemGroupList &armor_groups,
 		const ToolCapabilities *tp, float time_from_last_punch)
 {
-	s16 damage = 0;
+	int16_t damage = 0;
 	float result_wear = 0.0f;
 	float punch_interval_multiplier =
 			rangelim(time_from_last_punch / tp->full_punch_interval, 0.0f, 1.0f);
 
 	for (const auto &damageGroup : tp->damageGroups) {
-		s16 armor = itemgroup_get(armor_groups, damageGroup.first);
+		int16_t armor = itemgroup_get(armor_groups, damageGroup.first);
 		damage += damageGroup.second * punch_interval_multiplier * armor / 100.0;
 	}
 
 	if (tp->punch_attack_uses > 0)
 		result_wear = 1.0f / tp->punch_attack_uses * punch_interval_multiplier;
 
-	u16 wear_i = U16_MAX * result_wear;
+	uint16_t wear_i = U16_MAX * result_wear;
 	return {damage, wear_i};
 }
 

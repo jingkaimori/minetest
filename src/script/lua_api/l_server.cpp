@@ -161,9 +161,9 @@ int ModApiServer::l_get_player_information(lua_State *L)
 
 	float min_rtt, max_rtt, avg_rtt, min_jitter, max_jitter, avg_jitter;
 	ClientState state;
-	u32 uptime;
-	u16 prot_vers;
-	u8 ser_vers, major, minor, patch;
+	uint32_t uptime;
+	uint16_t prot_vers;
+	uint8_t ser_vers, major, minor, patch;
 	std::string vers_string, lang_code;
 
 	auto getConInfo = [&] (con::rtt_stat_type type, float *value) -> bool {
@@ -418,7 +418,7 @@ int ModApiServer::l_get_modnames(lua_State *L)
 	// Package them up for Lua
 	lua_createtable(L, modlist.size(), 0);
 	std::vector<std::string>::iterator iter = modlist.begin();
-	for (u16 i = 0; iter != modlist.end(); ++iter) {
+	for (uint16_t i = 0; iter != modlist.end(); ++iter) {
 		lua_pushstring(L, iter->c_str());
 		lua_rawseti(L, -2, ++i);
 	}
@@ -447,7 +447,7 @@ int ModApiServer::l_sound_play(lua_State *L)
 		getServer(L)->playSound(spec, params, true);
 		lua_pushnil(L);
 	} else {
-		s32 handle = getServer(L)->playSound(spec, params);
+		int32_t handle = getServer(L)->playSound(spec, params);
 		lua_pushinteger(L, handle);
 	}
 	return 1;
@@ -457,7 +457,7 @@ int ModApiServer::l_sound_play(lua_State *L)
 int ModApiServer::l_sound_stop(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
-	s32 handle = luaL_checkinteger(L, 1);
+	int32_t handle = luaL_checkinteger(L, 1);
 	getServer(L)->stopSound(handle);
 	return 0;
 }
@@ -465,7 +465,7 @@ int ModApiServer::l_sound_stop(lua_State *L)
 int ModApiServer::l_sound_fade(lua_State *L)
 {
 	NO_MAP_LOCK_REQUIRED;
-	s32 handle = luaL_checkinteger(L, 1);
+	int32_t handle = luaL_checkinteger(L, 1);
 	float step = readParam<float>(L, 2);
 	float gain = readParam<float>(L, 3);
 	getServer(L)->fadeSound(handle, step, gain);

@@ -42,10 +42,10 @@ enum MinimapShape {
 struct MinimapModeDef {
 	MinimapType type;
 	std::string label;
-	u16 scan_height;
-	u16 map_size;
+	uint16_t scan_height;
+	uint16_t map_size;
 	std::string texture;
-	u16 scale;
+	uint16_t scale;
 };
 
 struct MinimapMarker {
@@ -58,8 +58,8 @@ struct MinimapMarker {
 struct MinimapPixel {
 	//! The topmost node that the minimap displays.
 	MapNode n;
-	u16 height;
-	u16 air_count;
+	uint16_t height;
+	uint16_t air_count;
 };
 
 struct MinimapMapblock {
@@ -95,7 +95,7 @@ public:
 	MinimapUpdateThread() : UpdateThread("Minimap") {}
 	virtual ~MinimapUpdateThread();
 
-	void getMap(v3s16 pos, s16 size, s16 height);
+	void getMap(v3s16 pos, int16_t size, int16_t height);
 	void enqueueBlock(v3s16 pos, MinimapMapblock *data);
 	bool pushBlockUpdate(v3s16 pos, MinimapMapblock *data);
 	bool popBlockUpdate(QueuedMinimapUpdate *update);
@@ -122,16 +122,16 @@ public:
 
 	void setPos(v3s16 pos);
 	v3s16 getPos() const { return data->pos; }
-	void setAngle(f32 angle);
-	f32 getAngle() const { return m_angle; }
+	void setAngle(float angle);
+	float getAngle() const { return m_angle; }
 	void toggleMinimapShape();
 	void setMinimapShape(MinimapShape shape);
 	MinimapShape getMinimapShape();
 
 	void clearModes() { m_modes.clear(); };
 	void addMode(MinimapModeDef mode);
-	void addMode(MinimapType type, u16 size = 0, std::string label = "",
-			std::string texture = "", u16 scale = 1);
+	void addMode(MinimapType type, uint16_t size = 0, std::string label = "",
+			std::string texture = "", uint16_t scale = 1);
 
 	void setModeIndex(size_t index);
 	size_t getModeIndex() const { return m_current_mode_index; };
@@ -169,8 +169,8 @@ private:
 	bool m_enable_shaders;
 	std::vector<MinimapModeDef> m_modes;
 	size_t m_current_mode_index;
-	u16 m_surface_mode_scan_height;
-	f32 m_angle;
+	uint16_t m_surface_mode_scan_height;
+	float m_angle;
 	std::mutex m_mutex;
 	std::list<MinimapMarker*> m_markers;
 	std::list<v2f> m_active_markers;

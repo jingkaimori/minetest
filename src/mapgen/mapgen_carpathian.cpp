@@ -276,7 +276,7 @@ void MapgenCarpathian::makeChunk(BlockMakeData *data)
 	blockseed = getBlockSeed2(full_node_min, seed);
 
 	// Generate terrain
-	s16 stone_surface_max_y = generateTerrain();
+	int16_t stone_surface_max_y = generateTerrain();
 
 	// Create heightmap
 	updateHeightmap(node_min, node_max);
@@ -388,9 +388,9 @@ int MapgenCarpathian::getSpawnLevelAtPoint(v2s16 p)
 	}
 
 	bool solid_below = false;
-	u8 cons_non_solid = 0; // consecutive non-solid nodes
+	uint8_t cons_non_solid = 0; // consecutive non-solid nodes
 
-	for (s16 y = water_level; y <= water_level + 32; y++) {
+	for (int16_t y = water_level; y <= water_level + 32; y++) {
 		float mnt_var = NoisePerlin3D(&noise_mnt_var->np, p.X, y, p.Y, seed);
 		float hill1 = getLerp(height1, height2, mnt_var);
 		float hill2 = getLerp(height3, height4, mnt_var);
@@ -402,7 +402,7 @@ int MapgenCarpathian::getSpawnLevelAtPoint(v2s16 p)
 		float ridged_mountains = ridge_mnt * hilliness;
 		float step_mountains = step_mnt * hilliness;
 
-		s32 grad = 1 - y;
+		int32_t grad = 1 - y;
 
 		float mountains = hills + ridged_mountains + step_mountains;
 		float surface_level = base_level + mountains + grad;
@@ -461,11 +461,11 @@ int MapgenCarpathian::generateTerrain()
 
 	//// Place nodes
 	const v3s16 &em = vm->m_area.getExtent();
-	s16 stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
-	u32 index2d = 0;
+	int16_t stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
+	uint32_t index2d = 0;
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++)
-	for (s16 x = node_min.X; x <= node_max.X; x++, index2d++) {
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++)
+	for (int16_t x = node_min.X; x <= node_max.X; x++, index2d++) {
 		// Hill/Mountain height (hilliness)
 		float height1 = noise_height1->result[index2d];
 		float height2 = noise_height2->result[index2d];
@@ -510,10 +510,10 @@ int MapgenCarpathian::generateTerrain()
 		}
 
 		// Initialise 3D noise index and voxelmanip index to column base
-		u32 index3d = (z - node_min.Z) * zstride_1u1d + (x - node_min.X);
-		u32 vi = vm->m_area.index(x, node_min.Y - 1, z);
+		uint32_t index3d = (z - node_min.Z) * zstride_1u1d + (x - node_min.X);
+		uint32_t vi = vm->m_area.index(x, node_min.Y - 1, z);
 
-		for (s16 y = node_min.Y - 1; y <= node_max.Y + 1;
+		for (int16_t y = node_min.Y - 1; y <= node_max.Y + 1;
 				y++,
 				index3d += ystride,
 				VoxelArea::add_y(em, vi, 1)) {
@@ -536,7 +536,7 @@ int MapgenCarpathian::generateTerrain()
 			float step_mountains = step_mnt * hilliness;
 
 			// Gradient & shallow seabed
-			s32 grad = (y < water_level) ? grad_wl + (water_level - y) * 3 :
+			int32_t grad = (y < water_level) ? grad_wl + (water_level - y) * 3 :
 				1 - y;
 
 			// Final terrain level

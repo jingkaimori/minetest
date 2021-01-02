@@ -31,7 +31,7 @@ class NodeDefManager;
 #define OBJDEF_MAX_ITEMS (1 << 18)
 #define OBJDEF_UID_MASK ((1 << 7) - 1)
 
-typedef u32 ObjDefHandle;
+typedef uint32_t ObjDefHandle;
 
 enum ObjDefType {
 	OBJDEF_GENERIC,
@@ -50,8 +50,8 @@ public:
 	// and copy its own instance variables over
 	virtual ObjDef *clone() const = 0;
 
-	u32 index;
-	u32 uid;
+	uint32_t index;
+	uint32_t uid;
 	ObjDefHandle handle;
 	std::string name;
 
@@ -86,21 +86,21 @@ public:
 	virtual ObjDef *set(ObjDefHandle handle, ObjDef *obj);
 
 	//// Raw variants that work on indexes
-	virtual u32 addRaw(ObjDef *obj);
+	virtual uint32_t addRaw(ObjDef *obj);
 
 	// It is generally assumed that getRaw() will always return a valid object
 	// This won't be true if people do odd things such as call setRaw() with NULL
-	virtual ObjDef *getRaw(u32 index) const;
-	virtual ObjDef *setRaw(u32 index, ObjDef *obj);
+	virtual ObjDef *getRaw(uint32_t index) const;
+	virtual ObjDef *setRaw(uint32_t index, ObjDef *obj);
 
 	size_t getNumObjects() const { return m_objects.size(); }
 	ObjDefType getType() const { return m_objtype; }
 	const NodeDefManager *getNodeDef() const { return m_ndef; }
 
-	u32 validateHandle(ObjDefHandle handle) const;
-	static ObjDefHandle createHandle(u32 index, ObjDefType type, u32 uid);
-	static bool decodeHandle(ObjDefHandle handle, u32 *index,
-		ObjDefType *type, u32 *uid);
+	uint32_t validateHandle(ObjDefHandle handle) const;
+	static ObjDefHandle createHandle(uint32_t index, ObjDefType type, uint32_t uid);
+	static bool decodeHandle(ObjDefHandle handle, uint32_t *index,
+		ObjDefType *type, uint32_t *uid);
 
 protected:
 	ObjDefManager() {};

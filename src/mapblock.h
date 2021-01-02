@@ -76,7 +76,7 @@ public:
 	MapBlock(Map *parent, v3s16 pos, IGameDef *gamedef, bool dummy=false);
 	~MapBlock();
 
-	/*virtual u16 nodeContainerId() const
+	/*virtual uint16_t nodeContainerId() const
 	{
 		return NODECONTAINER_ID_MAPBLOCK;
 	}*/
@@ -90,7 +90,7 @@ public:
 	{
 		delete[] data;
 		data = new MapNode[nodecount];
-		for (u32 i = 0; i < nodecount; i++)
+		for (uint32_t i = 0; i < nodecount; i++)
 			data[i] = MapNode(CONTENT_IGNORE);
 
 		raiseModified(MOD_STATE_WRITE_NEEDED, MOD_REASON_REALLOCATE);
@@ -104,7 +104,7 @@ public:
 	////
 	//// Modification tracking methods
 	////
-	void raiseModified(u32 mod, u32 reason=MOD_REASON_UNKNOWN)
+	void raiseModified(uint32_t mod, uint32_t reason=MOD_REASON_UNKNOWN)
 	{
 		if (mod > m_modified) {
 			m_modified = mod;
@@ -118,12 +118,12 @@ public:
 			contents_cached = false;
 	}
 
-	inline u32 getModified()
+	inline uint32_t getModified()
 	{
 		return m_modified;
 	}
 
-	inline u32 getModifiedReason()
+	inline uint32_t getModifiedReason()
 	{
 		return m_modified_reason;
 	}
@@ -163,7 +163,7 @@ public:
 		raiseModified(MOD_STATE_WRITE_NEEDED, MOD_REASON_SET_IS_UNDERGROUND);
 	}
 
-	inline void setLightingComplete(u16 newflags)
+	inline void setLightingComplete(uint16_t newflags)
 	{
 		if (newflags != m_lighting_complete) {
 			m_lighting_complete = newflags;
@@ -171,19 +171,19 @@ public:
 		}
 	}
 
-	inline u16 getLightingComplete()
+	inline uint16_t getLightingComplete()
 	{
 		return m_lighting_complete;
 	}
 
-	inline void setLightingComplete(LightBank bank, u8 direction,
+	inline void setLightingComplete(LightBank bank, uint8_t direction,
 		bool is_complete)
 	{
 		assert(direction >= 0 && direction <= 5);
 		if (bank == LIGHTBANK_NIGHT) {
 			direction += 6;
 		}
-		u16 newflags = m_lighting_complete;
+		uint16_t newflags = m_lighting_complete;
 		if (is_complete) {
 			newflags |= 1 << direction;
 		} else {
@@ -192,7 +192,7 @@ public:
 		setLightingComplete(newflags);
 	}
 
-	inline bool isLightingComplete(LightBank bank, u8 direction)
+	inline bool isLightingComplete(LightBank bank, uint8_t direction)
 	{
 		assert(direction >= 0 && direction <= 5);
 		if (bank == LIGHTBANK_NIGHT) {
@@ -240,7 +240,7 @@ public:
 	//// Regular MapNode get-setters
 	////
 
-	inline bool isValidPosition(s16 x, s16 y, s16 z)
+	inline bool isValidPosition(int16_t x, int16_t y, int16_t z)
 	{
 		return data
 			&& x >= 0 && x < MAP_BLOCKSIZE
@@ -253,7 +253,7 @@ public:
 		return isValidPosition(p.X, p.Y, p.Z);
 	}
 
-	inline MapNode getNode(s16 x, s16 y, s16 z, bool *valid_position)
+	inline MapNode getNode(int16_t x, int16_t y, int16_t z, bool *valid_position)
 	{
 		*valid_position = isValidPosition(x, y, z);
 
@@ -274,7 +274,7 @@ public:
 		return getNode(p.X, p.Y, p.Z, &is_valid);
 	}
 
-	inline void setNode(s16 x, s16 y, s16 z, MapNode & n)
+	inline void setNode(int16_t x, int16_t y, int16_t z, MapNode & n)
 	{
 		if (!isValidPosition(x, y, z))
 			throw InvalidPositionException();
@@ -292,7 +292,7 @@ public:
 	//// Non-checking variants of the above
 	////
 
-	inline MapNode getNodeNoCheck(s16 x, s16 y, s16 z, bool *valid_position)
+	inline MapNode getNodeNoCheck(int16_t x, int16_t y, int16_t z, bool *valid_position)
 	{
 		*valid_position = data != nullptr;
 		if (!*valid_position)
@@ -312,7 +312,7 @@ public:
 	//// Caller must ensure that this is not a dummy block (by calling isDummy())
 	////
 
-	inline const MapNode &getNodeUnsafe(s16 x, s16 y, s16 z)
+	inline const MapNode &getNodeUnsafe(int16_t x, int16_t y, int16_t z)
 	{
 		return data[z * zstride + y * ystride + x];
 	}
@@ -322,7 +322,7 @@ public:
 		return getNodeUnsafe(p.X, p.Y, p.Z);
 	}
 
-	inline void setNodeNoCheck(s16 x, s16 y, s16 z, MapNode & n)
+	inline void setNodeNoCheck(int16_t x, int16_t y, int16_t z, MapNode & n)
 	{
 		if (!data)
 			throw InvalidPositionException();
@@ -342,11 +342,11 @@ public:
 	MapNode getNodeParent(v3s16 p, bool *is_valid_position = NULL);
 	void setNodeParent(v3s16 p, MapNode & n);
 
-	inline void drawbox(s16 x0, s16 y0, s16 z0, s16 w, s16 h, s16 d, MapNode node)
+	inline void drawbox(int16_t x0, int16_t y0, int16_t z0, int16_t w, int16_t h, int16_t d, MapNode node)
 	{
-		for (u16 z = 0; z < d; z++)
-		for (u16 y = 0; y < h; y++)
-		for (u16 x = 0; x < w; x++)
+		for (uint16_t z = 0; z < d; z++)
+		for (uint16_t y = 0; y < h; y++)
+		for (uint16_t x = 0; x < w; x++)
 			setNode(x0 + x, y0 + y, z0 + z, node);
 	}
 
@@ -384,7 +384,7 @@ public:
 			-3 = random fail
 			0...MAP_BLOCKSIZE-1 = ground level
 	*/
-	s16 getGroundLevel(v2s16 p2d);
+	int16_t getGroundLevel(v2s16 p2d);
 
 	////
 	//// Timestamp (see m_timestamp)
@@ -392,23 +392,23 @@ public:
 
 	// NOTE: BLOCK_TIMESTAMP_UNDEFINED=0xffffffff means there is no timestamp.
 
-	inline void setTimestamp(u32 time)
+	inline void setTimestamp(uint32_t time)
 	{
 		m_timestamp = time;
 		raiseModified(MOD_STATE_WRITE_AT_UNLOAD, MOD_REASON_SET_TIMESTAMP);
 	}
 
-	inline void setTimestampNoChangedFlag(u32 time)
+	inline void setTimestampNoChangedFlag(uint32_t time)
 	{
 		m_timestamp = time;
 	}
 
-	inline u32 getTimestamp()
+	inline uint32_t getTimestamp()
 	{
 		return m_timestamp;
 	}
 
-	inline u32 getDiskTimestamp()
+	inline uint32_t getDiskTimestamp()
 	{
 		return m_disk_timestamp;
 	}
@@ -482,10 +482,10 @@ public:
 	// These don't write or read version by itself
 	// Set disk to true for on-disk format, false for over-the-network format
 	// Precondition: version >= SER_FMT_VER_LOWEST_WRITE
-	void serialize(std::ostream &os, u8 version, bool disk, int compression_level);
+	void serialize(std::ostream &os, uint8_t version, bool disk, int compression_level);
 	// If disk == true: In addition to doing other things, will add
 	// unknown blocks from id-name mapping to wndef
-	void deSerialize(std::istream &is, u8 version, bool disk);
+	void deSerialize(std::istream &is, uint8_t version, bool disk);
 
 	void serializeNetworkSpecific(std::ostream &os);
 	void deSerializeNetworkSpecific(std::istream &is);
@@ -494,13 +494,13 @@ private:
 		Private methods
 	*/
 
-	void deSerialize_pre22(std::istream &is, u8 version, bool disk);
+	void deSerialize_pre22(std::istream &is, uint8_t version, bool disk);
 
 	/*
 		Used only internally, because changes can't be tracked
 	*/
 
-	inline MapNode &getNodeRef(s16 x, s16 y, s16 z)
+	inline MapNode &getNodeRef(int16_t x, int16_t y, int16_t z)
 	{
 		if (!isValidPosition(x, y, z))
 			throw InvalidPositionException();
@@ -526,10 +526,10 @@ public:
 	NodeTimerList m_node_timers;
 	StaticObjectList m_static_objects;
 
-	static const u32 ystride = MAP_BLOCKSIZE;
-	static const u32 zstride = MAP_BLOCKSIZE * MAP_BLOCKSIZE;
+	static const uint32_t ystride = MAP_BLOCKSIZE;
+	static const uint32_t zstride = MAP_BLOCKSIZE * MAP_BLOCKSIZE;
 
-	static const u32 nodecount = MAP_BLOCKSIZE * MAP_BLOCKSIZE * MAP_BLOCKSIZE;
+	static const uint32_t nodecount = MAP_BLOCKSIZE * MAP_BLOCKSIZE * MAP_BLOCKSIZE;
 
 	//// ABM optimizations ////
 	// Cache of content types
@@ -550,9 +550,9 @@ private:
 	v3s16 m_pos;
 
 	/* This is the precalculated m_pos_relative value
-	* This caches the value, improving performance by removing 3 s16 multiplications
+	* This caches the value, improving performance by removing 3 int16_t multiplications
 	* at runtime on each getPosRelative call
-	* For a 5 minutes runtime with valgrind this removes 3 * 19M s16 multiplications
+	* For a 5 minutes runtime with valgrind this removes 3 * 19M int16_t multiplications
 	* The gain can be estimated in Release Build to 3 * 100M multiply operations for 5 mins
 	*/
 	v3s16 m_pos_relative;
@@ -570,8 +570,8 @@ private:
 		  block has been modified from the one on disk.
 		- On the client, this is used for nothing.
 	*/
-	u32 m_modified = MOD_STATE_WRITE_NEEDED;
-	u32 m_modified_reason = MOD_REASON_INITIAL;
+	uint32_t m_modified = MOD_STATE_WRITE_NEEDED;
+	uint32_t m_modified_reason = MOD_REASON_INITIAL;
 
 	/*
 		When propagating sunlight and the above block doesn't exist,
@@ -591,7 +591,7 @@ private:
 	 * night X-, night Y-, night Z-, night Z+, night Y+, night X+,
 	 * day X-,   day Y-,   day Z-,   day Z+,   day Y+,   day X+.
 	*/
-	u16 m_lighting_complete = 0xFFFF;
+	uint16_t m_lighting_complete = 0xFFFF;
 
 	// Whether day and night lighting differs
 	bool m_day_night_differs = false;
@@ -603,9 +603,9 @@ private:
 		When block is removed from active blocks, this is set to gametime.
 		Value BLOCK_TIMESTAMP_UNDEFINED=0xffffffff means there is no timestamp.
 	*/
-	u32 m_timestamp = BLOCK_TIMESTAMP_UNDEFINED;
+	uint32_t m_timestamp = BLOCK_TIMESTAMP_UNDEFINED;
 	// The on-disk (or to-be on-disk) timestamp value
-	u32 m_disk_timestamp = BLOCK_TIMESTAMP_UNDEFINED;
+	uint32_t m_disk_timestamp = BLOCK_TIMESTAMP_UNDEFINED;
 
 	/*
 		When the block is accessed, this is set to 0.
@@ -635,7 +635,7 @@ inline bool objectpos_over_limit(v3f p)
 
 inline bool blockpos_over_max_limit(v3s16 p)
 {
-	const s16 max_limit_bp = MAX_MAP_GENERATION_LIMIT / MAP_BLOCKSIZE;
+	const int16_t max_limit_bp = MAX_MAP_GENERATION_LIMIT / MAP_BLOCKSIZE;
 	return p.X < -max_limit_bp ||
 		p.X >  max_limit_bp ||
 		p.Y < -max_limit_bp ||

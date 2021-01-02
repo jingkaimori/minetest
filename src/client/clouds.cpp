@@ -41,8 +41,8 @@ static void cloud_3d_setting_changed(const std::string &settingname, void *data)
 }
 
 Clouds::Clouds(scene::ISceneManager* mgr,
-		s32 id,
-		u32 seed
+		int32_t id,
+		uint32_t seed
 ):
 	scene::ISceneNode(mgr->getRootSceneNode(), mgr, id),
 	m_seed(seed)
@@ -156,9 +156,9 @@ void Clouds::render()
 	// Get fog parameters for setting them back later
 	video::SColor fog_color(0,0,0,0);
 	video::E_FOG_TYPE fog_type = video::EFT_FOG_LINEAR;
-	f32 fog_start = 0;
-	f32 fog_end = 0;
-	f32 fog_density = 0;
+	float fog_start = 0;
+	float fog_end = 0;
+	float fog_density = 0;
 	bool fog_pixelfog = false;
 	bool fog_rangefog = false;
 	driver->getFog(fog_color, fog_type, fog_start, fog_end, fog_density,
@@ -174,11 +174,11 @@ void Clouds::render()
 	std::vector<video::S3DVertex> vertices;
 	vertices.reserve(16 * m_cloud_radius_i * m_cloud_radius_i);
 
-	for(s16 zi = -m_cloud_radius_i; zi < m_cloud_radius_i; zi++) {
-		u32 si = (zi + m_cloud_radius_i) * m_cloud_radius_i * 2 + m_cloud_radius_i;
+	for(int16_t zi = -m_cloud_radius_i; zi < m_cloud_radius_i; zi++) {
+		uint32_t si = (zi + m_cloud_radius_i) * m_cloud_radius_i * 2 + m_cloud_radius_i;
 
-		for (s16 xi = -m_cloud_radius_i; xi < m_cloud_radius_i; xi++) {
-			u32 i = si + xi;
+		for (int16_t xi = -m_cloud_radius_i; xi < m_cloud_radius_i; xi++) {
+			uint32_t i = si + xi;
 
 			grid[i] = gridFilled(
 				xi + center_of_drawing_in_noise_i.X,
@@ -191,18 +191,18 @@ void Clouds::render()
 #define INAREA(x, z, radius) \
 	((x) >= -(radius) && (x) < (radius) && (z) >= -(radius) && (z) < (radius))
 
-	for (s16 zi0= -m_cloud_radius_i; zi0 < m_cloud_radius_i; zi0++)
-	for (s16 xi0= -m_cloud_radius_i; xi0 < m_cloud_radius_i; xi0++)
+	for (int16_t zi0= -m_cloud_radius_i; zi0 < m_cloud_radius_i; zi0++)
+	for (int16_t xi0= -m_cloud_radius_i; xi0 < m_cloud_radius_i; xi0++)
 	{
-		s16 zi = zi0;
-		s16 xi = xi0;
+		int16_t zi = zi0;
+		int16_t xi = xi0;
 		// Draw from back to front for proper transparency
 		if(zi >= 0)
 			zi = m_cloud_radius_i - zi - 1;
 		if(xi >= 0)
 			xi = m_cloud_radius_i - xi - 1;
 
-		u32 i = GETINDEX(xi, zi, m_cloud_radius_i);
+		uint32_t i = GETINDEX(xi, zi, m_cloud_radius_i);
 
 		if (!grid[i])
 			continue;
@@ -216,10 +216,10 @@ void Clouds::render()
 			video::S3DVertex(0,0,0, 0,0,0, c_top, 0, 0)
 		};
 
-		const f32 rx = cloud_size / 2.0f;
+		const float rx = cloud_size / 2.0f;
 		// if clouds are flat, the top layer should be at the given height
-		const f32 ry = m_enable_3d ? m_params.thickness * BS : 0.0f;
-		const f32 rz = cloud_size / 2;
+		const float ry = m_enable_3d ? m_params.thickness * BS : 0.0f;
+		const float rz = cloud_size / 2;
 
 		for(int i=0; i<num_faces_to_draw; i++)
 		{
@@ -236,7 +236,7 @@ void Clouds::render()
 				break;
 			case 1: // back
 				if (INAREA(xi, zi - 1, m_cloud_radius_i)) {
-					u32 j = GETINDEX(xi, zi - 1, m_cloud_radius_i);
+					uint32_t j = GETINDEX(xi, zi - 1, m_cloud_radius_i);
 					if(grid[j])
 						continue;
 				}
@@ -251,7 +251,7 @@ void Clouds::render()
 				break;
 			case 2: //right
 				if (INAREA(xi + 1, zi, m_cloud_radius_i)) {
-					u32 j = GETINDEX(xi+1, zi, m_cloud_radius_i);
+					uint32_t j = GETINDEX(xi+1, zi, m_cloud_radius_i);
 					if(grid[j])
 						continue;
 				}
@@ -266,7 +266,7 @@ void Clouds::render()
 				break;
 			case 3: // front
 				if (INAREA(xi, zi + 1, m_cloud_radius_i)) {
-					u32 j = GETINDEX(xi, zi + 1, m_cloud_radius_i);
+					uint32_t j = GETINDEX(xi, zi + 1, m_cloud_radius_i);
 					if(grid[j])
 						continue;
 				}
@@ -281,7 +281,7 @@ void Clouds::render()
 				break;
 			case 4: // left
 				if (INAREA(xi-1, zi, m_cloud_radius_i)) {
-					u32 j = GETINDEX(xi-1, zi, m_cloud_radius_i);
+					uint32_t j = GETINDEX(xi-1, zi, m_cloud_radius_i);
 					if(grid[j])
 						continue;
 				}
@@ -316,7 +316,7 @@ void Clouds::render()
 		}
 	}
 	int quad_count = vertices.size() / 4;
-	std::vector<u16> indices;
+	std::vector<uint16_t> indices;
 	indices.reserve(quad_count * 6);
 	for (int k = 0; k < quad_count; k++) {
 		indices.push_back(4 * k + 0);

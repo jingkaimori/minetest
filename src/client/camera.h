@@ -95,19 +95,19 @@ public:
 	}
 
 	// Horizontal field of view
-	inline f32 getFovX() const
+	inline float getFovX() const
 	{
 		return m_fov_x;
 	}
 
 	// Vertical field of view
-	inline f32 getFovY() const
+	inline float getFovY() const
 	{
 		return m_fov_y;
 	}
 
 	// Get maximum of getFovX() and getFovY()
-	inline f32 getFovMax() const
+	inline float getFovMax() const
 	{
 		return MYMAX(m_fov_x, m_fov_y);
 	}
@@ -119,19 +119,19 @@ public:
 	bool successfullyCreated(std::string &error_message);
 
 	// Step the camera: updates the viewing range and view bobbing.
-	void step(f32 dtime);
+	void step(float dtime);
 
 	// Update the camera from the local player's position.
 	// busytime is used to adjust the viewing range.
-	void update(LocalPlayer* player, f32 frametime, f32 busytime,
-			f32 tool_reload_ratio);
+	void update(LocalPlayer* player, float frametime, float busytime,
+			float tool_reload_ratio);
 
 	// Update render distance
 	void updateViewingRange();
 
 	// Start digging animation
 	// Pass 0 for left click, 1 for right click
-	void setDigging(s32 button);
+	void setDigging(int32_t button);
 
 	// Replace the wielded item mesh
 	void wield(const ItemStack &item);
@@ -171,7 +171,7 @@ public:
 
 	void drawNametags();
 
-	inline void addArmInertia(f32 player_yaw);
+	inline void addArmInertia(float player_yaw);
 
 private:
 	// Nodes
@@ -188,7 +188,7 @@ private:
 	Client *m_client;
 
 	// Default Client FOV (as defined by the "fov" setting)
-	f32 m_cache_fov;
+	float m_cache_fov;
 
 	// Absolute camera position
 	v3f m_camera_position;
@@ -199,11 +199,11 @@ private:
 
 	// Server-sent FOV variables
 	bool m_server_sent_fov = false;
-	f32 m_curr_fov_degrees, m_old_fov_degrees, m_target_fov_degrees;
+	float m_curr_fov_degrees, m_old_fov_degrees, m_target_fov_degrees;
 
 	// FOV transition variables
 	bool m_fov_transition_active = false;
-	f32 m_fov_diff, m_transition_time;
+	float m_fov_diff, m_transition_time;
 
 	v2f m_wieldmesh_offset = v2f(55.0f, -35.0f);
 	v2f m_arm_dir;
@@ -212,36 +212,36 @@ private:
 	v2f m_last_cam_pos;
 
 	// Field of view and aspect ratio stuff
-	f32 m_aspect = 1.0f;
-	f32 m_fov_x = 1.0f;
-	f32 m_fov_y = 1.0f;
+	float m_aspect = 1.0f;
+	float m_fov_x = 1.0f;
+	float m_fov_y = 1.0f;
 
 	// View bobbing animation frame (0 <= m_view_bobbing_anim < 1)
-	f32 m_view_bobbing_anim = 0.0f;
+	float m_view_bobbing_anim = 0.0f;
 	// If 0, view bobbing is off (e.g. player is standing).
 	// If 1, view bobbing is on (player is walking).
 	// If 2, view bobbing is getting switched off.
-	s32 m_view_bobbing_state = 0;
+	int32_t m_view_bobbing_state = 0;
 	// Speed of view bobbing animation
-	f32 m_view_bobbing_speed = 0.0f;
+	float m_view_bobbing_speed = 0.0f;
 	// Fall view bobbing
-	f32 m_view_bobbing_fall = 0.0f;
+	float m_view_bobbing_fall = 0.0f;
 
 	// Digging animation frame (0 <= m_digging_anim < 1)
-	f32 m_digging_anim = 0.0f;
+	float m_digging_anim = 0.0f;
 	// If -1, no digging animation
 	// If 0, left-click digging animation
 	// If 1, right-click digging animation
-	s32 m_digging_button = -1;
+	int32_t m_digging_button = -1;
 
 	// Animation when changing wielded item
-	f32 m_wield_change_timer = 0.125f;
+	float m_wield_change_timer = 0.125f;
 	ItemStack m_wield_item_next;
 
 	CameraMode m_camera_mode = CAMERA_MODE_FIRST;
 
-	f32 m_cache_fall_bobbing_amount;
-	f32 m_cache_view_bobbing_amount;
+	float m_cache_fall_bobbing_amount;
+	float m_cache_view_bobbing_amount;
 	bool m_arm_inertia;
 
 	std::list<Nametag *> m_nametags;

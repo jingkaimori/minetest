@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	ClientActiveObject
 */
 
-ClientActiveObject::ClientActiveObject(u16 id, Client *client,
+ClientActiveObject::ClientActiveObject(uint16_t id, Client *client,
 		ClientEnvironment *env):
 	ActiveObject(id),
 	m_client(client),
@@ -55,7 +55,7 @@ ClientActiveObject* ClientActiveObject::create(ActiveObjectType type,
 	return object;
 }
 
-void ClientActiveObject::registerType(u16 type, Factory f)
+void ClientActiveObject::registerType(uint16_t type, Factory f)
 {
 	auto n = m_types.find(type);
 	if (n != m_types.end())

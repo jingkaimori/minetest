@@ -32,7 +32,7 @@ class BiomeManager;
 //// Biome
 ////
 
-typedef u16 biome_t;
+typedef uint16_t biome_t;
 
 #define BIOME_NONE ((biome_t)0)
 
@@ -44,7 +44,7 @@ class Biome : public ObjDef, public NodeResolver {
 public:
 	ObjDef *clone() const;
 
-	u32 flags;
+	uint32_t flags;
 
 	content_t c_top;
 	content_t c_filler;
@@ -59,16 +59,16 @@ public:
 	content_t c_dungeon_alt;
 	content_t c_dungeon_stair;
 
-	s16 depth_top;
-	s16 depth_filler;
-	s16 depth_water_top;
-	s16 depth_riverbed;
+	int16_t depth_top;
+	int16_t depth_filler;
+	int16_t depth_water_top;
+	int16_t depth_riverbed;
 
 	v3s16 min_pos;
 	v3s16 max_pos;
 	float heat_point;
 	float humidity_point;
-	s16 vertical_blend;
+	int16_t vertical_blend;
 
 	virtual void resolveNodeNames();
 };
@@ -87,7 +87,7 @@ struct BiomeParams {
 	virtual void writeParams(Settings *settings) const = 0;
 	virtual ~BiomeParams() = default;
 
-	s32 seed;
+	int32_t seed;
 };
 
 // WARNING: this class is not thread-safe
@@ -110,7 +110,7 @@ public:
 	// Gets all biomes in current chunk using each corresponding element of
 	// heightmap as the y position, then stores the results by biome index in
 	// biomemap (also returned)
-	virtual biome_t *getBiomes(s16 *heightmap, v3s16 pmin) = 0;
+	virtual biome_t *getBiomes(int16_t *heightmap, v3s16 pmin) = 0;
 
 	// Gets a single biome at the specified position, which must be contained
 	// in the region formed by m_pmin and (m_pmin + m_csize - 1).
@@ -166,7 +166,7 @@ public:
 	Biome *calcBiomeAtPoint(v3s16 pos) const;
 	void calcBiomeNoise(v3s16 pmin);
 
-	biome_t *getBiomes(s16 *heightmap, v3s16 pmin);
+	biome_t *getBiomes(int16_t *heightmap, v3s16 pmin);
 	Biome *getBiomeAtPoint(v3s16 pos) const;
 	Biome *getBiomeAtIndex(size_t index, v3s16 pos) const;
 
@@ -231,9 +231,9 @@ public:
 
 	// For BiomeGen type 'BiomeGenOriginal'
 	float getHeatAtPosOriginal(v3s16 pos, NoiseParams &np_heat,
-		NoiseParams &np_heat_blend, u64 seed) const;
+		NoiseParams &np_heat_blend, uint64_t seed) const;
 	float getHumidityAtPosOriginal(v3s16 pos, NoiseParams &np_humidity,
-		NoiseParams &np_humidity_blend, u64 seed) const;
+		NoiseParams &np_humidity_blend, uint64_t seed) const;
 	const Biome *getBiomeFromNoiseOriginal(float heat, float humidity,
 		v3s16 pos) const;
 

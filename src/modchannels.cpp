@@ -36,7 +36,7 @@ bool ModChannel::registerConsumer(session_t peer_id)
 bool ModChannel::removeConsumer(session_t peer_id)
 {
 	bool found = false;
-	auto peer_removal_fct = [peer_id, &found](u16 p) {
+	auto peer_removal_fct = [peer_id, &found](uint16_t p) {
 		if (p == peer_id)
 			found = true;
 
@@ -141,8 +141,8 @@ void ModChannelMgr::leaveAllChannels(session_t peer_id)
 		channel_it.second->removeConsumer(peer_id);
 }
 
-static std::vector<u16> empty_channel_list;
-const std::vector<u16> &ModChannelMgr::getChannelPeers(const std::string &channel) const
+static std::vector<uint16_t> empty_channel_list;
+const std::vector<uint16_t> &ModChannelMgr::getChannelPeers(const std::string &channel) const
 {
 	const auto &channel_it = m_registered_channels.find(channel);
 	if (channel_it == m_registered_channels.end())

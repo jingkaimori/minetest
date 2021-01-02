@@ -47,14 +47,14 @@ void ReflowScan::scan(MapBlock *block, UniqueQueue<v3s16> *liquid_queue)
 	m_lookup_state_bitset = 1 << block_idx;
 
 	// Scan the columns in the block
-	for (s16 z = 0; z < MAP_BLOCKSIZE; z++)
-	for (s16 x = 0; x < MAP_BLOCKSIZE; x++) {
+	for (int16_t z = 0; z < MAP_BLOCKSIZE; z++)
+	for (int16_t x = 0; x < MAP_BLOCKSIZE; x++) {
 		scanColumn(x, z);
 	}
 
 	// Scan neighbouring columns from the nearby blocks as they might contain
 	// liquid nodes that weren't allowed to flow to prevent gaps.
-	for (s16 i = 0; i < MAP_BLOCKSIZE; i++) {
+	for (int16_t i = 0; i < MAP_BLOCKSIZE; i++) {
 		scanColumn(i, -1);
 		scanColumn(i, MAP_BLOCKSIZE);
 		scanColumn(-1, i);
@@ -140,7 +140,7 @@ void ReflowScan::scanColumn(int x, int z)
 	bool was_pushed = false;
 
 	// Scan through the whole block
-	for (s16 y = MAP_BLOCKSIZE - 1; y >= 0; y--) {
+	for (int16_t y = MAP_BLOCKSIZE - 1; y >= 0; y--) {
 		MapNode node = block->getNodeNoCheck(dx, y, dz, &valid_position);
 		const ContentFeatures &f = m_ndef->get(node);
 		bool is_ignore = node.getContent() == CONTENT_IGNORE;

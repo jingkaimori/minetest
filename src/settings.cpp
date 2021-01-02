@@ -173,7 +173,7 @@ bool Settings::parseConfigLines(std::istream &is, const std::string &end)
 }
 
 
-void Settings::writeLines(std::ostream &os, u32 tab_depth) const
+void Settings::writeLines(std::ostream &os, uint32_t tab_depth) const
 {
 	MutexAutoLock lock(m_mutex);
 
@@ -183,9 +183,9 @@ void Settings::writeLines(std::ostream &os, u32 tab_depth) const
 
 
 void Settings::printEntry(std::ostream &os, const std::string &name,
-	const SettingsEntry &entry, u32 tab_depth)
+	const SettingsEntry &entry, uint32_t tab_depth)
 {
-	for (u32 i = 0; i != tab_depth; i++)
+	for (uint32_t i = 0; i != tab_depth; i++)
 		os << "\t";
 
 	if (entry.is_group) {
@@ -193,7 +193,7 @@ void Settings::printEntry(std::ostream &os, const std::string &name,
 
 		entry.group->writeLines(os, tab_depth + 1);
 
-		for (u32 i = 0; i != tab_depth; i++)
+		for (uint32_t i = 0; i != tab_depth; i++)
 			os << "\t";
 		os << "}\n";
 	} else {
@@ -208,7 +208,7 @@ void Settings::printEntry(std::ostream &os, const std::string &name,
 
 
 bool Settings::updateConfigObject(std::istream &is, std::ostream &os,
-	const std::string &end, u32 tab_depth)
+	const std::string &end, uint32_t tab_depth)
 {
 	SettingEntries::const_iterator it;
 	std::set<std::string> present_entries;
@@ -437,9 +437,9 @@ s16 Settings::getS16(const std::string &name) const
 }
 
 
-u32 Settings::getU32(const std::string &name) const
+uint32_t Settings::getU32(const std::string &name) const
 {
-	return (u32) stoi(get(name));
+	return (uint32_t) stoi(get(name));
 }
 
 s32 Settings::getS32(const std::string &name) const
@@ -454,9 +454,9 @@ float Settings::getFloat(const std::string &name) const
 }
 
 
-u64 Settings::getU64(const std::string &name) const
+uint64_t Settings::getU64(const std::string &name) const
 {
-	u64 value = 0;
+	uint64_t value = 0;
 	std::string s = get(name);
 	std::istringstream ss(s);
 	ss >> value;
@@ -487,11 +487,11 @@ v3f Settings::getV3F(const std::string &name) const
 }
 
 
-u32 Settings::getFlagStr(const std::string &name, const FlagDesc *flagdesc,
-	u32 *flagmask) const
+uint32_t Settings::getFlagStr(const std::string &name, const FlagDesc *flagdesc,
+	uint32_t *flagmask) const
 {
-	u32 flags = 0;
-	u32 mask_default = 0;
+	uint32_t flags = 0;
+	uint32_t mask_default = 0;
 
 	std::string value;
 	// Read default value (if there is any)
@@ -503,8 +503,8 @@ u32 Settings::getFlagStr(const std::string &name, const FlagDesc *flagdesc,
 
 	// Apply custom flags "on top"
 	value = get(name);
-	u32 flags_user;
-	u32 mask_user = U32_MAX;
+	uint32_t flags_user;
+	uint32_t mask_user = U32_MAX;
 	flags_user = std::isdigit(value[0])
 		? stoi(value) // Override default
 		: readFlagString(value, flagdesc, &mask_user);
@@ -657,7 +657,7 @@ bool Settings::getFloatNoEx(const std::string &name, float &val) const
 }
 
 
-bool Settings::getU16NoEx(const std::string &name, u16 &val) const
+bool Settings::getU16NoEx(const std::string &name, uint16_t &val) const
 {
 	try {
 		val = getU16(name);
@@ -668,7 +668,7 @@ bool Settings::getU16NoEx(const std::string &name, u16 &val) const
 }
 
 
-bool Settings::getS16NoEx(const std::string &name, s16 &val) const
+bool Settings::getS16NoEx(const std::string &name, int16_t &val) const
 {
 	try {
 		val = getS16(name);
@@ -679,7 +679,7 @@ bool Settings::getS16NoEx(const std::string &name, s16 &val) const
 }
 
 
-bool Settings::getS32NoEx(const std::string &name, s32 &val) const
+bool Settings::getS32NoEx(const std::string &name, int32_t &val) const
 {
 	try {
 		val = getS32(name);
@@ -690,7 +690,7 @@ bool Settings::getS32NoEx(const std::string &name, s32 &val) const
 }
 
 
-bool Settings::getU64NoEx(const std::string &name, u64 &val) const
+bool Settings::getU64NoEx(const std::string &name, uint64_t &val) const
 {
 	try {
 		val = getU64(name);
@@ -723,7 +723,7 @@ bool Settings::getV3FNoEx(const std::string &name, v3f &val) const
 }
 
 
-bool Settings::getFlagStrNoEx(const std::string &name, u32 &val,
+bool Settings::getFlagStrNoEx(const std::string &name, uint32_t &val,
 	const FlagDesc *flagdesc) const
 {
 	if (!flagdesc) {
@@ -814,25 +814,25 @@ bool Settings::setBool(const std::string &name, bool value)
 }
 
 
-bool Settings::setS16(const std::string &name, s16 value)
+bool Settings::setS16(const std::string &name, int16_t value)
 {
 	return set(name, itos(value));
 }
 
 
-bool Settings::setU16(const std::string &name, u16 value)
+bool Settings::setU16(const std::string &name, uint16_t value)
 {
 	return set(name, itos(value));
 }
 
 
-bool Settings::setS32(const std::string &name, s32 value)
+bool Settings::setS32(const std::string &name, int32_t value)
 {
 	return set(name, itos(value));
 }
 
 
-bool Settings::setU64(const std::string &name, u64 value)
+bool Settings::setU64(const std::string &name, uint64_t value)
 {
 	std::ostringstream os;
 	os << value;
@@ -862,8 +862,8 @@ bool Settings::setV3F(const std::string &name, v3f value)
 }
 
 
-bool Settings::setFlagStr(const std::string &name, u32 flags,
-	const FlagDesc *flagdesc, u32 flagmask)
+bool Settings::setFlagStr(const std::string &name, uint32_t flags,
+	const FlagDesc *flagdesc, uint32_t flagmask)
 {
 	if (!flagdesc) {
 		if (!(flagdesc = getFlagDescFallback(name)))
@@ -979,7 +979,7 @@ void Settings::clearDefaultsNoLock()
 }
 
 void Settings::setDefault(const std::string &name, const FlagDesc *flagdesc,
-	u32 flags)
+	uint32_t flags)
 {
 	m_flags[name] = flagdesc;
 	setDefault(name, writeFlagString(flags, flagdesc, U32_MAX));
@@ -996,7 +996,7 @@ void Settings::overrideDefaults(Settings *other)
 		if (flagdesc) {
 			// Flags cannot be copied directly.
 			// 1) Get the current set flags
-			u32 flags = getFlagStr(setting.first, flagdesc, nullptr);
+			uint32_t flags = getFlagStr(setting.first, flagdesc, nullptr);
 			// 2) Set the flags as defaults
 			other->setDefault(setting.first, flagdesc, flags);
 			// 3) Get the newly set flags and override the default setting value

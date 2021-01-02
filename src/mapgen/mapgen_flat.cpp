@@ -176,17 +176,17 @@ void MapgenFlatParams::setDefaultSettings(Settings *settings)
 
 int MapgenFlat::getSpawnLevelAtPoint(v2s16 p)
 {
-	s16 stone_level = ground_level;
+	int16_t stone_level = ground_level;
 	float n_terrain = 
 		((spflags & MGFLAT_LAKES) || (spflags & MGFLAT_HILLS)) ?
 		NoisePerlin2D(&noise_terrain->np, p.X, p.Y, seed) :
 		0.0f;
 
 	if ((spflags & MGFLAT_LAKES) && n_terrain < lake_threshold) {
-		s16 depress = (lake_threshold - n_terrain) * lake_steepness;
+		int16_t depress = (lake_threshold - n_terrain) * lake_steepness;
 		stone_level = ground_level - depress;
 	} else if ((spflags & MGFLAT_HILLS) && n_terrain > hill_threshold) {
-		s16 rise = (n_terrain - hill_threshold) * hill_steepness;
+		int16_t rise = (n_terrain - hill_threshold) * hill_steepness;
 	 	stone_level = ground_level + rise;
 	}
 
@@ -225,7 +225,7 @@ void MapgenFlat::makeChunk(BlockMakeData *data)
 	blockseed = getBlockSeed2(full_node_min, seed);
 
 	// Generate base terrain, mountains, and ridges with initial heightmaps
-	s16 stone_surface_max_y = generateTerrain();
+	int16_t stone_surface_max_y = generateTerrain();
 
 	// Create heightmap
 	updateHeightmap(node_min, node_max);
@@ -294,28 +294,28 @@ s16 MapgenFlat::generateTerrain()
 	MapNode n_water(c_water_source);
 
 	const v3s16 &em = vm->m_area.getExtent();
-	s16 stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
-	u32 ni2d = 0;
+	int16_t stone_surface_max_y = -MAX_MAP_GENERATION_LIMIT;
+	uint32_t ni2d = 0;
 
 	bool use_noise = (spflags & MGFLAT_LAKES) || (spflags & MGFLAT_HILLS);
 	if (use_noise)
 		noise_terrain->perlinMap2D(node_min.X, node_min.Z);
 
-	for (s16 z = node_min.Z; z <= node_max.Z; z++)
-	for (s16 x = node_min.X; x <= node_max.X; x++, ni2d++) {
-		s16 stone_level = ground_level;
+	for (int16_t z = node_min.Z; z <= node_max.Z; z++)
+	for (int16_t x = node_min.X; x <= node_max.X; x++, ni2d++) {
+		int16_t stone_level = ground_level;
 		float n_terrain = use_noise ? noise_terrain->result[ni2d] : 0.0f;
 
 		if ((spflags & MGFLAT_LAKES) && n_terrain < lake_threshold) {
-			s16 depress = (lake_threshold - n_terrain) * lake_steepness;
+			int16_t depress = (lake_threshold - n_terrain) * lake_steepness;
 			stone_level = ground_level - depress;
 		} else if ((spflags & MGFLAT_HILLS) && n_terrain > hill_threshold) {
-			s16 rise = (n_terrain - hill_threshold) * hill_steepness;
+			int16_t rise = (n_terrain - hill_threshold) * hill_steepness;
 		 	stone_level = ground_level + rise;
 		}
 
-		u32 vi = vm->m_area.index(x, node_min.Y - 1, z);
-		for (s16 y = node_min.Y - 1; y <= node_max.Y + 1; y++) {
+		uint32_t vi = vm->m_area.index(x, node_min.Y - 1, z);
+		for (int16_t y = node_min.Y - 1; y <= node_max.Y + 1; y++) {
 			if (vm->m_data[vi].getContent() == CONTENT_IGNORE) {
 				if (y <= stone_level) {
 					vm->m_data[vi] = n_stone;

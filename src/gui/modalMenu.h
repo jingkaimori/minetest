@@ -38,7 +38,7 @@ public:
 class GUIModalMenu : public gui::IGUIElement
 {
 public:
-	GUIModalMenu(gui::IGUIEnvironment* env, gui::IGUIElement* parent, s32 id,
+	GUIModalMenu(gui::IGUIEnvironment* env, gui::IGUIElement* parent, int32_t id,
 		IMenuManager *menumgr, bool remap_dbl_click = true);
 	virtual ~GUIModalMenu();
 
@@ -59,8 +59,8 @@ public:
 #endif
 
 protected:
-	virtual std::wstring getLabelByID(s32 id) = 0;
-	virtual std::string getNameByID(s32 id) = 0;
+	virtual std::wstring getLabelByID(int32_t id) = 0;
+	virtual std::string getNameByID(int32_t id) = 0;
 
 	/**
 	 * check if event is part of a double click

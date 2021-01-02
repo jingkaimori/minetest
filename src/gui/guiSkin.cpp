@@ -160,7 +160,7 @@ GUISkin::GUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver* driver)
 	Icons[EGDI_FILE] = 245;
 	Icons[EGDI_DIRECTORY] = 246;
 
-	for (u32 i=0; i<EGDF_COUNT; ++i)
+	for (uint32_t i=0; i<EGDF_COUNT; ++i)
 		Fonts[i] = 0;
 
 	UseGradient = (Type == EGST_WINDOWS_METALLIC) || (Type == EGST_BURNING_SKIN) ;
@@ -170,7 +170,7 @@ GUISkin::GUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver* driver)
 //! destructor
 GUISkin::~GUISkin()
 {
-	for (u32 i=0; i<EGDF_COUNT; ++i)
+	for (uint32_t i=0; i<EGDF_COUNT; ++i)
 	{
 		if (Fonts[i])
 			Fonts[i]->drop();
@@ -184,7 +184,7 @@ GUISkin::~GUISkin()
 //! returns default color
 video::SColor GUISkin::getColor(EGUI_DEFAULT_COLOR color) const
 {
-	if ((u32)color < EGDC_COUNT)
+	if ((uint32_t)color < EGDC_COUNT)
 		return Colors[color];
 	else
 		return video::SColor();
@@ -194,7 +194,7 @@ video::SColor GUISkin::getColor(EGUI_DEFAULT_COLOR color) const
 //! sets a default color
 void GUISkin::setColor(EGUI_DEFAULT_COLOR which, video::SColor newColor)
 {
-	if ((u32)which < EGDC_COUNT)
+	if ((uint32_t)which < EGDC_COUNT)
 		Colors[which] = newColor;
 }
 
@@ -202,7 +202,7 @@ void GUISkin::setColor(EGUI_DEFAULT_COLOR which, video::SColor newColor)
 //! returns size for the given size type
 s32 GUISkin::getSize(EGUI_DEFAULT_SIZE size) const
 {
-	if ((u32)size < EGDS_COUNT)
+	if ((uint32_t)size < EGDS_COUNT)
 		return Sizes[size];
 	else
 		return 0;
@@ -210,9 +210,9 @@ s32 GUISkin::getSize(EGUI_DEFAULT_SIZE size) const
 
 
 //! sets a default size
-void GUISkin::setSize(EGUI_DEFAULT_SIZE which, s32 size)
+void GUISkin::setSize(EGUI_DEFAULT_SIZE which, int32_t size)
 {
-	if ((u32)which < EGDS_COUNT)
+	if ((uint32_t)which < EGDS_COUNT)
 		Sizes[which] = size;
 }
 
@@ -220,7 +220,7 @@ void GUISkin::setSize(EGUI_DEFAULT_SIZE which, s32 size)
 //! returns the default font
 IGUIFont* GUISkin::getFont(EGUI_DEFAULT_FONT which) const
 {
-	if (((u32)which < EGDF_COUNT) && Fonts[which])
+	if (((uint32_t)which < EGDF_COUNT) && Fonts[which])
 		return Fonts[which];
 	else
 		return Fonts[EGDF_DEFAULT];
@@ -230,7 +230,7 @@ IGUIFont* GUISkin::getFont(EGUI_DEFAULT_FONT which) const
 //! sets a default font
 void GUISkin::setFont(IGUIFont* font, EGUI_DEFAULT_FONT which)
 {
-	if ((u32)which >= EGDF_COUNT)
+	if ((uint32_t)which >= EGDF_COUNT)
 		return;
 
 	if (font)
@@ -265,9 +265,9 @@ void GUISkin::setSpriteBank(IGUISpriteBank* bank)
 
 
 //! Returns a default icon
-u32 GUISkin::getIcon(EGUI_DEFAULT_ICON icon) const
+uint32_t GUISkin::getIcon(EGUI_DEFAULT_ICON icon) const
 {
-	if ((u32)icon < EGDI_COUNT)
+	if ((uint32_t)icon < EGDI_COUNT)
 		return Icons[icon];
 	else
 		return 0;
@@ -275,9 +275,9 @@ u32 GUISkin::getIcon(EGUI_DEFAULT_ICON icon) const
 
 
 //! Sets a default icon
-void GUISkin::setIcon(EGUI_DEFAULT_ICON icon, u32 index)
+void GUISkin::setIcon(EGUI_DEFAULT_ICON icon, uint32_t index)
 {
-	if ((u32)icon < EGDI_COUNT)
+	if ((uint32_t)icon < EGDI_COUNT)
 		Icons[icon] = index;
 }
 
@@ -286,7 +286,7 @@ void GUISkin::setIcon(EGUI_DEFAULT_ICON icon, u32 index)
 //! "OK", "Cancel", "Yes", "No" and so on.
 const wchar_t* GUISkin::getDefaultText(EGUI_DEFAULT_TEXT text) const
 {
-	if ((u32)text < EGDT_COUNT)
+	if ((uint32_t)text < EGDT_COUNT)
 		return Texts[text].c_str();
 	else
 		return Texts[0].c_str();
@@ -297,7 +297,7 @@ const wchar_t* GUISkin::getDefaultText(EGUI_DEFAULT_TEXT text) const
 //! "OK", "Cancel", "Yes", "No" and so on.
 void GUISkin::setDefaultText(EGUI_DEFAULT_TEXT which, const wchar_t* newText)
 {
-	if ((u32)which < EGDT_COUNT)
+	if ((uint32_t)which < EGDT_COUNT)
 		Texts[which] = newText;
 }
 
@@ -893,7 +893,7 @@ implementations to find out how to draw the part exactly.
 \param clip: Clip area.	*/
 // PATCH
 void GUISkin::drawColored3DTabBody(IGUIElement* element, bool border, bool background,
-	const core::rect<s32>& rect, const core::rect<s32>* clip, s32 tabHeight, EGUI_ALIGNMENT alignment,
+	const core::rect<s32>& rect, const core::rect<s32>* clip, int32_t tabHeight, EGUI_ALIGNMENT alignment,
 	const video::SColor* colors)
 {
 	if (!Driver)
@@ -992,7 +992,7 @@ by more complex implementations to find out how to draw the part exactly.
 // PATCH
 void GUISkin::drawColoredIcon(IGUIElement* element, EGUI_DEFAULT_ICON icon,
 			const core::position2di position,
-			u32 starttime, u32 currenttime,
+			uint32_t starttime, uint32_t currenttime,
 			bool loop, const core::rect<s32>* clip,
 			const video::SColor* colors)
 {
@@ -1029,7 +1029,7 @@ void GUISkin::draw2DRectangle(IGUIElement* element,
 //! scripting languages, editors, debuggers or xml serialization purposes.
 void GUISkin::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
 {
-	u32 i;
+	uint32_t i;
 	for (i=0; i<EGDC_COUNT; ++i)
 		out->addColor(GUISkinColorNames[i], Colors[i]);
 
@@ -1051,7 +1051,7 @@ void GUISkin::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWrite
 {
 	// TODO: This is not nice code for downward compatibility, whenever new values are added and users
 	// load an old skin the corresponding values will be set to 0.
-	u32 i;
+	uint32_t i;
 	for (i=0; i<EGDC_COUNT; ++i)
 		Colors[i] = in->getAttributeAsColor(GUISkinColorNames[i]);
 
@@ -1070,7 +1070,7 @@ void GUISkin::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWrite
 // PATCH
 void GUISkin::getColors(video::SColor* colors)
 {
-	u32 i;
+	uint32_t i;
 	for (i=0; i<EGDC_COUNT; ++i)
 		colors[i] = Colors[i];
 }

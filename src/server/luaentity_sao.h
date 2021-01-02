@@ -38,13 +38,13 @@ public:
 	~LuaEntitySAO();
 	ActiveObjectType getType() const { return ACTIVEOBJECT_TYPE_LUAENTITY; }
 	ActiveObjectType getSendType() const { return ACTIVEOBJECT_TYPE_GENERIC; }
-	virtual void addedToEnvironment(u32 dtime_s);
+	virtual void addedToEnvironment(uint32_t dtime_s);
 	void step(float dtime, bool send_recommended);
-	std::string getClientInitializationData(u16 protocol_version);
+	std::string getClientInitializationData(uint16_t protocol_version);
 	bool isStaticAllowed() const { return m_prop.static_save; }
 	bool shouldUnload() const { return true; }
 	void getStaticData(std::string *result) const;
-	u16 punch(v3f dir, const ToolCapabilities *toolcap = nullptr,
+	uint16_t punch(v3f dir, const ToolCapabilities *toolcap = nullptr,
 			ServerActiveObject *puncher = nullptr,
 			float time_from_last_punch = 1000000.0f);
 	void rightClick(ServerActiveObject *clicker);
@@ -52,8 +52,8 @@ public:
 	void moveTo(v3f pos, bool continuous);
 	float getMinimumSavedMovement();
 	std::string getDescription();
-	void setHP(s32 hp, const PlayerHPChangeReason &reason);
-	u16 getHP() const;
+	void setHP(int32_t hp, const PlayerHPChangeReason &reason);
+	uint16_t getHP() const;
 
 	/* LuaEntitySAO-specific */
 	void setVelocity(v3f velocity);
@@ -75,8 +75,8 @@ private:
 	std::string getPropertyPacket();
 	void sendPosition(bool do_interpolate, bool is_movement_end);
 	std::string generateSetTextureModCommand() const;
-	static std::string generateSetSpriteCommand(v2s16 p, u16 num_frames,
-			f32 framelength, bool select_horiz_by_yawpitch);
+	static std::string generateSetSpriteCommand(v2s16 p, uint16_t num_frames,
+			float framelength, bool select_horiz_by_yawpitch);
 
 	std::string m_init_name;
 	std::string m_init_state;

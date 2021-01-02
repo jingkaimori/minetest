@@ -120,7 +120,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 		Add TOCLIENT_ACCESS_DENIED new opcode (0x0A), using error codes
 			for standard error, keeping customisation possible. This
 			permit translation
-		Add TOCLIENT_DELETE_PARTICLESPAWNER (0x53), fixing the u16 read and
+		Add TOCLIENT_DELETE_PARTICLESPAWNER (0x53), fixing the uint16_t read and
 			reading u32
 		Add new opcode TOSERVER_INIT for client presentation to server
 		Add new opcodes TOSERVER_FIRST_SRP, TOSERVER_SRP_BYTES_A,
@@ -231,7 +231,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define TEXTURENAME_ALLOWED_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-"
 
-typedef u16 session_t;
+typedef uint16_t session_t;
 
 enum ToClientCommand
 {
@@ -239,10 +239,10 @@ enum ToClientCommand
 	/*
 		Sent after TOSERVER_INIT.
 
-		u8 deployed serialisation version
-		u16 deployed network compression mode
-		u16 deployed protocol version
-		u32 supported auth methods
+		uint8_t deployed serialisation version
+		uint16_t deployed network compression mode
+		uint16_t deployed protocol version
+		uint32_t supported auth methods
 		std::string username that should be used for legacy hash (for proper casing)
 	*/
 	TOCLIENT_AUTH_ACCEPT = 0x03,
@@ -250,9 +250,9 @@ enum ToClientCommand
 		Message from server to accept auth.
 
 		v3s16 player's position + v3f(0,BS/2,0) floatToInt'd
-		u64 map seed
+		uint64_t map seed
 		f1000 recommended send interval
-		u32 : supported auth methods for sudo mode
+		uint32_t : supported auth methods for sudo mode
 		      (where the user can change their password)
 	*/
 	TOCLIENT_ACCEPT_SUDO_MODE = 0x04,
@@ -265,9 +265,9 @@ enum ToClientCommand
 	*/
 	TOCLIENT_ACCESS_DENIED = 0x0A,
 	/*
-		u8 reason
+		uint8_t reason
 		std::string custom reason (if needed, otherwise "")
-		u8 (bool) reconnect
+		uint8_t (bool) reconnect
 	*/
 
 	TOCLIENT_INIT_LEGACY = 0x10, // Obsolete
@@ -277,7 +277,7 @@ enum ToClientCommand
 	/*
 		v3s16 position
 		serialized mapnode
-		u8 keep_metadata // Added in protocol version 22
+		uint8_t keep_metadata // Added in protocol version 22
 	*/
 	TOCLIENT_REMOVENODE = 0x22,
 
@@ -288,7 +288,7 @@ enum ToClientCommand
 
 	TOCLIENT_INVENTORY = 0x27,
 	/*
-		[0] u16 command
+		[0] uint16_t command
 		[2] serialized inventory
 	*/
 
@@ -296,14 +296,14 @@ enum ToClientCommand
 
 	TOCLIENT_TIME_OF_DAY = 0x29,
 	/*
-		u16 time (0-23999)
+		uint16_t time (0-23999)
 		Added in a later version:
 		f1000 time_speed
 	*/
 
 	TOCLIENT_CSM_RESTRICTION_FLAGS = 0x2A,
 	/*
-		u32 CSMRestrictionFlags byteflag
+		uint32_t CSMRestrictionFlags byteflag
 	 */
 
 	TOCLIENT_PLAYER_SPEED = 0x2B,
@@ -316,7 +316,7 @@ enum ToClientCommand
 		std::string raw_hash
 		std::string filename
 		bool should_be_cached
-		u32 len
+		uint32_t len
 		char filedata[len]
 	*/
 
@@ -324,11 +324,11 @@ enum ToClientCommand
 
 	TOCLIENT_CHAT_MESSAGE = 0x2F,
 	/*
-		u8 version
-		u8 message_type
-		u16 sendername length
+		uint8_t version
+		uint8_t message_type
+		uint16_t sendername length
 		wstring sendername
-		u16 length
+		uint16_t length
 		wstring message
 	*/
 
@@ -336,15 +336,15 @@ enum ToClientCommand
 
 	TOCLIENT_ACTIVE_OBJECT_REMOVE_ADD = 0x31,
 	/*
-		u16 count of removed objects
+		uint16_t count of removed objects
 		for all removed objects {
-			u16 id
+			uint16_t id
 		}
-		u16 count of added objects
+		uint16_t count of added objects
 		for all added objects {
-			u16 id
-			u8 type
-			u32 initialization data length
+			uint16_t id
+			uint8_t type
+			uint32_t initialization data length
 			string initialization data
 		}
 	*/
@@ -353,15 +353,15 @@ enum ToClientCommand
 	/*
 		for all objects
 		{
-			u16 id
-			u16 message length
+			uint16_t id
+			uint16_t message length
 			string message
 		}
 	*/
 
 	TOCLIENT_HP = 0x33,
 	/*
-		u8 hp
+		uint8_t hp
 	*/
 
 	TOCLIENT_MOVE_PLAYER = 0x34,
@@ -373,7 +373,7 @@ enum ToClientCommand
 
 	TOCLIENT_ACCESS_DENIED_LEGACY = 0x35,
 	/*
-		u16 reason_length
+		uint16_t reason_length
 		wstring reason
 	*/
 
@@ -381,114 +381,114 @@ enum ToClientCommand
 	/*
 		Sends an FOV override/multiplier to client.
 
-		f32 fov
+		float fov
 		bool is_multiplier
-		f32 transition_time
+		float transition_time
 	*/
 
 	TOCLIENT_DEATHSCREEN = 0x37,
 	/*
-		u8 bool set camera point target
+		uint8_t bool set camera point target
 		v3f1000 camera point target (to point the death cause or whatever)
 	*/
 
 	TOCLIENT_MEDIA = 0x38,
 	/*
-		u16 total number of texture bunches
-		u16 index of this bunch
-		u32 number of files in this bunch
+		uint16_t total number of texture bunches
+		uint16_t index of this bunch
+		uint32_t number of files in this bunch
 		for each file {
-			u16 length of name
+			uint16_t length of name
 			string name
-			u32 length of data
+			uint32_t length of data
 			data
 		}
-		u16 length of remote media server url (if applicable)
+		uint16_t length of remote media server url (if applicable)
 		string url
 	*/
 
 	TOCLIENT_TOOLDEF = 0x39,
 	/*
-		u32 length of the next item
+		uint32_t length of the next item
 		serialized ToolDefManager
 	*/
 
 	TOCLIENT_NODEDEF = 0x3a,
 	/*
-		u32 length of the next item
+		uint32_t length of the next item
 		serialized NodeDefManager
 	*/
 
 	TOCLIENT_CRAFTITEMDEF = 0x3b,
 	/*
-		u32 length of the next item
+		uint32_t length of the next item
 		serialized CraftiItemDefManager
 	*/
 
 	TOCLIENT_ANNOUNCE_MEDIA = 0x3c,
 
 	/*
-		u32 number of files
+		uint32_t number of files
 		for each texture {
-			u16 length of name
+			uint16_t length of name
 			string name
-			u16 length of sha1_digest
+			uint16_t length of sha1_digest
 			string sha1_digest
 		}
 	*/
 
 	TOCLIENT_ITEMDEF = 0x3d,
 	/*
-		u32 length of next item
+		uint32_t length of next item
 		serialized ItemDefManager
 	*/
 
 	TOCLIENT_PLAY_SOUND = 0x3f,
 	/*
-		s32 sound_id
-		u16 len
+		int32_t sound_id
+		uint16_t len
 		u8[len] sound name
-		s32 gain*1000
-		u8 type (0=local, 1=positional, 2=object)
+		int32_t gain*1000
+		uint8_t type (0=local, 1=positional, 2=object)
 		s32[3] pos_nodes*10000
-		u16 object_id
-		u8 loop (bool)
-		u8 ephemeral (bool)
+		uint16_t object_id
+		uint8_t loop (bool)
+		uint8_t ephemeral (bool)
 	*/
 
 	TOCLIENT_STOP_SOUND = 0x40,
 	/*
-		s32 sound_id
+		int32_t sound_id
 	*/
 
 	TOCLIENT_PRIVILEGES = 0x41,
 	/*
-		u16 number of privileges
+		uint16_t number of privileges
 		for each privilege
-			u16 len
+			uint16_t len
 			u8[len] privilege
 	*/
 
 	TOCLIENT_INVENTORY_FORMSPEC = 0x42,
 	/*
-		u32 len
+		uint32_t len
 		u8[len] formspec
 	*/
 
 	TOCLIENT_DETACHED_INVENTORY = 0x43,
 	/*
-		[0] u16 command
-		u16 len
+		[0] uint16_t command
+		uint16_t len
 		u8[len] name
 		[2] serialized inventory
 	*/
 
 	TOCLIENT_SHOW_FORMSPEC = 0x44,
 	/*
-		[0] u16 command
-		u32 len
+		[0] uint16_t command
+		uint32_t len
 		u8[len] formspec
-		u16 len
+		uint16_t len
 		u8[len] formname
 	*/
 
@@ -515,19 +515,19 @@ enum ToClientCommand
 		v3f1000 acceleration
 		f1000 expirationtime
 		f1000 size
-		u8 bool collisiondetection
-		u32 len
+		uint8_t bool collisiondetection
+		uint32_t len
 		u8[len] texture
-		u8 bool vertical
-		u8 collision_removal
+		uint8_t bool vertical
+		uint8_t collision_removal
 		TileAnimation animation
-		u8 glow
-		u8 object_collision
+		uint8_t glow
+		uint8_t object_collision
 	*/
 
 	TOCLIENT_ADD_PARTICLESPAWNER = 0x47,
 	/*
-		u16 amount
+		uint16_t amount
 		f1000 spawntime
 		v3f1000 minpos
 		v3f1000 maxpos
@@ -539,85 +539,85 @@ enum ToClientCommand
 		f1000 maxexptime
 		f1000 minsize
 		f1000 maxsize
-		u8 bool collisiondetection
-		u32 len
+		uint8_t bool collisiondetection
+		uint32_t len
 		u8[len] texture
-		u8 bool vertical
-		u8 collision_removal
-		u32 id
+		uint8_t bool vertical
+		uint8_t collision_removal
+		uint32_t id
 		TileAnimation animation
-		u8 glow
-		u8 object_collision
+		uint8_t glow
+		uint8_t object_collision
 	*/
 
 	TOCLIENT_DELETE_PARTICLESPAWNER_LEGACY = 0x48, // Obsolete
 
 	TOCLIENT_HUDADD = 0x49,
 	/*
-		u32 id
-		u8 type
+		uint32_t id
+		uint8_t type
 		v2f1000 pos
-		u16 len
+		uint16_t len
 		u8[len] name
 		v2f1000 scale
-		u16 len2
+		uint16_t len2
 		u8[len2] text
-		u32 number
-		u32 item
-		u32 dir
+		uint32_t number
+		uint32_t item
+		uint32_t dir
 		v2f1000 align
 		v2f1000 offset
 		v3f1000 world_pos
 		v2s32 size
-		s16 z_index
-		u16 len3
+		int16_t z_index
+		uint16_t len3
 		u8[len3] text2
 	*/
 
 	TOCLIENT_HUDRM = 0x4a,
 	/*
-		u32 id
+		uint32_t id
 	*/
 
 	TOCLIENT_HUDCHANGE = 0x4b,
 	/*
-		u32 id
-		u8 stat
+		uint32_t id
+		uint8_t stat
 		[v2f1000 data |
-		 u32 len
+		 uint32_t len
 		 u8[len] data |
-		 u32 data]
+		 uint32_t data]
 	*/
 
 	TOCLIENT_HUD_SET_FLAGS = 0x4c,
 	/*
-		u32 flags
-		u32 mask
+		uint32_t flags
+		uint32_t mask
 	*/
 
 	TOCLIENT_HUD_SET_PARAM = 0x4d,
 	/*
-		u16 param
-		u16 len
+		uint16_t param
+		uint16_t len
 		u8[len] value
 	*/
 
 	TOCLIENT_BREATH = 0x4e,
 	/*
-		u16 breath
+		uint16_t breath
 	*/
 
 	TOCLIENT_SET_SKY = 0x4f,
 	/*
 		Protocol 38:
 		u8[4] base_color (ARGB)
-		u8 len
+		uint8_t len
 		u8[len] type
-		u16 count
+		uint16_t count
 		foreach count:
-			u8 len
+			uint8_t len
 			u8[len] param
-		u8 clouds (boolean)
+		uint8_t clouds (boolean)
 
 		Protocol 39:
 		u8[4] bgcolor (ARGB)
@@ -640,8 +640,8 @@ enum ToClientCommand
 
 	TOCLIENT_OVERRIDE_DAY_NIGHT_RATIO = 0x50,
 	/*
-		u8 do_override (boolean)
-		u16 day-night ratio 0...65535
+		uint8_t do_override (boolean)
+		uint16_t day-night ratio 0...65535
 	*/
 
 	TOCLIENT_LOCAL_PLAYER_ANIMATIONS = 0x51,
@@ -661,7 +661,7 @@ enum ToClientCommand
 
 	TOCLIENT_DELETE_PARTICLESPAWNER = 0x53,
 	/*
-		u32 id
+		uint32_t id
 	*/
 
 	TOCLIENT_CLOUD_PARAMS = 0x54,
@@ -676,33 +676,33 @@ enum ToClientCommand
 
 	TOCLIENT_FADE_SOUND = 0x55,
 	/*
-		s32 sound_id
+		int32_t sound_id
 		float step
 		float gain
 	*/
 	TOCLIENT_UPDATE_PLAYER_LIST = 0x56,
 	/*
-	 	u8 type
-	 	u16 number of players
+	 	uint8_t type
+	 	uint16_t number of players
 		for each player
-			u16 len
+			uint16_t len
 			u8[len] player name
 	*/
 
 	TOCLIENT_MODCHANNEL_MSG = 0x57,
 	/*
-		u16 channel name length
+		uint16_t channel name length
 	 	std::string channel name
-	 	u16 channel name sender
+	 	uint16_t channel name sender
 	 	std::string channel name
-	 	u16 message length
+	 	uint16_t message length
 	 	std::string message
 	*/
 
 	TOCLIENT_MODCHANNEL_SIGNAL = 0x58,
 	/*
-		u8 signal id
-	 	u16 channel name length
+		uint8_t signal id
+	 	uint16_t channel name length
 	 	std::string channel name
 	*/
 
@@ -717,7 +717,7 @@ enum ToClientCommand
 		std::string texture
 		std::string tonemap
 		std::string sunrise
-		f32 scale
+		float scale
 	*/
 
 	TOCLIENT_SET_MOON = 0x5b,
@@ -725,15 +725,15 @@ enum ToClientCommand
 		bool visible
 		std::string texture
 		std::string tonemap
-		f32 scale
+		float scale
 	*/
 
 	TOCLIENT_SET_STARS = 0x5c,
 	/*
 		bool visible
-		u32 count
+		uint32_t count
 		u8[4] starcolor (ARGB)
-		f32 scale
+		float scale
 	*/
 
 	TOCLIENT_SRP_BYTES_S_B = 0x60,
@@ -746,18 +746,18 @@ enum ToClientCommand
 
 	TOCLIENT_FORMSPEC_PREPEND = 0x61,
 	/*
-		u16 len
+		uint16_t len
 		u8[len] formspec
 	*/
 
 	TOCLIENT_MINIMAP_MODES = 0x62,
 	/*
-		u16 count // modes
-		u16 mode  // wanted current mode index after change
+		uint16_t count // modes
+		uint16_t mode  // wanted current mode index after change
 		for each mode
-			u16 type
+			uint16_t type
 			std::string label
-			u16 size
+			uint16_t size
 			std::string extra
 	*/
 
@@ -770,10 +770,10 @@ enum ToServerCommand
 	/*
 		Sent first after connected.
 
-		u8 serialisation version (=SER_FMT_VER_HIGHEST_READ)
-		u16 supported network compression modes
-		u16 minimum supported network protocol version
-		u16 maximum supported network protocol version
+		uint8_t serialisation version (=SER_FMT_VER_HIGHEST_READ)
+		uint16_t supported network compression modes
+		uint16_t minimum supported network protocol version
+		uint16_t maximum supported network protocol version
 		std::string player name
 	*/
 
@@ -784,26 +784,26 @@ enum ToServerCommand
 		Sent as an ACK for TOCLIENT_INIT.
 		After this, the server can send data.
 
-		[0] u16 TOSERVER_INIT2
+		[0] uint16_t TOSERVER_INIT2
 	*/
 
 	TOSERVER_MODCHANNEL_JOIN = 0x17,
 	/*
-		u16 channel name length
+		uint16_t channel name length
 	 	std::string channel name
 	 */
 
 	TOSERVER_MODCHANNEL_LEAVE = 0x18,
 	/*
-		u16 channel name length
+		uint16_t channel name length
 	 	std::string channel name
 	 */
 
 	TOSERVER_MODCHANNEL_MSG = 0x19,
 	/*
-		u16 channel name length
+		uint16_t channel name length
 	 	std::string channel name
-	 	u16 message length
+	 	uint16_t message length
 	 	std::string message
 	 */
 
@@ -813,20 +813,20 @@ enum ToServerCommand
 
 	TOSERVER_PLAYERPOS = 0x23,
 	/*
-		[0] u16 command
+		[0] uint16_t command
 		[2] v3s32 position*100
 		[2+12] v3s32 speed*100
-		[2+12+12] s32 pitch*100
-		[2+12+12+4] s32 yaw*100
-		[2+12+12+4+4] u32 keyPressed
-		[2+12+12+4+4+1] u8 fov*80
-		[2+12+12+4+4+4+1] u8 ceil(wanted_range / MAP_BLOCKSIZE)
+		[2+12+12] int32_t pitch*100
+		[2+12+12+4] int32_t yaw*100
+		[2+12+12+4+4] uint32_t keyPressed
+		[2+12+12+4+4+1] uint8_t fov*80
+		[2+12+12+4+4+4+1] uint8_t ceil(wanted_range / MAP_BLOCKSIZE)
 	*/
 
 	TOSERVER_GOTBLOCKS = 0x24,
 	/*
-		[0] u16 command
-		[2] u8 count
+		[0] uint16_t command
+		[2] uint8_t count
 		[3] v3s16 pos_0
 		[3+6] v3s16 pos_1
 		...
@@ -834,8 +834,8 @@ enum ToServerCommand
 
 	TOSERVER_DELETEDBLOCKS = 0x25,
 	/*
-		[0] u16 command
-		[2] u8 count
+		[0] uint16_t command
+		[2] uint8_t count
 		[3] v3s16 pos_0
 		[3+6] v3s16 pos_1
 		...
@@ -854,7 +854,7 @@ enum ToServerCommand
 
 	TOSERVER_CHAT_MESSAGE = 0x32,
 	/*
-		u16 length
+		uint16_t length
 		wstring message
 	*/
 
@@ -863,7 +863,7 @@ enum ToServerCommand
 
 	TOSERVER_DAMAGE = 0x35,
 	/*
-		u8 amount
+		uint8_t amount
 	*/
 
 	TOSERVER_PASSWORD_LEGACY = 0x36, // Obsolete
@@ -872,21 +872,21 @@ enum ToServerCommand
 	/*
 		Sent to change selected item.
 
-		[0] u16 TOSERVER_PLAYERITEM
-		[2] u16 item
+		[0] uint16_t TOSERVER_PLAYERITEM
+		[2] uint16_t item
 	*/
 
 	TOSERVER_RESPAWN = 0x38,
 	/*
-		u16 TOSERVER_RESPAWN
+		uint16_t TOSERVER_RESPAWN
 	*/
 
 	TOSERVER_INTERACT = 0x39,
 	/*
-		[0] u16 command
-		[2] u8 action
-		[3] u16 item
-		[5] u32 length of the next item
+		[0] uint16_t command
+		[2] uint8_t action
+		[3] uint16_t item
+		[5] uint32_t length of the next item
 		[9] serialized PointedThing
 		actions:
 		0: start digging (from undersurface) or use
@@ -898,40 +898,40 @@ enum ToServerCommand
 
 	TOSERVER_REMOVED_SOUNDS = 0x3a,
 	/*
-		u16 len
+		uint16_t len
 		s32[len] sound_id
 	*/
 
 	TOSERVER_NODEMETA_FIELDS = 0x3b,
 	/*
 		v3s16 p
-		u16 len
+		uint16_t len
 		u8[len] form name (reserved for future use)
-		u16 number of fields
+		uint16_t number of fields
 		for each field:
-			u16 len
+			uint16_t len
 			u8[len] field name
-			u32 len
+			uint32_t len
 			u8[len] field value
 	*/
 
 	TOSERVER_INVENTORY_FIELDS = 0x3c,
 	/*
-		u16 len
+		uint16_t len
 		u8[len] form name (reserved for future use)
-		u16 number of fields
+		uint16_t number of fields
 		for each field:
-			u16 len
+			uint16_t len
 			u8[len] field name
-			u32 len
+			uint32_t len
 			u8[len] field value
 	*/
 
 	TOSERVER_REQUEST_MEDIA = 0x40,
 	/*
-		u16 number of files requested
+		uint16_t number of files requested
 		for each file {
-			u16 length of name
+			uint16_t length of name
 			string name
 		}
 	*/
@@ -941,11 +941,11 @@ enum ToServerCommand
 
 	TOSERVER_CLIENT_READY = 0x43,
 	/*
-		u8 major
-		u8 minor
-		u8 patch
-		u8 reserved
-		u16 len
+		uint8_t major
+		uint8_t minor
+		uint8_t patch
+		uint8_t reserved
+		uint16_t len
 		u8[len] full_version_string
 	*/
 
@@ -955,7 +955,7 @@ enum ToServerCommand
 
 		std::string srp salt
 		std::string srp verification key
-		u8 is_empty (=1 if password is empty, 0 otherwise)
+		uint8_t is_empty (=1 if password is empty, 0 otherwise)
 	*/
 
 	TOSERVER_SRP_BYTES_A = 0x51,
@@ -964,7 +964,7 @@ enum ToServerCommand
 			depending on current_login_based_on.
 
 		std::string bytes_A
-		u8 current_login_based_on : on which version of the password's
+		uint8_t current_login_based_on : on which version of the password's
 		                            hash this login is based on (0 legacy hash,
 		                            or 1 directly the password)
 	*/
@@ -1038,7 +1038,7 @@ enum PlayerListModifer : u8
 	PLAYER_LIST_REMOVE,
 };
 
-enum CSMRestrictionFlags : u64 {
+enum CSMRestrictionFlags : uint64_t {
 	CSM_RF_NONE = 0x00000000,
 	// Until server-sent CSM and verifying of builtin are complete,
 	// 'CSM_RF_LOAD_CLIENT_MODS' also disables loading 'builtin'.

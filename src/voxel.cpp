@@ -28,10 +28,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
 	Debug stuff
 */
-u64 addarea_time = 0;
-u64 emerge_time = 0;
-u64 emerge_load_time = 0;
-u64 clearflag_time = 0;
+uint64_t addarea_time = 0;
+uint64_t emerge_time = 0;
+uint64_t emerge_load_time = 0;
+uint64_t clearflag_time = 0;
 
 VoxelManipulator::~VoxelManipulator()
 {
@@ -56,7 +56,7 @@ void VoxelManipulator::print(std::ostream &o, const NodeDefManager *ndef,
 	o<<"size: "<<em.X<<"x"<<em.Y<<"x"<<em.Z
 	 <<" offset: ("<<of.X<<","<<of.Y<<","<<of.Z<<")"<<std::endl;
 
-	for(s32 y=m_area.MaxEdge.Y; y>=m_area.MinEdge.Y; y--)
+	for(int32_t y=m_area.MaxEdge.Y; y>=m_area.MinEdge.Y; y--)
 	{
 		if(em.X >= 3 && em.Y >= 3)
 		{
@@ -66,11 +66,11 @@ void VoxelManipulator::print(std::ostream &o, const NodeDefManager *ndef,
 			else                           o<<"      ";
 		}
 
-		for(s32 z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
+		for(int32_t z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
 		{
-			for(s32 x=m_area.MinEdge.X; x<=m_area.MaxEdge.X; x++)
+			for(int32_t x=m_area.MinEdge.X; x<=m_area.MaxEdge.X; x++)
 			{
-				u8 f = m_flags[m_area.index(x,y,z)];
+				uint8_t f = m_flags[m_area.index(x,y,z)];
 				char c;
 				if(f & VOXELFLAG_NO_DATA)
 					c = 'N';
@@ -79,7 +79,7 @@ void VoxelManipulator::print(std::ostream &o, const NodeDefManager *ndef,
 					c = 'X';
 					MapNode n = m_data[m_area.index(x,y,z)];
 					content_t m = n.getContent();
-					u8 pr = n.param2;
+					uint8_t pr = n.param2;
 					if(mode == VOXELPRINT_MATERIAL)
 					{
 						if(m <= 9)
@@ -110,7 +110,7 @@ void VoxelManipulator::print(std::ostream &o, const NodeDefManager *ndef,
 							c = 'X';
 						else
 						{
-							u8 light = n.getLight(LIGHTBANK_DAY, ndef);
+							uint8_t light = n.getLight(LIGHTBANK_DAY, ndef);
 							if(light < 10)
 								c = '0' + light;
 							else
@@ -152,7 +152,7 @@ void VoxelManipulator::addArea(const VoxelArea &area)
 		new_area.addArea(area);
 	}
 
-	s32 new_size = new_area.getVolume();
+	int32_t new_size = new_area.getVolume();
 
 	/*dstream<<"adding area ";
 	area.print(dstream);
@@ -166,14 +166,14 @@ void VoxelManipulator::addArea(const VoxelArea &area)
 	// Allocate new data and clear flags
 	MapNode *new_data = new MapNode[new_size];
 	assert(new_data);
-	u8 *new_flags = new u8[new_size];
+	uint8_t *new_flags = new uint8_t[new_size];
 	assert(new_flags);
 	memset(new_flags, VOXELFLAG_NO_DATA, new_size);
 
 	// Copy old data
-	s32 old_x_width = m_area.MaxEdge.X - m_area.MinEdge.X + 1;
-	for(s32 z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
-	for(s32 y=m_area.MinEdge.Y; y<=m_area.MaxEdge.Y; y++)
+	int32_t old_x_width = m_area.MaxEdge.X - m_area.MinEdge.X + 1;
+	for(int32_t z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
+	for(int32_t y=m_area.MinEdge.Y; y<=m_area.MaxEdge.Y; y++)
 	{
 		unsigned int old_index = m_area.index(m_area.MinEdge.X,y,z);
 		unsigned int new_index = new_area.index(m_area.MinEdge.X,y,z);
@@ -181,7 +181,7 @@ void VoxelManipulator::addArea(const VoxelArea &area)
 		memcpy(&new_data[new_index], &m_data[old_index],
 				old_x_width * sizeof(MapNode));
 		memcpy(&new_flags[new_index], &m_flags[old_index],
-				old_x_width * sizeof(u8));
+				old_x_width * sizeof(uint8_t));
 	}
 
 	// Replace area, data and flags
@@ -189,7 +189,7 @@ void VoxelManipulator::addArea(const VoxelArea &area)
 	m_area = new_area;
 
 	MapNode *old_data = m_data;
-	u8 *old_flags = m_flags;
+	uint8_t *old_flags = m_flags;
 
 	/*dstream<<"old_data="<<(int)old_data<<", new_data="<<(int)new_data
 	<<", old_flags="<<(int)m_flags<<", new_flags="<<(int)new_flags<<std::endl;*/
@@ -231,17 +231,17 @@ void VoxelManipulator::copyFrom(MapNode *src, const VoxelArea& src_area,
 	 * index".
 	 */
 
-	s32 src_step = src_area.getExtent().X;
-	s32 dest_step = m_area.getExtent().X;
-	s32 dest_mod = m_area.index(to_pos.X, to_pos.Y, to_pos.Z + 1)
+	int32_t src_step = src_area.getExtent().X;
+	int32_t dest_step = m_area.getExtent().X;
+	int32_t dest_mod = m_area.index(to_pos.X, to_pos.Y, to_pos.Z + 1)
 			- m_area.index(to_pos.X, to_pos.Y, to_pos.Z)
 			- dest_step * size.Y;
 
-	s32 i_src = src_area.index(from_pos.X, from_pos.Y, from_pos.Z);
-	s32 i_local = m_area.index(to_pos.X, to_pos.Y, to_pos.Z);
+	int32_t i_src = src_area.index(from_pos.X, from_pos.Y, from_pos.Z);
+	int32_t i_local = m_area.index(to_pos.X, to_pos.Y, to_pos.Z);
 
-	for (s16 z = 0; z < size.Z; z++) {
-		for (s16 y = 0; y < size.Y; y++) {
+	for (int16_t z = 0; z < size.Z; z++) {
+		for (int16_t y = 0; y < size.Y; y++) {
 			memcpy(&m_data[i_local], &src[i_src], size.X * sizeof(*m_data));
 			memset(&m_flags[i_local], 0, size.X);
 			i_src += src_step;
@@ -254,12 +254,12 @@ void VoxelManipulator::copyFrom(MapNode *src, const VoxelArea& src_area,
 void VoxelManipulator::copyTo(MapNode *dst, const VoxelArea& dst_area,
 		v3s16 dst_pos, v3s16 from_pos, const v3s16 &size)
 {
-	for(s16 z=0; z<size.Z; z++)
-	for(s16 y=0; y<size.Y; y++)
+	for(int16_t z=0; z<size.Z; z++)
+	for(int16_t y=0; y<size.Y; y++)
 	{
-		s32 i_dst = dst_area.index(dst_pos.X, dst_pos.Y+y, dst_pos.Z+z);
-		s32 i_local = m_area.index(from_pos.X, from_pos.Y+y, from_pos.Z+z);
-		for (s16 x = 0; x < size.X; x++) {
+		int32_t i_dst = dst_area.index(dst_pos.X, dst_pos.Y+y, dst_pos.Z+z);
+		int32_t i_local = m_area.index(from_pos.X, from_pos.Y+y, from_pos.Z+z);
+		for (int16_t x = 0; x < size.X; x++) {
 			if (m_data[i_local].getContent() != CONTENT_IGNORE)
 				dst[i_dst] = m_data[i_local];
 			i_dst++;
@@ -273,7 +273,7 @@ void VoxelManipulator::copyTo(MapNode *dst, const VoxelArea& dst_area,
 	-----------------------------------------------------
 */
 
-void VoxelManipulator::clearFlag(u8 flags)
+void VoxelManipulator::clearFlag(uint8_t flags)
 {
 	// 0-1ms on moderate area
 	TimeTaker timer("clearFlag", &clearflag_time);
@@ -284,28 +284,28 @@ void VoxelManipulator::clearFlag(u8 flags)
 			<<""<<s.X<<"x"<<s.Y<<"x"<<s.Z<<""
 			<<std::endl;*/
 
-	//s32 count = 0;
+	//int32_t count = 0;
 
-	/*for(s32 z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
-	for(s32 y=m_area.MinEdge.Y; y<=m_area.MaxEdge.Y; y++)
-	for(s32 x=m_area.MinEdge.X; x<=m_area.MaxEdge.X; x++)
+	/*for(int32_t z=m_area.MinEdge.Z; z<=m_area.MaxEdge.Z; z++)
+	for(int32_t y=m_area.MinEdge.Y; y<=m_area.MaxEdge.Y; y++)
+	for(int32_t x=m_area.MinEdge.X; x<=m_area.MaxEdge.X; x++)
 	{
-		u8 f = m_flags[m_area.index(x,y,z)];
+		uint8_t f = m_flags[m_area.index(x,y,z)];
 		m_flags[m_area.index(x,y,z)] &= ~flags;
 		if(m_flags[m_area.index(x,y,z)] != f)
 			count++;
 	}*/
 
-	s32 volume = m_area.getVolume();
-	for(s32 i=0; i<volume; i++)
+	int32_t volume = m_area.getVolume();
+	for(int32_t i=0; i<volume; i++)
 	{
 		m_flags[i] &= ~flags;
 	}
 
-	/*s32 volume = m_area.getVolume();
-	for(s32 i=0; i<volume; i++)
+	/*int32_t volume = m_area.getVolume();
+	for(int32_t i=0; i<volume; i++)
 	{
-		u8 f = m_flags[i];
+		uint8_t f = m_flags[i];
 		m_flags[i] &= ~flags;
 		if(m_flags[i] != f)
 			count++;

@@ -36,7 +36,7 @@ class MapgenSinglenode : public Mapgen
 {
 public:
 	content_t c_node;
-	u8 set_light;
+	uint8_t set_light;
 
 	MapgenSinglenode(MapgenParams *params, EmergeParams *emerge);
 	~MapgenSinglenode() = default;

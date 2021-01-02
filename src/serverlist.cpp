@@ -62,7 +62,7 @@ std::vector<ServerListSpec> getOnline()
 {
 	std::ostringstream geturl;
 
-	u16 proto_version_min = CLIENT_PROTOCOL_VERSION_MIN;
+	uint16_t proto_version_min = CLIENT_PROTOCOL_VERSION_MIN;
 
 	geturl << g_settings->get("serverlist_url") <<
 		"/list?proto_version_min=" << proto_version_min <<
@@ -194,10 +194,10 @@ const std::string serializeJson(const std::vector<ServerListSpec> &serverlist)
 
 #if USE_CURL
 void sendAnnounce(AnnounceAction action,
-		const u16 port,
+		const uint16_t port,
 		const std::vector<std::string> &clients_names,
 		const double uptime,
-		const u32 game_time,
+		const uint32_t game_time,
 		const float lag,
 		const std::string &gameid,
 		const std::string &mg_name,

@@ -49,11 +49,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * (brightness) to the display brightness.
  *
  */
-extern const u8 *light_decode_table;
+extern const uint8_t *light_decode_table;
 
 // 0 <= light <= LIGHT_SUN
 // 0 <= return value <= 255
-inline u8 decode_light(u8 light)
+inline uint8_t decode_light(uint8_t light)
 {
 	// assert(light <= LIGHT_SUN);
 	if (light > LIGHT_SUN)
@@ -72,10 +72,10 @@ void set_light_table(float gamma);
 // 0 <= daylight_factor <= 1000
 // 0 <= lightday, lightnight <= LIGHT_SUN
 // 0 <= return value <= LIGHT_SUN
-inline u8 blend_light(u32 daylight_factor, u8 lightday, u8 lightnight)
+inline uint8_t blend_light(uint32_t daylight_factor, uint8_t lightday, uint8_t lightnight)
 {
-	u32 c = 1000;
-	u32 l = ((daylight_factor * lightday + (c - daylight_factor) * lightnight)) / c;
+	uint32_t c = 1000;
+	uint32_t l = ((daylight_factor * lightday + (c - daylight_factor) * lightnight)) / c;
 	if (l > LIGHT_SUN)
 		l = LIGHT_SUN;
 	return l;

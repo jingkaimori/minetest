@@ -33,9 +33,9 @@ public:
 	void step(float dtime,
 			const std::function<void(ClientActiveObject *)> &f) override;
 	bool registerObject(ClientActiveObject *obj) override;
-	void removeObject(u16 id) override;
+	void removeObject(uint16_t id) override;
 
-	void getActiveObjects(const v3f &origin, f32 max_d,
+	void getActiveObjects(const v3f &origin, float max_d,
 			std::vector<DistanceSortedActiveObject> &dest);
 };
 } // namespace client

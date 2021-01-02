@@ -81,7 +81,7 @@ void               push_palette              (lua_State *L,
                                               const std::vector<video::SColor> *palette);
 
 TileDef            read_tiledef              (lua_State *L, int index,
-                                              u8 drawtype);
+                                              uint8_t drawtype);
 
 void               read_soundspec            (lua_State *L, int index,
                                               SimpleSoundSpec &spec);
@@ -145,17 +145,17 @@ int                getenumfield              (lua_State *L, int table,
 bool               getflagsfield             (lua_State *L, int table,
                                               const char *fieldname,
                                               FlagDesc *flagdesc,
-                                              u32 *flags, u32 *flagmask);
+                                              uint32_t *flags, uint32_t *flagmask);
 
 bool               read_flags                (lua_State *L, int index,
                                               FlagDesc *flagdesc,
-                                              u32 *flags, u32 *flagmask);
+                                              uint32_t *flags, uint32_t *flagmask);
 
 void               push_flags_string         (lua_State *L, FlagDesc *flagdesc,
-                                              u32 flags, u32 flagmask);
+                                              uint32_t flags, uint32_t flagmask);
 
 u32                read_flags_table          (lua_State *L, int table,
-                                              FlagDesc *flagdesc, u32 *flagmask);
+                                              FlagDesc *flagdesc, uint32_t *flagmask);
 
 void               push_items                (lua_State *L,
                                               const std::vector<ItemStack> &items);
@@ -175,13 +175,13 @@ bool               read_noiseparams          (lua_State *L, int index,
                                               NoiseParams *np);
 void               push_noiseparams          (lua_State *L, NoiseParams *np);
 
-void               luaentity_get             (lua_State *L,u16 id);
+void               luaentity_get             (lua_State *L,uint16_t id);
 
 bool               push_json_value           (lua_State *L,
                                               const Json::Value &value,
                                               int nullindex);
 void               read_json_value           (lua_State *L, Json::Value &root,
-                                              int index, u8 recursion = 0);
+                                              int index, uint8_t recursion = 0);
 
 /*!
  * Pushes a Lua `pointed_thing` to the given Lua stack.
@@ -191,7 +191,7 @@ void               read_json_value           (lua_State *L, Json::Value &root,
 void push_pointed_thing(lua_State *L, const PointedThing &pointed, bool csm =
 	false, bool hitpoint = false);
 
-void               push_objectRef            (lua_State *L, const u16 id);
+void               push_objectRef            (lua_State *L, const uint16_t id);
 
 void               read_hud_element          (lua_State *L, HudElement *elem);
 

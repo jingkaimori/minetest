@@ -112,11 +112,11 @@ public:
 	//! Position of the current node.
 	v3s16 m_current_node_pos;
 	//! Index of the current node
-	s16 m_current_index = 0;
+	int16_t m_current_index = 0;
 	//! Position of the start node.
 	v3s16 m_start_node_pos;
 	//! Index of the last node
-	s16 m_last_index;
+	int16_t m_last_index;
 
 	/*!
 	 * Creates a voxel line iterator with the given line.
@@ -151,7 +151,7 @@ public:
 	 * If voxel does not intersect with the line,
 	 * the result is undefined.
 	 */
-	s16 getIndex(v3s16 voxel);
+	int16_t getIndex(v3s16 voxel);
 };
 
 } // namespace voxalgo
