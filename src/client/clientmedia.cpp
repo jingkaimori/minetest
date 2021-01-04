@@ -362,7 +362,7 @@ void ClientMediaDownloader::remoteMediaReceived(
 	}
 }
 
-s32 ClientMediaDownloader::selectRemoteServer(FileStatus *filestatus)
+int32_t ClientMediaDownloader::selectRemoteServer(FileStatus *filestatus)
 {
 	// Pre-conditions
 	assert(filestatus != NULL);

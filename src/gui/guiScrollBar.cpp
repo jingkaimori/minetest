@@ -235,7 +235,7 @@ void GUIScrollBar::updateAbsolutePosition()
 	setPos(scroll_pos);
 }
 
-s32 GUIScrollBar::getPosFromMousePos(const core::position2di &pos) const
+int32_t GUIScrollBar::getPosFromMousePos(const core::position2di &pos) const
 {
 	int32_t w, p;
 	int32_t offset = dragged_by_slider ? drag_offset : thumb_size / 2;
@@ -322,7 +322,7 @@ void GUIScrollBar::setArrowsVisible(ArrowVisibility visible)
 	refreshControls();
 }
 
-s32 GUIScrollBar::getPos() const
+int32_t GUIScrollBar::getPos() const
 {
 	return scroll_pos;
 }

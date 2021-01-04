@@ -200,7 +200,7 @@ void GUISkin::setColor(EGUI_DEFAULT_COLOR which, video::SColor newColor)
 
 
 //! returns size for the given size type
-s32 GUISkin::getSize(EGUI_DEFAULT_SIZE size) const
+int32_t GUISkin::getSize(EGUI_DEFAULT_SIZE size) const
 {
 	if ((uint32_t)size < EGDS_COUNT)
 		return Sizes[size];

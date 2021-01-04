@@ -104,7 +104,7 @@ void GUIButton::setSprite(EGUI_BUTTON_STATE state, int32_t index, video::SColor 
 }
 
 //! Get the sprite-index for the given state or -1 when no sprite is set
-s32 GUIButton::getSpriteIndex(EGUI_BUTTON_STATE state) const
+int32_t GUIButton::getSpriteIndex(EGUI_BUTTON_STATE state) const
 {
 	return ButtonSprites[(uint32_t)state].Index;
 }

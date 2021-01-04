@@ -59,25 +59,85 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # This is done here so that relative search paths are more reasonable
 # Attempt to upgrade to IrrlichtBAW
-option(USE_IRRLICHTBAW "Use IrrlichtBAW" OFF)
-if(USE_IRRLICHTBAW)
-	find_path(IRRLICHT_SOURCE_DIR "" DOC "Path to IrrlichtBAW source")
-	find_path(IRRLICHT_BINARY_DIR "" DOC "Path to IrrlichtBAW binary")
-	find_path(IRRLICHT_INSTALL_DIR "" DOC "Path to IrrlichtBAW install")
-	include(ExternalProject)
-	list(APPEND IRR_CMAKE_ARGS "-DECHO_EXE:STRING='cmd.exe \\c echo'")
-	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_DOCS:BOOL=OFF") # enable only if you have doxygen installed and detectable by cmake
-	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_EXAMPLES:BOOL=OFF")
-	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_TOOLS:BOOL=OFF") # the tools don't work yet (Apr 2020 status, might have changed since then)
-	list(APPEND IRR_CMAKE_ARGS "-DIRR_BUILD_MITSUBA_LOADER:BOOL=OFF") # you probably don't want this extension
-	ExternalProject_Add( IrrlichtBaW
+option(ENABLE_IRRLICHTBAW "Use IrrlichtBAW" OFF)
+if(ENABLE_IRRLICHTBAW)
+	set(NBL_SOURCE_DIR "" CACHE PATH "Path to IrrlichtBAW source")
+	set(NBL_BINARY_DIR "" CACHE PATH "Path to IrrlichtBAW binary")
+	set(NBL_INSTALL_DIR "." CACHE PATH "Path to IrrlichtBAW install")
+	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_DOCS:BOOL=OFF") # enable only if you have doxygen installed and detectable by cmake
+	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_EXAMPLES:BOOL=OFF")
+	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_TOOLS:BOOL=OFF") # the tools don't work yet (Apr 2020 status, might have changed since then)
+	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_MITSUBA_LOADER:BOOL=OFF") # you probably don't want this extension
+	list(APPEND NBL_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX:PATH=${NBL_INSTALL_DIR}") # because of https://gitlab.kitware.com/cmake/cmake/-/issues/18790
+	ExternalProject_Add(Nabla
 		DOWNLOAD_COMMAND  ""
-		SOURCE_DIR        "${IRRLICHT_SOURCE_DIR}"
-		BINARY_DIR        "${IRRLICHT_BINARY_DIR}"
-		INSTALL_DIR       "${IRRLICHT_INSTALL_DIR}"
-		CMAKE_ARGS        ${IRR_CMAKE_ARGS}
+		SOURCE_DIR        "${NBL_SOURCE_DIR}"
+		BINARY_DIR        "${NBL_BINARY_DIR}"
+		CMAKE_ARGS        ${NBL_CMAKE_ARGS}
 		TEST_COMMAND      ""
 	)
+
+	#TODO: needs cleanup and adapt for minetest
+	# replace with whatever you need ${PROJECT_NAME}
+	target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/include>
+        $<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/include>
+        $<$<CONFIG:Release>:${NBL_INSTALL_DIR}/include>
+     # these are needed because we haven't cleaned up the API properly yet
+        $<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/source/Nabla>
+        $<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/source/Nabla>
+        $<$<CONFIG:Release>:${NBL_INSTALL_DIR}/source/Nabla>
+	)
+	target_link_libraries(${PROJECT_NAME} 
+		$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/Nabla_debug.lib>
+		$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/Nabla_rwdi.lib>
+		$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/Nabla.lib>
+	)
+	function(link_nbl_dependency DEPENDENCY_NAME)
+		target_link_libraries(${PROJECT_NAME} 
+			$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/${DEPENDENCY_NAME}d.lib>
+			$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/${DEPENDENCY_NAME}.lib>
+			$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/${DEPENDENCY_NAME}.lib>
+		)
+	endfunction()
+	function(link_nbl_dependency_ DEPENDENCY_NAME)
+		target_link_libraries(${PROJECT_NAME} 
+			$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/${DEPENDENCY_NAME}_d.lib>
+			$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/${DEPENDENCY_NAME}.lib>
+			$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/${DEPENDENCY_NAME}.lib>
+		)
+	endfunction()
+	link_nbl_dependency(glslang)
+	link_nbl_dependency_(jpeg)
+	link_nbl_dependency_(IlmImf-2_4)
+	link_nbl_dependency_(IexMath-2_4)
+	link_nbl_dependency_(Iex-2_4)
+	link_nbl_dependency_(IlmThread-2_4)
+	link_nbl_dependency_(Half-2_4)
+	link_nbl_dependency_(Imath-2_4)
+	link_nbl_dependency(libpng16_static)
+	# OpenSSL only ever exists in the Release variant
+	if(WIN32)
+		target_link_libraries(${PROJECT_NAME} 
+			${NBL_INSTALL_DIR}/lib/libeay32.lib
+			${NBL_INSTALL_DIR}/lib/ssleay32.lib
+		)
+	else()
+		target_link_libraries(${PROJECT_NAME} 
+			${NBL_INSTALL_DIR}/lib/libcrypto.lib
+			${NBL_INSTALL_DIR}/lib/libssl.lib
+		)
+	endif()
+	link_nbl_dependency_(shaderc)
+	link_nbl_dependency_(shaderc_util)
+	link_nbl_dependency(SPIRV)
+	link_nbl_dependency_(SPIRV-Tools)
+	link_nbl_dependency_(SPIRV-Tools-opt)
+	link_nbl_dependency(OGLCompiler)
+	link_nbl_dependency(OSDependent)
+	link_nbl_dependency(HLSL)
+	link_nbl_dependency(zlibstatic)
 else()
 	find_package(Irrlicht)
 endif()

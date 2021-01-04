@@ -843,12 +843,12 @@ uint32_t CGUITTFont::getGlyphIndexByChar(uchar32_t c) const
 	return glyph;
 }
 
-s32 CGUITTFont::getCharacterFromPos(const wchar_t* text, int32_t pixel_x) const
+int32_t CGUITTFont::getCharacterFromPos(const wchar_t* text, int32_t pixel_x) const
 {
 	return getCharacterFromPos(core::ustring(text), pixel_x);
 }
 
-s32 CGUITTFont::getCharacterFromPos(const core::ustring& text, int32_t pixel_x) const
+int32_t CGUITTFont::getCharacterFromPos(const core::ustring& text, int32_t pixel_x) const
 {
 	int32_t x = 0;
 	//int32_t idx = 0;
@@ -886,7 +886,7 @@ void CGUITTFont::setKerningHeight(int32_t kerning)
 	GlobalKerningHeight = kerning;
 }
 
-s32 CGUITTFont::getKerningWidth(const wchar_t* thisLetter, const wchar_t* previousLetter) const
+int32_t CGUITTFont::getKerningWidth(const wchar_t* thisLetter, const wchar_t* previousLetter) const
 {
 	if (tt_face == 0)
 		return GlobalKerningWidth;
@@ -896,13 +896,13 @@ s32 CGUITTFont::getKerningWidth(const wchar_t* thisLetter, const wchar_t* previo
 	return getKerningWidth((uchar32_t)*thisLetter, (uchar32_t)*previousLetter);
 }
 
-s32 CGUITTFont::getKerningWidth(const uchar32_t thisLetter, const uchar32_t previousLetter) const
+int32_t CGUITTFont::getKerningWidth(const uchar32_t thisLetter, const uchar32_t previousLetter) const
 {
 	// Return only the kerning width.
 	return getKerning(thisLetter, previousLetter).X;
 }
 
-s32 CGUITTFont::getKerningHeight() const
+int32_t CGUITTFont::getKerningHeight() const
 {
 	// FreeType 2 currently doesn't return any height kerning information.
 	return GlobalKerningHeight;

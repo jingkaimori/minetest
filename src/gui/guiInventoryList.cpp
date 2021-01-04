@@ -200,7 +200,7 @@ bool GUIInventoryList::OnEvent(const SEvent &event)
 	return ret;
 }
 
-s32 GUIInventoryList::getItemIndexAtPos(v2s32 p) const
+int32_t GUIInventoryList::getItemIndexAtPos(v2s32 p) const
 {
 	// no item if no gui element at pointer
 	if (!IsVisible || AbsoluteClippingRect.getArea() <= 0 ||

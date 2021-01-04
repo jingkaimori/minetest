@@ -1094,7 +1094,7 @@ bool intlGUIEditBox::processMouse(const SEvent& event)
 }
 
 
-s32 intlGUIEditBox::getCursorPos(int32_t x, int32_t y)
+int32_t intlGUIEditBox::getCursorPos(int32_t x, int32_t y)
 {
 	IGUIFont* font = OverrideFont;
 	IGUISkin* skin = Environment->getSkin();
@@ -1326,7 +1326,7 @@ void intlGUIEditBox::setTextRect(int32_t line)
 }
 
 
-s32 intlGUIEditBox::getLineFromPos(int32_t pos)
+int32_t intlGUIEditBox::getLineFromPos(int32_t pos)
 {
 	if (!WordWrap && !MultiLine)
 		return 0;

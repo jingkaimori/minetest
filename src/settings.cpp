@@ -442,7 +442,7 @@ uint32_t Settings::getU32(const std::string &name) const
 	return (uint32_t) stoi(get(name));
 }
 
-s32 Settings::getS32(const std::string &name) const
+int32_t Settings::getS32(const std::string &name) const
 {
 	return stoi(get(name));
 }

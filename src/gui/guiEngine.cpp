@@ -603,7 +603,7 @@ void GUIEngine::updateTopLeftTextSize()
 }
 
 /******************************************************************************/
-s32 GUIEngine::playSound(const SimpleSoundSpec &spec, bool looped)
+int32_t GUIEngine::playSound(const SimpleSoundSpec &spec, bool looped)
 {
 	int32_t handle = m_sound_manager->playSound(spec, looped);
 	return handle;

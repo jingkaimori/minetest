@@ -557,7 +557,7 @@ void StaticText::updateAbsolutePosition()
 
 
 //! Returns the height of the text in pixels when it is drawn.
-s32 StaticText::getTextHeight() const
+int32_t StaticText::getTextHeight() const
 {
 	IGUIFont* font = getActiveFont();
 	if (!font)
@@ -572,7 +572,7 @@ s32 StaticText::getTextHeight() const
 }
 
 
-s32 StaticText::getTextWidth() const
+int32_t StaticText::getTextWidth() const
 {
 	IGUIFont *font = getActiveFont();
 	if (!font)

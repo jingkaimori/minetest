@@ -964,7 +964,7 @@ bool GUIEditBoxWithScrollBar::processMouse(const SEvent& event)
 }
 
 
-s32 GUIEditBoxWithScrollBar::getCursorPos(int32_t x, int32_t y)
+int32_t GUIEditBoxWithScrollBar::getCursorPos(int32_t x, int32_t y)
 {
 	IGUIFont* font = getActiveFont();
 
@@ -1182,7 +1182,7 @@ void GUIEditBoxWithScrollBar::setTextRect(int32_t line)
 }
 
 
-s32 GUIEditBoxWithScrollBar::getLineFromPos(int32_t pos)
+int32_t GUIEditBoxWithScrollBar::getLineFromPos(int32_t pos)
 {
 	if (!m_word_wrap && !m_multiline)
 		return 0;

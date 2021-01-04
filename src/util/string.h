@@ -444,7 +444,10 @@ inline wstring to_wstring(T val)
 /// Returns a string representing the decimal value of the 32-bit value \p i.
 inline std::string itos(int32_t i) { return std::to_string(i); }
 /// Returns a string representing the decimal value of the 64-bit value \p i.
-inline std::string i64tos(s64 i) { return std::to_string(i); }
+inline std::string i64tos(int64_t i)
+{
+	return std::to_string(i);
+}
 
 // std::to_string uses the '%.6f' conversion, which is inconsistent with
 // std::ostream::operator<<() and impractical too.  ftos() uses the

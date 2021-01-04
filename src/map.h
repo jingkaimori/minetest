@@ -293,7 +293,7 @@ protected:
 	const NodeDefManager *m_nodedef;
 
 	bool determineAdditionalOcclusionCheck(const v3s16 &pos_camera,
-		const core::aabbox3d<s16> &block_bounds, v3s16 &check);
+		const core::aabbox3d<int16_t> &block_bounds, v3s16 &check);
 	bool isOccluded(const v3s16 &pos_camera, const v3s16 &pos_target,
 		float step, float stepfac, float start_offset, float end_offset,
 		uint32_t needed_count);

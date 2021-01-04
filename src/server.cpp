@@ -2049,7 +2049,7 @@ inline int32_t Server::nextSoundId()
 	return ret;
 }
 
-s32 Server::playSound(const SimpleSoundSpec &spec,
+int32_t Server::playSound(const SimpleSoundSpec &spec,
 		const ServerSoundParams &params, bool ephemeral)
 {
 	// Find out initial position of sound

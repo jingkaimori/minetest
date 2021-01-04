@@ -533,7 +533,7 @@ std::string GUITable::checkEvent()
 	return os.str();
 }
 
-s32 GUITable::getSelected() const
+int32_t GUITable::getSelected() const
 {
 	if (m_selected < 0)
 		return 0;
@@ -965,7 +965,7 @@ bool GUITable::OnEvent(const SEvent &event)
 /* GUITable helper functions                                                  */
 /******************************************************************************/
 
-s32 GUITable::allocString(const std::string &text)
+int32_t GUITable::allocString(const std::string &text)
 {
 	std::map<std::string, s32>::iterator it = m_alloc_strings.find(text);
 	if (it == m_alloc_strings.end()) {
@@ -979,7 +979,7 @@ s32 GUITable::allocString(const std::string &text)
 	return it->second;
 }
 
-s32 GUITable::allocImage(const std::string &imagename)
+int32_t GUITable::allocImage(const std::string &imagename)
 {
 	std::map<std::string, s32>::iterator it = m_alloc_images.find(imagename);
 	if (it == m_alloc_images.end()) {
@@ -1025,7 +1025,7 @@ bool GUITable::doesRowStartWith(const Row *row, const core::stringw &str) const
 	return false;
 }
 
-s32 GUITable::getRowAt(int32_t y, bool &really_hovering) const
+int32_t GUITable::getRowAt(int32_t y, bool &really_hovering) const
 {
 	really_hovering = false;
 
@@ -1047,7 +1047,7 @@ s32 GUITable::getRowAt(int32_t y, bool &really_hovering) const
 	return rowcount - 1;
 }
 
-s32 GUITable::getCellAt(int32_t x, int32_t row_i) const
+int32_t GUITable::getCellAt(int32_t x, int32_t row_i) const
 {
 	const Row *row = getRow(row_i);
 	if (row == NULL)

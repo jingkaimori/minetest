@@ -120,7 +120,7 @@ uint32_t PcgRandom::range(uint32_t bound)
 }
 
 
-s32 PcgRandom::range(int32_t min, int32_t max)
+int32_t PcgRandom::range(int32_t min, int32_t max)
 {
 	if (max < min)
 		throw PrngException("Invalid range (max < min)");
@@ -152,7 +152,7 @@ void PcgRandom::bytes(void *out, size_t len)
 }
 
 
-s32 PcgRandom::randNormalDist(int32_t min, int32_t max, int num_trials)
+int32_t PcgRandom::randNormalDist(int32_t min, int32_t max, int num_trials)
 {
 	int32_t accum = 0;
 	for (int i = 0; i != num_trials; i++)

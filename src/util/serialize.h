@@ -285,22 +285,22 @@ inline void writeU8(uint8_t *data, uint8_t i)
 
 inline void writeS8(uint8_t *data, int8_t i)
 {
-	writeU8(data, (u8)i);
+	writeU8(data, (uint8_t)i);
 }
 
 inline void writeS16(uint8_t *data, int16_t i)
 {
-	writeU16(data, (u16)i); 
+	writeU16(data, (uint16_t)i);
 }
 
 inline void writeS32(uint8_t *data, int32_t i)
 {
-	writeU32(data, (u32)i);
+	writeU32(data, (uint32_t)i);
 }
 
-inline void writeS64(uint8_t *data, s64 i)
+inline void writeS64(uint8_t *data, int64_t i)
 {
-	writeU64(data, (u64)i);
+	writeU64(data, (uint64_t)i);
 }
 
 inline void writeF1000(uint8_t *data, float i)

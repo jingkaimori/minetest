@@ -342,7 +342,7 @@ uint32_t ChatBuffer::formatChatLine(const ChatLine& line, uint32_t cols,
 	return num_added;
 }
 
-s32 ChatBuffer::getTopScrollPos() const
+int32_t ChatBuffer::getTopScrollPos() const
 {
 	int32_t formatted_count = (s32) m_formatted.size();
 	int32_t rows = (s32) m_rows;
@@ -355,7 +355,7 @@ s32 ChatBuffer::getTopScrollPos() const
 	return 0;
 }
 
-s32 ChatBuffer::getBottomScrollPos() const
+int32_t ChatBuffer::getBottomScrollPos() const
 {
 	int32_t formatted_count = (s32) m_formatted.size();
 	int32_t rows = (s32) m_rows;
@@ -555,7 +555,7 @@ std::wstring ChatPrompt::getVisiblePortion() const
 	return m_prompt + m_line.substr(m_view, m_cols);
 }
 
-s32 ChatPrompt::getVisibleCursorPosition() const
+int32_t ChatPrompt::getVisibleCursorPosition() const
 {
 	return m_cursor - m_view + m_prompt.size();
 }

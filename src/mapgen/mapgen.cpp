@@ -1096,7 +1096,7 @@ void MapgenParams::calcMapgenEdges()
 }
 
 
-s32 MapgenParams::getSpawnRangeMax()
+int32_t MapgenParams::getSpawnRangeMax()
 {
 	if (!m_mapgen_edges_calculated)
 		calcMapgenEdges();
