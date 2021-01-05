@@ -69,6 +69,7 @@ if(ENABLE_IRRLICHTBAW)
 	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_TOOLS:BOOL=OFF") # the tools don't work yet (Apr 2020 status, might have changed since then)
 	list(APPEND NBL_CMAKE_ARGS "-DIRR_BUILD_MITSUBA_LOADER:BOOL=OFF") # you probably don't want this extension
 	list(APPEND NBL_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX:PATH=${NBL_INSTALL_DIR}") # because of https://gitlab.kitware.com/cmake/cmake/-/issues/18790
+	include(ExternalProject)
 	ExternalProject_Add(Nabla
 		DOWNLOAD_COMMAND  ""
 		SOURCE_DIR        "${NBL_SOURCE_DIR}"
@@ -79,8 +80,7 @@ if(ENABLE_IRRLICHTBAW)
 
 	#TODO: needs cleanup and adapt for minetest
 	# replace with whatever you need ${PROJECT_NAME}
-	target_include_directories(${PROJECT_NAME}
-    PUBLIC
+	set(IRRLICHT_INCLUDE_DIR
         $<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/include>
         $<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/include>
         $<$<CONFIG:Release>:${NBL_INSTALL_DIR}/include>
@@ -89,20 +89,20 @@ if(ENABLE_IRRLICHTBAW)
         $<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/source/Nabla>
         $<$<CONFIG:Release>:${NBL_INSTALL_DIR}/source/Nabla>
 	)
-	target_link_libraries(${PROJECT_NAME} 
+	set(IRRLICHT_LIBRARY
 		$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/Nabla_debug.lib>
 		$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/Nabla_rwdi.lib>
 		$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/Nabla.lib>
 	)
 	function(link_nbl_dependency DEPENDENCY_NAME)
-		target_link_libraries(${PROJECT_NAME} 
+		set(IRRLICHT_LIBRARY
 			$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/${DEPENDENCY_NAME}d.lib>
 			$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/${DEPENDENCY_NAME}.lib>
 			$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/${DEPENDENCY_NAME}.lib>
 		)
 	endfunction()
 	function(link_nbl_dependency_ DEPENDENCY_NAME)
-		target_link_libraries(${PROJECT_NAME} 
+		set(IRRLICHT_LIBRARY 
 			$<$<CONFIG:Debug>:${NBL_INSTALL_DIR}/debug/lib/${DEPENDENCY_NAME}_d.lib>
 			$<$<CONFIG:RelWithDebInfo>:${NBL_INSTALL_DIR}/relwithdebinfo/lib/${DEPENDENCY_NAME}.lib>
 			$<$<CONFIG:Release>:${NBL_INSTALL_DIR}/lib/${DEPENDENCY_NAME}.lib>
@@ -119,12 +119,12 @@ if(ENABLE_IRRLICHTBAW)
 	link_nbl_dependency(libpng16_static)
 	# OpenSSL only ever exists in the Release variant
 	if(WIN32)
-		target_link_libraries(${PROJECT_NAME} 
+		set(IRRLICHT_LIBRARY
 			${NBL_INSTALL_DIR}/lib/libeay32.lib
 			${NBL_INSTALL_DIR}/lib/ssleay32.lib
 		)
 	else()
-		target_link_libraries(${PROJECT_NAME} 
+		set(IRRLICHT_LIBRARY
 			${NBL_INSTALL_DIR}/lib/libcrypto.lib
 			${NBL_INSTALL_DIR}/lib/libssl.lib
 		)
